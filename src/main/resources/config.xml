@@ -1,5 +1,5 @@
 <cardsconfig>
-	<card name="GemXpresso211is" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands_GemXpresso211">
+	<card name="GemXpresso211is" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands_GemXpresso211">
 		<isdAID value="A0 00 00 00 18 43 4D"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -9,7 +9,7 @@
 			<key type="DES_ECB" keyVersionNumber="13" keyId="3" keyDatas="CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D"/>
 		</defaultKeys>
 	</card>
-	<card name="GemXpresso211pkis" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands_GemXpresso211">
+	<card name="GemXpresso211pkis" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands_GemXpresso211">
 		<isdAID value="A0 00 00 00 18 43 4D"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -19,7 +19,7 @@
 			<key type="DES_ECB" keyVersionNumber="13" keyId="3" keyDatas="CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D"/>
 		</defaultKeys>
 	</card>
-	<card name="GemXplore3G" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="GemXplore3G" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 18 43 4D FF 33 FF FF 89 00 00 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -29,7 +29,7 @@
 			<key type="DES_ECB" keyVersionNumber="01" keyId="3" keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20"/>
 		</defaultKeys>
 	</card>
-	<card name="GemCombiXpresso_Lite_R2_Std_Jcop30" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="GemCombiXpresso_Lite_R2_Std_Jcop30" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 18 43 4D 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -37,7 +37,7 @@
 			<key type="SCGemVisa2" keyVersionNumber="255" keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
 		</defaultKeys>
 	</card>
-	<card name="JCOP20" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="JCOP20" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 03 00 00 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -47,7 +47,7 @@
 			<key type="DES_ECB" keyVersionNumber="255" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
 		</defaultKeys>
 	</card>
-	<card name="JCOP30" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="JCOP30" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 03 00 00 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -57,7 +57,7 @@
 			<key type="DES_ECB" keyVersionNumber="255" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
 		</defaultKeys>
 	</card>
-	<card name="JCOP31" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="JCOP31" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 03 00 00 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=1"/>
@@ -67,7 +67,7 @@
 			<key type="DES_ECB" keyVersionNumber="255" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
 		</defaultKeys>
 	</card>
-	<card name="OberthurCosmopolIC" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="OberthurCosmopolIC" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 03 00 00 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -77,7 +77,7 @@
 			<key type="DES_ECB" keyVersionNumber="255" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
 		</defaultKeys>
 	</card>
-	<card name="OberthurCosmoDual" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="OberthurCosmoDual" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 03 00 00 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
@@ -87,7 +87,7 @@
 			<key type="DES_ECB" keyVersionNumber="255" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
 		</defaultKeys>
 	</card>
-	<card name="OberthurIdOneCosmo64RSA" defaultImpl="fr.xlim.ssd.opal.commands.GP2xCommands">
+	<card name="OberthurIdOneCosmo64RSA" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
 		<isdAID value="A0 00 00 00 03 00 00 00"/>
 		<scpMode value="01_05"/>
 		<transmissionProtocol value="T=0"/>
