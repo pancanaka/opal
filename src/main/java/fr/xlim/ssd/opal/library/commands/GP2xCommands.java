@@ -40,7 +40,7 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
  * @author dede
  *
  */
-public class GP2xCommands extends Commands {
+public class GP2xCommands extends AbstractCommands implements Commands {
 
     static {
         CommandsProvider.register(new GP2xCommands());

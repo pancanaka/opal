@@ -1,57 +1,33 @@
 package fr.xlim.ssd.opal.library.commands;
 
+import fr.xlim.ssd.opal.library.FileType;
+import fr.xlim.ssd.opal.library.GetStatusResponseMode;
+import fr.xlim.ssd.opal.library.SCKey;
+import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.SecLevel;
+import fr.xlim.ssd.opal.library.SessionState;
 import java.io.File;
-
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 
-import fr.xlim.ssd.opal.library.SCKey;
-import fr.xlim.ssd.opal.library.FileType;
-import fr.xlim.ssd.opal.library.GetStatusResponseMode;
-import fr.xlim.ssd.opal.library.SCPMode;
-import fr.xlim.ssd.opal.library.SecLevel;
-import fr.xlim.ssd.opal.library.SessionState;
-
 /**
- * @author dede
  *
+ * @author Julien Iguchi-Cartigny
  */
-public abstract class Commands {
+public interface Commands {
 
-    /**
-     *
-     */
-    protected CardChannel cc;
-
-    /**
-     *
-     */
-    protected Commands() {
-        this.cc = null;
-    }
-
-    /**
-     * @param cc
-     */
-    public final void setCc(CardChannel cc) {
-        if (this.cc == null) {
-            this.cc = cc;
-        }
-    }
+    void setCc(CardChannel cc);
 
     /**
      * @return
      */
-    public final CardChannel getCc() {
-        return this.cc;
-    }
-
+    CardChannel getCc();
     /**
      * @return
      */
-    public abstract SCPMode getScp();
+    SCPMode getScp();
 
     /**
      * @return

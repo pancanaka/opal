@@ -9,5 +9,7 @@ public enum SCPMode {
 
     SCP_UNDEFINED,
     SCP_01_05,
-    SCP_01_15;
+    SCP_01_15,
+    SCP_02,
+    SCP_10;
 }
