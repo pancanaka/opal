@@ -34,12 +34,16 @@ import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author dede
  *
  */
 public class GP2xCommands extends AbstractCommands implements Commands {
+
+    private final Logger logger = LoggerFactory.getLogger(GP2xCommands.class);
 
     static {
         CommandsProvider.register(new GP2xCommands());
@@ -156,7 +160,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public SCKey getKey(byte keySetVersion, byte keyId) {
-        for(SCKey currKey : this.keys) {
+        for (SCKey currKey : this.keys) {
             if (currKey.getSetVersion() == keySetVersion && currKey.getKeyId() == keyId) {
                 return currKey;
             }
@@ -169,7 +173,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public SCKey setOffCardKey(SCKey key) {
-        for(SCKey currKey : this.keys) {
+        for (SCKey currKey : this.keys) {
             if (currKey.getSetVersion() == key.getSetVersion() && currKey.getKeyId() == key.getKeyId()) {
                 this.keys.remove(currKey);
                 this.keys.add(key);
@@ -193,7 +197,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     // TODO: why int insted of byte in parameter ?
     @Override
     public SCKey deleteOffCardKey(byte keySetVersion, byte keyId) {
-        for(SCKey currKey : this.keys) {
+        for (SCKey currKey : this.keys) {
             if (currKey.getSetVersion() == keySetVersion && currKey.getKeyId() == keyId) {
                 this.keys.remove(currKey);
                 return currKey;
@@ -219,15 +223,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         System.arraycopy(aid, 0, selectComm, 5, aid.length); // put the AID into selectComm
 
-        CommandAPDU cmd_select = new CommandAPDU(selectComm);
-        ResponseAPDU resp = this.cc.transmit(cmd_select);
-        System.out.println("SELECT");
-        System.out.println("-> " + Conversion.arrayToHex(cmd_select.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
+        CommandAPDU cmdSelect = new CommandAPDU(selectComm);
+        ResponseAPDU resp = this.cc.transmit(cmdSelect);
+        logger.debug("SELECT Command" +
+                "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") " +
+                "(<- Response APDU: " + Conversion.arrayToHex(resp.getBytes()) + ")");
         if (resp.getSW() != 0x9000) {
             this.resetParams();
-            throw new CardException("Error in Select : " + Integer.toHexString(resp.getSW()));
+            throw new CardException("Response after SELECT command : " + Integer.toHexString(resp.getSW()));
         }
         return resp;
     }
