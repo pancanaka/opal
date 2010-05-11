@@ -1,5 +1,8 @@
 package fr.xlim.ssd.opal.library.utilities;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * This class provides differents, but usefull, conversion functions
  * @author University of Limoges - Anthony DESSIATNIKOFF, Damien ARCUSET, &Eacute;milie FAUGERON, &Eacute;ric LINKE
@@ -30,6 +33,14 @@ public class Conversion {
      * @return the corresponding byte array
      */
     public static byte[] hexToArray(String s) {
+
+        // check the entry
+        Pattern p = Pattern.compile("([a-fA-F0-9]{2}[ ]*)*");
+        boolean valid = p.matcher(s).matches();
+
+        if(!valid)
+            throw new IllegalArgumentException("not a valid string representation of a byte array");
+
         String hex = s.replaceAll(" ", "");
         byte[] tab = new byte[hex.length() / 2];
         for (int i = 0; i < tab.length; i++) {
