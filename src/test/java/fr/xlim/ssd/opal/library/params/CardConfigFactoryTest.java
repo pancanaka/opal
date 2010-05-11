@@ -1,8 +1,9 @@
 package fr.xlim.ssd.opal.library.params;
 
-import junit.framework.TestCase;
+import org.junit.Test;
+import static org.junit.Assert.*;
 
-public class CardConfigFactoryTest extends TestCase {
+public class CardConfigFactoryTest {
 
     static private String[] code = {
         "GemXpresso211is", 
@@ -17,6 +18,7 @@ public class CardConfigFactoryTest extends TestCase {
         "OberthurIdOneCosmo64RSA"
     };
 
+    @Test
     public void testSimpleAccess() throws CardConfigNotFoundException {
 
         for(String s : code) {
