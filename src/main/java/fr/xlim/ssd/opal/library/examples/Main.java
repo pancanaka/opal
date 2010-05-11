@@ -3,7 +3,7 @@
  * @author Damien Arcuset, Eric Linke
  * @author Julien Iguchi-Cartigny
  */
-package fr.xlim.ssd.opal.examples;
+package fr.xlim.ssd.opal.library.examples;
 
 import java.io.File;
 import java.io.IOException;
@@ -16,15 +16,15 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 
-import fr.xlim.ssd.opal.SecurityDomain;
-import fr.xlim.ssd.opal.FileType;
-import fr.xlim.ssd.opal.GetStatusResponseMode;
-import fr.xlim.ssd.opal.SecLevel;
-import fr.xlim.ssd.opal.cardParams.CardConfig;
-import fr.xlim.ssd.opal.cardParams.CardConfigFactory;
-import fr.xlim.ssd.opal.cardParams.CardConfigNotFoundException;
-import fr.xlim.ssd.opal.commands.CommandsImplementationNotFound;
-import fr.xlim.ssd.opal.utilities.Conversion;
+import fr.xlim.ssd.opal.library.params.CardConfig;
+import fr.xlim.ssd.opal.library.params.CardConfigFactory;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+import fr.xlim.ssd.opal.library.FileType;
+import fr.xlim.ssd.opal.library.GetStatusResponseMode;
+import fr.xlim.ssd.opal.library.SecLevel;
+import fr.xlim.ssd.opal.library.SecurityDomain;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 
 public class Main {
 
