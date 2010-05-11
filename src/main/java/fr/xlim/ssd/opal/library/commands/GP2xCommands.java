@@ -12,7 +12,6 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import javax.crypto.BadPaddingException;
@@ -120,11 +119,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.hostCrypto = null;
     }
 
-    // APPLET
-
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#getScp()
      */
+    @Override
     public SCPMode getScp() {
         return this.scp;
     }
@@ -132,6 +130,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#getSessState()
      */
+    @Override
     public SessionState getSessState() {
         return this.sessState;
     }
@@ -139,25 +138,25 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#getSecMode()
      */
+    @Override
     public SecLevel getSecMode() {
-        return secMode;
+        return this.secMode;
     }
 
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#getKeys()
      */
+    @Override
     public SCKey[] getKeys() {
-        SCKey[] k = new SCKey[this.keys.size()];
-        return this.keys.toArray(k);
+        return this.keys.toArray(new SCKey[0]);
     }
 
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#getKey(byte, byte)
      */
+    @Override
     public SCKey getKey(byte keySetVersion, byte keyId) {
-        Iterator<SCKey> i = this.keys.iterator();
-        while (i.hasNext()) {
-            SCKey currKey = i.next();
+        for(SCKey currKey : this.keys) {
             if (currKey.getSetVersion() == keySetVersion && currKey.getKeyId() == keyId) {
                 return currKey;
             }
@@ -168,10 +167,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#setOffCardKey(fr.xlim.ssd.opal.SCKey)
      */
+    @Override
     public SCKey setOffCardKey(SCKey key) {
-        Iterator<SCKey> i = this.keys.iterator();
-        while (i.hasNext()) {
-            SCKey currKey = i.next();
+        for(SCKey currKey : this.keys) {
             if (currKey.getSetVersion() == key.getSetVersion() && currKey.getKeyId() == key.getKeyId()) {
                 this.keys.remove(currKey);
                 this.keys.add(key);
@@ -184,18 +182,18 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     @Override
     public void setOffCardKeys(SCKey[] keys) {
-        for (int i = 0; i < keys.length; i++) {
-            this.setOffCardKey(keys[i]);
+        for (SCKey key : keys) {
+            this.setOffCardKey(key);
         }
     }
 
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#deleteOffCardKey(int, int)
      */
-    public SCKey deleteOffCardKey(int keySetVersion, int keyId) {
-        Iterator<SCKey> i = this.keys.iterator();
-        while (i.hasNext()) {
-            SCKey currKey = i.next();
+    // TODO: why int insted of byte in parameter ?
+    @Override
+    public SCKey deleteOffCardKey(byte keySetVersion, byte keyId) {
+        for(SCKey currKey : this.keys) {
             if (currKey.getSetVersion() == keySetVersion && currKey.getKeyId() == keyId) {
                 this.keys.remove(currKey);
                 return currKey;
@@ -207,6 +205,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#select(byte[])
      */
+    @Override
     public ResponseAPDU select(byte[] aid) throws CardException {
         byte headerSize = (byte) 5; // CLA + INS + P1 + P2 + LC
 
@@ -236,6 +235,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#resetParams()
      */
+    @Override
     public void resetParams() {
         this.initIcv();
         this.scp = SCPMode.SCP_UNDEFINED;
@@ -255,6 +255,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#initializeUpdate(byte, byte, fr.xlim.ssd.opal.Constant.SCPMode)
      */
+    @Override
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
         this.resetParams();
         this.generateHostChallenge();
@@ -355,6 +356,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#externalAuthenticate(fr.xlim.ssd.opal.Constant.SecLevel)
      */
+    @Override
     public ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException {
         if (this.sessState != SessionState.SESSION_INIT) {
             this.resetParams();
@@ -391,6 +393,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#send(javax.smartcardio.CommandAPDU)
      */
+    @Override
     public ResponseAPDU send(CommandAPDU command) throws CardException {
         ResponseAPDU resp = this.cc.transmit(command);
         System.out.println("-> " + Conversion.arrayToHex(command.getBytes()));
@@ -402,6 +405,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#getStatus(fr.xlim.ssd.opal.Constant.FileType, fr.xlim.ssd.opal.Constant.GetStatusResponseMode, byte[])
      */
+    @Override
     public ResponseAPDU[] getStatus(FileType ft, GetStatusResponseMode respMode, byte[] searchQualifier) throws CardException {
         Set<ResponseAPDU> res = new HashSet<ResponseAPDU>();
         byte[] getStatusCmd = null;
@@ -723,6 +727,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#deleteOnCardObj(byte[], boolean)
      */
+    @Override
     public ResponseAPDU deleteOnCardObj(byte[] aid, boolean cascade) throws CardException {
         byte dataSize = (byte) (2 + aid.length); // params +  AID
 
@@ -771,6 +776,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#deleteOnCardKey(byte, byte)
      */
+    @Override
     public ResponseAPDU deleteOnCardKey(byte keySetVersion, byte keyId) throws CardException {
         byte dataSize = (byte) 4; // '0xD0' + Key Identifier + '0xD2' + Key Version Number
 
@@ -819,6 +825,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#installForLoad(byte[], byte[], byte[])
      */
+    @Override
     public ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAID, byte[] params) throws CardException {
         // Check if mandatories values are provided
         if (packageAid == null) {
@@ -913,6 +920,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#load(java.io.File)
      */
+    @Override
     public ResponseAPDU[] load(File capFile) throws CardException {
         return this.load(capFile, (byte) 0xF0);
     }
@@ -920,6 +928,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#load(java.io.File, byte)
      */
+    @Override
     public ResponseAPDU[] load(File capFile, byte maxDataLength) throws CardException {
         Set<ResponseAPDU> res = new HashSet<ResponseAPDU>();
         int capFileRemainLen = (int) capFile.length();
@@ -1050,6 +1059,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#installForInstallAndMakeSelectable(byte[], byte[], byte[], byte[], byte[])
      */
+    @Override
     public ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID, byte[] moduleAID, byte[] applicationAID, byte[] privileges, byte[] params) throws CardException {
         if (params == null) {
             params = new byte[2];

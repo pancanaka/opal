@@ -32,54 +32,54 @@ public interface Commands {
     /**
      * @return
      */
-    public abstract SessionState getSessState();
+    SessionState getSessState();
 
     /**
      * @return
      */
-    public abstract SecLevel getSecMode();
+    SecLevel getSecMode();
 
     /**
      * @return
      */
-    public abstract SCKey[] getKeys();
+    SCKey[] getKeys();
 
     /**
      * @param keySetVersion
      * @param keyId
      * @return
      */
-    public abstract SCKey getKey(byte keySetVersion, byte keyId);
+    SCKey getKey(byte keySetVersion, byte keyId);
 
     /**
      * @param key
      * @return
      */
-    public abstract SCKey setOffCardKey(SCKey key);
+    SCKey setOffCardKey(SCKey key);
 
     /**
      * @param keys
      */
-    public abstract void setOffCardKeys(SCKey[] keys);
+    void setOffCardKeys(SCKey[] keys);
 
     /**
      * @param keySetVersion
      * @param keyId
      * @return
      */
-    public abstract SCKey deleteOffCardKey(int keySetVersion, int keyId);
+    SCKey deleteOffCardKey(byte keySetVersion, byte keyId);
 
     /**
      *
      */
-    public abstract void resetParams();
+    void resetParams();
 
     /**
      * @param aid
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU select(byte[] aid) throws CardException;
+    ResponseAPDU select(byte[] aid) throws CardException;
 
     /**
      * @param keySetVersion
@@ -88,7 +88,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId,
+    ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId,
             SCPMode desiredScp) throws CardException;
 
     /**
@@ -96,14 +96,14 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException;
+    ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException;
 
     /**
      * @param command
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU send(CommandAPDU command) throws CardException;
+    ResponseAPDU send(CommandAPDU command) throws CardException;
 
     /**
      * @param ft
@@ -112,7 +112,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU[] getStatus(FileType ft,
+    ResponseAPDU[] getStatus(FileType ft,
             GetStatusResponseMode respMode, byte[] searchQualifier)
             throws CardException;
 
@@ -122,7 +122,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU deleteOnCardObj(byte[] aid, boolean cascade)
+    ResponseAPDU deleteOnCardObj(byte[] aid, boolean cascade)
             throws CardException;
 
     /**
@@ -131,7 +131,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU deleteOnCardKey(byte keySetVersion, byte keyId)
+    ResponseAPDU deleteOnCardKey(byte keySetVersion, byte keyId)
             throws CardException;
 
     /**
@@ -141,7 +141,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAID,
+    ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAID,
             byte[] params) throws CardException;
 
     /**
@@ -149,7 +149,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU[] load(File capFile) throws CardException;
+    ResponseAPDU[] load(File capFile) throws CardException;
 
     /**
      * @param capFile
@@ -157,7 +157,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU[] load(File capFile, byte maxDataLength)
+    ResponseAPDU[] load(File capFile, byte maxDataLength)
             throws CardException;
 
     /**
@@ -169,7 +169,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    public abstract ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID,
+    ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID,
             byte[] moduleAID, byte[] applicationAID, byte[] privileges,
             byte[] params) throws CardException;
 }

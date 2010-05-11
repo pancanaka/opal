@@ -111,7 +111,7 @@ public class GPApplet {
      * @param keyId
      * @return
      */
-    public SCKey deleteOffCardKey(int keySetVersion, int keyId) {
+    public SCKey deleteOffCardKey(byte keySetVersion, byte keyId) {
         return this.cmds.deleteOffCardKey(keySetVersion, keyId);
     }
 

@@ -1,11 +1,10 @@
 package fr.xlim.ssd.opal.library.commands;
 
-
 import javax.smartcardio.CardChannel;
 
 /**
- * @author dede
- *
+ * @author Damien Arcuset
+ * @author Julien Iguchi-Cartigny
  */
 public abstract class AbstractCommands {
 

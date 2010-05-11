@@ -7,10 +7,10 @@ import fr.xlim.ssd.opal.library.SCGPKey;
  * @author dede
  *
  */
-public class GP2xCommands_GemXpresso211 extends GP2xCommands {
+public class GemXpresso211Commands extends GP2xCommands {
 
     static {
-        CommandsProvider.register(new GP2xCommands_GemXpresso211());
+        CommandsProvider.register(new GemXpresso211Commands());
     }
 
     /* (non-Javadoc)

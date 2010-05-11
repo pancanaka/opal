@@ -1,26 +1,45 @@
 package fr.xlim.ssd.opal.library.params;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.util.LinkedList;
+import java.util.List;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class CardConfigFactoryTest {
 
-    static private String[] code = {
-        "GemXpresso211is",
-        "GemXpresso211pkis",
-        "GemXpresso211pkis",
-        "GemCombiXpresso_Lite_R2_Std_Jcop30",
-        "JCOP20",
-        "JCOP30",
-        "JCOP31",
-        "OberthurCosmopolIC",
-        "OberthurCosmoDual",
-        "OberthurIdOneCosmo64RSA"
-    };
+    private static List<String> cardNames = new LinkedList<String>();
+
+    @BeforeClass
+    public static void getAllCardName() throws JDOMException, IOException {
+        InputStream input = CardConfigFactoryTest.class.getResourceAsStream("/config.xml");
+        Reader reader = new InputStreamReader(input);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document document = builder.build(reader);
+
+        Element root = document.getRootElement();
+        assertNotNull(root);
+
+        List<Element> cards = root.getChildren("card");
+        assertTrue(cards.size() > 0);
+
+        for(Element card : cards) {
+            cardNames.add(card.getAttributeValue("name"));
+        }
+    }
 
     @Test
     public void testAllExistingCodeList() throws CardConfigNotFoundException {
-        for (String s : code) {
+        for (String s : cardNames) {
             CardConfig config = CardConfigFactory.getCardConfig(s);
             assertNotNull(config);
         }
