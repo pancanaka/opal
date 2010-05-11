@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
+<!-- TODO: xml schema for this file ? -->
 <cardsconfig>
     <card name="GemXpresso211is" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands_GemXpresso211">
         <isdAID value="A0 00 00 00 18 43 4D"/>

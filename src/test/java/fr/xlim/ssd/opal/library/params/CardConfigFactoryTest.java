@@ -6,7 +6,7 @@ import static org.junit.Assert.*;
 public class CardConfigFactoryTest {
 
     static private String[] code = {
-        "GemXpresso211is", 
+        "GemXpresso211is",
         "GemXpresso211pkis",
         "GemXpresso211pkis",
         "GemCombiXpresso_Lite_R2_Std_Jcop30",
@@ -19,11 +19,15 @@ public class CardConfigFactoryTest {
     };
 
     @Test
-    public void testSimpleAccess() throws CardConfigNotFoundException {
-
-        for(String s : code) {
+    public void testAllExistingCodeList() throws CardConfigNotFoundException {
+        for (String s : code) {
             CardConfig config = CardConfigFactory.getCardConfig(s);
             assertNotNull(config);
         }
+    }
+
+    @Test(expected = CardConfigNotFoundException.class)
+    public void testNotExistingCode() throws CardConfigNotFoundException {
+        CardConfigFactory.getCardConfig("dummy");
     }
 }
