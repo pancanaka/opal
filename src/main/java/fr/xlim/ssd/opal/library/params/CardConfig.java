@@ -46,6 +46,25 @@ public class CardConfig {
      * @param impl      the class name of the implementation
      */
     public CardConfig(byte[] isd, SCPMode scp, String tp, SCKey[] keys, String impl) {
+
+        // TODO: transmission protocol as enum ?
+        // TODO: checking legal size of ISD (maybe an ISD object ?)
+        if(isd == null)
+            throw new IllegalArgumentException("isd must be not null");
+
+        if(scp == null)
+            throw new IllegalArgumentException("scp must be not null");
+
+        if(tp == null)
+            throw new IllegalArgumentException("tp must be not null");
+
+        // TODO: check array size ?
+        if(keys == null)
+            throw new IllegalArgumentException("keys must be not null");
+
+        if(impl == null)
+            throw new IllegalArgumentException("impl must be not null");
+
         this.isd = isd;
         this.scp = scp;
         this.tp = tp;

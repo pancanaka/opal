@@ -20,6 +20,36 @@ public class CardConfigTest {
                 "dummy", new SCKey[]{scKey}, "dummy");
     }
 
+    @Test(expected=IllegalArgumentException.class)
+    public void checkCardConfigFailedWhenIsdNull() {
+        CardConfig cc = new CardConfig(null, SCPMode.SCP_UNDEFINED,
+                "dummy", new SCKey[]{scKey}, "dummy");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void checkCardConfigFailedWhenScpNull() {
+        CardConfig cc = new CardConfig(new byte[0], null,
+                "dummy", new SCKey[]{scKey}, "dummy");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void checkCardConfigFailedWhenTpNull() {
+        CardConfig cc = new CardConfig(new byte[0], SCPMode.SCP_UNDEFINED,
+                null, new SCKey[]{scKey}, "dummy");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void checkCardConfigFailedWhenKeysNull() {
+        CardConfig cc = new CardConfig(new byte[0], SCPMode.SCP_UNDEFINED,
+                "dummy", null, "dummy");
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void checkCardConfigFailedWhenImplNull() {
+        CardConfig cc = new CardConfig(new byte[0], SCPMode.SCP_UNDEFINED,
+                "dummy", new SCKey[]{scKey}, null);
+    }
+
     @Test
     public void testGetDefaultInitUpdateP1() {
         when(scKey.getSetVersion()).thenReturn((byte)255);
