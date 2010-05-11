@@ -1,11 +1,8 @@
-package fr.xlim.ssd.opal;
+package fr.xlim.ssd.opal.library.params;
 
-import fr.xlim.ssd.opal.library.params.CardConfig;
-import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import junit.framework.TestCase;
 
-public class TestCardConfigFactory extends TestCase {
+public class CardConfigFactoryTest extends TestCase {
 
     static private String[] code = {
         "GemXpresso211is", 
