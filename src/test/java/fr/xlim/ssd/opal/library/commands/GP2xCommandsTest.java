@@ -91,10 +91,11 @@ public class GP2xCommandsTest {
         byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
         ResponseAPDU response = new ResponseAPDU(apdu);
         cardChannel.addResponse(response);
-
         byte[] aid = new byte[]{0x12, 0x34, 0x56, 0x78};
         ResponseAPDU reponse = commands.select(aid);
         assertNotNull(reponse);
+        byte[] expected = new byte[]{0x00, 0x00, (byte)0x90, 0x00};
+        assertArrayEquals(response.getBytes(), expected);
     }
 
     @Test(expected=CardException.class)
