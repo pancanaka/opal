@@ -9,17 +9,20 @@ public class RandomGenerator {
 
     private final static Logger logger = LoggerFactory.getLogger(RandomGenerator.class);
 
+    public static void setRandomSequence(byte[] randomSequence) {
+        throw new UnsupportedOperationException("This function is only called during tests");
+    }
+
     public static byte[] generateRandom(int size) {
         SecureRandom secureRandom;
         try {
             secureRandom = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException ex) {
-            logger.error("Cannot instantiate random generator",ex);
+            logger.error("Cannot instantiate random generator", ex);
             throw new UnsupportedOperationException("Cannot create random sequence");
 
         }
-        
+
         return secureRandom.generateSeed(size);
     }
-
 }

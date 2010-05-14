@@ -1,0 +1,5 @@
+# test SELECT operation
+# random generator must be initialized with 01 23 45 67 01 23 45 67
+# AID is 34 34 34 34 34 34 34 34
+00 A4 04 00 08 34 34 34 34 34 34 34 34
+00 00 10 00

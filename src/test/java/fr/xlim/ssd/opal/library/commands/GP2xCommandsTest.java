@@ -9,6 +9,7 @@ import java.util.List;
 import javax.smartcardio.CardException;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
@@ -24,20 +25,10 @@ public class GP2xCommandsTest {
     public void testDummy() {
         assertTrue(true);
     }
-
-    private GP2xCommands commands;
     private List<SCKey> keys;
-    private CardChannel cardChannel;
 
     @Before
-    public void createCommands() throws IOException, CardException {
-        commands = new GP2xCommands();
-        InputStream input = CardChannelMockTest.class
-                .getResourceAsStream("/test-cardChannelMock-dummy.txt");
-        Reader reader = new InputStreamReader(input);
-        cardChannel = new CardChannelMock(reader);
-        commands.setCc(cardChannel);
-
+    public void createKeys() {
         keys = new LinkedList<SCKey>();
         SCKey key0 = mock(SCKey.class);
         when(key0.getSetVersion()).thenReturn((byte) 1);
@@ -53,8 +44,27 @@ public class GP2xCommandsTest {
         keys.add(key2);
     }
 
+    private GP2xCommands createCommands(String filename) {
+        GP2xCommands commands = new GP2xCommands();
+        InputStream input = GP2xCommands.class.getResourceAsStream(filename);
+        Reader reader = new InputStreamReader(input);
+        CardChannel cardChannel = null;
+        try {
+            cardChannel = new CardChannelMock(reader);
+        } catch (CardException ce) {
+            throw new IllegalStateException("CardException");
+        } catch (IOException ioe) {
+            throw new IllegalStateException("IOException");
+        }
+        commands.setCc(cardChannel);
+        return commands;
+    }
+
     @Test
     public void testSetOffCardKey() {
+
+        Commands commands = createCommands("/001-cardChannelMock-dummy.txt");
+
         commands.setOffCardKey(keys.get(0));
         assertEquals(commands.getKeys().length, 1);
         assertSame(commands.getKeys()[0], keys.get(0));
@@ -76,6 +86,8 @@ public class GP2xCommandsTest {
 
     @Test
     public void testSetOffCardKeys() {
+        Commands commands = createCommands("/001-cardChannelMock-dummy.txt");
+
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         assertEquals(commands.getKeys().length, 2);
         assertSame(commands.getKey((byte) 1, (byte) 100), keys.get(2));
@@ -84,6 +96,8 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOffCardKey() {
+        Commands commands = createCommands("/001-cardChannelMock-dummy.txt");
+
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         SCKey key = commands.deleteOffCardKey((byte) 2, (byte) 200);
         assertNotNull(key);
@@ -99,50 +113,51 @@ public class GP2xCommandsTest {
         assertEquals(commands.getKeys().length, 0);
         assertSame(key, keys.get(2));
     }
-/*
+
     @Test
     public void testSelect() throws CardException {
-        byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
-        ResponseAPDU response = new ResponseAPDU(apdu);
-        cardChannel.addResponse(response);
-        byte[] aid = new byte[]{0x12, 0x34, 0x56, 0x78};
-        response = commands.select(aid);
+        Commands commands = createCommands("/010-GP2xCommands-select.txt");
 
-        // checking command
-//        assertEquals(1,cardChannel.getReceivedAPDU().size());
-//        CommandAPDU command = cardChannel.getReceivedAPDU().get(0);
-        byte[] expectedCommand = new byte[]{0x00, (byte)0xA4, (byte)0x04,
-            0x00, 0x04, 0x12, 0x34, 0x56, 0x78};
-//        assertArrayEquals(command.getBytes(), expectedCommand);
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67,0x01, 0x23, 0x45, 0x67});
+        byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
 
-        // checking response
-        assertNotNull(response);
-        byte[] expectedResponse = new byte[]{0x00, 0x00, (byte)0x90, 0x00};
-        assertArrayEquals(response.getBytes(), expectedResponse);
+        commands.select(aid);
+        commands.getCc().close();
     }
 
     @Test(expected=CardException.class)
-    public void testSelectFailedWhenSWNot9000() throws CardException {
-        byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x00, 0x00 };
-        ResponseAPDU response = new ResponseAPDU(apdu);
-        cardChannel.addResponse(response);
-        byte[] aid = new byte[]{0x12, 0x34, 0x56, 0x78};
-        ResponseAPDU reponse = commands.select(aid);
+    public void testSelectFailedWhenResponseSWNot9000() throws CardException {
+        Commands commands = createCommands("/011-GP2xCommands-select-not9000.txt");
+
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67,0x01, 0x23, 0x45, 0x67});
+        byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
+
+        commands.select(aid);
     }
 
- /*
+    /*
+
+    @Test(expected=CardException.class)
+    public void testSelectFailedWhenSWNot9000() throws CardException {
+    byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x00, 0x00 };
+    ResponseAPDU response = new ResponseAPDU(apdu);
+    cardChannel.addResponse(response);
+    byte[] aid = new byte[]{0x12, 0x34, 0x56, 0x78};
+    ResponseAPDU reponse = commands.select(aid);
+    }
+
     @Test
     public void testInitializeUpdateFailWhenSCP02() throws CardException {
-        byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
-        ResponseAPDU response = new ResponseAPDU(apdu);
-        commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_02);
+    byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
+    ResponseAPDU response = new ResponseAPDU(apdu);
+    commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_02);
     }
 
     @Test
     public void testInitializeUpdateFailWhenSCP10() throws CardException {
-        byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
-        ResponseAPDU response = new ResponseAPDU(apdu);
-        commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_10);
+    byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
+    ResponseAPDU response = new ResponseAPDU(apdu);
+    commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_10);
     }
- */
+     */
 }

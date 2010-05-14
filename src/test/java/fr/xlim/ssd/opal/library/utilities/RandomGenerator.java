@@ -9,10 +9,6 @@ public class RandomGenerator {
     private static byte[] randomSequence;
 
     public static void setRandomSequence(byte[] randomSequence) {
-        if (randomSequence == null) {
-            throw new IllegalArgumentException("randomSequence must be not null");
-        }
-
         RandomGenerator.randomSequence = randomSequence;
     }
 

@@ -2,12 +2,13 @@ package fr.xlim.ssd.opal.library.utilities;
 
 import static org.junit.Assert.*;
 
+import org.junit.Before;
 import org.junit.Test;
 
 public class RandomGeneratorTest {
 
-    @Test(expected=IllegalArgumentException.class)
-    public void testSetRandomSequenceFailedIfParameterNull() {
+    @Before
+    public void resetRandomGenerator() {
         RandomGenerator.setRandomSequence(null);
     }
 

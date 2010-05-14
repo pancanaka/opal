@@ -21,7 +21,7 @@ public class CardChannelMockTest {
     @Before
     public void createCardChannelMock() throws IOException, CardException {
         InputStream input = CardChannelMockTest.class
-                .getResourceAsStream("/test-cardChannelMock-dummy.txt");
+                .getResourceAsStream("/001-cardChannelMock-dummy.txt");
         Reader reader = new InputStreamReader(input);
         cc = new CardChannelMock(reader);
     }
@@ -50,7 +50,7 @@ public class CardChannelMockTest {
     @Test(expected=CardException.class)
     public void testTransmitFailedIfNoAssociatedResponse() throws CardException, IOException {
         InputStream input = CardChannelMockTest.class
-                .getResourceAsStream("/test-cardChannelMock-defective.txt");
+                .getResourceAsStream("/002-cardChannelMock-defective.txt");
         Reader reader = new InputStreamReader(input);
         cc = new CardChannelMock(reader);
     }
