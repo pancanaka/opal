@@ -80,8 +80,7 @@ public class CardChannelMock extends CardChannel {
         }
 
         if (command != null) {
-            logger.error("no response associated to a command in the script");
-            throw new CardException("no APDU response available");
+            throw new CardException("No response APDU available");
         }
 
         logger.info("working in replay-and-check mode (" + apdus.size() + " exchanges loaded)");
@@ -97,22 +96,15 @@ public class CardChannelMock extends CardChannel {
 
 
         if (apdus.size() <= receivedCommands) {
-            logger.error("No more command APDU expected");
             throw new CardException("No more command APDU expected");
         }
 
         boolean eq = Arrays.equals(command.getBytes(), apdus.get(receivedCommands).getCommand().getBytes());
         if (!eq) {
-            logger.error("Command APDU expected: " + Conversion.arrayToHex(apdus.get(receivedCommands).getCommand().getBytes()));
-            throw new CardException("not expected command");
+            throw new CardException("Command APDU expected: " + Conversion.arrayToHex(apdus.get(receivedCommands).getCommand().getBytes()));
         }
 
         receivedCommands++;
-
-        if (apdus.size() <= sentResponses) {
-            logger.error("No more response APDU available");
-            throw new CardException("no response APDU available");
-        }
 
         ResponseAPDU response = apdus.get(sentResponses).getResponse();
         logger.info("Response APDU (" + sentResponses + "): " + Conversion.arrayToHex(response.getBytes()));

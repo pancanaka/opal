@@ -34,6 +34,7 @@ import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -326,6 +327,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         SCKey key = this.getKey(keyVersNumRec, keyId);
         if (key == null) {
             this.resetParams();
+            logger.error("Selected Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + keyId);
             throw new CardException("Selected Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + keyId);
         }
 

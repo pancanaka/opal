@@ -18,9 +18,7 @@ public class RandomGenerator {
         try {
             secureRandom = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException ex) {
-            logger.error("Cannot instantiate random generator", ex);
             throw new UnsupportedOperationException("Cannot create random sequence");
-
         }
 
         return secureRandom.generateSeed(size);

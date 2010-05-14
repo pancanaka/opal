@@ -156,4 +156,10 @@ public class GP2xCommandsTest {
         commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_10);
     }
 
+    @Test(expected = CardException.class)
+    public void testInitializeUpdateFailWhenKeyNotFoundInLocalRepository() throws CardException {
+        Commands commands = createCommands("/015-GP2xCommands-initialize-update-failed.txt");
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 0x1, (byte) 0x64, SCPMode.SCP_01_05);
+    }
 }
