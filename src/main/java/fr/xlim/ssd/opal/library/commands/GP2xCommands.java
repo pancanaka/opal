@@ -10,7 +10,6 @@ import java.nio.channels.FileChannel;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -34,6 +33,7 @@ import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  */
 public class GP2xCommands extends AbstractCommands implements Commands {
 
-    private final Logger logger = LoggerFactory.getLogger(GP2xCommands.class);
+    private static final Logger logger = LoggerFactory.getLogger(GP2xCommands.class);
 
     static {
         CommandsProvider.register(new GP2xCommands());
@@ -225,9 +225,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmdSelect = new CommandAPDU(selectComm);
         ResponseAPDU resp = this.cc.transmit(cmdSelect);
-        logger.debug("SELECT Command" +
+        logger.debug("SELECT Command " +
                 "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") " +
-                "(<- Response APDU: " + Conversion.arrayToHex(resp.getBytes()) + ")");
+                "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
         if (resp.getSW() != 0x9000) {
             this.resetParams();
             throw new CardException("Response after SELECT command : " + Integer.toHexString(resp.getSW()));
@@ -260,8 +260,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
+
         this.resetParams();
-        this.generateHostChallenge();
+        this.hostCh = RandomGenerator.generateRandom(8);
 
         byte[] initUpdCmd = new byte[13];
         initUpdCmd[0] = (byte) 0x80;
@@ -272,21 +273,21 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         System.arraycopy(this.hostCh, 0, initUpdCmd, 5, this.hostCh.length);
 
-        CommandAPDU cmd_initupd = new CommandAPDU(initUpdCmd);
+        CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
 
-        ResponseAPDU resp = this.cc.transmit(cmd_initupd);
-        System.out.println("INIT UPDATE");
-        System.out.println("-> " + Conversion.arrayToHex(cmd_initupd.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
+        ResponseAPDU resp = this.cc.transmit(cmdInitUpd);
+        logger.debug("INIT UPDATE command " +
+                "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes())+") " +
+                "(<- " + Conversion.arrayToHex(resp.getBytes())+ ")");
         if (resp.getSW() != 0x9000) {
             this.resetParams();
-            throw new CardException("Error in Init Update : " + Integer.toHexString(resp.getSW()));
+            throw new CardException("Response after INIT UPDATE command : " + Integer.toHexString(resp.getSW()));
         }
 
-        byte[] cardCryptoResp = new byte[8];
         this.cardCh = new byte[8];
+        byte[] cardCryptoResp = new byte[8];
         byte[] keyDivData = new byte[10];
+        
         System.arraycopy(resp.getData(), 12, this.cardCh, 0, 8);
         System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
         System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
@@ -717,14 +718,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      *
      */
-    protected void generateHostChallenge() {
-        try {
-            this.hostCh = SecureRandom.getInstance("SHA1PRNG").generateSeed(8);
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
-    }
 
     // SECURITY DOMAIN
     /* (non-Javadoc)

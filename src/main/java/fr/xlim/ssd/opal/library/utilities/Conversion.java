@@ -1,6 +1,5 @@
 package fr.xlim.ssd.opal.library.utilities;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**

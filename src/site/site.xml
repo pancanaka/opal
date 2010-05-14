@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="OPAL">
+    <bannerLeft>
+        <name>Opal</name>
+        <src>images/logo.png</src>
+        <href>http://www.sonatype.com</href>
+    </bannerLeft>
+    <body>
+        <menu name="The OPAL Project">
+            <item name="Overview" href="index.html"/>
+        </menu>
+        <menu name="Project Documentation" ref="reports"/>
+    </body>
+</project>
