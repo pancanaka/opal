@@ -14,18 +14,17 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import javax.smartcardio.CardChannel;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import org.junit.Before;
 import org.junit.Test;
 
 public class GP2xCommandsTest {
 
-    @Test
-    public void testDummy() {
-        assertTrue(true);
-    }
     private List<SCKey> keys;
+
+    @Before
+    public void resetRandomGenerator() {
+        RandomGenerator.setRandomSequence(null);
+    }
 
     @Before
     public void createKeys() {
@@ -116,48 +115,45 @@ public class GP2xCommandsTest {
 
     @Test
     public void testSelect() throws CardException {
-        Commands commands = createCommands("/010-GP2xCommands-select.txt");
-
-        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67,0x01, 0x23, 0x45, 0x67});
+        Commands commands = createCommands("/010-GP2xCommands-select-good.txt");
         byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
-
         commands.select(aid);
         commands.getCc().close();
     }
 
-    @Test(expected=CardException.class)
+    @Test(expected = CardException.class)
     public void testSelectFailedWhenResponseSWNot9000() throws CardException {
-        Commands commands = createCommands("/011-GP2xCommands-select-not9000.txt");
-
-        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67,0x01, 0x23, 0x45, 0x67});
+        Commands commands = createCommands("/011-GP2xCommands-select-failed.txt");
         byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
-
         commands.select(aid);
     }
 
-    /*
-
-    @Test(expected=CardException.class)
-    public void testSelectFailedWhenSWNot9000() throws CardException {
-    byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x00, 0x00 };
-    ResponseAPDU response = new ResponseAPDU(apdu);
-    cardChannel.addResponse(response);
-    byte[] aid = new byte[]{0x12, 0x34, 0x56, 0x78};
-    ResponseAPDU reponse = commands.select(aid);
+    @Test(expected = CardException.class)
+    public void testInitializeUpdateFailWhenFirstResponseNot9000() throws CardException {
+        Commands commands = createCommands("/012-GP2xCommands-initialize-update-failed.txt");
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_01_05);
     }
 
-    @Test
-    public void testInitializeUpdateFailWhenSCP02() throws CardException {
-    byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
-    ResponseAPDU response = new ResponseAPDU(apdu);
-    commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_02);
+    @Test(expected = CardException.class)
+    public void testInitializeUpdateFailWhenFirstResponseHasIllegalSize() throws CardException {
+        Commands commands = createCommands("/013-GP2xCommands-initialize-update-failed.txt");
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_01_05);
     }
 
-    @Test
-    public void testInitializeUpdateFailWhenSCP10() throws CardException {
-    byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
-    ResponseAPDU response = new ResponseAPDU(apdu);
-    commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_10);
+    @Test(expected = CardException.class)
+    public void testInitializeUpdateFailWhenSCPNotImplemented() throws CardException {
+        Commands commands = createCommands("/014-GP2xCommands-initialize-update-failed.txt");
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_10);
     }
-     */
+
+    @Test(expected = CardException.class)
+    public void testInitializeUpdateFailWhenDesiredSCPNotInResponse() throws CardException {
+        Commands commands = createCommands("/015-GP2xCommands-initialize-update-failed.txt");
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_10);
+    }
+
 }

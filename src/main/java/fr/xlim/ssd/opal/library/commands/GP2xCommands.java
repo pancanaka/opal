@@ -276,18 +276,27 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
 
         ResponseAPDU resp = this.cc.transmit(cmdInitUpd);
+
         logger.debug("INIT UPDATE command " +
                 "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes())+") " +
                 "(<- " + Conversion.arrayToHex(resp.getBytes())+ ")");
+        
         if (resp.getSW() != 0x9000) {
             this.resetParams();
-            throw new CardException("Response after INIT UPDATE command : " + Integer.toHexString(resp.getSW()));
+            logger.error("Illegal response after first INIT UPDATE command: "  + Integer.toHexString(resp.getSW()));
+            throw new CardException("Illegal response after first INIT UPDATE command");
+        }
+
+        if (resp.getData().length != 28) {
+            this.resetParams();
+            logger.error("Invalid size response after first INIT UPDATE command : " + resp.getData().length);
+            throw new CardException("Invalid size response after first INIT UPDATE command");
         }
 
         this.cardCh = new byte[8];
         byte[] cardCryptoResp = new byte[8];
         byte[] keyDivData = new byte[10];
-        
+
         System.arraycopy(resp.getData(), 12, this.cardCh, 0, 8);
         System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
         System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
@@ -301,11 +310,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.scp = desiredScp;
             } else {
                 this.resetParams();
+                logger.error("Desired SCP does not match with card SCP value (" + scpRec + ")");
                 throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
             }
         } else {
             this.resetParams();
-            throw new CardException("SCP " + scpRec + " not yet impletmented :(");
+            logger.error("SCP " + scpRec + " not implemented");
+            throw new CardException("SCP " + scpRec + " not implemented");
         }
 
         if (keyId == (byte) 0) {
