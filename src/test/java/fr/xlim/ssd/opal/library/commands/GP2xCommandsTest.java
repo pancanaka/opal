@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.library.commands;
 
+import java.io.IOException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -8,6 +9,9 @@ import java.util.List;
 import javax.smartcardio.CardException;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
@@ -23,12 +27,15 @@ public class GP2xCommandsTest {
 
     private GP2xCommands commands;
     private List<SCKey> keys;
-    private CardChannelMock cardChannel;
-/*
+    private CardChannel cardChannel;
+
     @Before
-    public void createCommands() {
+    public void createCommands() throws IOException, CardException {
         commands = new GP2xCommands();
-        cardChannel = new CardChannelMock();
+        InputStream input = CardChannelMockTest.class
+                .getResourceAsStream("/test-cardChannelMock-dummy.txt");
+        Reader reader = new InputStreamReader(input);
+        cardChannel = new CardChannelMock(reader);
         commands.setCc(cardChannel);
 
         keys = new LinkedList<SCKey>();
@@ -92,7 +99,7 @@ public class GP2xCommandsTest {
         assertEquals(commands.getKeys().length, 0);
         assertSame(key, keys.get(2));
     }
-
+/*
     @Test
     public void testSelect() throws CardException {
         byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
@@ -123,20 +130,19 @@ public class GP2xCommandsTest {
         ResponseAPDU reponse = commands.select(aid);
     }
 
+ /*
     @Test
     public void testInitializeUpdateFailWhenSCP02() throws CardException {
         byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
         ResponseAPDU response = new ResponseAPDU(apdu);
-        cardChannel.addResponse(response);
-        response = commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_02);
+        commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_02);
     }
 
     @Test
     public void testInitializeUpdateFailWhenSCP10() throws CardException {
         byte[] apdu = new byte[]{ (byte)0x00, 0x00, (byte)0x90, 0x00 };
         ResponseAPDU response = new ResponseAPDU(apdu);
-        cardChannel.addResponse(response);
-        response = commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_10);
+        commands.initializeUpdate((byte)0x1,(byte)0x2,SCPMode.SCP_10);
     }
  */
 }
