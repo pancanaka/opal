@@ -15,7 +15,9 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import javax.smartcardio.CardChannel;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 public class GP2xCommandsTest {
 
@@ -42,6 +44,9 @@ public class GP2xCommandsTest {
         when(key2.getKeyId()).thenReturn((byte) 100);
         keys.add(key2);
     }
+
+    @Rule
+    public ExpectedException expectedException = ExpectedException.none();
 
     private GP2xCommands createCommands(String filename) {
         GP2xCommands commands = new GP2xCommands();
@@ -121,45 +126,63 @@ public class GP2xCommandsTest {
         commands.getCc().close();
     }
 
-    @Test(expected = CardException.class)
+    @Test
     public void testSelectFailedWhenResponseSWNot9000() throws CardException {
         Commands commands = createCommands("/011-GP2xCommands-select-failed.txt");
         byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Invalid response SW after SELECT command (1000)");
         commands.select(aid);
     }
 
-    @Test(expected = CardException.class)
+    @Test
     public void testInitializeUpdateFailWhenFirstResponseNot9000() throws CardException {
         Commands commands = createCommands("/012-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Invalid response SW after first INIT UPDATE command (4096)");
         commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_01_05);
     }
 
-    @Test(expected = CardException.class)
+    @Test
     public void testInitializeUpdateFailWhenFirstResponseHasIllegalSize() throws CardException {
         Commands commands = createCommands("/013-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Invalid response size after first INIT UPDATE command (2)");
         commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_01_05);
     }
 
-    @Test(expected = CardException.class)
+    @Test
     public void testInitializeUpdateFailWhenSCPNotImplemented() throws CardException {
         Commands commands = createCommands("/014-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("SCP version not available (-103)");
         commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_10);
     }
 
-    @Test(expected = CardException.class)
+    @Test
     public void testInitializeUpdateFailWhenDesiredSCPNotInResponse() throws CardException {
         Commands commands = createCommands("/015-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
-        commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_10);
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Desired SCP does not match with card SCP value (1)");
+        commands.initializeUpdate((byte) 0x1, (byte) 0x64, SCPMode.SCP_10);
     }
 
-    @Test(expected = CardException.class)
+    @Test
     public void testInitializeUpdateFailWhenKeyNotFoundInLocalRepository() throws CardException {
         Commands commands = createCommands("/015-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 1, keyId: 100)");
         commands.initializeUpdate((byte) 0x1, (byte) 0x64, SCPMode.SCP_01_05);
     }
 }

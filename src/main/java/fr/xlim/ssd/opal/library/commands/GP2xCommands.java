@@ -231,7 +231,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
         if (resp.getSW() != 0x9000) {
             this.resetParams();
-            throw new CardException("Response after SELECT command : " + Integer.toHexString(resp.getSW()));
+            throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
         }
         return resp;
     }
@@ -284,14 +284,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         
         if (resp.getSW() != 0x9000) {
             this.resetParams();
-            logger.error("Illegal response after first INIT UPDATE command: "  + Integer.toHexString(resp.getSW()));
-            throw new CardException("Illegal response after first INIT UPDATE command");
+            throw new CardException("Invalid response SW after first INIT UPDATE command (" + resp.getSW() + ")");
         }
 
         if (resp.getData().length != 28) {
             this.resetParams();
-            logger.error("Invalid size response after first INIT UPDATE command : " + resp.getData().length);
-            throw new CardException("Invalid size response after first INIT UPDATE command");
+            throw new CardException("Invalid response size after first INIT UPDATE command ("
+                    + resp.getData().length + ")");
         }
 
         this.cardCh = new byte[8];
@@ -311,13 +310,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.scp = desiredScp;
             } else {
                 this.resetParams();
-                logger.error("Desired SCP does not match with card SCP value (" + scpRec + ")");
                 throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
             }
         } else {
             this.resetParams();
-            logger.error("SCP " + scpRec + " not implemented");
-            throw new CardException("SCP " + scpRec + " not implemented");
+            throw new CardException("SCP version not available (" + scpRec + ")");
         }
 
         if (keyId == (byte) 0) {
@@ -327,8 +324,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         SCKey key = this.getKey(keyVersNumRec, keyId);
         if (key == null) {
             this.resetParams();
-            logger.error("Selected Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + keyId);
-            throw new CardException("Selected Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + keyId);
+            throw new CardException("Selected key not found in local repository (keySetVersion: "
+                    + (keyVersNumRec & 0xff) + ", keyId: " + keyId + ")");
         }
 
         SCGPKey k_enc = null;
