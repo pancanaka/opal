@@ -1,55 +1,42 @@
 package fr.xlim.ssd.opal.library;
 
+import fr.xlim.ssd.opal.library.utilities.Conversion;
+
 /**
- * @author dede
+ * Define a non-derivable Secure Communication key for global Platform
  *
+ * @author Damien Arcuset
+ * @author Julien Iguchi-Cartigny
  */
 public class SCGPKey implements SCKey {
 
-    /**
-     * 
-     */
-    private byte keySetVersion;
-    /**
-     *
-     */
-    private byte keyId;
-    /**
-     *
-     */
-    private KeyType keyType;
-    /**
-     *
-     */
-    private byte[] keyData;
+    private byte setVersion;
 
-    /**
-     * @param keySetVersion
-     * @param keyId
-     * @param keyType
-     * @param keyData
-     */
-    public SCGPKey(byte keySetVersion, byte keyId, KeyType keyType, byte[] keyData) {
-        this.keySetVersion = keySetVersion;
-        this.keyId = keyId;
-        this.keyType = keyType;
-        this.keyData = keyData;
+    private byte id;
+
+    private KeyType type;
+
+    private byte[] data;
+
+    // TODO: test data key size and not null
+    public SCGPKey(byte setVersion, byte id, KeyType type, byte[] data) {
+        this.setVersion = setVersion;
+        this.id = id;
+        this.type = type;
+        this.data = data;
     }
 
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getKeyData()
-     */
     @Override
-    public byte[] getKeyData() {
-        return this.keyData.clone();
+    public byte[] getData() {
+        return this.data.clone();
     }
 
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.SCKey#getKeyId()
      */
     @Override
-    public byte getKeyId() {
-        return this.keyId;
+    public byte getId() {
+        return this.id;
     }
 
     /* (non-Javadoc)
@@ -57,14 +44,18 @@ public class SCGPKey implements SCKey {
      */
     @Override
     public byte getSetVersion() {
-        return this.keySetVersion;
+        return this.setVersion;
     }
 
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getKeyType()
-     */
     @Override
-    public KeyType getKeyType() {
-        return this.keyType;
+    public KeyType getType() {
+        return this.type;
+    }
+
+    @Override
+    public String toString() {
+        return "SCGPKey(setVersion: " + getSetVersion() + ", id:" + getId()
+                + ", type:" + getType() + ", data:"
+                + Conversion.arrayToHex(getData()) + ")";
     }
 }

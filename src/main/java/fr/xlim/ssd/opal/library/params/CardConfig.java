@@ -136,9 +136,9 @@ public class CardConfig {
      *          first KeyId found in configured keys
      */
     public byte getDefaultInitUpdateP2() {
-        if(this.keys[0].getKeyId() == 1)
+        if(this.keys[0].getId() == 1)
             return 0;
         else
-            return this.keys[0].getKeyId();
+            return this.keys[0].getId();
     }
 }

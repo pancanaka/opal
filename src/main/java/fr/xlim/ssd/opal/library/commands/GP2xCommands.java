@@ -84,11 +84,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      *
      */
-    protected byte[] hostCh;
+    protected byte[] hostChallenge;
     /**
      *
      */
-    protected byte[] cardCh;
+    protected byte[] cardChallenge;
     /**
      *
      */
@@ -117,8 +117,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.sessEnc = null;
         this.sessMac = null;
         this.sessKek = null;
-        this.hostCh = null;
-        this.cardCh = null;
+        this.hostChallenge = null;
+        this.cardChallenge = null;
         this.cardCrypto = null;
         this.derivationData = null;
         this.hostCrypto = null;
@@ -162,7 +162,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public SCKey getKey(byte keySetVersion, byte keyId) {
         for (SCKey currKey : this.keys) {
-            if (currKey.getSetVersion() == keySetVersion && currKey.getKeyId() == keyId) {
+            if (currKey.getSetVersion() == keySetVersion && currKey.getId() == keyId) {
                 return currKey;
             }
         }
@@ -175,7 +175,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public SCKey setOffCardKey(SCKey key) {
         for (SCKey currKey : this.keys) {
-            if (currKey.getSetVersion() == key.getSetVersion() && currKey.getKeyId() == key.getKeyId()) {
+            if (currKey.getSetVersion() == key.getSetVersion() && currKey.getId() == key.getId()) {
                 this.keys.remove(currKey);
                 this.keys.add(key);
                 return currKey;
@@ -199,7 +199,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public SCKey deleteOffCardKey(byte keySetVersion, byte keyId) {
         for (SCKey currKey : this.keys) {
-            if (currKey.getSetVersion() == keySetVersion && currKey.getKeyId() == keyId) {
+            if (currKey.getSetVersion() == keySetVersion && currKey.getId() == keyId) {
                 this.keys.remove(currKey);
                 return currKey;
             }
@@ -226,9 +226,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmdSelect = new CommandAPDU(selectComm);
         ResponseAPDU resp = this.cc.transmit(cmdSelect);
-        logger.debug("SELECT Command " +
-                "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") " +
-                "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.debug("SELECT Command "
+                + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
         if (resp.getSW() != 0x9000) {
             this.resetParams();
             throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -251,8 +251,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.derivationData = null;
         this.hostCrypto = null;
         this.cardCrypto = null;
-        this.cardCh = null;
-        this.hostCh = null;
+        this.cardChallenge = null;
+        this.hostChallenge = null;
 
     }
 
@@ -263,25 +263,25 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
 
         this.resetParams();
-        this.hostCh = RandomGenerator.generateRandom(8);
+        this.hostChallenge = RandomGenerator.generateRandom(8);
 
         byte[] initUpdCmd = new byte[13];
         initUpdCmd[0] = (byte) 0x80;
         initUpdCmd[1] = (byte) 0x50;
         initUpdCmd[2] = keySetVersion;
         initUpdCmd[3] = keyId;
-        initUpdCmd[4] = (byte) this.hostCh.length;
+        initUpdCmd[4] = (byte) this.hostChallenge.length;
 
-        System.arraycopy(this.hostCh, 0, initUpdCmd, 5, this.hostCh.length);
+        System.arraycopy(this.hostChallenge, 0, initUpdCmd, 5, this.hostChallenge.length);
 
         CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
 
         ResponseAPDU resp = this.cc.transmit(cmdInitUpd);
 
-        logger.debug("INIT UPDATE command " +
-                "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes())+") " +
-                "(<- " + Conversion.arrayToHex(resp.getBytes())+ ")");
-        
+        logger.debug("INIT UPDATE command "
+                + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
         if (resp.getSW() != 0x9000) {
             this.resetParams();
             throw new CardException("Invalid response SW after first INIT UPDATE command (" + resp.getSW() + ")");
@@ -293,11 +293,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     + resp.getData().length + ")");
         }
 
-        this.cardCh = new byte[8];
+        this.cardChallenge = new byte[8];
         byte[] cardCryptoResp = new byte[8];
         byte[] keyDivData = new byte[10];
 
-        System.arraycopy(resp.getData(), 12, this.cardCh, 0, 8);
+        System.arraycopy(resp.getData(), 12, this.cardChallenge, 0, 8);
         System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
         System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
         byte keyVersNumRec = resp.getData()[10];
@@ -317,8 +317,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new CardException("SCP version not available (" + scpRec + ")");
         }
 
+        logger.debug("Selected SCP is " + this.scp);
+
         if (keyId == (byte) 0) {
             keyId = (byte) 1;
+            logger.trace("key id switchs from 0 to 1");
         }
 
         SCKey key = this.getKey(keyVersNumRec, keyId);
@@ -331,11 +334,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         SCGPKey k_enc = null;
         SCGPKey k_mac = null;
         SCGPKey k_kek = null;
+
         if (key instanceof SCDerivableKey) {
-            SCGPKey[] keys = ((SCDerivableKey) key).deriveKey(keyDivData);
-            k_enc = keys[0];
-            k_mac = keys[1];
-            k_kek = keys[2];
+            SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
+            k_enc = keysFromDerivableKey[0];
+            k_mac = keysFromDerivableKey[1];
+            k_kek = keysFromDerivableKey[2];
         } else {
             k_enc = (SCGPKey) key;
             k_mac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
@@ -353,6 +357,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.calculateDerivationData();
         this.generateSessionKeys(k_enc, k_mac, k_kek);
         this.calculateCryptograms();
+
         boolean eq = true;
         for (int i = 0; i < cardCryptoResp.length && eq; i++) {
             if (cardCryptoResp[i] != this.cardCrypto[i]) {
@@ -367,11 +372,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         return resp;
     }
 
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#externalAuthenticate(fr.xlim.ssd.opal.Constant.SecLevel)
-     */
     @Override
     public ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException {
+
         if (this.sessState != SessionState.SESSION_INIT) {
             this.resetParams();
             throw new CardException("Please execute INITIALIZE UPDATE command first !");
@@ -526,25 +529,18 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 myCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"));
                 this.icv = myCipher2.doFinal(res);
             }
-
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Cannot find algorithm",e);
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("No such padding problem",e);
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Key problem",e);
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Block size problem",e);
         } catch (BadPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Bad padding problem",e);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new UnsupportedOperationException("Invalid Algorithm parameter",e);
         }
 
         return res.clone();
@@ -619,8 +615,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     protected void calculateCryptograms() {
         byte[] data = new byte[24];
-        System.arraycopy(this.hostCh, 0, data, 0, 8);
-        System.arraycopy(this.cardCh, 0, data, 8, 8);
+        System.arraycopy(this.hostChallenge, 0, data, 0, 8);
+        System.arraycopy(this.cardChallenge, 0, data, 8, 8);
         System.arraycopy(GP2xCommands.padding, 0, data, 16, 8);
         Cipher myCipher;
         try {
@@ -631,8 +627,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             this.cardCrypto = new byte[8];
             System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
 
-            System.arraycopy(this.cardCh, 0, data, 0, 8);
-            System.arraycopy(this.hostCh, 0, data, 8, 8);
+            System.arraycopy(this.cardChallenge, 0, data, 0, 8);
+            System.arraycopy(this.hostChallenge, 0, data, 8, 8);
             myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
             byte[] hostcryptogram = myCipher.doFinal(data);
             this.hostCrypto = new byte[8];
@@ -664,7 +660,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @param staticKkek
      */
     protected void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek) {
+
         try {
+
             this.sessEnc = new byte[24];
             this.sessMac = new byte[24];
             this.sessKek = new byte[24];
@@ -672,67 +670,57 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             Cipher myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
 
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getKeyData(), "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"));
             session = myCipher.doFinal(this.derivationData);
             System.arraycopy(session, 0, this.sessEnc, 0, 16);
             System.arraycopy(session, 0, this.sessEnc, 16, 8);
 
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getKeyData(), "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"));
             session = myCipher.doFinal(this.derivationData);
             System.arraycopy(session, 0, this.sessMac, 0, 16);
             System.arraycopy(session, 0, this.sessMac, 16, 8);
 
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getKeyData(), "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"));
             session = myCipher.doFinal(this.derivationData);
             System.arraycopy(session, 0, this.sessKek, 0, 16);
             System.arraycopy(session, 0, this.sessKek, 16, 8);
+
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (BadPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("No such padding problem", e);
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Key problem", e);
+        } catch (IllegalBlockSizeException e) {
+            throw new UnsupportedOperationException("Block size problem", e);
+        } catch (BadPaddingException e) {
+            throw new UnsupportedOperationException("Bad padding problem", e);
         }
     }
 
-    /**
-     *
-     */
     protected void calculateDerivationData() {
+
+        /*
         byte[] hostBegin = new byte[4];
         byte[] hostEnd = new byte[4];
         byte[] cardBegin = new byte[4];
         byte[] cardEnd = new byte[4];
-
+        */
+        
         this.derivationData = new byte[16];
 
-        System.arraycopy(this.hostCh, 0, hostBegin, 0, 4);
-        System.arraycopy(this.hostCh, 4, hostEnd, 0, 4);
-        System.arraycopy(this.cardCh, 0, cardBegin, 0, 4);
-        System.arraycopy(this.cardCh, 4, cardEnd, 0, 4);
-        System.arraycopy(cardEnd, 0, this.derivationData, 0, 4);
-        System.arraycopy(hostBegin, 0, this.derivationData, 4, 4);
-        System.arraycopy(cardBegin, 0, this.derivationData, 8, 4);
-        System.arraycopy(hostEnd, 0, this.derivationData, 12, 4);
+        System.arraycopy(this.hostChallenge, 0, this.derivationData, 4, 4);
+        System.arraycopy(this.hostChallenge, 4, this.derivationData, 12, 4);
+        System.arraycopy(this.cardChallenge, 0, this.derivationData, 8, 4);
+        System.arraycopy(this.cardChallenge, 4, this.derivationData, 0, 4);
+        // System.arraycopy(cardEnd, 0, this.derivationData, 0, 4);
+        // System.arraycopy(hostBegin, 0, this.derivationData, 4, 4);
+        // System.arraycopy(cardBegin, 0, this.derivationData, 8, 4);
+        // System.arraycopy(hostEnd, 0, this.derivationData, 12, 4);
+        
     }
 
-    /**
-     *
-     */
-
     // SECURITY DOMAIN
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#deleteOnCardObj(byte[], boolean)
-     */
     @Override
     public ResponseAPDU deleteOnCardObj(byte[] aid, boolean cascade) throws CardException {
         byte dataSize = (byte) (2 + aid.length); // params +  AID
@@ -1182,5 +1170,4 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
         return resp;
     }
-    // CARD MANAGER
 }

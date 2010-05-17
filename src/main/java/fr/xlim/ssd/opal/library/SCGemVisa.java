@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.library;
 
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
@@ -10,34 +11,27 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
- * @author dede
+ * @author Damien Arcuset
+ * @author Julien Iguchi-Cartigny
  *
  */
-public class SCGemVisa implements SCDerivableKey {
+public class SCGemVisa extends SCAbstractGemVisa {
 
-    /**
-     *
-     */
-    private byte keySetVersion;
-    /**
-     *
-     */
-    private byte[] keyData;
-
-    /**
-     * @param keySetVersion
-     * @param keyData
-     */
-    public SCGemVisa(byte keySetVersion, byte[] keyData) {
-        this.keySetVersion = keySetVersion;
-        this.keyData = keyData;
+    public SCGemVisa(byte setVersion, byte[] data) {
+        super(setVersion, data);
     }
 
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCDerivableKey#deriveKey(byte[])
-     */
     @Override
     public SCGPKey[] deriveKey(byte[] keydata) {
+
+        if(keydata == null) {
+            throw new IllegalArgumentException("keydata must not be null");
+        }
+
+        if(keydata.length != 10) {
+            throw new IllegalArgumentException("keydata must be 10 bytes long");
+        }
+
         byte[] divDataStaticEnc = new byte[16];
         byte[] divDataStaticMac = new byte[16];
         byte[] divDataStaticKek = new byte[16];
@@ -85,74 +79,45 @@ public class SCGemVisa implements SCDerivableKey {
         try {
             Cipher myCipher;
             myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.keyData, "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.data, "DESede"));
             byte[] sEncKey = myCipher.doFinal(divDataStaticEnc);
             System.arraycopy(sEncKey, 0, staticEncKey, 0, 16);
             System.arraycopy(sEncKey, 0, staticEncKey, 16, 8);
 
             myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.keyData, "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.data, "DESede"));
             byte[] sMacKey = myCipher.doFinal(divDataStaticMac);
             System.arraycopy(sMacKey, 0, staticMacKey, 0, 16);
             System.arraycopy(sMacKey, 0, staticMacKey, 16, 8);
 
             myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.keyData, "DESede"));
-            byte[] sKekKey = myCipher.doFinal(divDataStaticMac);
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.data, "DESede"));
+            byte[] sKekKey = myCipher.doFinal(divDataStaticKek);
             System.arraycopy(sKekKey, 0, staticKekKey, 0, 16);
             System.arraycopy(sKekKey, 0, staticKekKey, 16, 8);
+            
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Cannot find algorithm",e);
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("No such padding problem",e);
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Key problem",e);
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Block size problem",e);
         } catch (BadPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Bad padding problem",e);
         }
+
         SCGPKey[] res = new SCGPKey[3];
-        res[0] = new SCGPKey(keySetVersion, (byte) 1, KeyType.DES_ECB, staticEncKey);
-        res[1] = new SCGPKey(keySetVersion, (byte) 2, KeyType.DES_ECB, staticMacKey);
-        res[2] = new SCGPKey(keySetVersion, (byte) 3, KeyType.DES_ECB, staticKekKey);
+        res[0] = new SCGPKey(setVersion, (byte) 1, KeyType.DES_ECB, staticEncKey);
+        res[1] = new SCGPKey(setVersion, (byte) 2, KeyType.DES_ECB, staticMacKey);
+        res[2] = new SCGPKey(setVersion, (byte) 3, KeyType.DES_ECB, staticKekKey);
         return res;
     }
 
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getKeyData()
-     */
     @Override
-    public byte[] getKeyData() {
-        return this.keyData.clone();
-    }
-
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getSetVersion()
-     */
-    @Override
-    public byte getSetVersion() {
-        return this.keySetVersion;
-    }
-
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getKeyId()
-     */
-    @Override
-    public byte getKeyId() {
-        return 1;
-    }
-
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getKeyType()
-     */
-    @Override
-    public KeyType getKeyType() {
-        return KeyType.MOTHER_KEY;
+    public String toString() {
+        return "SCGemVisa(setVersion: " + getSetVersion()
+                + ", data:" + Conversion.arrayToHex(getData()) + ")";
     }
 }

@@ -34,9 +34,17 @@ public class CommandsProvider {
     static Commands getImplementation(String name, CardChannel cc) throws CommandsImplementationNotFound {
         Commands cmdret = CommandsProvider.cmds.get(name);
         if (cmdret == null) {
-            throw new CommandsImplementationNotFound("\"" + name + "\" : This Implementation is not registered...");
+            throw new CommandsImplementationNotFound("\"" + name +
+                    "\" : This Implementation is not registered");
         }
         cmdret.setCc(cc);
         return cmdret;
     }
+
+    /*
+     * XXX: There is a drawback with this approach: it exists one and only
+     * one state if several cards are used simultanouesly. We need to instance
+     * one command by card, or crate a object "state of a card"
+     */
+
 }

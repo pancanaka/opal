@@ -1,28 +1,18 @@
 package fr.xlim.ssd.opal.library;
 
 /**
- * @author dede
+ * Define the interface for every key used in Secure Communication process.
  *
+ * @author Damien Arcuset
+ * @author Julien Iguchi-Cartigny
  */
 public interface SCKey {
 
-    /**
-     * @return
-     */
-    public byte[] getKeyData();
+    byte[] getData();
 
-    /**
-     * @return
-     */
-    public byte getSetVersion();
+    byte getSetVersion();
 
-    /**
-     * @return
-     */
-    public byte getKeyId();
+    byte getId();
 
-    /**
-     * @return
-     */
-    public KeyType getKeyType();
+    KeyType getType();
 }

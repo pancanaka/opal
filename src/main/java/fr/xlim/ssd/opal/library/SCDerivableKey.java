@@ -4,11 +4,7 @@ package fr.xlim.ssd.opal.library;
  * @author dede
  *
  */
-public interface SCDerivableKey extends SCKey {
+public interface SCDerivableKey {
 
-    /**
-     * @param keydata
-     * @return
-     */
-    public SCGPKey[] deriveKey(byte[] keydata);
+    public abstract SCGPKey[] deriveKey(byte[] keydata);
 }

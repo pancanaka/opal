@@ -60,9 +60,9 @@ public class CardConfigTest {
 
     @Test
     public void testGetDefaultInitUpdateP2() {
-        when(scKey.getKeyId()).thenReturn((byte)1);
+        when(scKey.getId()).thenReturn((byte)1);
         assertEquals(0,cardConfig.getDefaultInitUpdateP2());
-        when(scKey.getKeyId()).thenReturn((byte)32);
+        when(scKey.getId()).thenReturn((byte)32);
         assertEquals(32,cardConfig.getDefaultInitUpdateP2());
     }
 }
