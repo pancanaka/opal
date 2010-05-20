@@ -35,6 +35,8 @@ import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,7 +59,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      *
      */
-    protected Set<SCKey> keys;
+    protected List<SCKey> keys;
     /**
      *
      */
@@ -111,7 +113,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      *
      */
     protected GP2xCommands() {
-        this.keys = new HashSet<SCKey>();
+        this.keys = new LinkedList<SCKey>();
         this.scp = SCPMode.SCP_UNDEFINED;
         this.secMode = SecLevel.NO_SECURITY_LEVEL;
         this.sessState = SessionState.NO_SESSION;
@@ -358,6 +360,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.calculateDerivationData();
         this.generateSessionKeys(k_enc, k_mac, k_kek);
         this.calculateCryptograms();
+
+        System.out.println(Conversion.arrayToHex(cardCrypto));
 
         if (!Arrays.equals(cardCryptoResp,this.cardCrypto)) {
             this.resetParams();

@@ -35,34 +35,33 @@ public class GP2xCommandsTest {
     @Before
     public void createKeys() {
         keys = new LinkedList<SCKey>();
-        
-        byte[] key0Data = new byte[]{ 
-            (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
-            (byte)0xCA, (byte)0xCA, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D,
-            (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
-            (byte)0xCA, (byte)0xCA
+
+        byte[] key0Data = new byte[]{
+            (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA,
+            (byte) 0xCA, (byte) 0xCA, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D,
+            (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA,
+            (byte) 0xCA, (byte) 0xCA
         };
-        SCKey key0 = new SCGPKey((byte)13, (byte)1, KeyType.DES_ECB, key0Data);
+        SCKey key0 = new SCGPKey((byte) 13, (byte) 1, KeyType.DES_ECB, key0Data);
         keys.add(key0);
 
 
         byte[] key1Data = new byte[]{
             0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D,
-            (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
-            (byte)0xCA, (byte)0xCA, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D
+            (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA,
+            (byte) 0xCA, (byte) 0xCA, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D
         };
-        SCKey key1 = new SCGPKey((byte)13, (byte)2, KeyType.DES_ECB, key1Data);
+        SCKey key1 = new SCGPKey((byte) 13, (byte) 2, KeyType.DES_ECB, key1Data);
         keys.add(key1);
 
         byte[] key2Data = new byte[]{
-            (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D,
-            (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D,
-            (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D
+            (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D,
+            (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D,
+            (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D, (byte) 0xCA, 0x2D
         };
-        SCKey key2 = new SCGPKey((byte)13, (byte)3, KeyType.DES_ECB, key2Data);
+        SCKey key2 = new SCGPKey((byte) 13, (byte) 3, KeyType.DES_ECB, key2Data);
         keys.add(key2);
     }
-
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -94,14 +93,14 @@ public class GP2xCommandsTest {
 
         commands.setOffCardKey(keys.get(2));
         assertEquals(commands.getKeys().length, 2);
-        assertSame(commands.getKeys()[0], keys.get(2));
+        assertSame(commands.getKeys()[1], keys.get(2));
         assertSame(commands.getKey((byte) 13, (byte) 3), keys.get(2));
 
         commands.setOffCardKey(keys.get(1));
         assertEquals(commands.getKeys().length, 3);
         assertSame(commands.getKey((byte) 13, (byte) 2), keys.get(1));
 
-        SCKey key3 = new SCGPKey((byte)13, (byte)1, null, null);
+        SCKey key3 = new SCGPKey((byte) 13, (byte) 1, null, null);
         keys.add(key3);
         assertEquals(commands.getKeys().length, 3);
         assertSame(commands.getKey((byte) 13, (byte) 1), keys.get(0));
@@ -215,30 +214,30 @@ public class GP2xCommandsTest {
     public void testCalculateCryptograms() {
         GP2xCommands commands = new GP2xCommands();
 
-        commands.hostChallenge = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        commands.hostChallenge = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
 
-        commands.cardChallenge = new byte[] {
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18
-        };
+        commands.cardChallenge = new byte[]{
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18
+                };
 
-        commands.sessEnc = new byte[] {
-            0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
-            0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
-            0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17
-        };
+        commands.sessEnc = new byte[]{
+                    0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
+                    0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
+                    0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17
+                };
 
         commands.initIcv();
         commands.calculateCryptograms();
 
-        byte[] expectedHostCrypto = new byte[] {
-            0x3B, 0x20, 0x73, 0x5B, 0x46, 0x3A, (byte)0xFC, (byte)0xAF
+        byte[] expectedHostCrypto = new byte[]{
+            0x3B, 0x20, 0x73, 0x5B, 0x46, 0x3A, (byte) 0xFC, (byte) 0xAF
         };
 
-        byte[] expectedCardCrypto = new byte[] {
-            (byte)0x92, 0x04, 0x27, (byte)0xC6, (byte)0xA4, (byte)0xA4,
-            (byte)0xE3, (byte)0x95 
+        byte[] expectedCardCrypto = new byte[]{
+            (byte) 0x92, 0x04, 0x27, (byte) 0xC6, (byte) 0xA4, (byte) 0xA4,
+            (byte) 0xE3, (byte) 0x95
         };
 
         assertArrayEquals(expectedHostCrypto, commands.hostCrypto);
@@ -249,56 +248,55 @@ public class GP2xCommandsTest {
     public void testGenerateSessionKeys() {
         GP2xCommands commands = new GP2xCommands();
 
-        byte[] encData = new byte[] {
+        byte[] encData = new byte[]{
             0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
             0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
             0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17
         };
 
-        SCGPKey enc = new SCGPKey((byte)-1, (byte)-1, KeyType.DES_ECB, encData);
+        SCGPKey enc = new SCGPKey((byte) -1, (byte) -1, KeyType.DES_ECB, encData);
 
-        byte[] macData = new byte[] {
+        byte[] macData = new byte[]{
             0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
             0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
             0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07
         };
 
-        SCGPKey mac = new SCGPKey((byte)-1, (byte)-1, KeyType.DES_ECB, macData);
+        SCGPKey mac = new SCGPKey((byte) -1, (byte) -1, KeyType.DES_ECB, macData);
 
-        byte[] kekData = new byte[] {
+        byte[] kekData = new byte[]{
             0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
             0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
             0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07
         };
 
-        SCGPKey kek = new SCGPKey((byte)-1, (byte)-1, KeyType.DES_ECB, kekData);
+        SCGPKey kek = new SCGPKey((byte) -1, (byte) -1, KeyType.DES_ECB, kekData);
 
         commands.derivationData = new byte[]{
-            0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-            0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
-        };
+                    0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
+                    0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,};
 
         commands.generateSessionKeys(enc, mac, kek);
 
         byte[] expectedSessEnc = {
-            0x65, (byte)0xAB, (byte)0xD6, (byte)0xAE, 0x1A, (byte)0xD5,
-            (byte)0x85, 0x20, (byte)0x8C, 0x45, (byte)0xC6, 0x18, 0x4F, 0x56,
-            (byte)0x88, 0x63, 0x65, (byte)0xAB, (byte)0xD6, (byte)0xAE, 0x1A,
-            (byte)0xD5, (byte)0x85, 0x20
+            0x65, (byte) 0xAB, (byte) 0xD6, (byte) 0xAE, 0x1A, (byte) 0xD5,
+            (byte) 0x85, 0x20, (byte) 0x8C, 0x45, (byte) 0xC6, 0x18, 0x4F, 0x56,
+            (byte) 0x88, 0x63, 0x65, (byte) 0xAB, (byte) 0xD6, (byte) 0xAE, 0x1A,
+            (byte) 0xD5, (byte) 0x85, 0x20
         };
 
         byte[] expectedSessMac = {
-            (byte)0xB9, 0x02, (byte)0xD3, (byte)0xF2, 0x63, (byte)0xC9,
-            (byte)0xCD, (byte)0xA7, 0x6C, 0x62, 0x4A, (byte)0x8B, 0x7F,
-            (byte)0xA7, (byte)0xA7, (byte)0xBA, (byte)0xB9, 0x02, (byte)0xD3,
-            (byte)0xF2, 0x63, (byte)0xC9, (byte)0xCD, (byte)0xA7
+            (byte) 0xB9, 0x02, (byte) 0xD3, (byte) 0xF2, 0x63, (byte) 0xC9,
+            (byte) 0xCD, (byte) 0xA7, 0x6C, 0x62, 0x4A, (byte) 0x8B, 0x7F,
+            (byte) 0xA7, (byte) 0xA7, (byte) 0xBA, (byte) 0xB9, 0x02, (byte) 0xD3,
+            (byte) 0xF2, 0x63, (byte) 0xC9, (byte) 0xCD, (byte) 0xA7
         };
 
         byte[] expectedSessKek = {
-            (byte)0xB5, 0x0B, 0x76, (byte)0x91, (byte)0xFB, (byte)0xF0,
-            (byte)0xB6, (byte)0x8A, (byte)0xF7, (byte)0xA9, 0x1E, 0x4C, 0x4E,
-            0x27, 0x0A, (byte)0xF0, (byte)0xB5, 0x0B, 0x76, (byte)0x91,
-            (byte)0xFB, (byte)0xF0, (byte)0xB6, (byte)0x8A
+            (byte) 0xB5, 0x0B, 0x76, (byte) 0x91, (byte) 0xFB, (byte) 0xF0,
+            (byte) 0xB6, (byte) 0x8A, (byte) 0xF7, (byte) 0xA9, 0x1E, 0x4C, 0x4E,
+            0x27, 0x0A, (byte) 0xF0, (byte) 0xB5, 0x0B, 0x76, (byte) 0x91,
+            (byte) 0xFB, (byte) 0xF0, (byte) 0xB6, (byte) 0x8A
         };
 
         assertArrayEquals(expectedSessEnc, commands.sessEnc);
@@ -311,12 +309,12 @@ public class GP2xCommandsTest {
         GP2xCommands commands = new GP2xCommands();
 
         commands.hostChallenge = new byte[]{
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
 
         commands.cardChallenge = new byte[]{
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18
-        };
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18
+                };
 
         commands.calculateDerivationData();
 
@@ -325,7 +323,7 @@ public class GP2xCommandsTest {
             0x11, 0x12, 0x13, 0x14, 0x05, 0x06, 0x07, 0x08
         };
 
-        assertArrayEquals(expected,commands.derivationData);
+        assertArrayEquals(expected, commands.derivationData);
     }
 
     @Test
@@ -335,10 +333,10 @@ public class GP2xCommandsTest {
             0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53, 0x53, 0x4F, 0x53, 0x41, 0x4D,
             0x50, 0x4C, 0x45, 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53
         };
-        SCGemVisa key = new SCGemVisa((byte)255, data);
+        SCGemVisa key = new SCGemVisa((byte) 255, data);
         commands.setOffCardKey(key);
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
-        commands.initializeUpdate((byte)0xFF, (byte) 0x1, SCPMode.SCP_01_05);
+        commands.initializeUpdate((byte) 0xFF, (byte) 0x1, SCPMode.SCP_01_05);
     }
 
     @Test
@@ -348,9 +346,86 @@ public class GP2xCommandsTest {
             0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53, 0x53, 0x4F, 0x53, 0x41, 0x4D,
             0x50, 0x4C, 0x45, 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53
         };
-        SCGemVisa2 key = new SCGemVisa2((byte)255, data);
+        SCGemVisa2 key = new SCGemVisa2((byte) 255, data);
         commands.setOffCardKey(key);
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
-        commands.initializeUpdate((byte)0xFF, (byte) 0x1, SCPMode.SCP_01_05);
+        commands.initializeUpdate((byte) 0xFF, (byte) 0x1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateFailedWhenOnlyEncSCGPKey() throws CardException {
+        Commands commands = createCommands("/018-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKey(keys.get(0));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Selected MAC Key not found in Local Repository : keySetVersion : 13, keyId : 2");
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateFailedWhenOnlyMacSCGPKey() throws CardException {
+        Commands commands = createCommands("/018-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKey(keys.get(1));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 13, keyId: 1)");
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateFailedWhenOnlyKekSCGPKey() throws CardException {
+        Commands commands = createCommands("/018-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKey(keys.get(2));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 13, keyId: 1)");
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateFailedWhenOnlyEncAndMacSCGPKey() throws CardException {
+        Commands commands = createCommands("/018-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKey(keys.get(0));
+        commands.setOffCardKey(keys.get(1));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Selected KEK Key not found in Local Repository : keySetVersion : 13, keyId : 3");
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateFailedWhenOnlyEncAndKekSCGPKey() throws CardException {
+        Commands commands = createCommands("/018-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKey(keys.get(0));
+        commands.setOffCardKey(keys.get(2));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Selected MAC Key not found in Local Repository : keySetVersion : 13, keyId : 2");
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateFailedWhenOnlyMacAndKekSCGPKey() throws CardException {
+        Commands commands = createCommands("/018-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKey(keys.get(1));
+        commands.setOffCardKey(keys.get(2));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 13, keyId: 1)");
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateWhenThreeSCGPKey() throws CardException {
+        Commands commands = createCommands("/018-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKeys(keys.toArray(new SCKey[0]));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
     }
 }
