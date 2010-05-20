@@ -2,6 +2,8 @@ package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.KeyType;
 import fr.xlim.ssd.opal.library.SCGPKey;
+import fr.xlim.ssd.opal.library.SCGemVisa;
+import fr.xlim.ssd.opal.library.SCGemVisa2;
 import java.io.IOException;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
@@ -11,7 +13,6 @@ import java.util.List;
 import javax.smartcardio.CardException;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,17 +35,31 @@ public class GP2xCommandsTest {
     @Before
     public void createKeys() {
         keys = new LinkedList<SCKey>();
-        SCKey key0 = mock(SCKey.class);
-        when(key0.getSetVersion()).thenReturn((byte) 1);
-        when(key0.getId()).thenReturn((byte) 100);
+        
+        byte[] key0Data = new byte[]{ 
+            (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
+            (byte)0xCA, (byte)0xCA, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D,
+            (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
+            (byte)0xCA, (byte)0xCA
+        };
+        SCKey key0 = new SCGPKey((byte)13, (byte)1, KeyType.DES_ECB, key0Data);
         keys.add(key0);
-        SCKey key1 = mock(SCKey.class);
-        when(key1.getSetVersion()).thenReturn((byte) 2);
-        when(key1.getId()).thenReturn((byte) 200);
+
+
+        byte[] key1Data = new byte[]{
+            0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D,
+            (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
+            (byte)0xCA, (byte)0xCA, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D
+        };
+        SCKey key1 = new SCGPKey((byte)13, (byte)2, KeyType.DES_ECB, key1Data);
         keys.add(key1);
-        SCKey key2 = mock(SCKey.class);
-        when(key2.getSetVersion()).thenReturn((byte) 1);
-        when(key2.getId()).thenReturn((byte) 100);
+
+        byte[] key2Data = new byte[]{
+            (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D,
+            (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D,
+            (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D
+        };
+        SCKey key2 = new SCGPKey((byte)13, (byte)3, KeyType.DES_ECB, key2Data);
         keys.add(key2);
     }
 
@@ -75,20 +90,26 @@ public class GP2xCommandsTest {
         commands.setOffCardKey(keys.get(0));
         assertEquals(commands.getKeys().length, 1);
         assertSame(commands.getKeys()[0], keys.get(0));
-        assertSame(commands.getKey((byte) 1, (byte) 100), keys.get(0));
+        assertSame(commands.getKey((byte) 13, (byte) 1), keys.get(0));
 
         commands.setOffCardKey(keys.get(2));
-        assertEquals(commands.getKeys().length, 1);
+        assertEquals(commands.getKeys().length, 2);
         assertSame(commands.getKeys()[0], keys.get(2));
-        assertSame(commands.getKey((byte) 1, (byte) 100), keys.get(2));
+        assertSame(commands.getKey((byte) 13, (byte) 3), keys.get(2));
 
         commands.setOffCardKey(keys.get(1));
-        assertEquals(commands.getKeys().length, 2);
-        assertSame(commands.getKey((byte) 2, (byte) 200), keys.get(1));
+        assertEquals(commands.getKeys().length, 3);
+        assertSame(commands.getKey((byte) 13, (byte) 2), keys.get(1));
 
-        assertNull(commands.getKey((byte) 2, (byte) 300));
-        assertNull(commands.getKey((byte) 3, (byte) 300));
-        assertNull(commands.getKey((byte) 3, (byte) 200));
+        SCKey key3 = new SCGPKey((byte)13, (byte)1, null, null);
+        keys.add(key3);
+        assertEquals(commands.getKeys().length, 3);
+        assertSame(commands.getKey((byte) 13, (byte) 1), keys.get(0));
+
+
+        assertNull(commands.getKey((byte) 14, (byte) 1));
+        assertNull(commands.getKey((byte) 13, (byte) 4));
+        assertNull(commands.getKey((byte) 14, (byte) 4));
     }
 
     @Test
@@ -96,9 +117,10 @@ public class GP2xCommandsTest {
         Commands commands = createCommands("/001-cardChannelMock-dummy.txt");
 
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
-        assertEquals(commands.getKeys().length, 2);
-        assertSame(commands.getKey((byte) 1, (byte) 100), keys.get(2));
-        assertSame(commands.getKey((byte) 2, (byte) 200), keys.get(1));
+        assertEquals(commands.getKeys().length, 3);
+        assertSame(commands.getKey((byte) 13, (byte) 1), keys.get(0));
+        assertSame(commands.getKey((byte) 13, (byte) 2), keys.get(1));
+        assertSame(commands.getKey((byte) 13, (byte) 3), keys.get(2));
     }
 
     @Test
@@ -106,19 +128,19 @@ public class GP2xCommandsTest {
         Commands commands = createCommands("/001-cardChannelMock-dummy.txt");
 
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
-        SCKey key = commands.deleteOffCardKey((byte) 2, (byte) 200);
+        SCKey key = commands.deleteOffCardKey((byte) 13, (byte) 1);
         assertNotNull(key);
-        assertSame(key, keys.get(1));
-        assertEquals(commands.getKeys().length, 1);
-        assertSame(commands.getKey((byte) 1, (byte) 100), keys.get(2));
-        assertNull(commands.getKey((byte) 2, (byte) 200));
+        assertSame(key, keys.get(0));
+        assertEquals(commands.getKeys().length, 2);
+        assertSame(commands.getKey((byte) 13, (byte) 2), keys.get(1));
+        assertNull(commands.getKey((byte) 13, (byte) 1));
 
-        key = commands.deleteOffCardKey((byte) 3, (byte) 300);
+        key = commands.deleteOffCardKey((byte) 14, (byte) 1);
         assertNull(key);
 
-        key = commands.deleteOffCardKey((byte) 1, (byte) 100);
-        assertEquals(commands.getKeys().length, 0);
-        assertSame(key, keys.get(2));
+        key = commands.deleteOffCardKey((byte) 13, (byte) 2);
+        assertEquals(commands.getKeys().length, 1);
+        assertSame(key, keys.get(1));
     }
 
     @Test
@@ -304,5 +326,31 @@ public class GP2xCommandsTest {
         };
 
         assertArrayEquals(expected,commands.derivationData);
+    }
+
+    @Test
+    public void testInitializeUpdateWhenGemVisaKey() throws CardException {
+        Commands commands = createCommands("/016-GP2xCommands-initialize-update-good.txt");
+        byte[] data = new byte[]{
+            0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53, 0x53, 0x4F, 0x53, 0x41, 0x4D,
+            0x50, 0x4C, 0x45, 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53
+        };
+        SCGemVisa key = new SCGemVisa((byte)255, data);
+        commands.setOffCardKey(key);
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte)0xFF, (byte) 0x1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateWhenGemVisa2Key() throws CardException {
+        Commands commands = createCommands("/017-GP2xCommands-initialize-update-good.txt");
+        byte[] data = new byte[]{
+            0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53, 0x53, 0x4F, 0x53, 0x41, 0x4D,
+            0x50, 0x4C, 0x45, 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53
+        };
+        SCGemVisa2 key = new SCGemVisa2((byte)255, data);
+        commands.setOffCardKey(key);
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte)0xFF, (byte) 0x1, SCPMode.SCP_01_05);
     }
 }

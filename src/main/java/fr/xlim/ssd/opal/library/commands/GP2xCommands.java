@@ -34,6 +34,7 @@ import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
+import java.util.Arrays;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -345,12 +346,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             k_mac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
             if (k_mac == null) {
                 this.resetParams();
-                throw new CardException("Selected Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
+                throw new CardException("Selected MAC Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
             }
             k_kek = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
             if (k_kek == null) {
                 this.resetParams();
-                throw new CardException("Selected Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
+                throw new CardException("Selected KEK Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
             }
         }
 
@@ -358,16 +359,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.generateSessionKeys(k_enc, k_mac, k_kek);
         this.calculateCryptograms();
 
-        boolean eq = true;
-        for (int i = 0; i < cardCryptoResp.length && eq; i++) {
-            if (cardCryptoResp[i] != this.cardCrypto[i]) {
-                eq = false;
-            }
-        }
-        if (!eq) {
+        if (!Arrays.equals(cardCryptoResp,this.cardCrypto)) {
             this.resetParams();
             throw new CardException("Error verifying Card Cryptogram");
         }
+        
         this.sessState = SessionState.SESSION_INIT;
         return resp;
     }
@@ -700,23 +696,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     protected void calculateDerivationData() {
 
-        /*
-        byte[] hostBegin = new byte[4];
-        byte[] hostEnd = new byte[4];
-        byte[] cardBegin = new byte[4];
-        byte[] cardEnd = new byte[4];
-        */
-        
         this.derivationData = new byte[16];
 
         System.arraycopy(this.hostChallenge, 0, this.derivationData, 4, 4);
         System.arraycopy(this.hostChallenge, 4, this.derivationData, 12, 4);
         System.arraycopy(this.cardChallenge, 0, this.derivationData, 8, 4);
         System.arraycopy(this.cardChallenge, 4, this.derivationData, 0, 4);
-        // System.arraycopy(cardEnd, 0, this.derivationData, 0, 4);
-        // System.arraycopy(hostBegin, 0, this.derivationData, 4, 4);
-        // System.arraycopy(cardBegin, 0, this.derivationData, 8, 4);
-        // System.arraycopy(hostEnd, 0, this.derivationData, 12, 4);
         
     }
 

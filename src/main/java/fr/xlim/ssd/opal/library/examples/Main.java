@@ -1,12 +1,16 @@
 /**
  * This is a simple example program
+ *
  * @author Damien Arcuset, Eric Linke
  * @author Julien Iguchi-Cartigny
  */
 package fr.xlim.ssd.opal.library.examples;
 
-import java.io.File;
-import java.io.IOException;
+import fr.xlim.ssd.opal.library.SecurityDomain;
+import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+import fr.xlim.ssd.opal.library.params.CardConfig;
+import fr.xlim.ssd.opal.library.params.CardConfigFactory;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.util.List;
 
 import javax.smartcardio.ATR;
@@ -15,75 +19,73 @@ import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
-
-import fr.xlim.ssd.opal.library.params.CardConfig;
-import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
-import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
-import fr.xlim.ssd.opal.library.FileType;
-import fr.xlim.ssd.opal.library.GetStatusResponseMode;
-import fr.xlim.ssd.opal.library.SecLevel;
-import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Main {
 
-    private static CardChannel connectAndgetCardChannel(String transmissionproto)
-            throws CardException {
+    private final static Logger logger = LoggerFactory.getLogger(Main.class);
+    private final static int TIMEOUT_CARD_PRESENT = 1000;
 
-        CardChannel channel = null;
+    private static CardChannel getCardChannel(int cardTerminalIndex,
+            String transmissionProtocol) throws CardException {
 
         TerminalFactory factory = TerminalFactory.getDefault();
-        List<CardTerminal> terminalList = factory.terminals().list();
 
-        //List numbers of Card readers
-        System.out.println("Card Terminals:");
-        for (int i = 0; i < terminalList.size(); i++) {
-            System.out.println("  - " + i + " : " + terminalList.get(i));
+        List<CardTerminal> terminals = factory.terminals().list();
+
+        if (terminals.size() == 0) {
+            logger.error("No card terminal found");
+            return null;
+        } else {
+            for (int i = 0; i < terminals.size(); i++) {
+                logger.info("Card terminal found: " + i + " - " + terminals.get(i));
+            }
         }
 
-        if (terminalList.size() == 0) {
-            System.out.println("No Card Terminal");
+        if (terminals.size() == 1) {
+            cardTerminalIndex = 0;
+        } else if (terminals.size() >= cardTerminalIndex) {
+            logger.error("Card terminal index not available: " + cardTerminalIndex);
             return null;
         }
 
-        // take the first terminal in the list
-        CardTerminal terminal = (CardTerminal) terminalList.get(0);
+        logger.info("Card terminal selected: " + terminals.get(cardTerminalIndex));
+        CardTerminal terminal = terminals.get(cardTerminalIndex);
 
-        System.out.println("Please insert card...");
+        logger.info("Wait for card (during " + TIMEOUT_CARD_PRESENT + "ms)");
+        boolean cardFound = terminal.waitForCardPresent(TIMEOUT_CARD_PRESENT);
 
-        // waiting for the card
-        terminal.waitForCardPresent(10000);
+        if (!cardFound) {
+            logger.error("Card not found");
+            return null;
+        }
 
-        // establish a connection with the card
-        Card card = terminal.connect(transmissionproto);
-        System.out.println("card: " + card);
-        channel = card.getBasicChannel();
-
-        //reset the card
+        logger.info("Connect to card with transmission protocol " + transmissionProtocol);
+        Card card = terminal.connect(transmissionProtocol);
+        logger.info("Card description: " + card);
+        CardChannel channel = card.getBasicChannel();
         ATR atr = card.getATR();
-        System.out.println("ATR = " + Conversion.arrayToHex(atr.getBytes()));
+        logger.info("Card ATR:  " + Conversion.arrayToHex(atr.getBytes()));
 
         return channel;
     }
 
-    /**
-     * @param args
-     * @throws IOException
-     * @throws ClassNotFoundException
-     * @throws CardNotFoundException
-     * @throws SAXException
-     * @throws ParserConfigurationException
-     */
-    public static void main(String[] args) throws CardConfigNotFoundException, CardException,
-            CommandsImplementationNotFound, ClassNotFoundException {
+    public static void main(String[] args) throws CardException, CardConfigNotFoundException, CommandsImplementationNotFound, ClassNotFoundException {
 
-        CardConfig c = CardConfigFactory.getCardConfig("JCOP31");
 
-        CardChannel channel = connectAndgetCardChannel(c.getTransmissionProtocol());
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("GemXpresso211is");
 
-        SecurityDomain a = new SecurityDomain(c.getImplementation(), channel, c.getIssuerSecurityDomainAID());
+        CardChannel channel = getCardChannel(0, "T=0");
+        if (channel == null) {
+            logger.error("Cannot access to the card");
+        }
 
+        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel, cardConfig.getIssuerSecurityDomainAID());
+
+        /*
+         *
         a.setOffCardKeys(c.getSCKeys());
 
         a.select();
@@ -95,5 +97,6 @@ public class Main {
         a.load(new File("C:\\java_card_kit-2_1_2\\damsApplet03.cap"));
         a.installForInstallAndMakeSelectable(Conversion.hexToArray("656E73696D616774703033"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("00"), null);
         a.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
+         */
     }
 }

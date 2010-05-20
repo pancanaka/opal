@@ -2,7 +2,7 @@
 
 <!-- TODO: xml schema for this file ? -->
 <cardsconfig>
-    <card name="GemXpresso211is" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands_GemXpresso211">
+    <card name="GemXpresso211is" defaultImpl="fr.xlim.ssd.opal.library.commands.GemXpresso211Commands">
         <isdAID value="A0 00 00 00 18 43 4D"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -12,7 +12,7 @@
             <key type="DES_ECB" keyVersionNumber="13" keyId="3" keyDatas="CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D CA 2D"/>
         </defaultKeys>
     </card>
-    <card name="GemXpresso211pkis" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands_GemXpresso211">
+    <card name="GemXpresso211pkis" defaultImpl="fr.xlim.ssd.opal.library.commands.GemXpresso211Commands">
         <isdAID value="A0 00 00 00 18 43 4D"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
