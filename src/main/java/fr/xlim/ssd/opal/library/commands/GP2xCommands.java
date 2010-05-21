@@ -350,8 +350,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.generateSessionKeys(k_enc, k_mac, k_kek);
         this.calculateCryptograms();
 
-        System.out.println(Conversion.arrayToHex(cardCrypto));
-
         if (!Arrays.equals(cardCryptoResp, this.cardCrypto)) {
             this.resetParams();
             throw new CardException("Error verifying Card Cryptogram");
