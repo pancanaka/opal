@@ -464,31 +464,31 @@ public class GP2xCommandsTest {
     @Test
     public void testExternalAuthenticate() throws CardException {
         GP2xCommands commands = createCommands("/019-GP2xCommands-external-authenticate-good.txt");
-        commands.hostCrypto = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        commands.hostCrypto = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
         commands.sessState = SessionState.SESSION_INIT;
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
-        };
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
-        assertEquals(SessionState.SESSION_AUTH,commands.sessState);
+        assertEquals(SessionState.SESSION_AUTH, commands.sessState);
     }
 
     @Test
     public void testExternalAuthenticateFailedWhenSWNot9000() throws CardException {
         GP2xCommands commands = createCommands("/020-GP2xCommands-external-authenticate-failed.txt");
-        commands.hostCrypto = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        commands.hostCrypto = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
         commands.sessState = SessionState.SESSION_INIT;
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
-        };
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
 
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in External Authenticate : 1000");
@@ -497,91 +497,91 @@ public class GP2xCommandsTest {
 
     @Test
     public void testGenerateMacWithPadding() {
-        GP2xCommands commands = new GP2xCommands();   
-        byte[] data = new byte[] {
+        GP2xCommands commands = new GP2xCommands();
+        byte[] data = new byte[]{
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07
         };
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
-        };
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
 
-        byte[] expected = new byte[] {
-            (byte)0xE8, (byte)0xA5, 0x2C, (byte)0xD7, 0x1D, 0x5F, 0x4A, 0x6D
+        byte[] expected = new byte[]{
+            (byte) 0xE8, (byte) 0xA5, 0x2C, (byte) 0xD7, 0x1D, 0x5F, 0x4A, 0x6D
         };
-        assertArrayEquals(expected,commands.generateMac(data));
+        assertArrayEquals(expected, commands.generateMac(data));
     }
 
     @Test
     public void testGenerateMacWithoutPadding() {
         GP2xCommands commands = new GP2xCommands();
-        byte[] data = new byte[] {
+        byte[] data = new byte[]{
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
         };
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        byte[] expected = new byte[]{
+            0x2F, (byte) 0xCD, 0x78, 0x2C, 0x1C, (byte) 0xE5, (byte) 0xDE, 0x14
         };
-        byte[] expected = new byte[] {
-            0x2F, (byte)0xCD, 0x78, 0x2C, 0x1C, (byte)0xE5, (byte)0xDE, 0x14
-        };
-        assertArrayEquals(expected,commands.generateMac(data));
+        assertArrayEquals(expected, commands.generateMac(data));
     }
 
     @Test
     public void testGenerateMacWithSCP0105() {
         GP2xCommands commands = new GP2xCommands();
-        byte[] data = new byte[] {
+        byte[] data = new byte[]{
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
         };
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
-        };
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
 
-        byte[] expected = new byte[] {
-            0x2F, (byte)0xCD, 0x78, 0x2C, 0x1C, (byte)0xE5, (byte)0xDE, 0x14
+        byte[] expected = new byte[]{
+            0x2F, (byte) 0xCD, 0x78, 0x2C, 0x1C, (byte) 0xE5, (byte) 0xDE, 0x14
         };
         commands.scp = SCPMode.SCP_01_05;
-        assertArrayEquals(expected,commands.generateMac(data));
-        assertArrayEquals(expected,commands.icv);
+        assertArrayEquals(expected, commands.generateMac(data));
+        assertArrayEquals(expected, commands.icv);
     }
 
     @Test
     public void testGenerateMacWithSCP0115() {
         GP2xCommands commands = new GP2xCommands();
-        byte[] data = new byte[] {
+        byte[] data = new byte[]{
             0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
         };
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
-        };
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
         commands.scp = SCPMode.SCP_01_15;
 
-        byte[] expected = new byte[] {
-            0x2F, (byte)0xCD, 0x78, 0x2C, 0x1C, (byte)0xE5, (byte)0xDE, 0x14
+        byte[] expected = new byte[]{
+            0x2F, (byte) 0xCD, 0x78, 0x2C, 0x1C, (byte) 0xE5, (byte) 0xDE, 0x14
         };
-        assertArrayEquals(expected,commands.generateMac(data));
+        assertArrayEquals(expected, commands.generateMac(data));
 
-        byte[] expectedIcv = new byte[] {
-            (byte)0xFB, 0x26, 0x75, 0x1D, 0x56, (byte)0xB2, (byte)0xF9, 0x5D
+        byte[] expectedIcv = new byte[]{
+            (byte) 0xFB, 0x26, 0x75, 0x1D, 0x56, (byte) 0xB2, (byte) 0xF9, 0x5D
         };
-        assertArrayEquals(expectedIcv,commands.icv);
+        assertArrayEquals(expectedIcv, commands.icv);
 
-        expected = new byte[] {
-            (byte)0x9A, 0x39, 0x36, 0x18, (byte)0x87, (byte)0x81, 0x6C, (byte)0xF1
-        };
-        assertArrayEquals(expected,commands.generateMac(data));
+        expected = new byte[]{
+                    (byte) 0x9A, 0x39, 0x36, 0x18, (byte) 0x87, (byte) 0x81, 0x6C, (byte) 0xF1
+                };
+        assertArrayEquals(expected, commands.generateMac(data));
 
-        expectedIcv = new byte[] {
-            (byte)0xB1, 0x03, (byte)0xAD, 0x40, 0x4C, (byte)0xF9, (byte)0x9C, 0x0F
-        };
-        assertArrayEquals(expectedIcv,commands.icv);
+        expectedIcv = new byte[]{
+                    (byte) 0xB1, 0x03, (byte) 0xAD, 0x40, 0x4C, (byte) 0xF9, (byte) 0x9C, 0x0F
+                };
+        assertArrayEquals(expectedIcv, commands.icv);
     }
 
     @Test
@@ -596,13 +596,13 @@ public class GP2xCommandsTest {
         commands.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE, null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetStatusFailIfFileTypeNull() throws CardException {
         GP2xCommands commands = new GP2xCommands();
         commands.getStatus(null, GetStatusResponseMode.OLD_TYPE, null);
     }
 
-    @Test(expected=IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void testGetStatusFailIfResponseModeNull() throws CardException {
         GP2xCommands commands = new GP2xCommands();
         commands.getStatus(FileType.ISD, null, null);
@@ -612,11 +612,11 @@ public class GP2xCommandsTest {
     public void testGetStatusWithCMac() throws CardException {
         GP2xCommands commands = createCommands("/023-GP2xCommands-get-status-good.txt");
         commands.secMode = SecLevel.C_MAC;
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
-        };
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
         commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
     }
 
@@ -624,16 +624,16 @@ public class GP2xCommandsTest {
     public void testGetStatusWithCEncAndMac() throws CardException {
         GP2xCommands commands = createCommands("/024-GP2xCommands-get-status-good.txt");
         commands.secMode = SecLevel.C_ENC_AND_MAC;
-        commands.sessMac = new byte[] {
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
-        };
-        commands.sessEnc = new byte[] {
-            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
-            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
-            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.sessEnc = new byte[]{
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
         commands.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.NEW_TYPE, null);
     }
 
@@ -649,13 +649,79 @@ public class GP2xCommandsTest {
     @Test
     public void testGetStatusWhenSearchQualifierNotNull() throws CardException {
         Commands commands = createCommands("/026-GP2xCommands-get-status-good.txt");
-        commands.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE, 
-                new byte[] { 0x01, 0x02, 0x03 });
+        commands.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE,
+                new byte[]{0x01, 0x02, 0x03});
     }
-/*
+
     @Test
-    public void testDeleteOnCardObj() {
-        
+    public void testDeleteOnCardObj() throws CardException {
+        Commands commands = createCommands("/027-GP2xCommands-delete-object-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.deleteOnCardObj(aid, true);
     }
- */
+
+    @Test
+    public void testDeleteOnCardObjWithCEnc() throws CardException {
+        GP2xCommands commands = createCommands("/028-GP2xCommands-delete-object-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.secMode = SecLevel.C_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.deleteOnCardObj(aid, true);
+    }
+
+    @Test
+    public void testDeleteOnCardObjWithCEncAndMac() throws CardException {
+        GP2xCommands commands = createCommands("/029-GP2xCommands-delete-object-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.secMode = SecLevel.C_ENC_AND_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.sessEnc = new byte[]{
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
+        commands.deleteOnCardObj(aid, true);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testDelteOnCardObjFailIfAidNull() throws CardException {
+        GP2xCommands commands = new GP2xCommands();
+        commands.deleteOnCardObj(null, true);
+    }
+
+
+    @Test
+    public void testDeleteOnCardObjWithoutCascade() throws CardException {
+        Commands commands = createCommands("/030-GP2xCommands-delete-object-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.deleteOnCardObj(aid, false);
+    }
+
+    @Test
+    public void testDeleteOnCardObjFailedWhenSWNot1000() throws CardException {
+        Commands commands = createCommands("/031-GP2xCommands-delete-object-failed.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error in DELETE OBJECT : 1000");
+        commands.deleteOnCardObj(aid, false);
+    }
+
 }

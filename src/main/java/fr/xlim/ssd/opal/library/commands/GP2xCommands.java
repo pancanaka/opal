@@ -436,7 +436,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             getStatusCmd = new byte[headerSize + dataSize];
             getStatusCmd[0] = (byte) 0x84;
         }
-        
+
         getStatusCmd[1] = (byte) 0xF2;
         getStatusCmd[2] = fileType.getVal();
         getStatusCmd[3] = responseMode.getVal();
@@ -488,11 +488,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             // TODO: no check at responses ?
             responsesList.add(resp);
         }
-        
+
         if (resp.getSW() != 0x9000) {
             throw new CardException("Error in Get Status : " + Integer.toHexString(resp.getSW()));
         }
-        
+
         ResponseAPDU[] r = new ResponseAPDU[responsesList.size()];
         return responsesList.toArray(r);
     }
@@ -752,11 +752,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmd_delete = new CommandAPDU(deleteComm);
         ResponseAPDU resp = this.getCc().transmit(cmd_delete);
 
-            logger.debug("DELETE OBJECT command "
-                    + "(-> " + Conversion.arrayToHex(cmd_delete.getBytes()) + ") "
-                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.debug("DELETE OBJECT command "
+                + "(-> " + Conversion.arrayToHex(cmd_delete.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-            if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != 0x9000) {
             throw new CardException("Error in DELETE OBJECT : " + Integer.toHexString(resp.getSW()));
         }
         return resp;
@@ -801,10 +801,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmd_delete = new CommandAPDU(deleteComm);
         ResponseAPDU resp = this.getCc().transmit(cmd_delete);
-        System.out.println("DELETE KEY");
-        System.out.println("-> " + Conversion.arrayToHex(cmd_delete.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
+
+        logger.debug("DELETE KEY command "
+                + "(-> " + Conversion.arrayToHex(cmd_delete.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
         if (resp.getSW() != 0x9000) {
             throw new CardException("Error in DELETE KEY : " + Integer.toHexString(resp.getSW()));
         }
