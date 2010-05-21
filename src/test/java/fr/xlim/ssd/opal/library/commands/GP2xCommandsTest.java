@@ -1,5 +1,7 @@
 package fr.xlim.ssd.opal.library.commands;
 
+import fr.xlim.ssd.opal.library.FileType;
+import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import static org.junit.Assert.*;
 
 import fr.xlim.ssd.opal.library.KeyType;
@@ -581,4 +583,43 @@ public class GP2xCommandsTest {
         };
         assertArrayEquals(expectedIcv,commands.icv);
     }
+
+    @Test
+    public void testGetStatusSimple() throws CardException {
+        Commands commands = createCommands("/021-GP2xCommands-get-status-good.txt");
+        commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
+    }
+
+    @Test
+    public void testGetStatusExtended() throws CardException {
+        Commands commands = createCommands("/022-GP2xCommands-get-status-good.txt");
+        commands.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE, null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testGetStatusFailIfFileTypeNull() throws CardException {
+        GP2xCommands commands = new GP2xCommands();
+        commands.getStatus(null, GetStatusResponseMode.OLD_TYPE, null);
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void testGetStatusFailIfResponseModeNull() throws CardException {
+        GP2xCommands commands = new GP2xCommands();
+        commands.getStatus(FileType.ISD, null, null);
+    }
+/*
+    @Test
+    public void testGetStatusWithCMac() throws CardException {
+        GP2xCommands commands = createCommands("/023-GP2xCommands-get-status-good.txt");
+        commands.secMode = SecLevel.C_MAC;
+        commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
+    }
+
+    @Test
+    public void testGetStatusWithCEncAndMac() throws CardException {
+        GP2xCommands commands = createCommands("/024-GP2xCommands-get-status-good.txt");
+        commands.secMode = SecLevel.C_ENC_AND_MAC;
+        commands.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.NEW_TYPE, null);
+    }
+ */
 }

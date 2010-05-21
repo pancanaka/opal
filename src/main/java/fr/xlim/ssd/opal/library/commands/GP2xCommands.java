@@ -403,8 +403,20 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @see fr.xlim.ssd.opal.commands.Commands#getStatus(fr.xlim.ssd.opal.Constant.FileType, fr.xlim.ssd.opal.Constant.GetStatusResponseMode, byte[])
      */
     @Override
-    public ResponseAPDU[] getStatus(FileType ft, GetStatusResponseMode respMode, byte[] searchQualifier) throws CardException {
-        Set<ResponseAPDU> res = new HashSet<ResponseAPDU>();
+    public ResponseAPDU[] getStatus(FileType fileType, GetStatusResponseMode responseMode, byte[] searchQualifier) throws CardException {
+
+        if (fileType == null) {
+            throw new IllegalArgumentException("fileType must be not null");
+        }
+
+        if (responseMode == null) {
+            throw new IllegalArgumentException("responseMode must be not null");
+        }
+
+        // TODO: check searchQualifier size ?
+
+        List<ResponseAPDU> responsesList = new LinkedList<ResponseAPDU>();
+
         byte[] getStatusCmd = null;
         byte dataSize = (byte) 0; // '0xD0' + Key Identifier + '0xD2' + Key Version Number + C-MAC
         byte headerSize = (byte) 5; // CLA + INS + P1 + P2 + LC
@@ -424,9 +436,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             getStatusCmd = new byte[headerSize + dataSize];
             getStatusCmd[0] = (byte) 0x84;
         }
+        
         getStatusCmd[1] = (byte) 0xF2;
-        getStatusCmd[2] = ft.getVal();
-        getStatusCmd[3] = respMode.getVal();
+        getStatusCmd[2] = fileType.getVal();
+        getStatusCmd[3] = responseMode.getVal();
         getStatusCmd[4] = dataSize;
 
         System.arraycopy(searchQualifier, 0, getStatusCmd, 5, searchQualifier.length);
@@ -437,6 +450,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             byte[] cmac = this.generateMac(data_cmac); // generate C-MAC
             System.arraycopy(cmac, 0, getStatusCmd, data_cmac.length, cmac.length); // put C-MAC into getStatusCmd
         }
+
         byte[] UncipheredgetStatusCmd = getStatusCmd.clone();
 
         if (this.secMode == SecLevel.C_ENC_AND_MAC) {
@@ -445,13 +459,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmd_getStatus = new CommandAPDU(getStatusCmd);
         ResponseAPDU resp = this.getCc().transmit(cmd_getStatus);
-        System.out.println("GET STATUS");
-        System.out.println("-> " + Conversion.arrayToHex(cmd_getStatus.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
-        res.add(resp);
+
+        logger.debug("GET STATUS command "
+                + "(-> " + Conversion.arrayToHex(cmd_getStatus.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+        responsesList.add(resp);
+
         while (resp.getSW() == 0x6310) {
-            UncipheredgetStatusCmd[3] = (byte) (respMode.getVal() + (byte) 0x01); // Get next occurrence(s)
+            UncipheredgetStatusCmd[3] = (byte) (responseMode.getVal() + (byte) 0x01); // Get next occurrence(s)
             if (this.secMode != SecLevel.NO_SECURITY_LEVEL) {
                 byte[] data_cmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
                 System.arraycopy(UncipheredgetStatusCmd, 0, data_cmac, 0, data_cmac.length); // data used to generate C-MAC
@@ -464,17 +480,20 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
             cmd_getStatus = new CommandAPDU(getStatusCmd);
             resp = this.getCc().transmit(cmd_getStatus);
-            System.out.println("GET STATUS");
-            System.out.println("-> " + Conversion.arrayToHex(cmd_getStatus.getBytes()));
-            System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-            System.out.println();
-            res.add(resp);
+
+            logger.debug("GET STATUS command "
+                    + "(-> " + Conversion.arrayToHex(cmd_getStatus.getBytes()) + ") "
+                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+            responsesList.add(resp);
         }
+        
         if (resp.getSW() != 0x9000) {
             throw new CardException("Error in Get Status : " + Integer.toHexString(resp.getSW()));
         }
-        ResponseAPDU[] r = new ResponseAPDU[res.size()];
-        return res.toArray(r);
+        
+        ResponseAPDU[] r = new ResponseAPDU[responsesList.size()];
+        return responsesList.toArray(r);
     }
 
     /**
