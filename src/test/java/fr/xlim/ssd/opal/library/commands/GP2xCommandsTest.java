@@ -1,22 +1,23 @@
 package fr.xlim.ssd.opal.library.commands;
 
+import static org.junit.Assert.*;
+
 import fr.xlim.ssd.opal.library.KeyType;
 import fr.xlim.ssd.opal.library.SCGPKey;
 import fr.xlim.ssd.opal.library.SCGemVisa;
 import fr.xlim.ssd.opal.library.SCGemVisa2;
-import java.io.IOException;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.LinkedList;
-import java.util.List;
-import javax.smartcardio.CardException;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.SecLevel;
+import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.IOException;
 import java.io.Reader;
+import java.util.LinkedList;
+import java.util.List;
+import javax.smartcardio.CardException;
 import javax.smartcardio.CardChannel;
 import org.junit.Before;
 import org.junit.Rule;
@@ -427,5 +428,67 @@ public class GP2xCommandsTest {
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
         commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testExternalAuthenticateFailedWhenNoSession() throws CardException {
+        Commands commands = new GP2xCommands();
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Session is not initialized");
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+    }
+
+    @Test
+    public void testExternalAuthenticateFailedWhenAuthSession() throws CardException {
+        GP2xCommands commands = new GP2xCommands();
+        commands.sessState = SessionState.SESSION_AUTH;
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Session is not initialized");
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+    }
+
+    @Test
+    public void testExternalAuthenticateFailedWhenSecLevelIsNull() throws CardException {
+        Commands commands = new GP2xCommands();
+
+        expectedException.expect(IllegalArgumentException.class);
+        expectedException.expectMessage("secLevel must be not null");
+        commands.externalAuthenticate(null);
+    }
+
+    @Test
+    public void testExternalAuthenticate() throws CardException {
+        GP2xCommands commands = createCommands("/019-GP2xCommands-external-authenticate-good.txt");
+        commands.hostCrypto = new byte[] {
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+        };
+        commands.sessState = SessionState.SESSION_INIT;
+        commands.sessMac = new byte[] {
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+        };
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        assertEquals(SessionState.SESSION_AUTH,commands.sessState);
+    }
+
+    @Test
+    public void testExternalAuthenticateFailedWhenSWNot9000() throws CardException {
+        GP2xCommands commands = createCommands("/020-GP2xCommands-external-authenticate-failed.txt");
+        commands.hostCrypto = new byte[] {
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+        };
+        commands.sessState = SessionState.SESSION_INIT;
+        commands.sessMac = new byte[] {
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+        };
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error in External Authenticate : 1000");
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
     }
 }

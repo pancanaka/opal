@@ -156,7 +156,7 @@ public class GPApplet {
      * @throws CardException
      */
     public ResponseAPDU send(CommandAPDU command) throws CardException {
-        return this.cmds.send(command);
+        return this.cmds.getCc().transmit(command);
     }
 
     /**

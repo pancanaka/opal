@@ -59,7 +59,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      *
      */
-    protected List<SCKey> keys;
+    protected List<SCKey> keys = new LinkedList<SCKey>();
     /**
      *
      */
@@ -113,18 +113,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      *
      */
     protected GP2xCommands() {
-        this.keys = new LinkedList<SCKey>();
-        this.scp = SCPMode.SCP_UNDEFINED;
-        this.secMode = SecLevel.NO_SECURITY_LEVEL;
-        this.sessState = SessionState.NO_SESSION;
-        this.sessEnc = null;
-        this.sessMac = null;
-        this.sessKek = null;
-        this.hostChallenge = null;
-        this.cardChallenge = null;
-        this.cardCrypto = null;
-        this.derivationData = null;
-        this.hostCrypto = null;
+        resetParams();
     }
 
     /* (non-Javadoc)
@@ -363,11 +352,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         System.out.println(Conversion.arrayToHex(cardCrypto));
 
-        if (!Arrays.equals(cardCryptoResp,this.cardCrypto)) {
+        if (!Arrays.equals(cardCryptoResp, this.cardCrypto)) {
             this.resetParams();
             throw new CardException("Error verifying Card Cryptogram");
         }
-        
+
         this.sessState = SessionState.SESSION_INIT;
         return resp;
     }
@@ -375,9 +364,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException {
 
+        if (secLevel == null) {
+            throw new IllegalArgumentException("secLevel must be not null");
+        }
+
         if (this.sessState != SessionState.SESSION_INIT) {
             this.resetParams();
-            throw new CardException("Please execute INITIALIZE UPDATE command first !");
+            throw new CardException("Session is not initialized");
         }
 
         this.secMode = secLevel;
@@ -395,27 +388,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         System.arraycopy(mac, 0, extAuthCmd, extAuthCmd.length - mac.length, mac.length);
         CommandAPDU cmd_extauth = new CommandAPDU(extAuthCmd);
         ResponseAPDU resp = this.cc.transmit(cmd_extauth);
-        System.out.println("EXTERNAL AUTHENTICATE");
-        System.out.println("-> " + Conversion.arrayToHex(cmd_extauth.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
+
+        logger.debug("INIT UPDATE command "
+                + "(-> " + Conversion.arrayToHex(cmd_extauth.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
         if (resp.getSW() != 0x9000) {
             this.resetParams();
             throw new CardException("Error in External Authenticate : " + Integer.toHexString(resp.getSW()));
         }
         this.sessState = SessionState.SESSION_AUTH;
-        return resp;
-    }
-
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#send(javax.smartcardio.CommandAPDU)
-     */
-    @Override
-    public ResponseAPDU send(CommandAPDU command) throws CardException {
-        ResponseAPDU resp = this.cc.transmit(command);
-        System.out.println("-> " + Conversion.arrayToHex(command.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
         return resp;
     }
 
@@ -530,17 +512,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.icv = myCipher2.doFinal(res);
             }
         } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm",e);
+            throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such padding problem",e);
+            throw new UnsupportedOperationException("No such padding problem", e);
         } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem",e);
+            throw new UnsupportedOperationException("Key problem", e);
         } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem",e);
+            throw new UnsupportedOperationException("Block size problem", e);
         } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad padding problem",e);
+            throw new UnsupportedOperationException("Bad padding problem", e);
         } catch (InvalidAlgorithmParameterException e) {
-            throw new UnsupportedOperationException("Invalid Algorithm parameter",e);
+            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
         }
 
         return res.clone();
@@ -706,7 +688,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         System.arraycopy(this.hostChallenge, 4, this.derivationData, 12, 4);
         System.arraycopy(this.cardChallenge, 0, this.derivationData, 8, 4);
         System.arraycopy(this.cardChallenge, 4, this.derivationData, 0, 4);
-        
+
     }
 
     // SECURITY DOMAIN

@@ -99,13 +99,6 @@ public interface Commands {
     ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException;
 
     /**
-     * @param command
-     * @return
-     * @throws CardException
-     */
-    ResponseAPDU send(CommandAPDU command) throws CardException;
-
-    /**
      * @param ft
      * @param respMode
      * @param searchQualifier
