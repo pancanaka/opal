@@ -607,11 +607,16 @@ public class GP2xCommandsTest {
         GP2xCommands commands = new GP2xCommands();
         commands.getStatus(FileType.ISD, null, null);
     }
-/*
+
     @Test
     public void testGetStatusWithCMac() throws CardException {
         GP2xCommands commands = createCommands("/023-GP2xCommands-get-status-good.txt");
         commands.secMode = SecLevel.C_MAC;
+        commands.sessMac = new byte[] {
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+        };
         commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
     }
 
@@ -619,7 +624,38 @@ public class GP2xCommandsTest {
     public void testGetStatusWithCEncAndMac() throws CardException {
         GP2xCommands commands = createCommands("/024-GP2xCommands-get-status-good.txt");
         commands.secMode = SecLevel.C_ENC_AND_MAC;
+        commands.sessMac = new byte[] {
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+        };
+        commands.sessEnc = new byte[] {
+            0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+            0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+            0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+        };
         commands.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.NEW_TYPE, null);
+    }
+
+    @Test
+    public void testGetStatusFailedWhenSWNot9000() throws CardException {
+        Commands commands = createCommands("/025-GP2xCommands-get-status-failed.txt");
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error in Get Status : 1000");
+        commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
+    }
+
+    @Test
+    public void testGetStatusWhenSearchQualifierNotNull() throws CardException {
+        Commands commands = createCommands("/026-GP2xCommands-get-status-good.txt");
+        commands.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE, 
+                new byte[] { 0x01, 0x02, 0x03 });
+    }
+/*
+    @Test
+    public void testDeleteOnCardObj() {
+        
     }
  */
 }

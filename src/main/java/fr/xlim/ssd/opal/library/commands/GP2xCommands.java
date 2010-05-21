@@ -485,6 +485,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     + "(-> " + Conversion.arrayToHex(cmd_getStatus.getBytes()) + ") "
                     + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
+            // TODO: no check at responses ?
             responsesList.add(resp);
         }
         
@@ -711,6 +712,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     // SECURITY DOMAIN
     @Override
     public ResponseAPDU deleteOnCardObj(byte[] aid, boolean cascade) throws CardException {
+
+        if (aid == null) {
+            throw new IllegalArgumentException("aid must be not null");
+        }
+
         byte dataSize = (byte) (2 + aid.length); // params +  AID
 
         if (this.getSecMode() != SecLevel.NO_SECURITY_LEVEL) {
@@ -745,12 +751,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmd_delete = new CommandAPDU(deleteComm);
         ResponseAPDU resp = this.getCc().transmit(cmd_delete);
-        System.out.println("DELETE OBJECT");
-        System.out.println("-> " + Conversion.arrayToHex(cmd_delete.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
-        if (resp.getSW() != 0x9000) {
-            throw new CardException("Error in Delete : " + Integer.toHexString(resp.getSW()));
+
+            logger.debug("DELETE OBJECT command "
+                    + "(-> " + Conversion.arrayToHex(cmd_delete.getBytes()) + ") "
+                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+            if (resp.getSW() != 0x9000) {
+            throw new CardException("Error in DELETE OBJECT : " + Integer.toHexString(resp.getSW()));
         }
         return resp;
     }
@@ -799,7 +806,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
         System.out.println();
         if (resp.getSW() != 0x9000) {
-            throw new CardException("Error in Delete : " + Integer.toHexString(resp.getSW()));
+            throw new CardException("Error in DELETE KEY : " + Integer.toHexString(resp.getSW()));
         }
         return resp;
     }
