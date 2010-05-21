@@ -714,7 +714,7 @@ public class GP2xCommandsTest {
     }
 
     @Test
-    public void testDeleteOnCardObjFailedWhenSWNot1000() throws CardException {
+    public void testDeleteOnCardObjFailedWhenSWNot9000() throws CardException {
         Commands commands = createCommands("/031-GP2xCommands-delete-object-failed.txt");
         byte[] aid = new byte[] {
             (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
@@ -724,4 +724,56 @@ public class GP2xCommandsTest {
         commands.deleteOnCardObj(aid, false);
     }
 
+    @Test
+    public void testDeleteOnCardKey() throws CardException {
+        Commands commands = createCommands("/032-GP2xCommands-delete-key-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.deleteOnCardKey((byte)0x32, (byte)0X3F);
+    }
+
+    @Test
+    public void testDeleteOnCardKeyWithCEnc() throws CardException {
+        GP2xCommands commands = createCommands("/033-GP2xCommands-delete-key-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.secMode = SecLevel.C_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.deleteOnCardKey((byte)0x32, (byte)0X3F);
+    }
+
+    @Test
+    public void testDeleteOnCardKeyWithCEncAndMac() throws CardException {
+        GP2xCommands commands = createCommands("/034-GP2xCommands-delete-key-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.secMode = SecLevel.C_ENC_AND_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.sessEnc = new byte[]{
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
+        commands.deleteOnCardKey((byte)0x32, (byte)0X3F);
+    }
+
+    @Test
+    public void testDeleteOnCardKeyFailedWhenSWNot9000() throws CardException {
+        Commands commands = createCommands("/035-GP2xCommands-delete-key-failed.txt");
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error in DELETE KEY : 1000");
+        commands.deleteOnCardKey((byte)0x3C, (byte)0XD7);
+    }
 }
