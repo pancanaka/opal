@@ -816,11 +816,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @see fr.xlim.ssd.opal.commands.Commands#installForLoad(byte[], byte[], byte[])
      */
     @Override
-    public ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAID, byte[] params) throws CardException {
-        // Check if mandatories values are provided
+    public ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAid, byte[] params) throws CardException {
+
         if (packageAid == null) {
-            throw new CardException("Error in Install For Load : bad parameters (null) ");
+            throw new IllegalArgumentException("packageAid must be not null");
         }
+        if (securityDomainAid == null) {
+            throw new IllegalArgumentException("securityDomainAid must be not null");
+        }
+
         int paramLength = ((params != null) ? params.length : 0);
         byte[] paramLengthEncoded = null;
         if (params != null) {
@@ -837,7 +841,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             paramLengthEncoded[0] = (byte) 0x00;
         }
 
-        int secDomLength = securityDomainAID.length;
+        int secDomLength = securityDomainAid.length;
 
         byte headerSize = (byte) 5; // CLA + INS + P1 + P2 + LC
         byte dataSize = (byte) (1 + packageAid.length // Length of Load File AID +  Load File AID
@@ -868,7 +872,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         installForLoadComm[i] = (byte) secDomLength; // length of security domain
         i++;
 
-        System.arraycopy(securityDomainAID, 0, installForLoadComm, i, secDomLength);
+        System.arraycopy(securityDomainAid, 0, installForLoadComm, i, secDomLength);
         i += secDomLength;
 
         installForLoadComm[i] = (byte) 0x00; // length of load file data block
@@ -897,13 +901,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmd_installForLoad = new CommandAPDU(installForLoadComm);
         ResponseAPDU resp = this.getCc().transmit(cmd_installForLoad);
-        System.out.println("INSTALL FOR LOAD");
-        System.out.println("-> " + Conversion.arrayToHex(cmd_installForLoad.getBytes()));
-        System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-        System.out.println();
+
+        logger.debug("INSTALL FOR LOAD command "
+                + "(-> " + Conversion.arrayToHex(cmd_installForLoad.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
         if (resp.getSW() != 0x9000) {
-            throw new CardException("Error in Install For Load : " + Integer.toHexString(resp.getSW()));
+            throw new CardException("Error in INSTALL FOR LOAD : " + Integer.toHexString(resp.getSW()));
         }
+
         return resp;
     }
 
@@ -1033,13 +1039,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             CommandAPDU cmd_load = new CommandAPDU(cmd);
             ResponseAPDU resp = null;
             resp = this.getCc().transmit(cmd_load);
-            System.out.println("LOAD");
-            System.out.println("-> " + Conversion.arrayToHex(cmd_load.getBytes()));
-            System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-            System.out.println();
+
+            logger.debug("LOAD command "
+                    + "(-> " + Conversion.arrayToHex(cmd_load.getBytes()) + ") "
+                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
             res.add(resp);
             if (resp.getSW() != 0x9000) {
-                throw new CardException("Error in Load : " + Integer.toHexString(resp.getSW()));
+                throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
         }
         ResponseAPDU[] r = new ResponseAPDU[res.size()];

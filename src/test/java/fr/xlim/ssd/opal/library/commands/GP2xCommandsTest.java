@@ -698,11 +698,10 @@ public class GP2xCommandsTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void testDelteOnCardObjFailIfAidNull() throws CardException {
+    public void testDeleteOnCardObjFailIfAidNull() throws CardException {
         GP2xCommands commands = new GP2xCommands();
         commands.deleteOnCardObj(null, true);
     }
-
 
     @Test
     public void testDeleteOnCardObjWithoutCascade() throws CardException {
@@ -776,4 +775,97 @@ public class GP2xCommandsTest {
         expectedException.expectMessage("Error in DELETE KEY : 1000");
         commands.deleteOnCardKey((byte)0x3C, (byte)0XD7);
     }
+
+    @Test
+    public void testInstallForLoad() throws CardException {
+        Commands commands = createCommands("/036-GP2xCommands-install-for-load-good.txt");
+        byte[] packageAid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };        
+        byte[] securityDomainAid = new byte[] {
+            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        };
+        commands.installForLoad(packageAid, securityDomainAid, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInstallForLoadFailIfPackageAidNull() throws CardException {
+        GP2xCommands commands = new GP2xCommands();
+        byte[] packageAid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.installForLoad(packageAid, null, null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInstallForLoadFailIfSecurityDomainAidNull() throws CardException {
+        GP2xCommands commands = new GP2xCommands();
+        byte[] packageAid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.installForLoad(packageAid, null, null);
+    }
+
+    @Test
+    public void testInstallForLoadWithCEnc() throws CardException {
+        GP2xCommands commands = createCommands("/037-GP2xCommands-install-for-load-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.secMode = SecLevel.C_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        byte[] packageAid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        byte[] securityDomainAid = new byte[] {
+            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        };
+        commands.installForLoad(packageAid, securityDomainAid, null);
+    }
+
+    @Test
+    public void testInstallForLoadWithCEncAndMac() throws CardException {
+        GP2xCommands commands = createCommands("/038-GP2xCommands-install-for-load-good.txt");
+        byte[] aid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.secMode = SecLevel.C_ENC_AND_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.sessEnc = new byte[]{
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
+        byte[] packageAid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        byte[] securityDomainAid = new byte[] {
+            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        };
+        commands.installForLoad(packageAid, securityDomainAid, null);
+    }
+
+    @Test
+    public void testInstallForLoadFailedWhenSWNot9000() throws CardException {
+        Commands commands = createCommands("/039-GP2xCommands-install-for-load-failed.txt");
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error in INSTALL FOR LOAD : 1000");
+        byte[] packageAid = new byte[] {
+            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        byte[] securityDomainAid = new byte[] {
+            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        };
+        commands.installForLoad(packageAid, securityDomainAid, null);
+    }
+
 }
