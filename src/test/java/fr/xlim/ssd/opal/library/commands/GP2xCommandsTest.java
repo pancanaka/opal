@@ -14,6 +14,7 @@ import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -656,17 +657,17 @@ public class GP2xCommandsTest {
     @Test
     public void testDeleteOnCardObj() throws CardException {
         Commands commands = createCommands("/027-GP2xCommands-delete-object-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.deleteOnCardObj(aid, true);
     }
 
     @Test
-    public void testDeleteOnCardObjWithCEnc() throws CardException {
+    public void testDeleteOnCardObjWithCMac() throws CardException {
         GP2xCommands commands = createCommands("/028-GP2xCommands-delete-object-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.secMode = SecLevel.C_MAC;
         commands.sessMac = new byte[]{
@@ -680,8 +681,8 @@ public class GP2xCommandsTest {
     @Test
     public void testDeleteOnCardObjWithCEncAndMac() throws CardException {
         GP2xCommands commands = createCommands("/029-GP2xCommands-delete-object-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.secMode = SecLevel.C_ENC_AND_MAC;
         commands.sessMac = new byte[]{
@@ -706,8 +707,8 @@ public class GP2xCommandsTest {
     @Test
     public void testDeleteOnCardObjWithoutCascade() throws CardException {
         Commands commands = createCommands("/030-GP2xCommands-delete-object-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.deleteOnCardObj(aid, false);
     }
@@ -715,8 +716,8 @@ public class GP2xCommandsTest {
     @Test
     public void testDeleteOnCardObjFailedWhenSWNot9000() throws CardException {
         Commands commands = createCommands("/031-GP2xCommands-delete-object-failed.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in DELETE OBJECT : 1000");
@@ -726,17 +727,17 @@ public class GP2xCommandsTest {
     @Test
     public void testDeleteOnCardKey() throws CardException {
         Commands commands = createCommands("/032-GP2xCommands-delete-key-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
-        commands.deleteOnCardKey((byte)0x32, (byte)0X3F);
+        commands.deleteOnCardKey((byte) 0x32, (byte) 0X3F);
     }
 
     @Test
-    public void testDeleteOnCardKeyWithCEnc() throws CardException {
+    public void testDeleteOnCardKeyWithCMac() throws CardException {
         GP2xCommands commands = createCommands("/033-GP2xCommands-delete-key-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.secMode = SecLevel.C_MAC;
         commands.sessMac = new byte[]{
@@ -744,14 +745,14 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
-        commands.deleteOnCardKey((byte)0x32, (byte)0X3F);
+        commands.deleteOnCardKey((byte) 0x32, (byte) 0X3F);
     }
 
     @Test
     public void testDeleteOnCardKeyWithCEncAndMac() throws CardException {
         GP2xCommands commands = createCommands("/034-GP2xCommands-delete-key-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.secMode = SecLevel.C_ENC_AND_MAC;
         commands.sessMac = new byte[]{
@@ -764,7 +765,7 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
-        commands.deleteOnCardKey((byte)0x32, (byte)0X3F);
+        commands.deleteOnCardKey((byte) 0x32, (byte) 0X3F);
     }
 
     @Test
@@ -773,17 +774,17 @@ public class GP2xCommandsTest {
 
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in DELETE KEY : 1000");
-        commands.deleteOnCardKey((byte)0x3C, (byte)0XD7);
+        commands.deleteOnCardKey((byte) 0x3C, (byte) 0XD7);
     }
 
     @Test
     public void testInstallForLoad() throws CardException {
         Commands commands = createCommands("/036-GP2xCommands-install-for-load-good.txt");
-        byte[] packageAid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
-        };        
-        byte[] securityDomainAid = new byte[] {
-            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        byte[] packageAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        byte[] securityDomainAid = new byte[]{
+            (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
         };
         commands.installForLoad(packageAid, securityDomainAid, null);
     }
@@ -791,8 +792,8 @@ public class GP2xCommandsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInstallForLoadFailIfPackageAidNull() throws CardException {
         GP2xCommands commands = new GP2xCommands();
-        byte[] packageAid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] packageAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.installForLoad(packageAid, null, null);
     }
@@ -800,17 +801,17 @@ public class GP2xCommandsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testInstallForLoadFailIfSecurityDomainAidNull() throws CardException {
         GP2xCommands commands = new GP2xCommands();
-        byte[] packageAid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] packageAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.installForLoad(packageAid, null, null);
     }
 
     @Test
-    public void testInstallForLoadWithCEnc() throws CardException {
+    public void testInstallForLoadWithCMac() throws CardException {
         GP2xCommands commands = createCommands("/037-GP2xCommands-install-for-load-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.secMode = SecLevel.C_MAC;
         commands.sessMac = new byte[]{
@@ -818,11 +819,11 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
-        byte[] packageAid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] packageAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
-        byte[] securityDomainAid = new byte[] {
-            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        byte[] securityDomainAid = new byte[]{
+            (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
         };
         commands.installForLoad(packageAid, securityDomainAid, null);
     }
@@ -830,8 +831,8 @@ public class GP2xCommandsTest {
     @Test
     public void testInstallForLoadWithCEncAndMac() throws CardException {
         GP2xCommands commands = createCommands("/038-GP2xCommands-install-for-load-good.txt");
-        byte[] aid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] aid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
         commands.secMode = SecLevel.C_ENC_AND_MAC;
         commands.sessMac = new byte[]{
@@ -844,11 +845,11 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
-        byte[] packageAid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] packageAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
-        byte[] securityDomainAid = new byte[] {
-            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        byte[] securityDomainAid = new byte[]{
+            (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
         };
         commands.installForLoad(packageAid, securityDomainAid, null);
     }
@@ -859,13 +860,122 @@ public class GP2xCommandsTest {
 
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in INSTALL FOR LOAD : 1000");
-        byte[] packageAid = new byte[] {
-            (byte)0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        byte[] packageAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
-        byte[] securityDomainAid = new byte[] {
-            (byte)0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        byte[] securityDomainAid = new byte[]{
+            (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
         };
         commands.installForLoad(packageAid, securityDomainAid, null);
     }
 
+    @Test
+    public void testLoad() throws CardException {
+        Commands commands = createCommands("/040-GP2xCommands-load-good.txt");
+        File file = new File("src/test/resources/HelloWorld.cap");
+        byte maxDataLength = (byte) 0xFF;
+        commands.load(file, maxDataLength);
+    }
+
+    @Test
+    public void testLoadWithCMac() throws CardException {
+        GP2xCommands commands = createCommands("/041-GP2xCommands-load-good.txt");
+        File file = new File("src/test/resources/HelloWorld.cap");
+        commands.secMode = SecLevel.C_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.load(file);
+    }
+
+    @Test
+    public void testLoadWithCEncAndMac() throws CardException {
+        GP2xCommands commands = createCommands("/042-GP2xCommands-load-good.txt");
+        File file = new File("src/test/resources/HelloWorld.cap");
+        commands.secMode = SecLevel.C_ENC_AND_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.sessEnc = new byte[]{
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
+        commands.load(file);
+    }
+
+    @Test
+    public void testInstallForInstallAndMakeSelectable() throws CardException {
+        Commands commands = createCommands("/043-GP2xCommands-install-for-install-good.txt");
+        byte[] loadFileAid = new byte[]{
+            (byte) 0xAA, 0x0A, 0x0A, 0x0A, 0x1A, 0x4A, 0x4A
+        };
+        byte[] moduleAid = new byte[]{
+            (byte) 0xAB, 0x0B, 0x0B, 0x0B, 0x1B, 0x4B, 0x4B
+        };
+        byte[] applicationAid = new byte[]{
+            (byte) 0xAC, 0x0C, 0x0C, 0x0C, 0x1C, 0x4C, 0x4C
+        };
+        byte[] privileges = new byte[]{
+            0X01, 0x02, 0x03
+        };
+        commands.installForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, null);
+    }
+
+    @Test
+    public void testInstallForInstallAndMakeSelectableWithCMac() throws CardException {
+        GP2xCommands commands = createCommands("/044-GP2xCommands-install-for-install-good.txt");
+        commands.secMode = SecLevel.C_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        byte[] loadFileAid = new byte[]{
+            (byte) 0xAA, 0x0A, 0x0A, 0x0A, 0x1A, 0x4A, 0x4A
+        };
+        byte[] moduleAid = new byte[]{
+            (byte) 0xAB, 0x0B, 0x0B, 0x0B, 0x1B, 0x4B, 0x4B
+        };
+        byte[] applicationAid = new byte[]{
+            (byte) 0xAC, 0x0C, 0x0C, 0x0C, 0x1C, 0x4C, 0x4C
+        };
+        byte[] privileges = new byte[]{
+            0X01, 0x02, 0x03
+        };
+        commands.installForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, null);
+    }
+
+    @Test
+    public void testInstallForInstallAndMakeSelectableWithCEncAndMac() throws CardException {
+        GP2xCommands commands = createCommands("/045-GP2xCommands-install-for-install-good.txt");
+        commands.secMode = SecLevel.C_ENC_AND_MAC;
+        commands.sessMac = new byte[]{
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
+                };
+        commands.sessEnc = new byte[]{
+                    0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28,
+                    0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
+                    0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+                };
+        byte[] loadFileAid = new byte[]{
+            (byte) 0xAA, 0x0A, 0x0A, 0x0A, 0x1A, 0x4A, 0x4A
+        };
+        byte[] moduleAid = new byte[]{
+            (byte) 0xAB, 0x0B, 0x0B, 0x0B, 0x1B, 0x4B, 0x4B
+        };
+        byte[] applicationAid = new byte[]{
+            (byte) 0xAC, 0x0C, 0x0C, 0x0C, 0x1C, 0x4C, 0x4C
+        };
+        byte[] privileges = new byte[]{
+            0X01, 0x02, 0x03
+        };
+        commands.installForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, null);
+    }
 }

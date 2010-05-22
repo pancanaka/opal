@@ -10,8 +10,6 @@ import java.nio.channels.FileChannel;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.HashSet;
-import java.util.Set;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -926,7 +924,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public ResponseAPDU[] load(File capFile, byte maxDataLength) throws CardException {
-        Set<ResponseAPDU> res = new HashSet<ResponseAPDU>();
+        List<ResponseAPDU> responses = new LinkedList<ResponseAPDU>();
         int capFileRemainLen = (int) capFile.length();
         ByteBuffer buffer = null;
         FileInputStream fis = null;
@@ -937,12 +935,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             int sz = (int) fc.size();
             buffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, sz);
             buffer.order(ByteOrder.LITTLE_ENDIAN);
-        } catch (FileNotFoundException e1) {
-            e1.printStackTrace();
-            System.exit(1);
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+        } catch (FileNotFoundException ex) {
+            throw new IllegalArgumentException("CAP file not found", ex);
+        } catch (IOException ex) {
+            throw new IllegalArgumentException("IO exception when reading CAP file", ex);
         }
 
         int cMacLen = 0;                // Size of C-MAC (unused by default)
@@ -1044,13 +1040,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     + "(-> " + Conversion.arrayToHex(cmd_load.getBytes()) + ") "
                     + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-            res.add(resp);
+            responses.add(resp);
             if (resp.getSW() != 0x9000) {
                 throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
         }
-        ResponseAPDU[] r = new ResponseAPDU[res.size()];
-        return res.toArray(r);
+        ResponseAPDU[] r = new ResponseAPDU[responses.size()];
+        return responses.toArray(r);
     }
 
     /* (non-Javadoc)
@@ -1157,19 +1153,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmd_installForInstall = new CommandAPDU(installForInstallComm);
-        ResponseAPDU resp = null;
-        try {
-            resp = this.getCc().transmit(cmd_installForInstall);
-            System.out.println("INSTALL FOR INSTALL AND MAKE SELECTABLE");
-            System.out.println("-> " + Conversion.arrayToHex(cmd_installForInstall.getBytes()));
-            System.out.println("<- " + Conversion.arrayToHex(resp.getBytes()));
-            System.out.println();
-        } catch (CardException e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+        ResponseAPDU resp = this.getCc().transmit(cmd_installForInstall);
+        logger.debug("INSTALL FOR INSTALL AND MAKE SELECTABLE "
+                + "(-> " + Conversion.arrayToHex(cmd_installForInstall.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
         if (resp.getSW() != 0x9000) {
-            throw new CardException("Error in Install For Install And Make Selectable : " + Integer.toHexString(resp.getSW()));
+            throw new CardException("Error in INSTALL FOR INSTALL AND MAKE SELECTABLE : " + Integer.toHexString(resp.getSW()));
         }
         return resp;
     }
