@@ -4,7 +4,7 @@
  * @author Damien Arcuset, Eric Linke
  * @author Julien Iguchi-Cartigny
  */
-package fr.xlim.ssd.opal.library.examples;
+package fr.xlim.ssd.opal.library.tester;
 
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
@@ -77,18 +77,18 @@ public class Main {
 
         CardConfig cardConfig = CardConfigFactory.getCardConfig("GemXpresso211is");
 
-        CardChannel channel = getCardChannel(0, "T=0");
+        CardChannel channel = getCardChannel(0, cardConfig.getTransmissionProtocol());
+
         if (channel == null) {
             logger.error("Cannot access to the card");
         }
 
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel, cardConfig.getIssuerSecurityDomainAID());
 
-        /*
-         *
-        a.setOffCardKeys(c.getSCKeys());
+        securityDomain.setOffCardKeys(cardConfig.getSCKeys());
+        securityDomain.select();
 
-        a.select();
+        /*
         a.initializeUpdate(c.getDefaultInitUpdateP1(), c.getDefaultInitUpdateP2(), c.getScpMode());
         a.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         a.deleteOnCardObj(Conversion.hexToArray("656E73696D6167747030337075727365"), false);
@@ -97,6 +97,6 @@ public class Main {
         a.load(new File("C:\\java_card_kit-2_1_2\\damsApplet03.cap"));
         a.installForInstallAndMakeSelectable(Conversion.hexToArray("656E73696D616774703033"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("00"), null);
         a.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
-         */
+        */
     }
 }
