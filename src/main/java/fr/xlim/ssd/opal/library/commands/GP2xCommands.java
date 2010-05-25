@@ -576,23 +576,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             System.arraycopy(command, command.length - 8, encryptedCmd, res.length + 5, 8);
             encryptedCmd[4] = (byte) (encryptedCmd.length - 5);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("No such padding problem", e);
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Key problem", e);
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Block size problem", e);
         } catch (BadPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Bad padding problem", e);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
         }
 
         return encryptedCmd;
@@ -632,23 +626,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             this.hostCrypto = new byte[8];
             System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
         } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("No such padding problem", e);
         } catch (InvalidKeyException e) {
-            e.printStackTrace();
-            System.exit(1);
-        } catch (InvalidAlgorithmParameterException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Key problem", e);
         } catch (IllegalBlockSizeException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Block size problem", e);
         } catch (BadPaddingException e) {
-            e.printStackTrace();
-            System.exit(1);
+            throw new UnsupportedOperationException("Bad padding problem", e);
+        } catch (InvalidAlgorithmParameterException e) {
+            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
         }
     }
 
@@ -1053,15 +1041,26 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @see fr.xlim.ssd.opal.commands.Commands#installForInstallAndMakeSelectable(byte[], byte[], byte[], byte[], byte[])
      */
     @Override
-    public ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID, byte[] moduleAID, byte[] applicationAID, byte[] privileges, byte[] params) throws CardException {
+    public ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID,
+            byte[] moduleAID, byte[] applicationAID, byte[] privileges, byte[] params)
+            throws CardException {
+
+        if (loadFileAID == null) {
+            throw new IllegalArgumentException("loadFileAID must be not null");
+        }
+
+        if(moduleAID == null) {
+            throw new IllegalArgumentException("moduleAID must be not null");
+        }
+
+        if(privileges == null) {
+            throw new IllegalArgumentException("privileges must be not null");
+        }
+
         if (params == null) {
             params = new byte[2];
             params[0] = (byte) 0xC9;
             params[1] = (byte) 0x00;
-        }
-        // Check if mandatories values are provided
-        if (loadFileAID == null || moduleAID == null || privileges == null) {
-            throw new CardException("Error in Install For Install And Make Selectable : bad parameters (null) ");
         }
 
         if (applicationAID == null) {

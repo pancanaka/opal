@@ -1,9 +1,9 @@
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.FileType;
-import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import static org.junit.Assert.*;
 
+import fr.xlim.ssd.opal.library.FileType;
+import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import fr.xlim.ssd.opal.library.KeyType;
 import fr.xlim.ssd.opal.library.SCGPKey;
 import fr.xlim.ssd.opal.library.SCGemVisa;
@@ -12,7 +12,6 @@ import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.io.File;
 import java.io.InputStream;
@@ -67,6 +66,7 @@ public class GP2xCommandsTest {
         SCKey key2 = new SCGPKey((byte) 13, (byte) 3, KeyType.DES_ECB, key2Data);
         keys.add(key2);
     }
+
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
@@ -106,9 +106,9 @@ public class GP2xCommandsTest {
         assertSame(commands.getKey((byte) 13, (byte) 2), keys.get(1));
 
         SCKey key3 = new SCGPKey((byte) 13, (byte) 1, null, null);
-        keys.add(key3);
+        commands.setOffCardKey(key3);
         assertEquals(commands.getKeys().length, 3);
-        assertSame(commands.getKey((byte) 13, (byte) 1), keys.get(0));
+        assertSame(commands.getKey((byte) 13, (byte) 1), key3);
 
 
         assertNull(commands.getKey((byte) 14, (byte) 1));
@@ -432,6 +432,34 @@ public class GP2xCommandsTest {
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
         commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateFailedWhenCardCryptogramError() throws CardException {
+        Commands commands = createCommands("/049-GP2xCommands-initialize-update-failed.txt");
+        commands.setOffCardKeys(keys.toArray(new SCKey[0]));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error verifying Card Cryptogram");
+        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+    }
+
+    @Test
+    public void testInitializeUpdateWhenKeyIdIs0AndScpUndefined() throws CardException {
+        Commands commands = createCommands("/048-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKeys(keys.toArray(new SCKey[0]));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 13, (byte) 0, SCPMode.SCP_UNDEFINED);
+        System.out.println("tada");
+    }
+
+    @Test
+    public void testInitializeUpdateWhenKeyIdIs0AndScp0115() throws CardException {
+        Commands commands = createCommands("/048-GP2xCommands-initialize-update-good.txt");
+        commands.setOffCardKeys(keys.toArray(new SCKey[0]));
+        RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
+        commands.initializeUpdate((byte) 13, (byte) 0, SCPMode.SCP_01_15);
     }
 
     @Test
@@ -789,13 +817,41 @@ public class GP2xCommandsTest {
         commands.installForLoad(packageAid, securityDomainAid, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testInstallForLoadFailIfPackageAidNull() throws CardException {
-        GP2xCommands commands = new GP2xCommands();
+    @Test
+    public void testInstallForLoadWithParamInferior128() throws CardException {
+        Commands commands = createCommands("/050-GP2xCommands-install-for-load-good.txt");
         byte[] packageAid = new byte[]{
             (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
-        commands.installForLoad(packageAid, null, null);
+        byte[] securityDomainAid = new byte[]{
+            (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        };
+        byte[] params = new byte[89];
+        commands.installForLoad(packageAid, securityDomainAid, params);
+    }
+
+    /*
+    @Test
+    public void testInstallForLoadWithParamSuperior128() throws CardException {
+        Commands commands = createCommands("/051-GP2xCommands-install-for-load-good.txt");
+        byte[] packageAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        byte[] securityDomainAid = new byte[]{
+            (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
+        };
+        byte[] params = new byte[178];
+        commands.installForLoad(packageAid, securityDomainAid, params);
+    }
+     */
+
+    @Test(expected = IllegalArgumentException.class)
+    public void testInstallForLoadFailIfPackageAidNull() throws CardException {
+        GP2xCommands commands = new GP2xCommands();
+        byte[] securityDomainAid = new byte[]{
+            (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
+        };
+        commands.installForLoad(null, securityDomainAid, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -909,6 +965,17 @@ public class GP2xCommandsTest {
     }
 
     @Test
+    public void testLoadFailWhenSWNot9000() throws CardException {
+        Commands commands = createCommands("/047-GP2xCommands-load-failed.txt");
+        File file = new File("src/test/resources/HelloWorld.cap");
+        byte maxDataLength = (byte) 0xFF;
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error in LOAD : 1000");
+        commands.load(file, maxDataLength);
+    }
+
+    @Test
     public void testInstallForInstallAndMakeSelectable() throws CardException {
         Commands commands = createCommands("/043-GP2xCommands-install-for-install-good.txt");
         byte[] loadFileAid = new byte[]{
@@ -976,6 +1043,27 @@ public class GP2xCommandsTest {
         byte[] privileges = new byte[]{
             0X01, 0x02, 0x03
         };
+        commands.installForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, null);
+    }
+
+    @Test
+    public void testInstallForInstallAndMakeSelectableFailWhenSWNot9000() throws CardException {
+        Commands commands = createCommands("/046-GP2xCommands-install-for-install-failed.txt");
+        byte[] loadFileAid = new byte[]{
+            (byte) 0xAA, 0x0A, 0x0A, 0x0A, 0x1A, 0x4A, 0x4A
+        };
+        byte[] moduleAid = new byte[]{
+            (byte) 0xAB, 0x0B, 0x0B, 0x0B, 0x1B, 0x4B, 0x4B
+        };
+        byte[] applicationAid = new byte[]{
+            (byte) 0xAC, 0x0C, 0x0C, 0x0C, 0x1C, 0x4C, 0x4C
+        };
+        byte[] privileges = new byte[]{
+            0X01, 0x02, 0x03
+        };
+
+        expectedException.expect(CardException.class);
+        expectedException.expectMessage("Error in INSTALL FOR INSTALL AND MAKE SELECTABLE : 1000");
         commands.installForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, null);
     }
 }
