@@ -9,7 +9,6 @@ import fr.xlim.ssd.opal.library.SessionState;
 import java.io.File;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
-import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 
 /**
