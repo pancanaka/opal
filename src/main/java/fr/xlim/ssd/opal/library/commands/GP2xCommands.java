@@ -816,10 +816,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (paramLength < 128) {
             paramLengthEncoded = new byte[1];
             paramLengthEncoded[0] = (byte) paramLength;
-        } else {
+        } else if(paramLength <= 255) {
             paramLengthEncoded = new byte[2];
             paramLengthEncoded[0] = (byte) 0x81;
             paramLengthEncoded[1] = (byte) paramLength;
+        } else {
+            throw new IllegalArgumentException("params must size must be <= 255");
         }
 
         int secDomLength = securityDomainAid.length;
