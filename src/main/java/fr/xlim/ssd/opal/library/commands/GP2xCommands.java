@@ -385,7 +385,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmd_extauth = new CommandAPDU(extAuthCmd);
         ResponseAPDU resp = this.cc.transmit(cmd_extauth);
 
-        logger.debug("INIT UPDATE command "
+        logger.debug("EXTERNAL AUTHENTICATE command "
                 + "(-> " + Conversion.arrayToHex(cmd_extauth.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
