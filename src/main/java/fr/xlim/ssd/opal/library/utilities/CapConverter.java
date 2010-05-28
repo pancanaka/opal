@@ -1,81 +1,109 @@
 package fr.xlim.ssd.opal.library.utilities;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.util.Enumeration;
+import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class CapConverter {
 
-    public static void createCapFromJar(File inputJar, File outputCap) {
+    private final static Logger logger = LoggerFactory.getLogger(CapConverter.class);
+
+    public static byte[] convert(File jarFile) {
+
+        if (jarFile == null) {
+            throw new IllegalArgumentException("jarFile must be not null");
+        }
+
+        byte components[][] = new byte[11][];
+        int size = 0;
+
         try {
-            ZipFile zf = new ZipFile(inputJar, 1);
+            JarFile zf = new JarFile(jarFile, false, JarFile.OPEN_READ);
             Enumeration listZe = zf.entries();
-            FileOutputStream fos = new FileOutputStream(outputCap);
-            byte tabout[][] = new byte[11][];
+
+
             while (listZe.hasMoreElements()) {
                 ZipEntry ze = (ZipEntry) listZe.nextElement();
-                byte b[] = new byte[(int) ze.getCompressedSize()];
+                int sizeEntry = (int) ze.getCompressedSize();
+                byte b[] = new byte[sizeEntry];
                 zf.getInputStream(ze).read(b);
+
                 switch (b[0]) {
                     case 1:
-                        tabout[0] = b;
+                        components[0] = b;
+                        size += sizeEntry;
                         break;
 
                     case 2:
-                        tabout[1] = b;
+                        components[1] = b;
+                        size += sizeEntry;
                         break;
 
                     case 3:
-                        tabout[3] = b;
+                        components[3] = b;
+                        size += sizeEntry;
                         break;
 
                     case 4:
-                        tabout[2] = b;
+                        components[2] = b;
+                        size += sizeEntry;
                         break;
 
                     case 5:
-                        tabout[8] = b;
+                        components[8] = b;
+                        size += sizeEntry;
                         break;
 
                     case 6:
-                        tabout[4] = b;
+                        components[4] = b;
+                        size += sizeEntry;
                         break;
 
                     case 7:
-                        tabout[5] = b;
+                        components[5] = b;
+                        size += sizeEntry;
                         break;
 
                     case 8:
-                        tabout[6] = b;
+                        components[6] = b;
+                        size += sizeEntry;
                         break;
 
                     case 9:
-                        tabout[9] = b;
+                        components[9] = b;
+                        size += sizeEntry;
                         break;
 
                     case 10:
-                        tabout[7] = b;
+                        components[7] = b;
+                        size += sizeEntry;
                         break;
 
                     case 11:
-                        tabout[10] = b;
+                        components[10] = b;
+                        size += sizeEntry;
                         break;
                 }
             }
-            for (int i = 0; i < tabout.length; i++) {
-                if (tabout[i] != null) {
-                    fos.write(tabout[i]);
-                }
-            }
-
             zf.close();
+        } catch (IOException ex) {
+            logger.error("Cannot detect card presence", ex);
+            return null;
         }
-        catch (IOException e) {
-            e.printStackTrace();
-            System.exit(1);
+
+        ByteBuffer buffer = ByteBuffer.allocate(size);
+
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] != null) {
+                buffer.put(components[i]);
+            }
         }
+
+        return buffer.array();
     }
 }
