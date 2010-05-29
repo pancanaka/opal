@@ -141,7 +141,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    ResponseAPDU[] load(File capFile) throws CardException;
+    ResponseAPDU[] load(byte[] capFile) throws CardException;
 
     /**
      * @param capFile
@@ -149,7 +149,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    ResponseAPDU[] load(File capFile, byte maxDataLength)
+    ResponseAPDU[] load(byte[] capFile, byte maxDataLength)
             throws CardException;
 
     /**

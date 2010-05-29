@@ -6,6 +6,8 @@
  */
 package fr.xlim.ssd.opal.library.tester;
 
+import fr.xlim.ssd.opal.library.FileType;
+import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
@@ -117,6 +119,10 @@ public class Main {
         securityDomain.select();
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         securityDomain.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+
+        securityDomain.getStatus(FileType.LOAD_FILES_AND_MODULES, GetStatusResponseMode.OLD_TYPE, null);
+
+        securityDomain.getCc().close();
 
         /*
         a.deleteOnCardObj(Conversion.hexToArray("656E73696D6167747030337075727365"), false);

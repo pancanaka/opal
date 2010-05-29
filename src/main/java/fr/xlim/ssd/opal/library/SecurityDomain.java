@@ -58,7 +58,7 @@ public class SecurityDomain extends GPApplet {
      * @return
      * @throws CardException
      */
-    public ResponseAPDU[] load(File capFile) throws CardException {
+    public ResponseAPDU[] load(byte[] capFile) throws CardException {
         return this.cmds.load(capFile, (byte) 0xF0);
     }
 
@@ -68,7 +68,7 @@ public class SecurityDomain extends GPApplet {
      * @return
      * @throws CardException
      */
-    public ResponseAPDU[] load(File capFile, byte maxDataLength) throws CardException {
+    public ResponseAPDU[] load(byte[] capFile, byte maxDataLength) throws CardException {
         return this.cmds.load(capFile, maxDataLength);
     }
 

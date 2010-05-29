@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.library.commands;
 
+import java.io.FileNotFoundException;
 import static org.junit.Assert.*;
 
 import fr.xlim.ssd.opal.library.FileType;
@@ -14,6 +15,7 @@ import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -926,15 +928,19 @@ public class GP2xCommandsTest {
     }
 
     @Test
-    public void testLoad() throws CardException {
+    public void testLoad() throws CardException, FileNotFoundException, IOException {
         Commands commands = createCommands("/040-GP2xCommands-load-good.txt");
         File file = new File("src/test/resources/HelloWorld.cap");
         byte maxDataLength = (byte) 0xFF;
-        commands.load(file, maxDataLength);
+
+        byte[] buffer = new byte[(int)file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(buffer);
+        commands.load(buffer, maxDataLength);
     }
 
     @Test
-    public void testLoadWithCMac() throws CardException {
+    public void testLoadWithCMac() throws CardException, FileNotFoundException, IOException {
         GP2xCommands commands = createCommands("/041-GP2xCommands-load-good.txt");
         File file = new File("src/test/resources/HelloWorld.cap");
         commands.secMode = SecLevel.C_MAC;
@@ -943,11 +949,15 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
-        commands.load(file);
+
+        byte[] buffer = new byte[(int)file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(buffer);
+        commands.load(buffer);
     }
 
     @Test
-    public void testLoadWithCEncAndMac() throws CardException {
+    public void testLoadWithCEncAndMac() throws CardException, FileNotFoundException, IOException {
         GP2xCommands commands = createCommands("/042-GP2xCommands-load-good.txt");
         File file = new File("src/test/resources/HelloWorld.cap");
         commands.secMode = SecLevel.C_ENC_AND_MAC;
@@ -961,18 +971,26 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
-        commands.load(file);
+
+        byte[] buffer = new byte[(int)file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(buffer);
+        commands.load(buffer);
     }
 
     @Test
-    public void testLoadFailWhenSWNot9000() throws CardException {
+    public void testLoadFailWhenSWNot9000() throws CardException, FileNotFoundException, IOException {
         Commands commands = createCommands("/047-GP2xCommands-load-failed.txt");
         File file = new File("src/test/resources/HelloWorld.cap");
         byte maxDataLength = (byte) 0xFF;
 
+        byte[] buffer = new byte[(int)file.length()];
+        FileInputStream fis = new FileInputStream(file);
+        fis.read(buffer);
+
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in LOAD : 1000");
-        commands.load(file, maxDataLength);
+        commands.load(buffer, maxDataLength);
     }
 
     @Test

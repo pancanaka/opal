@@ -900,7 +900,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @see fr.xlim.ssd.opal.commands.Commands#load(java.io.File)
      */
     @Override
-    public ResponseAPDU[] load(File capFile) throws CardException {
+    public ResponseAPDU[] load(byte[] capFile) throws CardException {
         return this.load(capFile, (byte) 0xF0);
     }
 
@@ -908,23 +908,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @see fr.xlim.ssd.opal.commands.Commands#load(java.io.File, byte)
      */
     @Override
-    public ResponseAPDU[] load(File capFile, byte maxDataLength) throws CardException {
+    public ResponseAPDU[] load(byte[] capFile, byte maxDataLength) throws CardException {
         List<ResponseAPDU> responses = new LinkedList<ResponseAPDU>();
-        int capFileRemainLen = (int) capFile.length();
+        int capFileRemainLen = capFile.length;
         ByteBuffer buffer = null;
-        FileInputStream fis = null;
 
-        try {
-            fis = new FileInputStream(capFile);
-            FileChannel fc = fis.getChannel();
-            int sz = (int) fc.size();
-            buffer = fc.map(FileChannel.MapMode.READ_ONLY, 0, sz);
-            buffer.order(ByteOrder.LITTLE_ENDIAN);
-        } catch (FileNotFoundException ex) {
-            throw new IllegalArgumentException("CAP file not found", ex);
-        } catch (IOException ex) {
-            throw new IllegalArgumentException("IO exception when reading CAP file", ex);
-        }
+        buffer = ByteBuffer.wrap(capFile);
+        buffer.order(ByteOrder.LITTLE_ENDIAN);
 
         int cMacLen = 0;                // Size of C-MAC (unused by default)
         int headerLen = 5;
@@ -1007,9 +997,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             cmd[3] = (byte) i;
 
             if (this.getSecMode() != SecLevel.NO_SECURITY_LEVEL) {
-                byte[] data_cmac = new byte[cmd.length - 8];                // data used to generate C-MAC
-                System.arraycopy(cmd, 0, data_cmac, 0, data_cmac.length);   // data used to generate C-MAC
-                byte[] cmac = this.generateMac(data_cmac);                  // generate C-MAC
+                byte[] data_cmac = new byte[cmd.length - 8];                  // data used to generate C-MAC
+                System.arraycopy(cmd, 0, data_cmac, 0, data_cmac.length);      // data used to generate C-MAC
+                byte[] cmac = this.generateMac(data_cmac);                    // generate C-MAC
                 System.arraycopy(cmac, 0, cmd, data_cmac.length, cmac.length); // put C-MAC into installForLoadComm
             }
 
