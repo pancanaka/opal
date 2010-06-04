@@ -14,6 +14,9 @@ import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+import fr.xlim.ssd.opal.library.utilities.CapConverter;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.util.List;
 
 import javax.smartcardio.ATR;
@@ -23,6 +26,8 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CardTerminal;
 import javax.smartcardio.TerminalFactory;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import java.io.File;
+import java.io.FileInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +107,7 @@ public class Main {
         return channel;
     }
 
-    public static void main(String[] args) throws CardException, CardConfigNotFoundException, CommandsImplementationNotFound, ClassNotFoundException {
+    public static void main(String[] args) throws CardException, CardConfigNotFoundException, CommandsImplementationNotFound, ClassNotFoundException, FileNotFoundException, IOException {
 
 
         CardConfig cardConfig = CardConfigFactory.getCardConfig("Oberthur");
@@ -118,17 +123,26 @@ public class Main {
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         securityDomain.select();
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
-        securityDomain.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        securityDomain.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
 
-        securityDomain.getStatus(FileType.LOAD_FILES_AND_MODULES, GetStatusResponseMode.OLD_TYPE, null);
-
-        securityDomain.getCc().close();
+        /*
+        securityDomain.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
+        securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
+        securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
+        */
 
         /*
         a.deleteOnCardObj(Conversion.hexToArray("656E73696D6167747030337075727365"), false);
-        a.deleteOnCardObj(Conversion.hexToArray("656E73696D616774703033"), false);
-        a.installForLoad(Conversion.hexToArray("656E73696D616774703033"), null, null);
-        a.load(new File("C:\\java_card_kit-2_1_2\\damsApplet03.cap"));
+        securityDomain.deleteOnCardObj(Conversion.hexToArray("A00000006203010C0101"), false);
+         */
+
+        securityDomain.installForLoad(Conversion.hexToArray("A00000006203010C01"), null, null);
+
+        File file = new File("/home/kartoch/works/javacard/docs/2.2.2/java_card_kit-2_2_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");        
+        byte[] convertedBuffer = CapConverter.convert(file);
+        securityDomain.load(convertedBuffer);
+        
+        /*
         a.installForInstallAndMakeSelectable(Conversion.hexToArray("656E73696D616774703033"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("00"), null);
         a.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
          */

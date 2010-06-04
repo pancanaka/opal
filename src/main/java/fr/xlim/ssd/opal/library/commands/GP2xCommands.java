@@ -964,6 +964,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             nbBlock = ((capFileRemainLen - dataSizeInFirstCommand) / dataBlockSize) + 2;
         }
 
+        logger.debug("number of block is " + nbBlock);
+
         byte[] cmd = null;
 
         for (int i = 0; i < nbBlock; i++) {
@@ -1017,7 +1019,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             responses.add(resp);
             if (resp.getSW() != 0x9000) {
-                throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
+                System.out.println("response:" + resp.getSW());
+                //throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
         }
         ResponseAPDU[] r = new ResponseAPDU[responses.size()];
