@@ -1,0 +1,28 @@
+            ------
+         OPAL: Roadmap
+            ------
+      Julien Iguchi-Cartigny
+            ------
+      Last revision: 2010-06-15
+
+
+0.1 (DONE)
+
+  * First version
+
+0.2 (TARGET)
+
+  * Unit tests (DONE)
+  * Trace for each development cards:
+    * Gemalto
+    * Oberthur
+    * JCOP
+
+Notes for next versions
+
+  * Get rid of special "implementation" objects: CardConfigFactory instantiate
+specific classes for each card, each one implementing generic interfaces
+  * Explicit error messages when command failed (translation between error code
+and string messages)
+  * Card could require specific version of javacard version in applet (2.1,
+2.2...), need to check before sending to a card

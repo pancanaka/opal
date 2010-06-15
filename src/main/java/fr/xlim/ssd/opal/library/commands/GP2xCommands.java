@@ -1019,8 +1019,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             responses.add(resp);
             if (resp.getSW() != 0x9000) {
-                System.out.println("response:" + resp.getSW());
-                //throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
+                throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
         }
         ResponseAPDU[] r = new ResponseAPDU[responses.size()];

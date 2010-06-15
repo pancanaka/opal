@@ -28,6 +28,7 @@ import javax.smartcardio.TerminalFactory;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -125,23 +126,46 @@ public class Main {
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         securityDomain.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
 
-        /*
         securityDomain.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
         securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
         securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
-        */
 
         /*
+        securityDomain.getStatus(FileType.NOT_STANDARD_0x70, GetStatusResponseMode.OLD_TYPE, null);
+
         a.deleteOnCardObj(Conversion.hexToArray("656E73696D6167747030337075727365"), false);
         securityDomain.deleteOnCardObj(Conversion.hexToArray("A00000006203010C0101"), false);
-         */
 
         securityDomain.installForLoad(Conversion.hexToArray("A00000006203010C01"), null, null);
 
-        File file = new File("/home/kartoch/works/javacard/docs/2.2.2/java_card_kit-2_2_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");        
+        File file = new File("/home/kartoch/works/javacard/docs/2.2.2/java_card_kit-2_2_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");
+        */
+
+//        securityDomain.deleteOnCardObj(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E"), false);
+//        securityDomain.deleteOnCardObj(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E 61 70 70"), false);
+
+/*        securityDomain.deleteOnCardObj(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E"), false);
+        securityDomain.installForLoad(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E"), null, null);
+*/
+
+
+/*
+        File file = new File("/home/kartoch/works/javacard/docs/MyApplet1.cap");
         byte[] convertedBuffer = CapConverter.convert(file);
         securityDomain.load(convertedBuffer);
+*/
+
+        securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), false);
+/*
+        securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01"), false);
+ */
+        securityDomain.installForLoad(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), null, null);
+
         
+        File file = new File("/home/kartoch/works/java/opal/docs/javacard-2_1_2/java_card_kit-2_1_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");
+        byte[] convertedBuffer = CapConverter.convert(file);
+        securityDomain.load(convertedBuffer,(byte)0x10);
+
         /*
         a.installForInstallAndMakeSelectable(Conversion.hexToArray("656E73696D616774703033"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("00"), null);
         a.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
