@@ -163,7 +163,8 @@ public class Main {
 
         
         File file = new File("/home/kartoch/works/java/opal/docs/javacard-2_1_2/java_card_kit-2_1_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");
-        byte[] convertedBuffer = CapConverter.convert(file);
+        InputStream is = new FileInputStream(file);
+        byte[] convertedBuffer = CapConverter.convert(is);
         securityDomain.load(convertedBuffer,(byte)0x10);
 
         /*

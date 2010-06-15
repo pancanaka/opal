@@ -1,11 +1,10 @@
 package fr.xlim.ssd.opal.library.utilities;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.Enumeration;
-import java.util.jar.JarFile;
 import java.util.zip.ZipEntry;
+import java.util.zip.ZipInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,25 +12,24 @@ public class CapConverter {
 
     private final static Logger logger = LoggerFactory.getLogger(CapConverter.class);
 
-    public static byte[] convert(File jarFile) {
+    public static byte[] convert(InputStream is) {
 
-        if (jarFile == null) {
-            throw new IllegalArgumentException("jarFile must be not null");
+        if (is == null) {
+            throw new IllegalArgumentException("is must be not null");
         }
 
         byte components[][] = new byte[11][];
         int size = 0;
 
         try {
-            JarFile zf = new JarFile(jarFile, false, JarFile.OPEN_READ);
-            Enumeration listZe = zf.entries();
+            ZipInputStream jis = new ZipInputStream(is);
 
+            ZipEntry ze = jis.getNextEntry();
 
-            while (listZe.hasMoreElements()) {
-                ZipEntry ze = (ZipEntry) listZe.nextElement();
+            while (ze != null) {
                 int sizeEntry = (int) ze.getCompressedSize();
                 byte b[] = new byte[sizeEntry];
-                zf.getInputStream(ze).read(b);
+                jis.read(b);
 
                 switch (b[0]) {
                     case 1:
@@ -89,10 +87,12 @@ public class CapConverter {
                         size += sizeEntry;
                         break;
                 }
+
+                ze = jis.getNextEntry();
             }
-            zf.close();
+            jis.close();
         } catch (IOException ex) {
-            logger.error("Cannot detect card presence", ex);
+            logger.error("Cannot open or read capfile", ex);
             return null;
         }
 

@@ -1,6 +1,9 @@
 package fr.xlim.ssd.opal.library.utilities;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import static org.junit.Assert.*;
 
 import org.junit.Test;
@@ -49,9 +52,10 @@ public class CapConverterTest {
      };
 
     @Test
-    public void testConvert() {
+    public void testConvert() throws FileNotFoundException {
         File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
-        byte[] result = CapConverter.convert(file);
+        InputStream is = new FileInputStream(file);
+        byte[] result = CapConverter.convert(is);
         System.out.println(Conversion.arrayToHex(result));
         assertArrayEquals(expected, result);
     }
