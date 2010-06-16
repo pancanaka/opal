@@ -155,14 +155,18 @@ public class Main {
         securityDomain.load(convertedBuffer);
 */
 
-        securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), false);
 /*
         securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01"), false);
  */
+//        securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), false);
         securityDomain.installForLoad(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), null, null);
 
         
-        File file = new File("/home/kartoch/works/java/opal/docs/javacard-2_1_2/java_card_kit-2_1_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");
+//        File file = new File("/home/kartoch/works/java/opal/docs/javacard-2_1_2/java_card_kit-2_1_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");
+//        InputStream is = new FileInputStream(file);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
         securityDomain.load(convertedBuffer,(byte)0x10);
