@@ -3,7 +3,7 @@
             ------
       Julien Iguchi-Cartigny
             ------
-      Last revision: 2010-06-15
+      Last revision: 2010-06-16
 
 
 0.1 (DONE)
@@ -20,7 +20,7 @@
 
 Notes for next versions
 
-  * Get rid of special "implementation" objects: CardConfigFactory instantiate
+  * Get rid of special "implementation" objects: CardConfigFactory instantiates
 specific classes for each card, each one implementing generic interfaces
   * Explicit error messages when command failed (translation between error code
 and string messages)
