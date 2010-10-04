@@ -7,7 +7,6 @@
 package fr.xlim.ssd.opal.library.tester;
 
 import fr.xlim.ssd.opal.library.FileType;
-import fr.xlim.ssd.opal.library.GPApplet;
 import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SecurityDomain;
@@ -128,39 +127,9 @@ public class Main {
         securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
         securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
 
-        /*
-        securityDomain.getStatus(FileType.NOT_STANDARD_0x70, GetStatusResponseMode.OLD_TYPE, null);
-
-        a.deleteOnCardObj(Conversion.hexToArray("656E73696D6167747030337075727365"), false);
-        securityDomain.deleteOnCardObj(Conversion.hexToArray("A00000006203010C0101"), false);
-
-        securityDomain.installForLoad(Conversion.hexToArray("A00000006203010C01"), null, null);
-
-        File file = new File("/home/kartoch/works/javacard/docs/2.2.2/java_card_kit-2_2_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");
-         */
-
-//        securityDomain.deleteOnCardObj(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E"), false);
-//        securityDomain.deleteOnCardObj(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E 61 70 70"), false);
-
-        /*        securityDomain.deleteOnCardObj(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E"), false);
-        securityDomain.installForLoad(Conversion.hexToArray("6C 69 6D 6F 67 65 73 65 6D 61 6E"), null, null);
-         */
-
-
-        /*
-        File file = new File("/home/kartoch/works/javacard/docs/MyApplet1.cap");
-        byte[] convertedBuffer = CapConverter.convert(file);
-        securityDomain.load(convertedBuffer);
-         */
-
-        /*
-        securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01"), false);
-         */
         securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), false);
         securityDomain.installForLoad(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), null, null);
 
-//        File file = new File("/home/kartoch/works/java/opal/docs/javacard-2_1_2/java_card_kit-2_1_2/samples/classes/com/sun/javacard/samples/HelloWorld/javacard/HelloWorld.cap");
-//        InputStream is = new FileInputStream(file);
         File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
 
         InputStream is = new FileInputStream(file);
@@ -171,13 +140,5 @@ public class Main {
                 Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01 7075727365"),
                 Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01 7075727365"),
                 Conversion.hexToArray("00"), null);
-        /*
-        GPApplet helloApplet = new GPApplet(cardConfig.getImplementation(), channel, Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01"));
-        helloApplet.select();
-         */
-        /*
-        a.installForInstallAndMakeSelectable(Conversion.hexToArray("656E73696D616774703033"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("656E73696D6167747030337075727365"), Conversion.hexToArray("00"), null);
-        a.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
-         */
     }
 }
