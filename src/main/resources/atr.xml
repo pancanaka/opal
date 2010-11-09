@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <cards>
-    <card ATR="">
-        <config></config>
-        <description></description>
+    <card ATR="3B 65 00 00 44 04 01 08 03">
+        <config>Cyberflex_Palmera_V3</config>
+        <description>Cyberflex Palmera V3</description>
     </card>
 </cards>

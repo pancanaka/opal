@@ -13,6 +13,7 @@ import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
+import fr.xlim.ssd.opal.library.params.CardConfigFactoryWithATR;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import java.io.FileNotFoundException;
@@ -29,6 +30,8 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -108,13 +111,16 @@ public class Main {
     public static void main(String[] args) throws CardException, CardConfigNotFoundException, CommandsImplementationNotFound, ClassNotFoundException, FileNotFoundException, IOException {
 
 
-        CardConfig cardConfig = CardConfigFactory.getCardConfig("Oberthur");
+        //CardConfig cardConfig = CardConfigFactory.getCardConfig("Cyberflex");
 
         CardChannel channel = getCardChannel(0, "T=0");
 
         if (channel == null) {
             logger.error("Cannot access to the card");
         }
+
+        //CardConfig cardConfig = CardConfigFactory.getCardConfig( CardConfigFactoryWithATR.getCardConfig(Conversion.hexToArray("3B 65 00 00 44 04 01 08 03")) );
+        CardConfig cardConfig = CardConfigFactory.getCardConfig( "JCOP30" );
 
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel, cardConfig.getIssuerSecurityDomainAID());
 
@@ -127,8 +133,27 @@ public class Main {
         securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
         securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
 
-        securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), false);
-        securityDomain.installForLoad(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), null, null);
+        //System.exit(0);
+
+        // Delete Applet
+        try {
+            securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), false);
+        } catch (Exception e) {
+            System.err.println("Unable to delete applet");
+        }
+        
+        // Delete package
+        try {
+            securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01"), false);
+        } catch (Exception e) {
+            System.err.println("Unable to delete package");
+        }
+
+//        securityDomain.deleteOnCardObj(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"), false);
+
+        System.exit(0);
+  
+        securityDomain.installForLoad(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01"), null, null);
 
         File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
 
@@ -136,9 +161,10 @@ public class Main {
         byte[] convertedBuffer = CapConverter.convert(is);
         securityDomain.load(convertedBuffer, (byte) 0x10);
 
-        securityDomain.installForInstallAndMakeSelectable(Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"),
-                Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01 7075727365"),
-                Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01 7075727365"),
+        securityDomain.installForInstallAndMakeSelectable(
+                Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01"),
+                Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"),
+                Conversion.hexToArray("A0 00 00 00 62 03 01 0C 01 01"),
                 Conversion.hexToArray("00"), null);
     }
 }
