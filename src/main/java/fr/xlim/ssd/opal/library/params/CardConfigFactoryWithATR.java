@@ -60,8 +60,6 @@ public class CardConfigFactoryWithATR {
 
             config = getConfig(desiredCard);
 
-            logger.debug(config);
-
         } catch (IOException e) {
             throw new CardConfigNotFoundException("cannot read the atr.xml file");
         } catch (SAXException e) {

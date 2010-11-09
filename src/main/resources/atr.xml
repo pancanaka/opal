@@ -5,4 +5,20 @@
         <config>Cyberflex_Palmera_V3</config>
         <description>Cyberflex Palmera V3</description>
     </card>
+    <card ATR="3B 7D 11 00 00 00 31 80 71 8E 64 52 D9 34 00 82 90 00">
+        <config>Oberthur</config>
+        <description>An Oberthur Smartcard</description>
+    </card>
+    <card ATR="3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 82 90 00">
+        <config>Oberthur_Cosmo_Dual_72k</config>
+        <description>Oberthur Cosmo Dual 72k</description>
+    </card>
+    <card ATR="3B 6D 00 00 80 31 80 65 B0 07 02 02 89 83 00 90 00">
+        <config>GemCombiXpresso_Lite_R2_Std_Jcop30</config>
+        <description>GemCombiXpresso Lite R2 Std Jcop30</description>
+    </card>
+    <card ATR="3B 6D 00 00 80 31 80 65 40 90 86 01 51 83 07 90 00">
+        <config>Infineon_JTOP_V2_16k</config>
+        <description>Infineon JTOP V2 16k</description>
+    </card>
 </cards>
