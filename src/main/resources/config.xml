@@ -29,7 +29,8 @@
             <key type="SCGemVisa2" keyVersionNumber="255" keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
         </defaultKeys>
     </card>
-    <card name="JCOP" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+
+    <card name="JCOP21" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=1"/>
@@ -44,7 +45,9 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key type="SCGemVisa2" keyVersionNumber="255" keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
         </defaultKeys>
     </card>
     <card name="Oberthur" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
@@ -57,7 +60,7 @@
             <key type="DES_ECB" keyVersionNumber="255" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
         </defaultKeys>
     </card>
-    <card name="Smartcafe_Expert_64_V2" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+    <card name="Sm@rtcafe_Expert_64_V2" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -89,6 +92,16 @@
     </card>
     <card name="Cyberflex_Palmera_V3" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
         <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="01_05"/>
+        <transmissionProtocol value="T=0"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="1" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="2" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
+    <card name="Cyberflex_Access_Augmented_Crypto" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 01 51 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>

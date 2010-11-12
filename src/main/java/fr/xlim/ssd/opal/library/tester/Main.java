@@ -36,6 +36,7 @@ import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.regex.Pattern;
+import javax.smartcardio.CardTerminals.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,19 +45,17 @@ public class Main {
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
     private final static int TIMEOUT_CARD_PRESENT = 1000;
     private final static byte[] HELLO_WORLD = { // "HELLO"
-        (byte)'H' , (byte)'E' , (byte)'L' , (byte)'L' , (byte)'O'
+        (byte) 'H', (byte) 'E', (byte) 'L', (byte) 'L', (byte) 'O'
     };
-
     private final static byte[] APPLET_ID = {
-        (byte)0xA0 , (byte)0x00 , (byte)0x00 , (byte)0x00 , (byte)0x62 ,
-        (byte)0x03 , (byte)0x01 , (byte)0x0C , (byte)0x01 , (byte)0x01
+        (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x62,
+        (byte) 0x03, (byte) 0x01, (byte) 0x0C, (byte) 0x01, (byte) 0x01
     };
     private final static byte[] PACKAGE_ID = {
-        (byte)0xA0 , (byte)0x00 , (byte)0x00 ,
-        (byte)0x00 , (byte)0x62 , (byte)0x03 ,
-        (byte)0x01 , (byte)0x0C , (byte)0x01
+        (byte) 0xA0, (byte) 0x00, (byte) 0x00,
+        (byte) 0x00, (byte) 0x62, (byte) 0x03,
+        (byte) 0x01, (byte) 0x0C, (byte) 0x01
     };
-
     private static CardChannel channel;
 
     private static CardConfig getCardChannel(int cardTerminalIndex,
@@ -67,7 +66,7 @@ public class Main {
         List<CardTerminal> terminals;
 
         try {
-            terminals = factory.terminals().list();
+            terminals = factory.terminals().list(State.ALL);
         } catch (CardException ex) {
             logger.error("Cannot get list of terminals", ex);
             return null;
@@ -84,7 +83,7 @@ public class Main {
 
         if (terminals.size() == 1) {
             cardTerminalIndex = 0;
-        } else if (terminals.size() >= cardTerminalIndex) {
+        } else if (terminals.size() < cardTerminalIndex) {
             logger.error("Card terminal index not available: " + cardTerminalIndex);
             return null;
         }
@@ -131,14 +130,14 @@ public class Main {
         } catch (CardConfigNotFoundException ex) {
             logger.error(ex.getMessage());
         }
-        
+
         return null;
 
     }
 
     public static void main(String[] args) throws CardException, CardConfigNotFoundException, CommandsImplementationNotFound, ClassNotFoundException, FileNotFoundException, IOException {
 
-        channel = null ;
+        channel = null;
 
         CardConfig cardConfig = getCardChannel(0, "T=0");
 
@@ -169,9 +168,9 @@ public class Main {
                 }
             }
         } catch (Exception e) {
-            logger.debug("There is no installed Applet in this samrt card");
+            logger.debug("There is not installed Applet in this smart card");
         }
-        
+
         // Deleting package if existed
         try {
             ResponseAPDU[] resps = securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
@@ -183,8 +182,10 @@ public class Main {
                 }
             }
         } catch (Exception e) {
-            logger.debug("There is no installed Applet in this samrt card");
+            logger.debug("There is not installed Applet in this samrt card");
         }
+
+        //System.exit(0);
 
         // Installing Applet
         securityDomain.installForLoad(PACKAGE_ID, null, null);
@@ -200,33 +201,31 @@ public class Main {
                 Conversion.hexToArray("00"), null);
 
         // Selecting Applet
-        CommandAPDU select = new CommandAPDU
-                ( (byte) 0x00   // CLA
-                , (byte) 0xA4   // INS
-                , (byte) 0x04   // P1
-                , (byte) 0x00   // P2
-                , APPLET_ID     // DATA
-                ) ;
-        ResponseAPDU resp = securityDomain.send( select );
+        CommandAPDU select = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0xA4 // INS
+                , (byte) 0x04 // P1
+                , (byte) 0x00 // P2
+                , APPLET_ID // DATA
+                );
+        ResponseAPDU resp = securityDomain.send(select);
         logger.debug("Select Hello World Applet "
                 + "(-> " + Conversion.arrayToHex(select.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         // Using Applet
-        CommandAPDU hello = new CommandAPDU
-                ( (byte) 0x00   // CLA
-                , (byte) 0x00   // INS
-                , (byte) 0x00   // P1
-                , (byte) 0x00   // P2
-                , HELLO_WORLD   // DATA
-                ) ;
-        resp = securityDomain.send( hello );
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+                );
+        resp = securityDomain.send(hello);
 
         logger.debug("Say \"Hello\" "
                 + "(-> " + Conversion.arrayToHex(hello.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getData()) + ")");
 
-        if ( Arrays.equals( hello.getBytes() , resp.getData() ) ) {
+        if (Arrays.equals(hello.getBytes(), resp.getData())) {
             logger.info("Hello OK");
         } else {
             logger.error("Hello FAIL");
