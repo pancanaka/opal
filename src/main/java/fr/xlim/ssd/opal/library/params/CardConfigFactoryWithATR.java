@@ -94,4 +94,28 @@ public class CardConfigFactoryWithATR {
 
         return config;
     }
+
+    /**
+     * Get the value between config tags from an element in the atr.xml
+     * @param atr  an element in the atr.xml
+     * @return      a byte array with the name of configuration for an smart card
+     */
+    private static String getDescription(Element atr) throws CardConfigNotFoundException {
+
+        NodeList child = atr.getChildNodes();
+        String description = null;
+
+        for (int i = 0; i < child.getLength(); ++i) {
+            Node node = child.item(i);
+            if (node.getNodeName().equals("description")) {
+                description = node.getTextContent();
+            }
+        }
+
+        if (description == null) {
+            throw new CardConfigNotFoundException("Configuration value not found");
+        }
+
+        return description;
+    }
 }

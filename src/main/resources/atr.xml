@@ -39,9 +39,9 @@
         <description>Infineon JTOP V2 16k</description>
     </card>
     
-    <card ATR="3B 66 00 FF 4A 43 4F 50 33 30">
-        <config>JCOP31</config>
-        <description>JCOP31</description>
+    <card ATR="3B EB 00 00 81 31 20 45 4A 43 4F 50 33 31 33 36 47 44 54 78">
+        <config>NXP_JCOP_31V2.2_36K</config>
+        <description>NXP JCOP 31V2.2 36K</description>
     </card>
 
     <!-- NFC version of JCOP31 -->
