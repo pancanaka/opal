@@ -14,7 +14,7 @@ public class Conversion {
      * @return the output string
      */
     public static String arrayToHex(byte[] data) {
-        StringBuffer sb = new StringBuffer();
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
             String bs = Integer.toHexString(data[i] & 0xFF).toUpperCase();
             if (bs.length() == 1) {

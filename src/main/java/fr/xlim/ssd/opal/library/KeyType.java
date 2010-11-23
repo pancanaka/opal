@@ -6,7 +6,8 @@ package fr.xlim.ssd.opal.library;
  */
 public enum KeyType {
 
-    DES_ECB((byte) 0x82),
+    DES_ECB((byte) 0x83),   // DES in ECB mode
+    DES_CBC((byte) 0x84),   // DES in CBC mode
     MOTHER_KEY((byte) 0x00);
     private byte value;
 

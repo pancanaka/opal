@@ -6,7 +6,6 @@ import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SessionState;
-import java.io.File;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.ResponseAPDU;

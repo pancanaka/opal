@@ -35,8 +35,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * @author dede
- *
+ * @author Damien Arcuset, Eric Linke
+ * @author Guillaume Bouffard
  */
 public class GP2xCommands extends AbstractCommands implements Commands {
 
@@ -500,9 +500,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             int nbBytes = 8 - (data.length % 8);
             dataWithPadding = new byte[data.length + nbBytes];
             System.arraycopy(data, 0, dataWithPadding, 0, data.length);
-            for (int i = 0; i < nbBytes; i++) {
-                dataWithPadding[data.length + i] = GP2xCommands.padding[i];
-            }
+            System.arraycopy(GP2xCommands.padding, 0, dataWithPadding, data.length, nbBytes);
         } else {
             dataWithPadding = new byte[data.length + 8];
             System.arraycopy(data, 0, dataWithPadding, 0, data.length);
@@ -556,9 +554,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             datas = new byte[dataLength + nbBytes];
             System.arraycopy(command, 4, datas, 0, dataLength); // copies LC + DATAFIELD from command
             datas[0] = (byte) (datas.length - 1 - nbBytes); // update the "pseudo" LC with the length of the original clear text
-            for (int i = 0; i < nbBytes; i++) { // add necessary padding
-                datas[dataLength + i] = GP2xCommands.padding[i];
-            }
+            System.arraycopy(GP2xCommands.padding, 0, datas, dataLength, nbBytes); // add necessary padding
         }
         Cipher myCipher;
         try {

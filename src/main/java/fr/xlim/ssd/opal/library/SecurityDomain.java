@@ -1,7 +1,5 @@
 package fr.xlim.ssd.opal.library;
 
-import java.io.File;
-
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.ResponseAPDU;
