@@ -80,4 +80,9 @@
         <config>Sm@rtcafe_Expert_64_V2</config>
         <description>Sm@rtcafe Expert 64 V2</description>
     </card>
+
+    <card ATR="3B 9F 96 C0 0A 3F C7 A0 80 31 E0 73 FE 21 1B 63 F1 00 E8 83 00 90 00 14">
+        <config>mNF1.2/SCWS</config>
+        <description>mNF1.2/SCWS</description>
+    </card>
 </cards>

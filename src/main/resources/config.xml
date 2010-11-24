@@ -127,14 +127,14 @@
             <key type="DES_ECB" keyVersionNumber="01" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
         </defaultKeys>
     </card>
-    <card name="nfc_1.2" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-        <isdAID value="09 74 69 63 6B 65 74 69 6E 67 00"/>
+    <card name="mNF1.2/SCWS" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 18 43 4D 08 09 0A 0B 0C 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key type="DES_ECB" keyVersionNumber="01" keyId="1" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-            <key type="DES_ECB" keyVersionNumber="01" keyId="2" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-            <key type="DES_ECB" keyVersionNumber="01" keyId="3" keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="1" keyDatas="11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11"/>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="2" keyDatas="22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22"/>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="3" keyDatas="33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33"/>
         </defaultKeys>
     </card>
 </cardsconfig>
