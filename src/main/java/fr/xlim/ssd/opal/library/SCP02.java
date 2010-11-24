@@ -5,9 +5,11 @@
 
 package fr.xlim.ssd.opal.library;
 
+import fr.xlim.ssd.opal.library.commands.AbstractCommands;
 import fr.xlim.ssd.opal.library.commands.GP2xCommands;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
@@ -21,6 +23,7 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.smartcardio.CardException;
+import javax.smartcardio.CommandAPDU;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import javax.smartcardio.ResponseAPDU;
@@ -29,7 +32,7 @@ import javax.smartcardio.ResponseAPDU;
  * Implementation Of SCP 02
  * @author Guillaume Bouffard
  */
-public class SCP02 {
+public class SCP02 extends AbstractCommands {
 
     protected static final Logger logger = LoggerFactory.getLogger(SCP02.class);
     protected static final byte[] padding = Conversion.hexToArray("80 00 00 00 00 00 00 00");
@@ -91,7 +94,7 @@ public class SCP02 {
     }
 
 
-    public void initializeUpdate (SecurityDomain securityDomain, CardConfig cardConfig) {
+    public ResponseAPDU initializeUpdate (SecurityDomain securityDomain, CardConfig cardConfig) throws CardException {
 
         /*
          * Mock Implementation:
@@ -113,12 +116,15 @@ public class SCP02 {
         this.securityDomain = securityDomain;
         this.cardConfig     = cardConfig;
         this.scp            = cardConfig.getScpMode();
+        this.cc             = securityDomain.getCc();
 
         this.S_ENC = (this.cardConfig.getSCKeys()[0]).getData();
         this.S_MAC = (this.cardConfig.getSCKeys()[1]).getData();
         this.DEK   = (this.cardConfig.getSCKeys()[2]).getData();
 
         /* INIT UPDATE */
+
+        /*
         this.hostChallenge        = Conversion.hexToArray ( "21 69 53 99 73 EC 89 3A" ) ;
         ResponseAPDU InitUpdateResp = new ResponseAPDU
                 ( Conversion.hexToArray ( "00 00 81 58 03 12 20 91 38 27 FF 02 00 18 CC 28 2B D8 31 DB 76 D1 5E 08 A0 2D 92 20 90 00" ) );
@@ -128,6 +134,24 @@ public class SCP02 {
         logger.debug("INIT UPDATE Command "
                 + "(-> 80 50 " + Conversion.arrayToHex( P ) + "08 " + Conversion.arrayToHex(hostChallenge) + ") "
                 + "(<- " + Conversion.arrayToHex(InitUpdateResp.getBytes()) + ")");
+         */
+        this.hostChallenge = RandomGenerator.generateRandom(8);
+
+        byte[] initUpdCmd = new byte[13];
+        initUpdCmd[0] = (byte) 0x80;
+        initUpdCmd[1] = (byte) 0x50;
+        initUpdCmd[2] = cardConfig.getDefaultInitUpdateP1();
+        initUpdCmd[3] = cardConfig.getDefaultInitUpdateP2();
+        initUpdCmd[4] = (byte) this.hostChallenge.length;
+
+        System.arraycopy(this.hostChallenge, 0, initUpdCmd, 5, this.hostChallenge.length);
+
+        CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
+        ResponseAPDU resp = this.cc.transmit(cmdInitUpd);
+
+        logger.debug("INIT UPDATE command "
+                + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         this.keyDivData      = new byte[10];
         this.keyinfo         = new byte[ 2];
@@ -135,13 +159,11 @@ public class SCP02 {
         this.cardchallenge   = new byte[ 6];
         this.cardcryptogram  = new byte[ 8];
 
-        byte[] respBytes = InitUpdateResp.getBytes();
-
-        System.arraycopy ( respBytes ,  0 , this.keyDivData      , 0 , 10 );
-        System.arraycopy ( respBytes , 10 , this.keyinfo         , 0 ,  2 );
-        System.arraycopy ( respBytes , 12 , this.sequencecounter , 0 ,  2 );
-        System.arraycopy ( respBytes , 14 , this.cardchallenge   , 0 ,  6 );
-        System.arraycopy ( respBytes , 20 , this.cardcryptogram  , 0 ,  8 );
+        System.arraycopy ( resp.getBytes() ,  0 , this.keyDivData      , 0 , 10 );
+        System.arraycopy ( resp.getBytes() , 10 , this.keyinfo         , 0 ,  2 );
+        System.arraycopy ( resp.getBytes() , 12 , this.sequencecounter , 0 ,  2 );
+        System.arraycopy ( resp.getBytes() , 14 , this.cardchallenge   , 0 ,  6 );
+        System.arraycopy ( resp.getBytes() , 20 , this.cardcryptogram  , 0 ,  8 );
 
         logger.debug ( "Host Challenge: "           + Conversion.arrayToHex( hostChallenge        ) );
         logger.debug ( "Key Diversification Data: " + Conversion.arrayToHex( this.keyDivData      ) );
@@ -187,6 +209,8 @@ public class SCP02 {
         System.arraycopy(calculedHostChallenge, calculedHostChallenge.length-8, this.hostCrypto, 0, 8);
 
         logger.info("Calculed Host Ctryptogram: " + Conversion.arrayToHex ( this.hostCrypto ) );
+
+        return resp;
 
     }
 
@@ -287,7 +311,7 @@ public class SCP02 {
         return null;
     }
 
-    public void externalAuthenticate(SecLevel secLevel) throws CardException {
+    public ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException {
 
         if (secLevel == null) {
             throw new IllegalArgumentException("secLevel must be not null");
@@ -310,8 +334,18 @@ public class SCP02 {
         extAuthCmd[4] = 0x10;
         System.arraycopy(mac, 0, extAuthCmd, 13, 8);
 
+        CommandAPDU cmd_extauth = new CommandAPDU(extAuthCmd);
+        ResponseAPDU resp = this.cc.transmit(cmd_extauth);
+
         logger.debug("EXTERNAL AUTHENTICATE command "
-                + "(-> " + Conversion.arrayToHex(extAuthCmd) + ") ");
+                + "(-> " + Conversion.arrayToHex(cmd_extauth.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+        if (resp.getSW() != 0x9000) {
+         //   this.resetParams();
+            throw new CardException("Error in External Authenticate : " + Integer.toHexString(resp.getSW()));
+        }
+        return resp;
     }
 
     protected byte[] generateC_MAC(byte[] data) {
@@ -362,10 +396,8 @@ public class SCP02 {
                     // Generate C-MAC. Use 8-LSB
                     // For the last block, you can use TripleDES EDE with ECB mode, now I select the CBC and
                     // use the last block of the previous encryption result as ICV.
-                    // ivSpec = new IvParameterSpec(ivAllZeros);
                     ivSpec = new IvParameterSpec(ivForLastBlock);
                     cipher.init(Cipher.ENCRYPT_MODE, desKey, ivSpec);
-                    //return cipher.doFinal(data, 0, 16);
                     return cipher.doFinal(dataWithPadding, offset, 8);
 
                 default:
