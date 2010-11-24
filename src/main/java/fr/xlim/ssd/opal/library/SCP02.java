@@ -11,6 +11,7 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.logging.Level;
 import javax.crypto.BadPaddingException;
@@ -25,27 +26,10 @@ import org.slf4j.LoggerFactory;
 import javax.smartcardio.ResponseAPDU;
 
 /**
- *
+ * Implementation Of SCP 02
  * @author Guillaume Bouffard
  */
 public class SCP02 {
-
-    public enum DESSessionKeys {
-        C_MAC ((short) 0x0101),
-        R_MAC ((short) 0x0102),
-        SCEncSessKeys ((short) 0x0182),
-        SCDataEnc   ((short) 0x0181);
-
-        private short value;
-
-        private DESSessionKeys(short value) {
-            this.value = value;
-        }
-
-        public short getVal() {
-            return this.value;
-        }
-    } ;
 
     protected static final Logger logger = LoggerFactory.getLogger(SCP02.class);
     protected static final byte[] padding = Conversion.hexToArray("80 00 00 00 00 00 00 00");
@@ -64,13 +48,33 @@ public class SCP02 {
     protected byte[] S_MAC ;
     protected byte[] DEK   ;
 
-    protected byte[] SCEncSessKeys ;
-    protected byte[] C_MAC         ;
-    protected byte[] R_MAC         ;
+    protected byte[] kSCEncSess ;
+    protected byte[] kC_MAC         ;
+    protected byte[] kR_MAC         ;
     protected byte[] SCDataEnc     ;
 
     protected SecurityDomain securityDomain ;
     protected CardConfig cardConfig ;
+    protected SecLevel secMode;
+    private byte[] hostCrypto;
+    private SCPMode scp;
+
+    public enum DESSessionKeys {
+        C_MAC ((short) 0x0101),
+        R_MAC ((short) 0x0102),
+        SCEncSessKeys ((short) 0x0182),
+        SCDataEnc   ((short) 0x0181);
+
+        private short value;
+
+        private DESSessionKeys(short value) {
+            this.value = value;
+        }
+
+        public short getVal() {
+            return this.value;
+        }
+    } ;
 
     public SCP02() {
         this.initIcv();
@@ -87,10 +91,10 @@ public class SCP02 {
     }
 
 
-    public void Authentification (SecurityDomain securityDomain, CardConfig cardConfig) {
+    public void initializeUpdate (SecurityDomain securityDomain, CardConfig cardConfig) {
 
         /*
-         * Moke Implementation:
+         * Mock Implementation:
          *
          * HostChallenge: 21 69 53 99 73 EC 89 3A
          * CardChallenge: CC 28 2B D8 31 DB
@@ -108,6 +112,7 @@ public class SCP02 {
 
         this.securityDomain = securityDomain;
         this.cardConfig     = cardConfig;
+        this.scp            = cardConfig.getScpMode();
 
         this.S_ENC = (this.cardConfig.getSCKeys()[0]).getData();
         this.S_MAC = (this.cardConfig.getSCKeys()[1]).getData();
@@ -147,52 +152,56 @@ public class SCP02 {
         
         System.arraycopy(this.sequencecounter, 0, this.derivationData, 2, this.sequencecounter.length);
 
+        /* GENERATING SESSION KEYS */
+        this.generateSessionKeys();
+
+        /* Verifing Card Cryptogram */
+        byte[] cardCryptoData = new byte[24];
+        System.arraycopy( this.hostChallenge   , 0, cardCryptoData,  0, this.hostChallenge.length   );
+        System.arraycopy( this.sequencecounter , 0, cardCryptoData,  8, this.sequencecounter.length );
+        System.arraycopy( this.cardchallenge   , 0, cardCryptoData, 10, this.cardchallenge.length   );
+        System.arraycopy( SCP02.padding        , 0, cardCryptoData, 16, SCP02.padding.length        );
+
+        byte[] calculedCardChallenge = calculCryptogram(cardCryptoData);
+        byte[] vCardCryptogram = new byte[8];
+        System.arraycopy(calculedCardChallenge, calculedCardChallenge.length-8, vCardCryptogram, 0, 8);
+
+        logger.info("Calculed Card Challenge: " + Conversion.arrayToHex ( vCardCryptogram     ) );
+        logger.info("Card Cryptogram        : " + Conversion.arrayToHex ( this.cardcryptogram ) );
+
+        if (Arrays.equals(vCardCryptogram, this.cardcryptogram)) {
+            logger.info("Card Cryptogram OK" );
+        } else {
+            logger.info("Card Cryptogram FAIL" );
+        }
+
+        /* Calculing Host Cryptogram */
+        byte[] hostCryptoData = new byte[24];
+        System.arraycopy( this.sequencecounter , 0, hostCryptoData,  0, this.sequencecounter.length );
+        System.arraycopy( this.cardchallenge   , 0, hostCryptoData,  2, this.cardchallenge.length   );
+        System.arraycopy( this.hostChallenge   , 0, hostCryptoData,  8, this.hostChallenge.length   );
+        System.arraycopy( SCP02.padding        , 0, hostCryptoData, 16, SCP02.padding.length        );
+
+        byte[] calculedHostChallenge = calculCryptogram(hostCryptoData);
+        this.hostCrypto = new byte[8];
+        System.arraycopy(calculedHostChallenge, calculedHostChallenge.length-8, this.hostCrypto, 0, 8);
+
+        logger.info("Calculed Host Ctryptogram: " + Conversion.arrayToHex ( this.hostCrypto ) );
+
+    }
+
+    protected void generateSessionKeys () {
         try {
 
-            this.SCEncSessKeys = this.calculKey ( DESSessionKeys.SCEncSessKeys ) ;
-            this.C_MAC         = this.calculKey ( DESSessionKeys.C_MAC         ) ;
-            this.R_MAC         = this.calculKey ( DESSessionKeys.R_MAC         ) ;
-            this.SCDataEnc     = this.calculKey ( DESSessionKeys.SCDataEnc     ) ;
+            this.kSCEncSess = this.calculKey ( DESSessionKeys.SCEncSessKeys ) ;
+            this.kC_MAC     = this.calculKey ( DESSessionKeys.C_MAC         ) ;
+            this.kR_MAC     = this.calculKey ( DESSessionKeys.R_MAC         ) ;
+            this.SCDataEnc  = this.calculKey ( DESSessionKeys.SCDataEnc     ) ;
 
-            logger.info("SCEncSessKeys: " + Conversion.arrayToHex ( this.SCEncSessKeys ) );
-            logger.info("C_MAC        : " + Conversion.arrayToHex ( this.C_MAC         ) );
-            logger.info("R_MAC        : " + Conversion.arrayToHex ( this.R_MAC         ) );
-            logger.info("SCDataEnc    : " + Conversion.arrayToHex ( this.SCDataEnc     ) );
-
-            /* Verifing Card Cryptogram */
-            byte[] cardCryptoData = new byte[24];
-            System.arraycopy( this.hostChallenge   , 0, cardCryptoData,  0, this.hostChallenge.length   );
-            System.arraycopy( this.sequencecounter , 0, cardCryptoData,  8, this.sequencecounter.length );
-            System.arraycopy( this.cardchallenge   , 0, cardCryptoData, 10, this.cardchallenge.length   );
-            System.arraycopy( SCP02.padding        , 0, cardCryptoData, 16, SCP02.padding.length        );
-
-            byte[] calculedCardChallenge = calculCryptogram(cardCryptoData);
-            byte[] vCardCryptogram = new byte[8];
-            System.arraycopy(calculedCardChallenge, calculedCardChallenge.length-8, vCardCryptogram, 0, 8);
-
-            logger.info("Calculed Card Challenge: " + Conversion.arrayToHex ( vCardCryptogram     ) );
-            logger.info("Card Cryptogram        : " + Conversion.arrayToHex ( this.cardcryptogram ) );
-
-            if (Arrays.equals(vCardCryptogram, this.cardcryptogram)) {
-                logger.info("Card Cryptogram OK" );
-            } else {
-                logger.info("Card Cryptogram FAIL" );
-            }
-
-            /* Calculing Host Cryptogram */
-            byte[] hostCryptoData = new byte[24];
-            System.arraycopy( this.sequencecounter , 0, hostCryptoData,  0, this.sequencecounter.length );
-            System.arraycopy( this.cardchallenge   , 0, hostCryptoData,  2, this.cardchallenge.length   );
-            System.arraycopy( this.hostChallenge   , 0, hostCryptoData,  8, this.hostChallenge.length   );
-            System.arraycopy( SCP02.padding        , 0, hostCryptoData, 16, SCP02.padding.length        );
-
-
-
-            byte[] calculedHostChallenge = calculCryptogram(hostCryptoData);
-            byte[] vHostCryptogram = new byte[8];
-            System.arraycopy(calculedHostChallenge, calculedHostChallenge.length-8, vHostCryptogram, 0, 8);
-
-            logger.info("Calculed Host Ctryptogram: " + Conversion.arrayToHex ( vHostCryptogram ) );
+            logger.info("SCEncSessKeys: " + Conversion.arrayToHex ( this.kSCEncSess ) );
+            logger.info("C_MAC        : " + Conversion.arrayToHex ( this.kC_MAC     ) );
+            logger.info("R_MAC        : " + Conversion.arrayToHex ( this.kR_MAC     ) );
+            logger.info("SCDataEnc    : " + Conversion.arrayToHex ( this.SCDataEnc  ) );
 
         } catch (CardException ex) {
             java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
@@ -205,10 +214,9 @@ public class SCP02 {
         } catch (BadPaddingException ex) {
             java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
-    private byte[] calculKey ( DESSessionKeys constant ) throws CardException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+    protected byte[] calculKey ( DESSessionKeys constant ) throws CardException, InvalidKeyException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 
         byte [] cipherKey    = null ;
         byte [] cipherKey_24 = null ;
@@ -260,7 +268,7 @@ public class SCP02 {
         try {
             Cipher cipher = Cipher.getInstance("DESede/CBC/NoPadding");
             IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
-            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.SCEncSessKeys, "DESede"), ivSpec);
+            cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.kSCEncSess, "DESede"), ivSpec);
             return cipher.doFinal(cryptogram);
 
         } catch (IllegalBlockSizeException ex) {
@@ -277,6 +285,116 @@ public class SCP02 {
             java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public void externalAuthenticate(SecLevel secLevel) throws CardException {
+
+        if (secLevel == null) {
+            throw new IllegalArgumentException("secLevel must be not null");
+        }
+
+        // TODO: Check session state here!
+
+        this.secMode = secLevel;
+        byte[] extAuthCmd = new byte[21];
+        extAuthCmd[0] = (byte) 0x84;
+        extAuthCmd[1] = (byte) 0x82;
+        extAuthCmd[2] = (byte) 0x03; //this.secMode.getVal();
+        extAuthCmd[3] = (byte) 0x00;
+        extAuthCmd[4] = (byte) 0x10;
+
+        System.arraycopy(this.hostCrypto, 0, extAuthCmd, 5, this.hostCrypto.length);
+        byte[] data = new byte[5 + this.hostCrypto.length];
+        System.arraycopy(extAuthCmd, 0, data, 0, data.length);
+        byte[] mac = this.generateC_MAC(data);
+        extAuthCmd[4] = 0x10;
+        System.arraycopy(mac, 0, extAuthCmd, 13, 8);
+
+        logger.debug("EXTERNAL AUTHENTICATE command "
+                + "(-> " + Conversion.arrayToHex(extAuthCmd) + ") ");
+    }
+
+    protected byte[] generateC_MAC(byte[] data) {
+        byte[] dataWithPadding = null;
+
+        logger.debug("data: " + Conversion.arrayToHex(data));
+
+        //padding
+        int tmpL = data.length + 1;
+        while (tmpL % 8 != 0) {
+            tmpL++;
+        }
+
+        dataWithPadding = new byte[tmpL];
+        System.arraycopy(data, 0, dataWithPadding, 0, data.length);
+        System.arraycopy(SCP02.padding, 0, dataWithPadding, data.length, tmpL - data.length);
+
+        logger.debug("data with padding: " + Conversion.arrayToHex(dataWithPadding));
+
+        try {
+            switch (this.scp) {
+                case SCP_02_15:
+                    SecretKeySpec desSingleKey = new SecretKeySpec(this.kC_MAC,0, 8,"DES");
+                    Cipher singleDesCipher;
+                    singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
+            
+
+                    // Calculate the first n - 1 block.
+                    int noOfBlocks = dataWithPadding.length / 8;
+                    byte ivForNextBlock[] = this.icv;
+                    IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
+                    int startIndex = 0;
+                    for (int i = 0; i < (noOfBlocks - 1); i++) {
+                        singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
+			ivForNextBlock = singleDesCipher.doFinal(dataWithPadding, startIndex, 8);
+			startIndex +=8;
+			ivSpec = new IvParameterSpec(ivForNextBlock);
+                    }
+
+                    byte ivForLastBlock[] = singleDesCipher.doFinal(dataWithPadding, 0, 8);
+
+                    SecretKeySpec desKey = new SecretKeySpec(this.kC_MAC, "DESede");
+                    Cipher cipher;
+
+                    cipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
+                    int offset = dataWithPadding.length - 8;
+
+                    // Generate C-MAC. Use 8-LSB
+                    // For the last block, you can use TripleDES EDE with ECB mode, now I select the CBC and
+                    // use the last block of the previous encryption result as ICV.
+                    // ivSpec = new IvParameterSpec(ivAllZeros);
+                    ivSpec = new IvParameterSpec(ivForLastBlock);
+                    cipher.init(Cipher.ENCRYPT_MODE, desKey, ivSpec);
+                    //return cipher.doFinal(data, 0, 16);
+                    return cipher.doFinal(dataWithPadding, offset, 8);
+
+                default:
+                    throw new IllegalArgumentException("scp mode not implemented (" + this.scp + ")");
+            }
+        } catch (IllegalBlockSizeException ex) {
+            java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (BadPaddingException ex) {
+            java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchAlgorithmException ex) {
+            java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchPaddingException ex) {
+            java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidKeyException ex) {
+            java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidAlgorithmParameterException ex) {
+            java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchProviderException ex) {
+            java.util.logging.Logger.getLogger(SCP02.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return null;
+
+    }
+
+    protected byte[] modifyAPDU (byte[] apdu) {
+        // set CLA bit 3
+        apdu[0] |= 0x03; // 0b0000_0100
+        return apdu;
     }
 
 }
