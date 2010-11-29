@@ -5,6 +5,8 @@ import java.nio.ByteOrder;
 import java.security.InvalidAlgorithmParameterException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import java.util.logging.Level;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -33,6 +35,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author Damien Arcuset, Eric Linke
@@ -49,6 +52,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      *
      */
     protected static final byte[] padding = Conversion.hexToArray("80 00 00 00 00 00 00 00");
+
+    protected static final byte SCP01 = (byte) 0x01 ;
+    protected static final byte SCP02 = (byte) 0x02 ;
+
+    protected static final byte[] SCP02_derivation4CMac    = { (byte) 0x01 , (byte) 0x01 };
+    protected static final byte[] SCP02_derivation4RMac    = { (byte) 0x01 , (byte) 0x02 };
+    protected static final byte[] SCP02_derivation4EncKey  = { (byte) 0x01 , (byte) 0x82 };
+    protected static final byte[] SCP02_derivation4DataEnc = { (byte) 0x01 , (byte) 0x81 };
+
     /**
      *
      */
@@ -73,6 +85,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      *
      */
     protected byte[] sessMac;
+    /**
+     *
+     */
+    protected byte[] sessRMac;
     /**
      *
      */
@@ -101,6 +117,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      *
      */
     protected byte[] icv;
+    /**
+     * 
+     */
+    protected byte scpRec;
+
+    /*
+     * 
+     */
+    protected byte[] sequenceCounter;
 
     /**
      *
@@ -232,6 +257,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.sessState = SessionState.NO_SESSION;
         this.sessEnc = null;
         this.sessMac = null;
+        this.sessRMac = null;
         this.sessKek = null;
         this.derivationData = null;
         this.hostCrypto = null;
@@ -250,6 +276,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.resetParams();
         this.hostChallenge = RandomGenerator.generateRandom(8);
 
+        // TODO !
+        //this.hostChallenge = Conversion.hexToArray("21 69 53 99 73 EC 89 3A");
+
         byte[] initUpdCmd = new byte[13];
         initUpdCmd[0] = (byte) 0x80;
         initUpdCmd[1] = (byte) 0x50;
@@ -262,6 +291,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
 
         ResponseAPDU resp = this.cc.transmit(cmdInitUpd);
+
+        // TODO!
+            //resp = new ResponseAPDU(Conversion.hexToArray("00 00 81 58 03 12 20 91 38 27 FF 02 00 18 CC 28 2B D8 31 DB 76 D1 5E 08 A0 2D 92 20 90 00"));
 
         logger.debug("INIT UPDATE command "
                 + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
@@ -278,17 +310,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     + resp.getData().length + ")");
         }
 
-        this.cardChallenge = new byte[8];
         byte[] cardCryptoResp = new byte[8];
         byte[] keyDivData = new byte[10];
 
-        System.arraycopy(resp.getData(), 12, this.cardChallenge, 0, 8);
-        System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
-        System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
         byte keyVersNumRec = resp.getData()[10];
-        byte scpRec = resp.getData()[11];
+        this.scpRec = resp.getData()[11];
 
-        if (scpRec == (byte) 1) {
+        if (scpRec == SCP01) {
             if (desiredScp == SCPMode.SCP_UNDEFINED) {
                 this.scp = SCPMode.SCP_01_05;
             } else if (desiredScp == SCPMode.SCP_01_05 || desiredScp == SCPMode.SCP_01_15) {
@@ -297,6 +325,49 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.resetParams();
                 throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
             }
+
+            this.cardChallenge = new byte[8];
+
+            /*
+             * INITIALIZE UPDATE response in SCP 01 mode
+             * -0-----------------------09-10------11-12------------19-20-------------27-
+             * | Key Diversification Data | Key Info | Card Challenge | Card Cryptogram |
+             * --------------------------------------------------------------------------
+             */
+
+            System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
+            System.arraycopy(resp.getData(), 12, this.cardChallenge, 0, 8);
+            System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
+
+        } else if (scpRec == SCP02) {
+
+            if (desiredScp == SCPMode.SCP_02_15) {
+                this.scp = desiredScp;
+            } else {
+                this.resetParams();
+                throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
+            }
+
+            this.cardChallenge = new byte[6];
+            this.sequenceCounter = new byte[2];
+
+            /*
+             * INITIALIZE UPDATE response in SCP 02 mode
+             * 
+             * -0-----------------------09-10------11-12------------- 13-
+             * | Key Diversification Data | Key Info | Sequence Counter |
+             * ----------------------------------------------------------
+             *
+             * --14------------19-20-------------27-
+             *  | Card Challenge | Card Cryptogram |
+             * -------------------------------------
+             */
+
+            System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
+            System.arraycopy(resp.getData(), 12, this.sequenceCounter, 0, 2);
+            System.arraycopy(resp.getData(), 14, this.cardChallenge, 0, 6);
+            System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
+
         } else {
             this.resetParams();
             throw new CardException("SCP version not available (" + scpRec + ")");
@@ -509,17 +580,55 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         byte[] res = new byte[8];
         IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
         try {
-            Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"), ivSpec);
-            byte[] cryptogram = myCipher.doFinal(dataWithPadding);
-            System.arraycopy(cryptogram, cryptogram.length - 8, res, 0, 8);
-            if (this.scp == SCPMode.SCP_01_05) {
-                this.icv = res; // update ICV with new C-MAC
-            } else if (this.scp == SCPMode.SCP_01_15) { // update ICV with new ENCRYPTED C-MAC
-                Cipher myCipher2 = Cipher.getInstance("DESede/ECB/NoPadding");
-                myCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"));
-                this.icv = myCipher2.doFinal(res);
+            if (this.scpRec == SCP01) {
+                Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"), ivSpec);
+                byte[] cryptogram = myCipher.doFinal(dataWithPadding);
+                System.arraycopy(cryptogram, cryptogram.length - 8, res, 0, 8);
+
+                switch (this.scp) {
+                    case SCP_01_05:
+                        this.icv = res; // update ICV with new C-MAC
+                        break;
+                    case SCP_01_15: // update ICV with new ENCRYPTED C-MAC
+                        Cipher myCipher2 = Cipher.getInstance("DESede/ECB/NoPadding");
+                        myCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"));
+                        this.icv = myCipher2.doFinal(res);
+                        break;
+                }
+            } else if (this.scpRec == SCP02) {
+                    SecretKeySpec desSingleKey = new SecretKeySpec(this.sessMac,0, 8,"DES");
+                    Cipher singleDesCipher;
+                    singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
+
+                    // Calculate the first n - 1 block.
+                    int noOfBlocks = dataWithPadding.length / 8;
+                    byte ivForNextBlock[] = this.icv;
+                    int startIndex = 0;
+                    for (int i = 0; i < (noOfBlocks - 1); i++) {
+                        singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
+			ivForNextBlock = singleDesCipher.doFinal(dataWithPadding, startIndex, 8);
+			startIndex +=8;
+			ivSpec = new IvParameterSpec(ivForNextBlock);
+                    }
+
+                    byte ivForLastBlock[] = singleDesCipher.doFinal(dataWithPadding, 0, 8);
+
+                    SecretKeySpec desKey = new SecretKeySpec(this.sessMac, "DESede");
+                    Cipher myCipher;
+
+                    myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
+                    int offset = dataWithPadding.length - 8;
+
+                    // Generate C-MAC. Use 8-LSB
+                    // For the last block, you can use TripleDES EDE with ECB mode, now I select the CBC and
+                    // use the last block of the previous encryption result as ICV.
+                    ivSpec = new IvParameterSpec(ivForLastBlock);
+                    myCipher.init(Cipher.ENCRYPT_MODE, desKey, ivSpec);
+                    res = myCipher.doFinal(dataWithPadding, offset, 8);
             }
+        } catch (NoSuchProviderException ex) {
+            java.util.logging.Logger.getLogger(GP2xCommands.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
@@ -598,24 +707,53 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     protected void calculateCryptograms() {
         byte[] data = new byte[24];
-        System.arraycopy(this.hostChallenge, 0, data, 0, 8);
-        System.arraycopy(this.cardChallenge, 0, data, 8, 8);
-        System.arraycopy(GP2xCommands.padding, 0, data, 16, 8);
         Cipher myCipher;
         try {
+
             myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
             IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
-            byte[] cardcryptogram = myCipher.doFinal(data);
-            this.cardCrypto = new byte[8];
-            System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
 
-            System.arraycopy(this.cardChallenge, 0, data, 0, 8);
-            System.arraycopy(this.hostChallenge, 0, data, 8, 8);
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
-            byte[] hostcryptogram = myCipher.doFinal(data);
-            this.hostCrypto = new byte[8];
-            System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
+            if (this.scpRec == SCP01) {
+
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                byte[] cardcryptogram = myCipher.doFinal(data);
+                this.cardCrypto = new byte[8];
+                System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
+
+                System.arraycopy(this.cardChallenge, 0, data, 0, 8);
+                System.arraycopy(this.hostChallenge, 0, data, 8, 8);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                byte[] hostcryptogram = myCipher.doFinal(data);
+                this.hostCrypto = new byte[8];
+                System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
+
+            } else if (this.scpRec == SCP02) {
+
+                /* Calculing Card Cryptogram */
+                System.arraycopy(this.hostChallenge, 0, data, 0, 8);
+                System.arraycopy(this.sequenceCounter, 0, data, 8, 2);
+                System.arraycopy(this.cardChallenge, 0, data, 10, 6);
+                System.arraycopy(GP2xCommands.padding, 0, data, 16, GP2xCommands.padding.length);
+
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                byte[] cardcryptogram = myCipher.doFinal(data);
+                this.cardCrypto = new byte[8];
+                System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
+
+                logger.debug("Card Crypto : " + Conversion.arrayToHex(cardcryptogram));
+
+                /* Calculing Host Cryptogram */
+                System.arraycopy(this.sequenceCounter, 0, data, 0, 2);
+                System.arraycopy(this.cardChallenge, 0, data, 2, 6);
+                System.arraycopy(this.hostChallenge, 0, data, 8, 8);
+                System.arraycopy(GP2xCommands.padding, 0, data, 16, GP2xCommands.padding.length);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                byte[] hostcryptogram = myCipher.doFinal(data);
+                this.hostCrypto = new byte[8];
+                System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
+
+            }
+
         } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
@@ -642,26 +780,68 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             this.sessEnc = new byte[24];
             this.sessMac = new byte[24];
+            this.sessRMac = new byte[24];
             this.sessKek = new byte[24];
             byte[] session;
 
-            Cipher myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
+            Cipher myCipher = null;
 
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"));
-            session = myCipher.doFinal(this.derivationData);
-            System.arraycopy(session, 0, this.sessEnc, 0, 16);
-            System.arraycopy(session, 0, this.sessEnc, 16, 8);
+            if (this.scpRec == SCP01) {
+                myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
 
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"));
-            session = myCipher.doFinal(this.derivationData);
-            System.arraycopy(session, 0, this.sessMac, 0, 16);
-            System.arraycopy(session, 0, this.sessMac, 16, 8);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"));
+                session = myCipher.doFinal(this.derivationData);
+                System.arraycopy(session, 0, this.sessMac, 0, 16);
+                System.arraycopy(session, 0, this.sessMac, 16, 8);
 
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"));
-            session = myCipher.doFinal(this.derivationData);
-            System.arraycopy(session, 0, this.sessKek, 0, 16);
-            System.arraycopy(session, 0, this.sessKek, 16, 8);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"));
+                session = myCipher.doFinal(this.derivationData);
+                System.arraycopy(session, 0, this.sessMac, 0, 16);
+                System.arraycopy(session, 0, this.sessMac, 16, 8);
 
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"));
+                session = myCipher.doFinal(this.derivationData);
+                System.arraycopy(session, 0, this.sessKek, 0, 16);
+                System.arraycopy(session, 0, this.sessKek, 16, 8);
+
+            } else if (this.scpRec == SCP02) {
+
+                myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
+                IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
+
+
+                // Calculing C_Mac Session Keys
+                System.arraycopy(GP2xCommands.SCP02_derivation4CMac, 0, this.derivationData, 0, 2);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"), ivSpec);
+                session = myCipher.doFinal(this.derivationData);
+                System.arraycopy(session, 0, this.sessMac, 0, 16);
+                System.arraycopy(session, 0, this.sessMac, 16, 8);
+
+                // Calculing R_Mac Session Keys
+                System.arraycopy(GP2xCommands.SCP02_derivation4RMac, 0, this.derivationData, 0, 2);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"), ivSpec);
+                session = myCipher.doFinal(this.derivationData);
+                System.arraycopy(session, 0, this.sessRMac, 0, 16);
+                System.arraycopy(session, 0, this.sessRMac, 16, 8);
+
+                // Calculing Encryption Session Keys
+                System.arraycopy(GP2xCommands.SCP02_derivation4EncKey, 0, this.derivationData, 0, 2);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"), ivSpec);
+                session = myCipher.doFinal(this.derivationData);
+                System.arraycopy(session, 0, this.sessEnc, 0, 16);
+                System.arraycopy(session, 0, this.sessEnc, 16, 8);
+
+                // Calculing Data Encryption Session Keys
+                System.arraycopy(GP2xCommands.SCP02_derivation4DataEnc, 0, this.derivationData, 0, 2);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"), ivSpec);
+                session = myCipher.doFinal(this.derivationData);
+                System.arraycopy(session, 0, this.sessKek, 0, 16);
+                System.arraycopy(session, 0, this.sessKek, 16, 8);
+
+            }
+
+        } catch (InvalidAlgorithmParameterException ex) {
+            java.util.logging.Logger.getLogger(GP2xCommands.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
@@ -677,12 +857,23 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     protected void calculateDerivationData() {
 
-        this.derivationData = new byte[16];
+        if (this.scpRec == SCP01) { // SCP 01_*
 
-        System.arraycopy(this.hostChallenge, 0, this.derivationData, 4, 4);
-        System.arraycopy(this.hostChallenge, 4, this.derivationData, 12, 4);
-        System.arraycopy(this.cardChallenge, 0, this.derivationData, 8, 4);
-        System.arraycopy(this.cardChallenge, 4, this.derivationData, 0, 4);
+            this.derivationData = new byte[16];
+
+            System.arraycopy(this.hostChallenge, 0, this.derivationData, 4, 4);
+            System.arraycopy(this.hostChallenge, 4, this.derivationData, 12, 4);
+            System.arraycopy(this.cardChallenge, 0, this.derivationData, 8, 4);
+            System.arraycopy(this.cardChallenge, 4, this.derivationData, 0, 4);
+
+        } else if (this.scpRec == SCP02) { // SCP 02_*
+
+            this.derivationData = new byte[16];
+            System.arraycopy(this.sequenceCounter, 0, this.derivationData, 2, 2);
+
+            logger.debug("Derivation data: " + Conversion.arrayToHex(this.derivationData));
+
+        }
 
     }
 
@@ -807,7 +998,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (paramLength < 128) {
             paramLengthEncoded = new byte[1];
             paramLengthEncoded[0] = (byte) paramLength;
-        } else if(paramLength <= 255) {
+        } else if (paramLength <= 255) {
             paramLengthEncoded = new byte[2];
             paramLengthEncoded[0] = (byte) 0x81;
             paramLengthEncoded[1] = (byte) paramLength;
@@ -1029,11 +1220,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new IllegalArgumentException("loadFileAID must be not null");
         }
 
-        if(moduleAID == null) {
+        if (moduleAID == null) {
             throw new IllegalArgumentException("moduleAID must be not null");
         }
 
-        if(privileges == null) {
+        if (privileges == null) {
             throw new IllegalArgumentException("privileges must be not null");
         }
 

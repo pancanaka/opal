@@ -101,6 +101,8 @@ public class CardConfigFactory {
             res = SCPMode.SCP_01_05;
         } else if (scp.equals("01_15")) {
             res = SCPMode.SCP_01_15;
+        }  else if (scp.equals("02_15")) {
+            res = SCPMode.SCP_02_15;
         }
         return res;
     }

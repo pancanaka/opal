@@ -19,7 +19,6 @@ import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.util.List;
 
 import javax.smartcardio.ATR;
@@ -35,7 +34,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.regex.Pattern;
 import javax.smartcardio.CardTerminals.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -139,7 +137,9 @@ public class Main {
 
         channel = null;
 
-        CardConfig cardConfig = getCardChannel(0, "T=0");
+        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
+
+        CardConfig cardConfig = getCardChannel(1, "*");
 
         if (channel == null) {
             logger.error("Cannot access to the card");
@@ -147,11 +147,20 @@ public class Main {
         }
 
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel, cardConfig.getIssuerSecurityDomainAID());
-
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         securityDomain.select();
+
+        /*
+        SCP02 scp02 = new SCP02();
+        scp02.initializeUpdate(securityDomain,cardConfig);
+        scp02.externalAuthenticate(secLevel.NO_SECURITY_LEVEL);
+
+        System.exit(0); */
+
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
-        securityDomain.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        securityDomain.externalAuthenticate(secLevel);
+
+        //System.exit(0);
 
         //securityDomain.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
         //securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
@@ -234,7 +243,7 @@ public class Main {
         // Select the Card Manager
         securityDomain.select();
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
-        securityDomain.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        securityDomain.externalAuthenticate(secLevel);
 
         // Deleting Applet
         securityDomain.deleteOnCardObj(APPLET_ID, false);
@@ -242,4 +251,5 @@ public class Main {
         // Deleting package if existed
         securityDomain.deleteOnCardObj(PACKAGE_ID, false);
     }
+
 }
