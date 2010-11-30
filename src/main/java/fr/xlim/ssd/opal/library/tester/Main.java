@@ -20,6 +20,7 @@ import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
 
 import javax.smartcardio.ATR;
 import javax.smartcardio.Card;
@@ -148,14 +149,45 @@ public class Main {
 
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel, cardConfig.getIssuerSecurityDomainAID());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
-        securityDomain.select();
+        try {
+            securityDomain.select();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
-        /*
-        SCP02 scp02 = new SCP02();
-        scp02.initializeUpdate(securityDomain,cardConfig);
-        scp02.externalAuthenticate(secLevel.NO_SECURITY_LEVEL);
+        SecurityDomain.FileControlInformation cardInformation = securityDomain.getCardInformation();
 
-        System.exit(0); */
+        logger.info("/**********************************");
+        if (cardInformation.getApplication_AID() != null)
+            logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplication_AID()));
+
+        if(cardInformation.getGPTagAllocationAuthority() != null)
+        logger.info("GP Tag Allocation Authority: " + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
+
+        if(cardInformation.getCardManagementTypeAndVersion() != null)
+            logger.info("Card Manager Type & Version: " + Conversion.arrayToHex(cardInformation.getCardManagementTypeAndVersion()));
+
+        if (cardInformation.getCardIdentificationScheme() != null)
+            logger.info("Card Identification Scheme: " + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
+
+        if (cardInformation.getSCPInformation() != null)
+            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getSCPInformation()));
+
+        logger.info("SCP Version: " + cardInformation.getSCPVersion());
+        logger.info("SCP Mode: " + cardInformation.getSCPMode());
+
+        if (cardInformation.getCardConfiguration() != null)
+            logger.info("Card Configuration: " + Conversion.arrayToHex(cardInformation.getCardConfiguration()));
+
+        if (cardInformation.getCardDetails() != null)
+            logger.info("Card Details: " + Conversion.arrayToHex(cardInformation.getCardDetails()));
+
+        if (cardInformation.getApplicationProductionLifeCycleData() != null)
+            logger.info("Application production life cyvle data: " + Conversion.arrayToHex(cardInformation.getApplicationProductionLifeCycleData()));
+
+        if (cardInformation.getMaximumLengthOfDataFieldInCommandMessage() != null)
+            logger.info("Maximun length of data field in command message: " + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));
+        logger.info("***********************************/");
 
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         securityDomain.externalAuthenticate(secLevel);
@@ -239,9 +271,12 @@ public class Main {
         } else {
             logger.error("Hello FAIL");
         }
-
-        // Select the Card Manager
-        securityDomain.select();
+        try {
+            // Select the Card Manager
+            securityDomain.select();
+        } catch (Exception ex) {
+            java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
+        }
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         securityDomain.externalAuthenticate(secLevel);
 

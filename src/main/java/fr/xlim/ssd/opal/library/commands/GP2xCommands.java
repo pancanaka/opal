@@ -35,7 +35,6 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author Damien Arcuset, Eric Linke
@@ -120,7 +119,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      * 
      */
-    protected byte scpRec;
+    protected byte scpRec = SCP01;
 
     /*
      * 

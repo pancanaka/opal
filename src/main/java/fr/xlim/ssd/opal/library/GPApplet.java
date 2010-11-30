@@ -7,14 +7,151 @@ import javax.smartcardio.ResponseAPDU;
 
 import fr.xlim.ssd.opal.library.commands.Commands;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * This class contains methods that could be sent to an Applet. <br/>
- * 
+ *
  * @author Damien Arcuset, Eric Linke
  * @author Julien Iguchi-Cartigny
  */
 public class GPApplet {
+
+    public class FileControlInformation {
+
+        /* 6F                */ // File Control Information (FCI Template)
+        protected byte[] allInformations;
+        /* |-> 84            */ // Application / File AID
+        protected byte[] application_AID;
+        /* |-> A5            */ // Proprietary data
+        /* |----> 73         */ // Security Domain Management Data
+        /* |------> 66       */ // Tag for 'Card Data'
+        /* |--------> 73     */ // Tag for 'Card Data Recognition Data'
+        /* |----------> 06   */ // Identifies Global Platform as the Tag Allocation Authority
+        protected byte[] GPTagAllocationAuthority;
+        /* |----------> 60   */ // Card Management Type and Version
+        /* |------------> 06 */
+        protected byte[] cardManagementTypeAndVersion;
+        /* |----------> 63   */ // Card Identification Scheme
+        /* |------------> 06 */
+        protected byte[] cardIdentificationScheme;
+        /* |----------> 64   */ // Secure Channel Protocol of the selected Security Domain ans its implementation options
+        /* |------------> 06 */
+                                         /* --0---------------6-- */
+        protected byte[] SCPInformation; /*  | SCP Information |  */
+                                         /* --------------------- */
+
+                                         /* -------7---------     */
+        protected byte SCPVersion;       /*  | SCP Version |      */
+                                         /* -----------------     */
+
+                                        /* -------8-----          */
+        protected byte SCPMode;         /*  | SCP Mode |          */
+                                        /* -------------          */
+        /* |----------> 65   */ // Card Configuration details
+        protected byte[] cardConfiguration;
+        /* |----------> 66   */ // Card / Chip details
+        protected byte[] cardDetails;
+        /* |----> 9F 6E      */ // Application production lice cycle data
+        protected byte[] applicationProductionLifeCycleData;
+        /* |----> 9F 65      */ // Maximum length of data field in command message
+        protected byte[] maximumLengthOfDataFieldInCommandMessage;
+
+        public static final byte SIZE_TL = (byte) 0x02;
+
+        public void setSCPInformation (byte[] info) {
+            this.SCPInformation = new byte[info.length - 2];
+            System.arraycopy(info, 0, getSCPInformation(), 0, info.length-2);
+            this.SCPVersion = info[info.length-2];
+            this.SCPMode = info[info.length-1];
+        }
+
+        public byte[] getAllInformations() {
+            return allInformations;
+        }
+
+        /**
+         * @return the application_AID
+         */
+        public byte[] getApplication_AID() {
+            return application_AID;
+        }
+
+        /**
+         * @return the GPTagAllocationAuthority
+         */
+        public byte[] getGPTagAllocationAuthority() {
+            return GPTagAllocationAuthority;
+        }
+
+        /**
+         * @return the cardManagementTypeAndVersion
+         */
+        public byte[] getCardManagementTypeAndVersion() {
+            return cardManagementTypeAndVersion;
+        }
+
+        /**
+         * @return the cardIdentificationScheme
+         */
+        public byte[] getCardIdentificationScheme() {
+            return cardIdentificationScheme;
+        }
+
+        /**
+         * @return the SCPInformation
+         */
+        public byte[] getSCPInformation() {
+            return SCPInformation;
+        }
+
+        /**
+         * @return the SCPVersion
+         */
+        public byte getSCPVersion() {
+            return SCPVersion;
+        }
+
+        /**
+         * @return the SCPMode
+         */
+        public byte getSCPMode() {
+            return SCPMode;
+        }
+
+        /**
+         * @return the cardConfiguration
+         */
+        public byte[] getCardConfiguration() {
+            return cardConfiguration;
+        }
+
+        /**
+         * @return the cardDetails
+         */
+        public byte[] getCardDetails() {
+            return cardDetails;
+        }
+
+        /**
+         * @return the applicationProductionLifeCycleData
+         */
+        public byte[] getApplicationProductionLifeCycleData() {
+            return applicationProductionLifeCycleData;
+        }
+
+        /**
+         * @return the maximumLengthOfDataFieldInCommandMessage
+         */
+        public byte[] getMaximumLengthOfDataFieldInCommandMessage() {
+            return maximumLengthOfDataFieldInCommandMessage;
+        }
+
+    }
+
+    FileControlInformation fileControlInformation;
 
     /**
      *
@@ -38,6 +175,7 @@ public class GPApplet {
         this.aid = aid.clone();
         Class.forName(CmdImplementation);
         this.cmds = CommandsProvider.getImplementation(CmdImplementation, cc);
+        this.fileControlInformation = null;
     }
 
     /**
@@ -120,7 +258,122 @@ public class GPApplet {
      * @throws CardException
      */
     public ResponseAPDU select() throws CardException {
-        return this.cmds.select(this.aid);
+        ResponseAPDU ret = this.cmds.select(this.aid);
+        this.checkSelectReturn (ret.getData());
+        return ret;
+    }
+
+    protected void checkSelectReturn(byte[] data) throws CardException {
+        if (data[0] != (byte) 0x6F) { return; }
+
+        this.fileControlInformation = new FileControlInformation();
+
+        for (int pos = 2; pos < data.length; pos += FileControlInformation.SIZE_TL) {
+            if (data[pos] == (byte) 0x84) { // Application / File AID
+                this.fileControlInformation.application_AID = this.readTLV(data, pos);
+                pos += this.fileControlInformation.getApplication_AID().length;
+
+            } else if (data[pos] == (byte) 0xA5) { // Proprietary data
+
+                byte[] proprietaryData = this.readTLV(data, pos);
+                for (int j = 0; j < proprietaryData.length; j += FileControlInformation.SIZE_TL) {
+                    if (proprietaryData[j] == (byte) 0x73) { // Security Domain Management Data
+                        byte[] securityDomain = readTLV(proprietaryData, j);
+                        for (int i = j; i < securityDomain.length; i += FileControlInformation.SIZE_TL) {
+
+                            switch (securityDomain[i]) {
+                                case (byte) 0x06: // Tag Allocation Authority
+                                    this.fileControlInformation.GPTagAllocationAuthority = this.readTLV(securityDomain, i);
+                                    i += this.fileControlInformation.getGPTagAllocationAuthority().length;
+                                    break;
+
+                                case (byte) 0x60: // Card Manager Type and Version
+                                    if (securityDomain[i + FileControlInformation.SIZE_TL] == (byte) 0x06) {
+                                        this.fileControlInformation.cardManagementTypeAndVersion = this.readTLV(securityDomain, i + FileControlInformation.SIZE_TL);
+                                        i += this.fileControlInformation.getCardManagementTypeAndVersion().length + FileControlInformation.SIZE_TL;
+                                    } else {
+                                        this.resetParams();
+                                        throw new CardException("Unknow Select Return Tag value");
+                                    }
+                                    break;
+
+                                case (byte) 0x63: // Card Identification Scheme
+                                    if (securityDomain[i + FileControlInformation.SIZE_TL] == (byte) 0x06) {
+                                        this.fileControlInformation.cardIdentificationScheme = this.readTLV(securityDomain, i + FileControlInformation.SIZE_TL);
+                                        i += this.fileControlInformation.getCardIdentificationScheme().length + FileControlInformation.SIZE_TL;
+                                    } else {
+                                        this.resetParams();
+                                        throw new CardException("Unknow tag value");
+                                    }
+                                    break;
+
+                                case (byte) 0x64: // Security Channel Domain and its implementation options
+                                    if (securityDomain[i + FileControlInformation.SIZE_TL] == (byte) 0x06) {
+                                        byte[] info = this.readTLV(securityDomain, i + FileControlInformation.SIZE_TL);
+                                        i += info.length + FileControlInformation.SIZE_TL;
+                                        this.fileControlInformation.setSCPInformation(info);
+                                    } else {
+                                        throw new CardException("Unknow tag value");
+                                    }
+                                    break;
+
+                                case (byte) 0x65: // Card Configuration Details
+                                    this.fileControlInformation.cardConfiguration = this.readTLV(securityDomain, i);
+                                    i += this.fileControlInformation.getCardConfiguration().length;
+                                    break;
+
+                                case (byte) 0x66: // Card / Chips details
+                                    this.fileControlInformation.cardDetails = this.readTLV(securityDomain, i);
+                                    i += this.fileControlInformation.getCardDetails().length;
+                                    break;
+                            }
+                        }
+
+                        j += securityDomain.length + FileControlInformation.SIZE_TL;
+
+
+                    } else if ((proprietaryData[j] == (byte) 0x9F)
+                            && (proprietaryData[j + 1] == (byte) 0x6E)) { // Application production lice cycle data
+
+                        this.fileControlInformation.applicationProductionLifeCycleData = this.readTLV(proprietaryData, j + 1);
+                        j += this.fileControlInformation.getApplicationProductionLifeCycleData().length + 1;
+
+                    } else if ((proprietaryData[j] == (byte) 0x9F)
+                            && (proprietaryData[j + 1] == (byte) 0x65)) { // Maximum Length Of Data Field In Command Message
+
+                        this.fileControlInformation.maximumLengthOfDataFieldInCommandMessage = this.readTLV(proprietaryData, j + 1);
+                        j += this.fileControlInformation.getMaximumLengthOfDataFieldInCommandMessage().length + 1;
+
+                    }
+                }
+
+                pos += proprietaryData.length + FileControlInformation.SIZE_TL;
+
+            }
+        }
+    }
+
+    protected byte[] readTLV (byte[] data, int begin) {
+
+        /*
+         * ------------------------
+         * | Tag | Length | Value |
+         * ------------------------
+         */
+
+        byte[] value = null ;
+        byte length;
+
+        if(begin >= data.length) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        length = data[begin+1];
+        value = new byte [length];
+
+        System.arraycopy(data, begin+2, value, 0, length);
+
+        return value;
     }
 
     /**
@@ -168,5 +421,9 @@ public class GPApplet {
      */
     public ResponseAPDU[] getStatus(FileType ft, GetStatusResponseMode respMode, byte[] searchQualifier) throws CardException {
         return this.cmds.getStatus(ft, respMode, searchQualifier);
+    }
+
+    public FileControlInformation getCardInformation() {
+        return this.fileControlInformation;
     }
 }
