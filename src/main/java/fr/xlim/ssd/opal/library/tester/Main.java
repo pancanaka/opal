@@ -264,7 +264,7 @@ public class Main {
 
         logger.debug("Say \"Hello\" "
                 + "(-> " + Conversion.arrayToHex(hello.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getData()) + ")");
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (Arrays.equals(hello.getBytes(), resp.getData())) {
             logger.info("Hello OK");

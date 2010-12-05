@@ -271,9 +271,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.resetParams();
         this.hostChallenge = RandomGenerator.generateRandom(8);
 
-        // TODO !
-        //this.hostChallenge = Conversion.hexToArray("21 69 53 99 73 EC 89 3A");
-
         byte[] initUpdCmd = new byte[13];
         initUpdCmd[0] = (byte) 0x80;
         initUpdCmd[1] = (byte) 0x50;
@@ -286,9 +283,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
 
         ResponseAPDU resp = this.cc.transmit(cmdInitUpd);
-
-        // TODO!
-        //resp = new ResponseAPDU(Conversion.hexToArray("00 00 81 58 03 12 20 91 38 27 FF 02 00 18 CC 28 2B D8 31 DB 76 D1 5E 08 A0 2D 92 20 90 00"));
 
         logger.debug("INIT UPDATE command "
                 + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
@@ -745,8 +739,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.cardCrypto = new byte[8];
                 System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
 
-                logger.debug("Card Crypto : " + Conversion.arrayToHex(cardcryptogram));
-
                 /* Calculing Host Cryptogram */
                 System.arraycopy(this.sequenceCounter, 0, data, 0, 2);
                 System.arraycopy(this.cardChallenge, 0, data, 2, 6);
@@ -879,8 +871,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             this.derivationData = new byte[16];
             System.arraycopy(this.sequenceCounter, 0, this.derivationData, 2, 2);
-
-            logger.debug("Derivation data: " + Conversion.arrayToHex(this.derivationData));
 
         }
 

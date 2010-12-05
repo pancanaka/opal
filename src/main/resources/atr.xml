@@ -6,8 +6,8 @@
         <description>Cyberflex Palmera V3</description>
     </card>
     <card ATR="3B 7D 11 00 00 00 31 80 71 8E 64 52 D9 34 00 82 90 00">
-        <config>Oberthur</config>
-        <description>An Oberthur Smartcard</description>
+        <config>Oberthur_Cosmopolic</config>
+        <description>Oberthur Cosmopolic</description>
     </card>
     <card ATR="3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 82 90 00">
         3B 0F 10 78 B3 C0 02 00 31 C0 64 77 E3 03 00 82 90
