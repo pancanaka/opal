@@ -330,7 +330,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         } else if (scpRec == SCP02) {
 
-            if (desiredScp == SCPMode.SCP_02_15) {
+            if (desiredScp == SCPMode.SCP_UNDEFINED) {
+                this.scp = desiredScp;
+            }
+            else if (desiredScp == SCPMode.SCP_02_15) {
                 this.scp = desiredScp;
             } else {
                 this.resetParams();
