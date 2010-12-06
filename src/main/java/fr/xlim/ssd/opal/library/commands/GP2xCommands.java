@@ -573,7 +573,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         byte[] res = new byte[8];
         IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
         try {
-            if ((this.scp == SCPMode.SCP_UNDEFINED)
+            if ((this.scp == SCPMode.SCP_UNDEFINED)    // TODO: Undefined SCPMode Here ?
                     || (this.scp == SCPMode.SCP_01_05)
                     || (this.scp == SCPMode.SCP_01_15)) {
                 Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
@@ -1024,7 +1024,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             dataSize = (byte) (dataSize + 8); // add space for the C-MAC
         }
 
-        byte[] installForLoadComm = new byte[headerSize + dataSize];
+        byte[] installForLoadComm = new byte[(headerSize + (short)(dataSize&0xFF))];
 
         installForLoadComm[0] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84); // (CLA) command class (GlobalPlatform command + secure messaging with GlobalPlatform format)
         installForLoadComm[1] = (byte) 0xE6; // (INS) INSTALL command
