@@ -832,7 +832,6 @@ public class GP2xCommandsTest {
         commands.installForLoad(packageAid, securityDomainAid, params);
     }
 
-    /*
     @Test
     public void testInstallForLoadWithParamSuperior128() throws CardException {
         Commands commands = createCommands("/051-GP2xCommands-install-for-load-good.txt");
@@ -845,7 +844,6 @@ public class GP2xCommandsTest {
         byte[] params = new byte[178];
         commands.installForLoad(packageAid, securityDomainAid, params);
     }
-     */
 
     @Test(expected = IllegalArgumentException.class)
     public void testInstallForLoadFailIfPackageAidNull() throws CardException {

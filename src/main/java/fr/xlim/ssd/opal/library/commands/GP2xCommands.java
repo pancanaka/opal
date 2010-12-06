@@ -115,7 +115,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      *
      */
-    protected GP2xCommands() {
+    public GP2xCommands() {
         resetParams();
     }
 
