@@ -3,7 +3,7 @@
 # security level is NO_SECURITY
 #
 
-# Select GP and Authentification step
+# Select GP and Authentication step
 00 A4 04 00 08 A0 00 00 00 03 00 00 00
 6F 19 84 08 A0 00 00 00 03 00 00 00 A5 0D 9F 6E 06 19 81 30 52 02 00 9F 65 01 FF 90 00
 80 50 01 00 08 5B CD C5 D1 73 02 97 EC
