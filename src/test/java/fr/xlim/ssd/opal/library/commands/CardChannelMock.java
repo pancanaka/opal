@@ -1,6 +1,10 @@
 package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.smartcardio.*;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
@@ -8,13 +12,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import javax.smartcardio.Card;
-import javax.smartcardio.CardChannel;
-import javax.smartcardio.CardException;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CardChannelMock extends CardChannel {
 
@@ -51,6 +48,7 @@ public class CardChannelMock extends CardChannel {
             this.response = response;
         }
     }
+
     private List<CommandAndResponse> apdus = new LinkedList<CommandAndResponse>();
     private int receivedCommands = 0;
     private int sentResponses = 0;
@@ -67,8 +65,8 @@ public class CardChannelMock extends CardChannel {
         CommandAPDU command = null;
 
         while (buffer != null) {
-            if (buffer.startsWith("#")) {
-                // do nohting: it's a comment
+            if (buffer.startsWith("#") || buffer.isEmpty()) {
+                // do nothing: it's a comment or an empty line
             } else if (command == null) {
                 command = new CommandAPDU(Conversion.hexToArray(buffer));
             } else {
@@ -117,7 +115,7 @@ public class CardChannelMock extends CardChannel {
     public void close() throws CardException {
         if (apdus.size() != this.sentResponses && apdus.size() != this.receivedCommands) {
             throw new CardException("Exchange sequence not finished (size: " + apdus.size()
-                    + ", sent: " + sentResponses + ", received:" + receivedCommands);
+                    + ", sent: " + sentResponses + ", received:" + receivedCommands + ")");
         }
     }
 
