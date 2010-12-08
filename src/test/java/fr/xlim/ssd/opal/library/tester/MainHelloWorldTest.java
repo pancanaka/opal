@@ -123,8 +123,8 @@ public class MainHelloWorldTest {
         commands.select(cardConfig.getIssuerSecurityDomainAID());
 
         RandomGenerator.setRandomSequence(new byte[]{
-                (byte) 0x50, (byte) 0x11, (byte) 0xFC, (byte) 0x57,
-                (byte) 0x25, (byte) 0xBD, (byte) 0xCB, (byte) 0x91});
+                (byte) 0xE8, (byte) 0x2A, (byte) 0xFE, (byte) 0x1D,
+                (byte) 0xE5, (byte) 0x95, (byte) 0x97, (byte) 0x83});
 
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
@@ -159,8 +159,8 @@ public class MainHelloWorldTest {
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIssuerSecurityDomainAID());
         RandomGenerator.setRandomSequence(new byte[]{
-                (byte) 0x49, (byte) 0xEC, (byte) 0xE2, (byte) 0x76,
-                (byte) 0xF5, (byte) 0xDC, (byte) 0x42, (byte) 0x1D});
+                (byte) 0xA2, (byte) 0xDA, (byte) 0x7B, (byte) 0x90,
+                (byte) 0x5F, (byte) 0xC6, (byte) 0x17, (byte) 0x0E});
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.deleteOnCardObj(APPLET_ID, false);

@@ -7,8 +7,6 @@
  */
 package fr.xlim.ssd.opal.library.tester;
 
-import fr.xlim.ssd.opal.library.FileType;
-import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
@@ -17,48 +15,37 @@ import fr.xlim.ssd.opal.library.params.CardConfigFactory;
 import fr.xlim.ssd.opal.library.params.CardConfigFactoryWithATR;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.List;
-import java.util.logging.Level;
-
-import javax.smartcardio.ATR;
-import javax.smartcardio.Card;
-import javax.smartcardio.CardChannel;
-import javax.smartcardio.CardException;
-import javax.smartcardio.CardTerminal;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
-import javax.smartcardio.TerminalFactory;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.util.Arrays;
-import javax.smartcardio.CardTerminals.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.smartcardio.*;
+import javax.smartcardio.CardTerminals.State;
+import java.io.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.logging.Level;
 
 public class Main {
 
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
     private final static int TIMEOUT_CARD_PRESENT = 1000;
     private final static byte[] HELLO_WORLD = { // "HELLO"
-        (byte) 'H', (byte) 'E', (byte) 'L', (byte) 'L', (byte) 'O'
+            (byte) 'H', (byte) 'E', (byte) 'L', (byte) 'L', (byte) 'O'
     };
     private final static byte[] APPLET_ID = {
-        (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x62,
-        (byte) 0x03, (byte) 0x01, (byte) 0x0C, (byte) 0x01, (byte) 0x01
+            (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x62,
+            (byte) 0x03, (byte) 0x01, (byte) 0x0C, (byte) 0x01, (byte) 0x01
     };
     private final static byte[] PACKAGE_ID = {
-        (byte) 0xA0, (byte) 0x00, (byte) 0x00,
-        (byte) 0x00, (byte) 0x62, (byte) 0x03,
-        (byte) 0x01, (byte) 0x0C, (byte) 0x01
+            (byte) 0xA0, (byte) 0x00, (byte) 0x00,
+            (byte) 0x00, (byte) 0x62, (byte) 0x03,
+            (byte) 0x01, (byte) 0x0C, (byte) 0x01
     };
     private static CardChannel channel;
 
     private static CardConfig getCardChannel(int cardTerminalIndex,
-            String transmissionProtocol) {
+                                             String transmissionProtocol) {
 
         TerminalFactory factory = TerminalFactory.getDefault();
 
@@ -138,7 +125,7 @@ public class Main {
 
         channel = null;
 
-        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
+        SecLevel secLevel = SecLevel.C_MAC;
 
         CardConfig cardConfig = getCardChannel(1, "*");
 
@@ -156,39 +143,6 @@ public class Main {
         }
 
         SecurityDomain.FileControlInformation cardInformation = securityDomain.getCardInformation();
-
-        logger.info("/**********************************");
-        if (cardInformation.getApplication_AID() != null)
-            logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplication_AID()));
-
-        if(cardInformation.getGPTagAllocationAuthority() != null)
-        logger.info("GP Tag Allocation Authority: " + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
-
-        if(cardInformation.getCardManagementTypeAndVersion() != null)
-            logger.info("Card Manager Type & Version: " + Conversion.arrayToHex(cardInformation.getCardManagementTypeAndVersion()));
-
-        if (cardInformation.getCardIdentificationScheme() != null)
-            logger.info("Card Identification Scheme: " + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
-
-        if (cardInformation.getSCPInformation() != null)
-            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getSCPInformation()));
-
-        logger.info("SCP Version: " + cardInformation.getSCPVersion());
-        logger.info("SCP Mode: " + cardInformation.getSCPMode());
-
-        if (cardInformation.getCardConfiguration() != null)
-            logger.info("Card Configuration: " + Conversion.arrayToHex(cardInformation.getCardConfiguration()));
-
-        if (cardInformation.getCardDetails() != null)
-            logger.info("Card Details: " + Conversion.arrayToHex(cardInformation.getCardDetails()));
-
-        if (cardInformation.getApplicationProductionLifeCycleData() != null)
-            logger.info("Application production life cyvle data: " + Conversion.arrayToHex(cardInformation.getApplicationProductionLifeCycleData()));
-
-        if (cardInformation.getMaximumLengthOfDataFieldInCommandMessage() != null)
-            logger.info("Maximun length of data field in command message: " + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));
-        logger.info("***********************************/");
-
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         securityDomain.externalAuthenticate(secLevel);
 
@@ -197,36 +151,6 @@ public class Main {
         //securityDomain.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
         //securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
         //securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
-
-        // Deleting Applet if existed
-        try {
-            ResponseAPDU[] resps = securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
-            for (ResponseAPDU resp : resps) {
-                String all = Conversion.arrayToHex(resp.getData());
-                if (all.indexOf(Conversion.arrayToHex(APPLET_ID)) != -1) {
-                    securityDomain.deleteOnCardObj(APPLET_ID, false);
-                    logger.info("Applet " + Conversion.arrayToHex(APPLET_ID) + " deleted.");
-                }
-            }
-        } catch (Exception e) {
-            logger.debug("There is not installed Applet in this smart card");
-        }
-
-        // Deleting package if existed
-        try {
-            ResponseAPDU[] resps = securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
-            for (ResponseAPDU resp : resps) {
-                String all = Conversion.arrayToHex(resp.getData());
-                if (all.indexOf(Conversion.arrayToHex(PACKAGE_ID)) != -1) {
-                    securityDomain.deleteOnCardObj(PACKAGE_ID, false);
-                    logger.info("Package " + Conversion.arrayToHex(PACKAGE_ID) + " deleted.");
-                }
-            }
-        } catch (Exception e) {
-            logger.debug("There is not installed Applet in this samrt card");
-        }
-
-        //System.exit(0);
 
         // Installing Applet
         securityDomain.installForLoad(PACKAGE_ID, null, null);
@@ -247,7 +171,7 @@ public class Main {
                 , (byte) 0x04 // P1
                 , (byte) 0x00 // P2
                 , APPLET_ID // DATA
-                );
+        );
         ResponseAPDU resp = securityDomain.send(select);
         logger.debug("Select Hello World Applet "
                 + "(-> " + Conversion.arrayToHex(select.getBytes()) + ") "
@@ -259,7 +183,7 @@ public class Main {
                 , (byte) 0x00 // P1
                 , (byte) 0x00 // P2
                 , HELLO_WORLD // DATA
-                );
+        );
         resp = securityDomain.send(hello);
 
         logger.debug("Say \"Hello\" "
@@ -271,12 +195,9 @@ public class Main {
         } else {
             logger.error("Hello FAIL");
         }
-        try {
-            // Select the Card Manager
-            securityDomain.select();
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
-        }
+
+        // Select the Card Manager
+        securityDomain.select();
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         securityDomain.externalAuthenticate(secLevel);
 

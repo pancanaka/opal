@@ -38,7 +38,7 @@
         <config>Infineon_JTOP_V2_16k</config>
         <description>Infineon JTOP V2 16k</description>
     </card>
-    
+
     <card ATR="3B EB 00 00 81 31 20 45 4A 43 4F 50 33 31 33 36 47 44 54 78">
         <config>NXP_JCOP_31V2.2_36K</config>
         <description>NXP JCOP 31V2.2 36K</description>
@@ -84,5 +84,10 @@
     <card ATR="3B 9F 96 C0 0A 3F C7 A0 80 31 E0 73 FE 21 1B 63 F1 00 E8 83 00 90 00 14">
         <config>mNF1.2/SCWS</config>
         <description>mNF1.2/SCWS</description>
+    </card>
+
+    <card ATR="3B 3F 94 00 80 65 AF 03 12 01 6F 73 32 21 1B 83 0F 90 00">
+        <config>GemXplore_Xpresso</config>
+        <description>GemXplore_Xpresso</description>
     </card>
 </cards>

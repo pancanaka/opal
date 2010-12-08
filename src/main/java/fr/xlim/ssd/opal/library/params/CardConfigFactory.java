@@ -5,31 +5,23 @@
  */
 package fr.xlim.ssd.opal.library.params;
 
-import java.io.IOException;
-
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
+import fr.xlim.ssd.opal.library.*;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import fr.xlim.ssd.opal.library.SCGPKey;
-import fr.xlim.ssd.opal.library.SCGemVisa;
-import fr.xlim.ssd.opal.library.SCGemVisa2;
-
-import fr.xlim.ssd.opal.library.KeyType;
-import fr.xlim.ssd.opal.library.SCPMode;
-import fr.xlim.ssd.opal.library.SCKey;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.io.InputStream;
 
 public class CardConfigFactory {
 
     /**
-     * @param cardName  the card identifiant in config.xml
-     * @return          a CardConfig object if the card identifiant is found
+     * @param cardName the card identifiant in config.xml
+     * @return a CardConfig object if the card identifiant is found
      * @throws CardNotFoundException
      */
     public static CardConfig getCardConfig(String cardName)
@@ -82,8 +74,9 @@ public class CardConfigFactory {
 
     /**
      * Get the value between isdAID tags from an element in the config.xml
-     * @param card  an element in the config.xml
-     * @return      a byte array with the issuer security domain AID value
+     *
+     * @param card an element in the config.xml
+     * @return a byte array with the issuer security domain AID value
      */
     private static byte[] getISD(Element card) {
         return Conversion.hexToArray(((Element) card.getElementsByTagName("isdAID").item(0)).getAttribute("value"));
@@ -91,8 +84,9 @@ public class CardConfigFactory {
 
     /**
      * Get the value between scpMode tags from an element in the config.xml
-     * @param card  an element in the config.xml
-     * @return      the SCP mode
+     *
+     * @param card an element in the config.xml
+     * @return the SCP mode
      */
     private static SCPMode getSCP(Element card) {
         String scp = ((Element) card.getElementsByTagName("scpMode").item(0)).getAttribute("value");
@@ -101,7 +95,7 @@ public class CardConfigFactory {
             res = SCPMode.SCP_01_05;
         } else if (scp.equals("01_15")) {
             res = SCPMode.SCP_01_15;
-        }  else if (scp.equals("02_15")) {
+        } else if (scp.equals("02_15")) {
             res = SCPMode.SCP_02_15;
         }
         return res;
@@ -109,8 +103,9 @@ public class CardConfigFactory {
 
     /**
      * Get the value between transmissionProtocol tags from an element in the config.xml
-     * @param card  an element in the config.xml
-     * @return      the transmission protocol used
+     *
+     * @param card an element in the config.xml
+     * @return the transmission protocol used
      */
     private static String getTP(Element card) {
         return ((Element) card.getElementsByTagName("transmissionProtocol").item(0)).getAttribute("value");
@@ -118,8 +113,9 @@ public class CardConfigFactory {
 
     /**
      * Get the keys between key tags from an element in the config.xml
-     * @param card  an element in the config.xml
-     * @return      the credentials keys
+     *
+     * @param card an element in the config.xml
+     * @return the credentials keys
      */
     private static SCKey[] getKeys(Element card) {
 
@@ -134,6 +130,9 @@ public class CardConfigFactory {
             if (keyType.equals("DES_ECB")) {
                 String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
                 keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId), KeyType.DES_ECB, Conversion.hexToArray(keyDatas));
+            } else if (keyType.equals("DES_CBC")) {
+                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
+                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId), KeyType.DES_CBC, Conversion.hexToArray(keyDatas));
             } else if (keyType.equals("SCGemVisa2")) {
                 keys[i] = new SCGemVisa2((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
             } else if (keyType.equals("SCGemVisa")) {
@@ -145,8 +144,9 @@ public class CardConfigFactory {
 
     /**
      * Get the value between defaultImpl tags from an element in the config.xml
-     * @param card  an element in the config.xml
-     * @return      A string with the name of the implementation
+     *
+     * @param card an element in the config.xml
+     * @return A string with the name of the implementation
      */
     private static String getImpl(Element card) {
         return card.getAttribute("defaultImpl");
