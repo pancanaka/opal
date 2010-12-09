@@ -22,7 +22,6 @@ import org.slf4j.LoggerFactory;
 import javax.smartcardio.*;
 import javax.smartcardio.CardTerminals.State;
 import java.io.*;
-import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 
@@ -125,7 +124,7 @@ public class Main {
 
         channel = null;
 
-        SecLevel secLevel = SecLevel.C_MAC;
+        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
 
         CardConfig cardConfig = getCardChannel(1, "*");
 
@@ -190,11 +189,11 @@ public class Main {
                 + "(-> " + Conversion.arrayToHex(hello.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-        if (Arrays.equals(hello.getBytes(), resp.getData())) {
+        /*if (Arrays.equals(hello.getBytes(), resp.getData())) {
             logger.info("Hello OK");
         } else {
             logger.error("Hello FAIL");
-        }
+        }         */
 
         // Select the Card Manager
         securityDomain.select();

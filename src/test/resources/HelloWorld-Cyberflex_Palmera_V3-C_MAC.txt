@@ -119,7 +119,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 57 82 85 E2 19 24 7F 76
 # * Calculated cryptogram is F5 A2 5C B4 82 52 2C 9D
-# * Next ICV is F5 A2 5C B4 82 52 2C 9D
+# * New ICV is F5 A2 5C B4 82 52 2C 9D
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 F5 A2 5C B4 82 52 2C 9D
@@ -130,7 +130,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is F5 A2 5C B4 82 52 2C 9D
 # * Calculated cryptogram is B4 AE 6A 43 8B CB 53 3D
-# * Next ICV is B4 AE 6A 43 8B CB 53 3D
+# * New ICV is B4 AE 6A 43 8B CB 53 3D
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 06 10 00 00 6C 00 00 00 00 00 B4 AE 6A 43 8B CB 53 3D
@@ -141,7 +141,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is B4 AE 6A 43 8B CB 53 3D
 # * Calculated cryptogram is E9 E6 C3 3B CD 64 7C EA
-# * Next ICV is E9 E6 C3 3B CD 64 7C EA
+# * New ICV is E9 E6 C3 3B CD 64 7C EA
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 07 10 00 01 01 00 04 00 0B 01 E9 E6 C3 3B CD 64 7C EA
@@ -152,7 +152,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is E9 E6 C3 3B CD 64 7C EA
 # * Calculated cryptogram is 8F CF 46 CF DC 97 52 BE
-# * Next ICV is 8F CF 46 CF DC 97 52 BE
+# * New ICV is 8F CF 46 CF DC 97 52 BE
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 08 10 00 01 07 A0 00 00 00 62 8F CF 46 CF DC 97 52 BE
@@ -163,7 +163,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 8F CF 46 CF DC 97 52 BE
 # * Calculated cryptogram is 05 9F 65 88 8D 86 50 75
-# * Next ICV is 05 9F 65 88 8D 86 50 75
+# * New ICV is 05 9F 65 88 8D 86 50 75
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 05 9F 65 88 8D 86 50 75
@@ -174,7 +174,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 05 9F 65 88 8D 86 50 75
 # * Calculated cryptogram is 4F 36 6B 35 17 6C 79 E2
-# * Next ICV is 4F 36 6B 35 17 6C 79 E2
+# * New ICV is 4F 36 6B 35 17 6C 79 E2
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 4F 36 6B 35 17 6C 79 E2
@@ -185,7 +185,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 4F 36 6B 35 17 6C 79 E2
 # * Calculated cryptogram is F7 82 75 65 34 10 5E 40
-# * Next ICV is F7 82 75 65 34 10 5E 40
+# * New ICV is F7 82 75 65 34 10 5E 40
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 F7 82 75 65 34 10 5E 40
@@ -196,7 +196,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is F7 82 75 65 34 10 5E 40
 # * Calculated cryptogram is 6F 88 C7 F2 EA B4 EC 98
-# * Next ICV is 6F 88 C7 F2 EA B4 EC 98
+# * New ICV is 6F 88 C7 F2 EA B4 EC 98
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 0C 10 03 01 00 01 07 01 00 00 6F 88 C7 F2 EA B4 EC 98
@@ -207,7 +207,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 6F 88 C7 F2 EA B4 EC 98
 # * Calculated cryptogram is 2A 8D 7C 0D AF 64 AB CF
-# * Next ICV is 2A 8D 7C 0D AF 64 AB CF
+# * New ICV is 2A 8D 7C 0D AF 64 AB CF
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 2A 8D 7C 0D AF 64 AB CF
@@ -218,7 +218,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 2A 8D 7C 0D AF 64 AB CF
 # * Calculated cryptogram is F7 DC C2 30 D1 F5 E5 79
-# * Next ICV is F7 DC C2 30 D1 F5 E5 79
+# * New ICV is F7 DC C2 30 D1 F5 E5 79
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 F7 DC C2 30 D1 F5 E5 79
@@ -229,7 +229,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is F7 DC C2 30 D1 F5 E5 79
 # * Calculated cryptogram is 8A 49 91 35 2C A6 B1 26
-# * Next ICV is 8A 49 91 35 2C A6 B1 26
+# * New ICV is 8A 49 91 35 2C A6 B1 26
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 8A 49 91 35 2C A6 B1 26
@@ -240,7 +240,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 8A 49 91 35 2C A6 B1 26
 # * Calculated cryptogram is EC E0 1C E0 27 A8 89 C6
-# * Next ICV is EC E0 1C E0 27 A8 89 C6
+# * New ICV is EC E0 1C E0 27 A8 89 C6
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 EC E0 1C E0 27 A8 89 C6
@@ -251,7 +251,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is EC E0 1C E0 27 A8 89 C6
 # * Calculated cryptogram is 07 89 23 98 FB 1F A3 12
-# * Next ICV is 07 89 23 98 FB 1F A3 12
+# * New ICV is 07 89 23 98 FB 1F A3 12
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 07 89 23 98 FB 1F A3 12
@@ -262,7 +262,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 07 89 23 98 FB 1F A3 12
 # * Calculated cryptogram is 19 B1 38 00 E0 B7 DC 10
-# * Next ICV is 19 B1 38 00 E0 B7 DC 10
+# * New ICV is 19 B1 38 00 E0 B7 DC 10
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 19 B1 38 00 E0 B7 DC 10
@@ -273,7 +273,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 19 B1 38 00 E0 B7 DC 10
 # * Calculated cryptogram is 4D 66 8A 3C 28 54 BA AC
-# * Next ICV is 4D 66 8A 3C 28 54 BA AC
+# * New ICV is 4D 66 8A 3C 28 54 BA AC
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 4D 66 8A 3C 28 54 BA AC
@@ -284,7 +284,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 4D 66 8A 3C 28 54 BA AC
 # * Calculated cryptogram is CD 81 4A 17 DA B8 B1 CC
-# * Next ICV is CD 81 4A 17 DA B8 B1 CC
+# * New ICV is CD 81 4A 17 DA B8 B1 CC
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 CD 81 4A 17 DA B8 B1 CC
@@ -295,7 +295,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is CD 81 4A 17 DA B8 B1 CC
 # * Calculated cryptogram is 5C 65 35 BC CA 52 5A EF
-# * Next ICV is 5C 65 35 BC CA 52 5A EF
+# * New ICV is 5C 65 35 BC CA 52 5A EF
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 5C 65 35 BC CA 52 5A EF
@@ -306,7 +306,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 5C 65 35 BC CA 52 5A EF
 # * Calculated cryptogram is C8 89 39 37 D0 C7 D1 AF
-# * Next ICV is C8 89 39 37 D0 C7 D1 AF
+# * New ICV is C8 89 39 37 D0 C7 D1 AF
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 C8 89 39 37 D0 C7 D1 AF
@@ -317,7 +317,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is C8 89 39 37 D0 C7 D1 AF
 # * Calculated cryptogram is 5F F5 82 08 B4 DC 11 83
-# * Next ICV is 5F F5 82 08 B4 DC 11 83
+# * New ICV is 5F F5 82 08 B4 DC 11 83
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 5F F5 82 08 B4 DC 11 83
@@ -328,7 +328,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 5F F5 82 08 B4 DC 11 83
 # * Calculated cryptogram is DF BA 97 91 D6 E2 8C 6B
-# * Next ICV is DF BA 97 91 D6 E2 8C 6B
+# * New ICV is DF BA 97 91 D6 E2 8C 6B
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 18 10 00 08 19 03 08 8B 00 09 DF BA 97 91 D6 E2 8C 6B
@@ -339,7 +339,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is DF BA 97 91 D6 E2 8C 6B
 # * Calculated cryptogram is 41 DD 8B 1E 0E 46 78 31
-# * Next ICV is 41 DD 8B 1E 0E 46 78 31
+# * New ICV is 41 DD 8B 1E 0E 46 78 31
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 41 DD 8B 1E 0E 46 78 31
@@ -350,7 +350,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 41 DD 8B 1E 0E 46 78 31
 # * Calculated cryptogram is 3C FC B0 C3 EF 84 D9 A1
-# * Next ICV is 3C FC B0 C3 EF 84 D9 A1
+# * New ICV is 3C FC B0 C3 EF 84 D9 A1
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 3C FC B0 C3 EF 84 D9 A1
@@ -361,7 +361,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 3C FC B0 C3 EF 84 D9 A1
 # * Calculated cryptogram is 59 2E B0 28 A1 31 99 85
-# * Next ICV is 59 2E B0 28 A1 31 99 85
+# * New ICV is 59 2E B0 28 A1 31 99 85
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 1B 10 00 00 00 00 00 00 00 05 59 2E B0 28 A1 31 99 85
@@ -372,7 +372,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 59 2E B0 28 A1 31 99 85
 # * Calculated cryptogram is 99 A8 C7 39 A0 B7 A9 25
-# * Next ICV is 99 A8 C7 39 A0 B7 A9 25
+# * New ICV is 99 A8 C7 39 A0 B7 A9 25
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 99 A8 C7 39 A0 B7 A9 25
@@ -383,7 +383,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 99 A8 C7 39 A0 B7 A9 25
 # * Calculated cryptogram is 3C AD 95 56 95 13 57 05
-# * Next ICV is 3C AD 95 56 95 13 57 05
+# * New ICV is 3C AD 95 56 95 13 57 05
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 1D 10 06 80 03 00 03 80 03 01 3C AD 95 56 95 13 57 05
@@ -394,7 +394,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 3C AD 95 56 95 13 57 05
 # * Calculated cryptogram is 71 93 18 95 26 B2 92 A4
-# * Next ICV is 71 93 18 95 26 B2 92 A4
+# * New ICV is 71 93 18 95 26 B2 92 A4
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 1E 10 01 00 00 00 06 00 00 01 71 93 18 95 26 B2 92 A4
@@ -405,7 +405,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 71 93 18 95 26 B2 92 A4
 # * Calculated cryptogram is 33 5F 25 3F 23 EF 3D 78
-# * Next ICV is 33 5F 25 3F 23 EF 3D 78
+# * New ICV is 33 5F 25 3F 23 EF 3D 78
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 33 5F 25 3F 23 EF 3D 78
@@ -416,7 +416,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 33 5F 25 3F 23 EF 3D 78
 # * Calculated cryptogram is 46 2B 7E A8 F9 8F 9A E1
-# * Next ICV is 46 2B 7E A8 F9 8F 9A E1
+# * New ICV is 46 2B 7E A8 F9 8F 9A E1
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 46 2B 7E A8 F9 8F 9A E1
@@ -427,7 +427,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 46 2B 7E A8 F9 8F 9A E1
 # * Calculated cryptogram is 82 72 64 B6 C1 CB 00 1E
-# * Next ICV is 82 72 64 B6 C1 CB 00 1E
+# * New ICV is 82 72 64 B6 C1 CB 00 1E
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 82 72 64 B6 C1 CB 00 1E
@@ -438,7 +438,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 82 72 64 B6 C1 CB 00 1E
 # * Calculated cryptogram is 96 BD 5E 55 59 EA B8 EF
-# * Next ICV is 96 BD 5E 55 59 EA B8 EF
+# * New ICV is 96 BD 5E 55 59 EA B8 EF
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 22 10 06 80 10 02 03 80 0A 03 96 BD 5E 55 59 EA B8 EF
@@ -449,7 +449,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 96 BD 5E 55 59 EA B8 EF
 # * Calculated cryptogram is 7D 79 7F 53 FE B6 CB 6B
-# * Next ICV is 7D 79 7F 53 FE B6 CB 6B
+# * New ICV is 7D 79 7F 53 FE B6 CB 6B
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 7D 79 7F 53 FE B6 CB 6B
@@ -460,7 +460,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 7D 79 7F 53 FE B6 CB 6B
 # * Calculated cryptogram is 1E B4 31 4D DF 25 98 98
-# * Next ICV is 1E B4 31 4D DF 25 98 98
+# * New ICV is 1E B4 31 4D DF 25 98 98
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 1E B4 31 4D DF 25 98 98
@@ -471,7 +471,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 1E B4 31 4D DF 25 98 98
 # * Calculated cryptogram is 6A CB 71 FC BC D0 98 F4
-# * Next ICV is 6A CB 71 FC BC D0 98 F4
+# * New ICV is 6A CB 71 FC BC D0 98 F4
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 6A CB 71 FC BC D0 98 F4
@@ -482,7 +482,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 6A CB 71 FC BC D0 98 F4
 # * Calculated cryptogram is 8B 3B D9 55 18 8C C6 30
-# * Next ICV is 8B 3B D9 55 18 8C C6 30
+# * New ICV is 8B 3B D9 55 18 8C C6 30
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 26 10 6C 01 00 01 00 00 00 00 8B 3B D9 55 18 8C C6 30
@@ -493,7 +493,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 8B 3B D9 55 18 8C C6 30
 # * Calculated cryptogram is 5E D1 CF 30 FA 7D 1D 52
-# * Next ICV is 5E D1 CF 30 FA 7D 1D 52
+# * New ICV is 5E D1 CF 30 FA 7D 1D 52
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 27 10 01 00 03 00 02 00 00 00 5E D1 CF 30 FA 7D 1D 52
@@ -504,7 +504,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 5E D1 CF 30 FA 7D 1D 52
 # * Calculated cryptogram is E3 2E FE 14 57 B6 7E E4
-# * Next ICV is E3 2E FE 14 57 B6 7E E4
+# * New ICV is E3 2E FE 14 57 B6 7E E4
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 28 10 00 1C 00 84 00 01 00 1E E3 2E FE 14 57 B6 7E E4
@@ -515,7 +515,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is E3 2E FE 14 57 B6 7E E4
 # * Calculated cryptogram is 6F DF 3C 56 6F 35 54 5E
-# * Next ICV is 6F DF 3C 56 6F 35 54 5E
+# * New ICV is 6F DF 3C 56 6F 35 54 5E
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 29 10 00 11 00 00 00 00 01 09 6F DF 3C 56 6F 35 54 5E
@@ -526,7 +526,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 6F DF 3C 56 6F 35 54 5E
 # * Calculated cryptogram is 73 86 8A 92 BC 3C 72 0A
-# * Next ICV is 73 86 8A 92 BC 3C 72 0A
+# * New ICV is 73 86 8A 92 BC 3C 72 0A
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 2A 10 00 14 00 30 00 07 00 00 73 86 8A 92 BC 3C 72 0A
@@ -537,7 +537,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 73 86 8A 92 BC 3C 72 0A
 # * Calculated cryptogram is 01 DC E7 FF 32 84 9C 06
-# * Next ICV is 01 DC E7 FF 32 84 9C 06
+# * New ICV is 01 DC E7 FF 32 84 9C 06
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 01 DC E7 FF 32 84 9C 06
@@ -548,7 +548,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 01 DC E7 FF 32 84 9C 06
 # * Calculated cryptogram is E9 9A 39 C3 92 43 8A 53
-# * Next ICV is E9 9A 39 C3 92 43 8A 53
+# * New ICV is E9 9A 39 C3 92 43 8A 53
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 2C 10 00 46 00 00 00 00 00 0D E9 9A 39 C3 92 43 8A 53
@@ -559,7 +559,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is E9 9A 39 C3 92 43 8A 53
 # * Calculated cryptogram is 7B 9B AF EF 4E EA CC 26
-# * Next ICV is 7B 9B AF EF 4E EA CC 26
+# * New ICV is 7B 9B AF EF 4E EA CC 26
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 7B 9B AF EF 4E EA CC 26
@@ -570,7 +570,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 7B 9B AF EF 4E EA CC 26
 # * Calculated cryptogram is A3 91 00 D1 9F A5 A7 19
-# * Next ICV is A3 91 00 D1 9F A5 A7 19
+# * New ICV is A3 91 00 D1 9F A5 A7 19
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 A3 91 00 D1 9F A5 A7 19
@@ -581,7 +581,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is A3 91 00 D1 9F A5 A7 19
 # * Calculated cryptogram is 73 C5 FF 62 AB FB 8E 6C
-# * Next ICV is 73 C5 FF 62 AB FB 8E 6C
+# * New ICV is 73 C5 FF 62 AB FB 8E 6C
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 73 C5 FF 62 AB FB 8E 6C
@@ -592,7 +592,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 73 C5 FF 62 AB FB 8E 6C
 # * Calculated cryptogram is CF 9C 13 C5 4B CB 84 00
-# * Next ICV is CF 9C 13 C5 4B CB 84 00
+# * New ICV is CF 9C 13 C5 4B CB 84 00
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 CF 9C 13 C5 4B CB 84 00
@@ -603,7 +603,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is CF 9C 13 C5 4B CB 84 00
 # * Calculated cryptogram is 45 1C 36 44 FF 64 DB 67
-# * Next ICV is 45 1C 36 44 FF 64 DB 67
+# * New ICV is 45 1C 36 44 FF 64 DB 67
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 31 10 02 41 03 44 10 04 B4 41 45 1C 36 44 FF 64 DB 67
@@ -614,7 +614,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 45 1C 36 44 FF 64 DB 67
 # * Calculated cryptogram is 54 AE 1F A3 78 3D E6 65
-# * Next ICV is 54 AE 1F A3 78 3D E6 65
+# * New ICV is 54 AE 1F A3 78 3D E6 65
 # ==> Generate Mac End
 # LOAD command
 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 54 AE 1F A3 78 3D E6 65
@@ -625,7 +625,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 54 AE 1F A3 78 3D E6 65
 # * Calculated cryptogram is 57 1D 16 B9 55 73 68 A1
-# * Next ICV is 57 1D 16 B9 55 73 68 A1
+# * New ICV is 57 1D 16 B9 55 73 68 A1
 # ==> Generate Mac End
 # LOAD command
 84 E8 80 33 0D 31 06 68 00 A1 57 1D 16 B9 55 73 68 A1
@@ -636,7 +636,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 57 1D 16 B9 55 73 68 A1
 # * Calculated cryptogram is 52 B2 B8 0D 7F C1 68 8E
-# * Next ICV is 52 B2 B8 0D 7F C1 68 8E
+# * New ICV is 52 B2 B8 0D 7F C1 68 8E
 # ==> Generate Mac End
 # INSTALL FOR INSTALL AND MAKE SELECTABLE
 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 52 B2 B8 0D 7F C1 68 8E
@@ -686,7 +686,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 00 00 00 00 00 00 00 00
 # * Calculated cryptogram is CD EF CA CA DA 10 6E 1F
-# * Next ICV is CD EF CA CA DA 10 6E 1F
+# * New ICV is CD EF CA CA DA 10 6E 1F
 # ==> Generate Mac End
 # EXTERNAL AUTHENTICATE command
 84 82 01 00 10 63 95 CB 01 BD 6A 73 77 CD EF CA CA DA 10 6E 1F
@@ -697,7 +697,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is CD EF CA CA DA 10 6E 1F
 # * Calculated cryptogram is 6F 16 DF DA 32 0A 48 8C
-# * Next ICV is 6F 16 DF DA 32 0A 48 8C
+# * New ICV is 6F 16 DF DA 32 0A 48 8C
 # ==> Generate Mac End
 # DELETE OBJECT command
 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 6F 16 DF DA 32 0A 48 8C
@@ -707,7 +707,7 @@
 # * SCP 01 Protocol (SCP_01_05)
 # * IV is 6F 16 DF DA 32 0A 48 8C
 # * Calculated cryptogram is 20 DB 51 04 BC B2 4A 67
-# * Next ICV is 20 DB 51 04 BC B2 4A 67
+# * New ICV is 20 DB 51 04 BC B2 4A 67
 # ==> Generate Mac End
 # DELETE OBJECT command
 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 20 DB 51 04 BC B2 4A 67
