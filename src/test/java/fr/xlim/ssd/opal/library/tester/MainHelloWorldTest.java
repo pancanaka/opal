@@ -4,6 +4,7 @@ import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.commands.CardChannelMock;
 import fr.xlim.ssd.opal.library.commands.Commands;
 import fr.xlim.ssd.opal.library.commands.GP2xCommands;
+import fr.xlim.ssd.opal.library.commands.GemXpresso211Commands;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
@@ -17,6 +18,8 @@ import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import java.io.*;
+
+import static org.junit.Assert.*;
 
 public class MainHelloWorldTest {
 
@@ -40,6 +43,22 @@ public class MainHelloWorldTest {
 
     private GP2xCommands createCommands(String filename) {
         GP2xCommands commands = new GP2xCommands();
+        InputStream input = GP2xCommands.class.getResourceAsStream(filename);
+        Reader reader = new InputStreamReader(input);
+        CardChannel cardChannel = null;
+        try {
+            cardChannel = new CardChannelMock(reader);
+        } catch (CardException ce) {
+            throw new IllegalStateException("CardException");
+        } catch (IOException ioe) {
+            throw new IllegalStateException("IOException");
+        }
+        commands.setCc(cardChannel);
+        return commands;
+    }
+
+    private GP2xCommands createCommandsgemalto211(String filename) {
+        GP2xCommands commands = new GemXpresso211Commands();
         InputStream input = GP2xCommands.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(input);
         CardChannel cardChannel = null;
@@ -970,7 +989,7 @@ public class MainHelloWorldTest {
 
     @Test
     public void testGemXpresso211isNoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
-        Commands commands = createCommands("/HelloWorld-GemXpresso_211is-NO_SECURITY_LEVEL.txt");
+        Commands commands = createCommandsgemalto211("/HelloWorld-GemXpresso_211is-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = CardConfigFactory.getCardConfig("GemXpresso211");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIssuerSecurityDomainAID());
@@ -1023,7 +1042,7 @@ public class MainHelloWorldTest {
 
     @Test
     public void testGemXpresso211isC_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
-        Commands commands = createCommands("/HelloWorld-GemXpresso_211is-C_MAC.txt");
+        Commands commands = createCommandsgemalto211("/HelloWorld-GemXpresso_211is-C_MAC.txt");
         CardConfig cardConfig = CardConfigFactory.getCardConfig("GemXpresso211");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIssuerSecurityDomainAID());
@@ -1076,7 +1095,7 @@ public class MainHelloWorldTest {
 
     @Test
     public void testGemXpresso211isC_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
-        Commands commands = createCommands("/HelloWorld-GemXpresso_211is-C_ENC_AND_MAC.txt");
+        Commands commands = createCommandsgemalto211("/HelloWorld-GemXpresso_211is-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = CardConfigFactory.getCardConfig("GemXpresso211");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIssuerSecurityDomainAID());

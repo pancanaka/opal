@@ -616,6 +616,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("==> Generate Mac");
 
         byte[] dataWithPadding = null;
+
+        logger.debug("generateMac with data: " + Conversion.arrayToHex(data));
+
         if (data.length % 8 != 0) { // We need a padding
 
             logger.debug("- Data needs padding!");
@@ -635,6 +638,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         byte[] res = new byte[8];
         IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
         try {
+            logger.debug("SCP: " + this.scp);
             if ((this.scp == SCPMode.SCP_UNDEFINED)    // TODO: Undefined SCPMode Here ?
                     || (this.scp == SCPMode.SCP_01_05)
                     || (this.scp == SCPMode.SCP_01_15)) {
