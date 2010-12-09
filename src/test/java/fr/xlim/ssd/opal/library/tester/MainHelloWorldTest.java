@@ -19,8 +19,6 @@ import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import java.io.*;
 
-import static org.junit.Assert.*;
-
 public class MainHelloWorldTest {
 
     private final static byte[] HELLO_WORLD = { // "HELLO"
@@ -73,9 +71,11 @@ public class MainHelloWorldTest {
         return commands;
     }
 
-    /*******************************************************************************************************************
-     *  SCP 01
-     ******************************************************************************************************************/
+    /**
+     * ****************************************************************************************************************
+     * SCP 01
+     * ****************************************************************************************************************
+     */
 
     @Test
     public void testCyberflexPalmeraV3NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
@@ -1030,8 +1030,8 @@ public class MainHelloWorldTest {
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIssuerSecurityDomainAID());
         RandomGenerator.setRandomSequence(new byte[]{
-                (byte) 0x9D, (byte) 0xA8, (byte) 0x7C, (byte) 0xBC,
-                (byte) 0xDF, (byte) 0x76, (byte) 0x3E, (byte) 0x80});
+                (byte) 0x6B, (byte) 0xE6, (byte) 0xDF, (byte) 0xA0,
+                (byte) 0x6F, (byte) 0x9A, (byte) 0x41, (byte) 0x95});
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.deleteOnCardObj(APPLET_ID, false);
@@ -1146,9 +1146,11 @@ public class MainHelloWorldTest {
         commands.getCc().close();
     }
 
-    /*******************************************************************************************************************
-     *  SCP 02
-     ******************************************************************************************************************/
+    /**
+     * ****************************************************************************************************************
+     * SCP 02
+     * ****************************************************************************************************************
+     */
 
     @Test
     public void testJCOP21NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
