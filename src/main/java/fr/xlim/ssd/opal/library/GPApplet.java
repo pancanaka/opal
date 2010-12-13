@@ -1,12 +1,12 @@
 package fr.xlim.ssd.opal.library;
 
+import fr.xlim.ssd.opal.library.commands.Commands;
+import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
-
-import fr.xlim.ssd.opal.library.commands.Commands;
-import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 
 /**
  * This class contains methods that could be sent to an Applet. <br/>
@@ -16,12 +16,13 @@ import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
  */
 public class GPApplet {
 
+    // TODO: Propagate this class use
     public class FileControlInformation {
 
         /* 6F                */ // File Control Information (FCI Template)
         protected byte[] allInformations;
         /* |-> 84            */ // Application / File AID
-        protected byte[] application_AID;
+        protected byte[] applicationAID;
         /* |-> A5            */ // Proprietary data
         /* |----> 73         */ // Security Domain Management Data
         /* |------> 66       */ // Tag for 'Card Data'
@@ -36,17 +37,17 @@ public class GPApplet {
         protected byte[] cardIdentificationScheme;
         /* |----------> 64   */ // Secure Channel Protocol of the selected Security Domain ans its implementation options
         /* |------------> 06 */
-                                         /* --0---------------6-- */
+        /* --0---------------6-- */
         protected byte[] SCPInformation; /*  | SCP Information |  */
-                                         /* --------------------- */
+        /* --------------------- */
 
-                                         /* -------7---------     */
+        /* -------7---------     */
         protected byte SCPVersion;       /*  | SCP Version |      */
-                                         /* -----------------     */
+        /* -----------------     */
 
-                                        /* -------8-----          */
+        /* -------8-----          */
         protected byte SCPMode;         /*  | SCP Mode |          */
-                                        /* -------------          */
+        /* -------------          */
         /* |----------> 65   */ // Card Configuration details
         protected byte[] cardConfiguration;
         /* |----------> 66   */ // Card / Chip details
@@ -58,11 +59,11 @@ public class GPApplet {
 
         public static final byte SIZE_TL = (byte) 0x02;
 
-        public void setSCPInformation (byte[] info) {
+        public void setSCPInformation(byte[] info) {
             this.SCPInformation = new byte[info.length - 2];
-            System.arraycopy(info, 0, getSCPInformation(), 0, info.length-2);
-            this.SCPVersion = info[info.length-2];
-            this.SCPMode = info[info.length-1];
+            System.arraycopy(info, 0, getSCPInformation(), 0, info.length - 2);
+            this.SCPVersion = info[info.length - 2];
+            this.SCPMode = info[info.length - 1];
         }
 
         public byte[] getAllInformations() {
@@ -70,10 +71,10 @@ public class GPApplet {
         }
 
         /**
-         * @return the application_AID
+         * @return the applicationAID
          */
         public byte[] getApplicationAID() {
-            return application_AID;
+            return applicationAID;
         }
 
         /**
@@ -159,15 +160,16 @@ public class GPApplet {
      */
     protected Commands cmds;
 
-	/**
-	 * Creates the off-card "Applet"
-	 * @param CmdImplementation the String representation of the chosen implementation (i.e. "fr.xlim.ssd.opal.commands.GP2xCommands") <br/>
-	 * This designed implementation must override the class {@link fr.xlim.ssd.opal.commands.Commands}
-	 * @param cc the initialized card channel on which data will be sent to the card
-	 * @param aid the byte array containing the aid representation of the Applet
-	 * @throws CommandsImplementationNotFound
-	 * @throws ClassNotFoundException
-	 */
+    /**
+     * Creates the off-card "Applet"
+     *
+     * @param CmdImplementation the String representation of the chosen implementation (i.e. "fr.xlim.ssd.opal.commands.GP2xCommands") <br/>
+     *                          This designed implementation must override the class {@link fr.xlim.ssd.opal.library.commands.Commands}
+     * @param cc                the initialized card channel on which data will be sent to the card
+     * @param aid               the byte array containing the aid representation of the Applet
+     * @throws CommandsImplementationNotFound
+     * @throws ClassNotFoundException
+     */
     public GPApplet(String CmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
         this.aid = aid.clone();
         Class.forName(CmdImplementation);
@@ -256,18 +258,20 @@ public class GPApplet {
      */
     public ResponseAPDU select() throws CardException {
         ResponseAPDU ret = this.cmds.select(this.aid);
-        this.checkSelectReturn (ret.getData());
+        this.checkSelectReturn(ret.getData());
         return ret;
     }
 
     protected void checkSelectReturn(byte[] data) throws CardException {
-        if (data[0] != (byte) 0x6F) { return; }
+        if (data[0] != (byte) 0x6F) {
+            return;
+        }
 
         this.fileControlInformation = new FileControlInformation();
 
         for (int pos = 2; pos < data.length; pos += FileControlInformation.SIZE_TL) {
             if (data[pos] == (byte) 0x84) { // Application / File AID
-                this.fileControlInformation.application_AID = this.readTLV(data, pos);
+                this.fileControlInformation.applicationAID = this.readTLV(data, pos);
                 pos += this.fileControlInformation.getApplicationAID().length;
 
             } else if (data[pos] == (byte) 0xA5) { // Proprietary data
@@ -350,7 +354,7 @@ public class GPApplet {
         }
     }
 
-    protected byte[] readTLV (byte[] data, int begin) {
+    protected byte[] readTLV(byte[] data, int begin) {
 
         /*
          * ------------------------
@@ -358,17 +362,17 @@ public class GPApplet {
          * ------------------------
          */
 
-        byte[] value = null ;
+        byte[] value = null;
         byte length;
 
-        if(begin >= data.length) {
+        if (begin >= data.length) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        length = data[begin+1];
-        value = new byte [length];
+        length = data[begin + 1];
+        value = new byte[length];
 
-        System.arraycopy(data, begin+2, value, 0, length);
+        System.arraycopy(data, begin + 2, value, 0, length);
 
         return value;
     }

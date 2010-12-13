@@ -53,110 +53,124 @@ public enum ISO7816 {
     /**
      * Response status : Applet selection failed
      */
-    SW_NO_ERROR((short) 0x9000),
+    SW_NO_ERROR(0x9000),
 
     /**
      * Response status : Response bytes remaining
      */
-    SW_BYTES_REMAINING_00((short) 0x6100),
+    SW_BYTES_REMAINING_00(0x6100),
 
     /**
-     * Response status : Wrong length
+     * Response status: More Data Available
      */
-    SW_WRONG_LENGTH((short) (0x6700)),
+    SW_MORE_DATA_AVAILABLE(0x6310),
 
     /**
-     * Response status : Security condition not satisfied
+     * Response status: Wrong length
      */
-    SW_SECURITY_STATUS_NOT_SATISFIED((short) (0x6982)),
+    SW_WRONG_LENGTH(0x6700),
 
     /**
-     * Response status : File invalid
+     * Response status: Security condition not satisfied
      */
-    SW_FILE_INVALID((short) (0x6983)),
+    SW_SECURITY_STATUS_NOT_SATISFIED(0x6982),
 
     /**
-     * Response status : Data invalid
+     * Response status: File invalid
      */
-    SW_DATA_INVALID((short) (0x6984)),
+    SW_FILE_INVALID(0x6983),
 
     /**
-     * Response status : Conditions of use not satisfied
+     * Response status: Data invalid
      */
-    SW_CONDITIONS_NOT_SATISFIED((short) (0x6985)),
+    SW_DATA_INVALID(0x6984),
 
     /**
-     * Response status : Command not allowed (no current EF)
+     * Response status: Conditions of use not satisfied
      */
-    SW_COMMAND_NOT_ALLOWED((short) (0x6986)),
+    SW_CONDITIONS_NOT_SATISFIED(0x6985),
 
     /**
-     * Response status : Applet selection failed
+     * Response status: Command not allowed (no current EF)
      */
-    SW_APPLET_SELECT_FAILED((short) (0x6999)),
+    SW_COMMAND_NOT_ALLOWED(0x6986),
 
     /**
-     * Response status : Wrong data
+     * Response status: Applet selection failed
      */
-    SW_WRONG_DATA((short) (0x6A80)),
+    SW_APPLET_SELECT_FAILED(0x6999),
 
     /**
-     * Response status : File not found
+     * Response status: Wrong data
      */
-    SW_FUNC_NOT_SUPPORTED((short) 0x6A81),
+    SW_WRONG_DATA(0x6A80),
 
     /**
-     * Response status : Record not found
+     * Response status: File not found
      */
-    SW_FILE_NOT_FOUND((short) (0x6A82)),
+    SW_FUNC_NOT_SUPPORTED(0x6A81),
 
     /**
-     * Response status : Record not found
+     * Response status: Record not found
      */
-    SW_RECORD_NOT_FOUND((short) (0x6A83)),
+    SW_FILE_NOT_FOUND(0x6A82),
 
     /**
-     * Response status : Incorrect parameters (P1,P2)
+     * Response status: Record not found
      */
-    SW_INCORRECT_P1P2((short) (0x6A86)),
+    SW_RECORD_NOT_FOUND(0x6A83),
 
     /**
-     * Response status : Incorrect parameters (P1,P2)
+     * Response status: Incorrect parameters (P1,P2)
      */
-    SW_WRONG_P1P2((short) (0x6B00)),
+    SW_INCORRECT_P1P2(0x6A86),
 
     /**
-     * Response status : Correct Expected Length (Le)
+     * Response status: Reference Data Not Found
      */
-    SW_CORRECT_LENGTH_00((short) (0x6C00)),
+    SW_WRONG_REFERENCE_DATA_NOT_FOUND(0x6A80),
 
     /**
-     * Response status : INS value not supported
+     * Response status: Incorrect parameters (P1,P2)
      */
-    SW_INS_NOT_SUPPORTED((short) (0x6D00)),
+    SW_WRONG_P1P2(0x6B00),
 
     /**
-     * Response status : CLA value not supported
+     * Response status: Correct Expected Length (Le)
      */
-    SW_CLA_NOT_SUPPORTED((short) (0x6E00)),
+    SW_CORRECT_LENGTH_00(0x6C00),
 
     /**
-     * Response status : No precise diagnosis
+     * Response status: INS value not supported
      */
-    SW_UNKNOWN((short) (0x6F00)),
+    SW_INS_NOT_SUPPORTED(0x6D00),
 
     /**
-     * Response status : Not enough memory space in the file
+     * Response status: CLA value not supported
      */
-    SW_FILE_FULL((short) (0x6A84));
+    SW_CLA_NOT_SUPPORTED(0x6E00),
 
-    short value;
+    /**
+     * Response status: No precise diagnosis
+     */
+    SW_UNKNOWN(0x6F00),
 
-    private ISO7816(short val) {
-        this.value = val;
+    /**
+     * Response status: Not enough memory space in the file
+     */
+    SW_FILE_FULL(0x6A84);
+
+    int value;
+
+    private ISO7816(int val) {
+        if ((val & 0xFF00) != 0) {
+            this.value = val & 0xFFFF;
+        } else {
+            this.value = val & 0x00FF;
+        }
     }
 
-    public short getVal() {
+    public int getVal() {
         return this.value;
     }
 }
