@@ -107,7 +107,7 @@ public class GP2xCommandsTest {
         assertEquals(commands.getKeys().length, 3);
         assertSame(commands.getKey((byte) 13, (byte) 2), keys.get(1));
 
-        SCKey key3 = new SCGPKey((byte) 13, (byte) 1, null, null);
+        SCKey key3 = new SCGPKey((byte) 13, (byte) 1, KeyType.DES_CBC, new byte[4]);
         commands.setOffCardKey(key3);
         assertEquals(commands.getKeys().length, 3);
         assertSame(commands.getKey((byte) 13, (byte) 1), key3);
