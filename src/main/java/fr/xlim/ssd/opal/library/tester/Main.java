@@ -5,7 +5,6 @@ import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigFactoryWithATR;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
@@ -137,7 +136,7 @@ import java.util.logging.Level;
         logger.info("Card ATR:  " + Conversion.arrayToHex(atr.getBytes()));
 
         try {
-            String config = CardConfigFactoryWithATR.getCardConfig(atr.getBytes());
+            String config = CardConfigFactory.getCardConfig(atr.getBytes());
             logger.info("Card config:  " + config);
             return CardConfigFactory.getCardConfig(config);
         } catch (CardConfigNotFoundException ex) {

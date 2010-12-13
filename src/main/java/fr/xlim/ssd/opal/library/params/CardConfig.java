@@ -6,6 +6,8 @@ import fr.xlim.ssd.opal.library.SCPMode;
 /**
  * Contains card configuration information (instance obtained from CardConfigFactory)
  *
+ * @see CardConfigFactory
+ *
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
@@ -37,7 +39,6 @@ public class CardConfig {
      */
     public CardConfig(byte[] isd, SCPMode scp, String tp, SCKey[] keys, String impl) {
 
-        // TODO: checking legal size of ISD (maybe an ISD object ?)
         if(isd == null)
             throw new IllegalArgumentException("isd must be not null");
 
@@ -47,7 +48,6 @@ public class CardConfig {
         if(tp == null)
             throw new IllegalArgumentException("tp must be not null");
 
-        // TODO: check array size ?
         if(keys == null)
             throw new IllegalArgumentException("keys must be not null");
 
@@ -62,8 +62,8 @@ public class CardConfig {
     }
 
     /**
-     * Get the name of the default implementation class used by this card
-     * configuration
+     * Get the name of the default implementation class used by this card configuration
+     *
      * @return A string with the class name
      */
     public String getImplementation() {
@@ -72,7 +72,8 @@ public class CardConfig {
 
     /**
      * Get the issuer security domain AID used by this card configuration
-     * @return An byte array of size 6 with the ISDAID
+     *
+     * @return An byte array of size 6 with the ISD AID
      */
     public byte[] getIssuerSecurityDomainAID() {
         return this.isd;
@@ -80,6 +81,7 @@ public class CardConfig {
 
     /**
      * Get the secure channel protocol mode used by this card configuration
+     *
      * @return  the SCP mode
      */
     public SCPMode getScpMode() {
@@ -87,7 +89,8 @@ public class CardConfig {
     }
 
     /**
-     * Get the transmission prpotocol used by this card configuration
+     * Get the transmission protocol used by this card configuration
+     *
      * @return  the transmission protocol used
      */
     public String getTransmissionProtocol() {
@@ -96,6 +99,7 @@ public class CardConfig {
 
     /**
      * Get the Secure Channel Keys used by this card configuration
+     *
      * @return  the default SC keys
      */
     public SCKey[] getSCKeys() {
@@ -103,11 +107,9 @@ public class CardConfig {
     }
 
     /**
-     * Get the value P1 used by an extra-step (typically from proprietary class
-     * like Gemalto)
+     * Get the value P1 used by an extra-step (typically from proprietary class like Gemalto)
      *
-     * @return  the P1 param to send to initUpdtate Command according to the
-     *          KeySetVersion found in configured keys
+     * @return  the P1 param to send to initUpdtate Command according to the KeySetVersion found in configured keys
      */
     public byte getDefaultInitUpdateP1() {
         if (this.keys[0].getSetVersion() == (byte) 255) {
@@ -118,11 +120,9 @@ public class CardConfig {
     }
 
     /**
-     * Get the value P2 used by an extra-step (typically from proprietary class
-     * like Gemalto)
+     * Get the value P2 used by an extra-step (typically from proprietary class like Gemalto)
      *
-     * @return  the P2 param to send to initUpdtate Command according to the
-     *          first KeyId found in configured keys
+     * @return  the P2 param to send to initUpdtate Command according to the first KeyId found in configured keys
      */
     public byte getDefaultInitUpdateP2() {
         if(this.keys[0].getId() == 1)
