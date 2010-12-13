@@ -10,11 +10,11 @@ public enum GetStatusResponseMode {
     NEW_TYPE((byte) 0x02);
     private byte value;
 
-    private GetStatusResponseMode(byte val) {
-        this.value = val;
+    private GetStatusResponseMode(byte value) {
+        this.value = value;
     }
 
-    public byte getVal() {
+    public byte getValue() {
         return this.value;
     }
 }

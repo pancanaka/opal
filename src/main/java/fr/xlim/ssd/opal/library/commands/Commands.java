@@ -1,17 +1,12 @@
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.GetStatusFileType;
-import fr.xlim.ssd.opal.library.GetStatusResponseMode;
-import fr.xlim.ssd.opal.library.SCKey;
-import fr.xlim.ssd.opal.library.SCPMode;
-import fr.xlim.ssd.opal.library.SecLevel;
-import fr.xlim.ssd.opal.library.SessionState;
+import fr.xlim.ssd.opal.library.*;
+
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.ResponseAPDU;
 
 /**
- *
  * @author Julien Iguchi-Cartigny
  */
 public interface Commands {
@@ -22,7 +17,10 @@ public interface Commands {
      * @return
      */
     CardChannel getCc();
+
     /**
+     * Get SCP mode used
+     *
      * @return
      */
     SCPMode getScp();
@@ -87,7 +85,7 @@ public interface Commands {
      * @throws CardException
      */
     ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId,
-            SCPMode desiredScp) throws CardException;
+                                  SCPMode desiredScp) throws CardException;
 
     /**
      * @param secLevel
@@ -104,7 +102,7 @@ public interface Commands {
      * @throws CardException
      */
     ResponseAPDU[] getStatus(GetStatusFileType ft,
-            GetStatusResponseMode respMode, byte[] searchQualifier)
+                             GetStatusResponseMode respMode, byte[] searchQualifier)
             throws CardException;
 
     /**
@@ -133,7 +131,7 @@ public interface Commands {
      * @throws CardException
      */
     ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAID,
-            byte[] params) throws CardException;
+                                byte[] params) throws CardException;
 
     /**
      * @param capFile
@@ -161,6 +159,6 @@ public interface Commands {
      * @throws CardException
      */
     ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID,
-            byte[] moduleAID, byte[] applicationAID, byte[] privileges,
-            byte[] params) throws CardException;
+                                                    byte[] moduleAID, byte[] applicationAID, byte[] privileges,
+                                                    byte[] params) throws CardException;
 }

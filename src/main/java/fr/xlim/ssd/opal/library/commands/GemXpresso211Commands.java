@@ -4,8 +4,9 @@ import fr.xlim.ssd.opal.library.CommandsProvider;
 import fr.xlim.ssd.opal.library.SCGPKey;
 
 /**
- * @author dede
+ * Specific implementation of @link{fr.xlim.ssd.opal.library.commands.GP2xCommands} to GemXpresso 211 authentication
  *
+ * @author Damien Arcuset, Eric Linke
  */
 public class GemXpresso211Commands extends GP2xCommands {
 
@@ -18,7 +19,7 @@ public class GemXpresso211Commands extends GP2xCommands {
      */
     @Override
     protected void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac,
-            SCGPKey staticKkek) {
+                                       SCGPKey staticKkek) {
         super.generateSessionKeys(staticKenc, staticKmac, staticKkek);
         this.extraStep();
     }

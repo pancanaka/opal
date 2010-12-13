@@ -27,138 +27,129 @@ import java.util.List;
 import java.util.logging.Level;
 
 /**
+ * Implementation of Global Platform specification
+ *
  * @author Damien Arcuset, Eric Linke
  * @author Guillaume Bouffard
  */
 public class GP2xCommands extends AbstractCommands implements Commands {
 
+    /// Logger used to print messages
     private static final Logger logger = LoggerFactory.getLogger(GP2xCommands.class);
 
     static {
+        /// @see{fr.xlim.ssd.opal.library.CommandsProvider.register}
         CommandsProvider.register(new GP2xCommands());
     }
 
-    /**
-     *
-     */
+    /// Default padding to encrypt data
     protected static final byte[] padding = Conversion.hexToArray("80 00 00 00 00 00 00 00");
 
+    // SCP 01 constant used in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} Response command
     protected static final byte SCP01 = (byte) 0x01;
+
+    // SCP 02 constant used in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} Response command
     protected static final byte SCP02 = (byte) 0x02;
 
+    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the C-Mac session key
     protected static final byte[] SCP02_derivation4CMac = {(byte) 0x01, (byte) 0x01};
+
+    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the R-Mac session key
     protected static final byte[] SCP02_derivation4RMac = {(byte) 0x01, (byte) 0x02};
+
+    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the encryption session key
     protected static final byte[] SCP02_derivation4EncKey = {(byte) 0x01, (byte) 0x82};
+
+    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the data encryption session key
     protected static final byte[] SCP02_derivation4DataEnc = {(byte) 0x01, (byte) 0x81};
 
-    /**
-     *
-     */
+    /// Static Keys
     protected List<SCKey> keys = new LinkedList<SCKey>();
-    /**
-     *
-     */
+
+    /// Secure Channel Protocol used
     protected SCPMode scp;
-    /**
-     *
-     */
+
+    /// Secure Level used to communicate
     protected SecLevel secMode;
-    /**
-     *
-     */
+
+    /// State of smart card session (NO_SESSION, SESSION_INIT or SESSION_AUTH)
     protected SessionState sessState;
-    /**
-     *
-     */
+
+    /// Encryption session key
     protected byte[] sessEnc;
-    /**
-     *
-     */
+
+    /// C-MAC session key
     protected byte[] sessMac;
-    /**
-     *
-     */
+
+    /// R-MAC session key
     protected byte[] sessRMac;
-    /**
-     *
-     */
+
+    /// Data Encryption session key
     protected byte[] sessKek;
-    /**
-     *
-     */
+
+    /// Host challenge used to authenticate host in smartcard
     protected byte[] hostChallenge;
-    /**
-     *
-     */
+
+    /// Card challenge used to authenticate smartcard in host
     protected byte[] cardChallenge;
-    /**
-     *
-     */
+
+    /// Card response challenge
     protected byte[] cardCrypto;
-    /**
-     *
-     */
+
+    /// Derivation data used to calculate session keys
     protected byte[] derivationData;
-    /**
-     *
-     */
+
+    /// Host challenge result
     protected byte[] hostCrypto;
-    /**
-     *
-     */
+
+    /// Initialized Cypher Vector used to initialized encryption steps
     protected byte[] icv;
-    /*
-     * 
-     */
+
+    /// Sequence counter used in SCP 02. Its value is the number of previous validate authentification
     protected byte[] sequenceCounter;
 
     /**
-     *
+     * Default constructor
      */
     public GP2xCommands() {
         resetParams();
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#getScp()
+     * @see fr.xlim.ssd.opal.library.commands.Commands#getScp()
      */
-
     @Override
     public SCPMode getScp() {
         return this.scp;
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#getSessState()
+     * @see fr.xlim.ssd.opal.library.commands.Commands#getSessState()
      */
-
     @Override
     public SessionState getSessState() {
         return this.sessState;
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#getSecMode()
+     * @see fr.xlim.ssd.opal.library.commands.Commands#getSecMode()
      */
-
     @Override
     public SecLevel getSecMode() {
         return this.secMode;
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#getKeys()
+     * @see fr.xlim.ssd.opal.library.commands.Commands#getKeys()
      */
-
     @Override
     public SCKey[] getKeys() {
         return this.keys.toArray(new SCKey[0]);
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#getKey(byte, byte)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#getKey(byte, byte)
      */
-
     @Override
     public SCKey getKey(byte keySetVersion, byte keyId) {
         for (SCKey currKey : this.keys) {
@@ -170,9 +161,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#setOffCardKey(fr.xlim.ssd.opal.SCKey)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#setOffCardKey(fr.xlim.ssd.opal.library.SCKey)
      */
-
     @Override
     public SCKey setOffCardKey(SCKey key) {
         for (SCKey currKey : this.keys) {
@@ -186,6 +176,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         return key;
     }
 
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#setOffCardKeys(fr.xlim.ssd.opal.library.SCKey[])
+     */
     @Override
     public void setOffCardKeys(SCKey[] keys) {
         for (SCKey key : keys) {
@@ -194,7 +187,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#deleteOffCardKey(int, int)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#deleteOffCardKey(int, int)
      */
     // TODO: why int insted of byte in parameter ?
 
@@ -210,20 +203,19 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#select(byte[])
+     * @see fr.xlim.ssd.opal.library.commands.Commands#select(byte[])
      */
-
     @Override
     public ResponseAPDU select(byte[] aid) throws CardException {
         byte headerSize = (byte) 5; // CLA + INS + P1 + P2 + LC
 
         byte[] selectComm = new byte[headerSize + aid.length];
 
-        selectComm[0] = (byte) 0x00; // (CLA) command class
-        selectComm[1] = (byte) 0xA4; // (INS) SELECT command
-        selectComm[2] = (byte) 0x04; // (P1) SELECT by name
-        selectComm[3] = (byte) 0x00; // (P2) first or only occurrence
-        selectComm[4] = (byte) aid.length; // (LC) data length
+        selectComm[ISO7816.OFFSET_CLA.getValue()] = (byte) 0x00; // (CLA) command class
+        selectComm[ISO7816.OFFSET_INS.getValue()] = (byte) 0xA4; // (INS) SELECT command
+        selectComm[ISO7816.OFFSET_P1.getValue()] = (byte) 0x04; // (P1) SELECT by name
+        selectComm[ISO7816.OFFSET_P2.getValue()] = (byte) 0x00; // (P2) first or only occurrence
+        selectComm[ISO7816.OFFSET_LC.getValue()] = (byte) aid.length; // (LC) data length
 
         System.arraycopy(aid, 0, selectComm, 5, aid.length); // put the AID into selectComm
 
@@ -232,7 +224,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("SELECT Command "
                 + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
-        if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
         }
@@ -240,9 +232,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#resetParams()
+     * @see fr.xlim.ssd.opal.library.commands.Commands#resetParams()
      */
-
     @Override
     public void resetParams() {
         this.initIcv();
@@ -262,9 +253,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#initializeUpdate(byte, byte, fr.xlim.ssd.opal.Constant.SCPMode)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#initializeUpdate(byte, byte, fr.xlim.ssd.opal.library.SCP_Mode)
      */
-
     @Override
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
 
@@ -274,11 +264,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.hostChallenge = RandomGenerator.generateRandom(8);
 
         byte[] initUpdCmd = new byte[13];
-        initUpdCmd[0] = (byte) 0x80;
-        initUpdCmd[1] = (byte) 0x50;
-        initUpdCmd[2] = keySetVersion;
-        initUpdCmd[3] = keyId;
-        initUpdCmd[4] = (byte) this.hostChallenge.length;
+        initUpdCmd[ISO7816.OFFSET_CLA.getValue()] = (byte) 0x80;
+        initUpdCmd[ISO7816.OFFSET_INS.getValue()] = (byte) 0x50;
+        initUpdCmd[ISO7816.OFFSET_P1.getValue()] = keySetVersion;
+        initUpdCmd[ISO7816.OFFSET_P2.getValue()] = keyId;
+        initUpdCmd[ISO7816.OFFSET_LC.getValue()] = (byte) this.hostChallenge.length;
 
         System.arraycopy(this.hostChallenge, 0, initUpdCmd, 5, this.hostChallenge.length);
 
@@ -290,7 +280,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-        if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Invalid response SW after first INIT UPDATE command (" + resp.getSW() + ")");
         }
@@ -436,6 +426,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         return resp;
     }
 
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#externalAuthenticate(fr.xlim.ssd.opal.library.SecLevel)
+     */
     @Override
     public ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException {
 
@@ -455,11 +448,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("* Sec Mode is" + this.secMode);
 
         byte[] extAuthCmd = new byte[21];
-        extAuthCmd[0] = (byte) 0x84;
-        extAuthCmd[1] = (byte) 0x82;
-        extAuthCmd[2] = this.secMode.getVal();
-        extAuthCmd[3] = (byte) 0x00;
-        extAuthCmd[4] = (byte) 0x10;
+        extAuthCmd[ISO7816.OFFSET_CLA.getValue()] = (byte) 0x84;
+        extAuthCmd[ISO7816.OFFSET_INS.getValue()] = (byte) 0x82;
+        extAuthCmd[ISO7816.OFFSET_P1.getValue()] = this.secMode.getVal();
+        extAuthCmd[ISO7816.OFFSET_P2.getValue()] = (byte) 0x00;
+        extAuthCmd[ISO7816.OFFSET_LC.getValue()] = (byte) 0x10;
 
         System.arraycopy(this.hostCrypto, 0, extAuthCmd, 5, this.hostCrypto.length);
         byte[] data = new byte[5 + this.hostCrypto.length];
@@ -479,7 +472,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 + "(-> " + Conversion.arrayToHex(cmd_extauth.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-        if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Error in External Authenticate : " + Integer.toHexString(resp.getSW()));
         }
@@ -501,7 +494,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("+ file type is " + fileType);
         logger.debug("+ response mode is " + responseMode);
-        logger.debug("+ Search Qualifier is " + (searchQualifier!=null?Conversion.arrayToHex(searchQualifier):"null"));
+        logger.debug("+ Search Qualifier is " + (searchQualifier != null ? Conversion.arrayToHex(searchQualifier) : "null"));
         logger.debug("+ SecLevel is " + this.secMode);
 
         if (fileType == null) {
@@ -529,17 +522,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (this.secMode == SecLevel.NO_SECURITY_LEVEL) {
             dataSize = (byte) (searchQualifier.length); // searchQualifier
             getStatusCmd = new byte[headerSize + dataSize];
-            getStatusCmd[0] = (byte) 0x80;
+            getStatusCmd[ISO7816.OFFSET_CLA.getValue()] = (byte) 0x80;
         } else {
             dataSize = (byte) (searchQualifier.length + 8); // searchQualifier + C-MAC
             getStatusCmd = new byte[headerSize + dataSize];
-            getStatusCmd[0] = (byte) 0x84;
+            getStatusCmd[ISO7816.OFFSET_CLA.getValue()] = (byte) 0x84;
         }
 
-        getStatusCmd[1] = (byte) 0xF2;
-        getStatusCmd[2] = fileType.getValue();
-        getStatusCmd[3] = responseMode.getVal();
-        getStatusCmd[4] = dataSize;
+        getStatusCmd[ISO7816.OFFSET_INS.getValue()] = (byte) 0xF2;
+        getStatusCmd[ISO7816.OFFSET_P1.getValue()] = fileType.getValue();
+        getStatusCmd[ISO7816.OFFSET_P2.getValue()] = responseMode.getValue();
+        getStatusCmd[ISO7816.OFFSET_LC.getValue()] = dataSize;
 
         logger.debug("* Get Status command is " + Conversion.arrayToHex(getStatusCmd));
 
@@ -573,8 +566,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         responsesList.add(resp);
 
-        while (resp.getSW() == 0x6310) {
-            UncipheredgetStatusCmd[3] = (byte) (responseMode.getVal() + (byte) 0x01); // Get next occurrence(s)
+        while (resp.getSW() == ISO7816.SW_MORE_DATA_AVAILABLE.getValue()) {
+            UncipheredgetStatusCmd[ISO7816.OFFSET_P2.getValue()] = (byte) (responseMode.getValue() + (byte) 0x01); // Get next occurrence(s)
             if (this.secMode != SecLevel.NO_SECURITY_LEVEL) {
                 byte[] data_cmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
                 System.arraycopy(UncipheredgetStatusCmd, 0, data_cmac, 0, data_cmac.length); // data used to generate C-MAC
@@ -596,7 +589,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             responsesList.add(resp);
         }
 
-        if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in Get Status : " + Integer.toHexString(resp.getSW()));
         }
 
@@ -608,8 +601,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /**
-     * @param data
-     * @return
+     * Generate mac value according input data in a specific SCP version
+     *
+     * @param data data used to generate Mac value
+     * @return Mac value calculated
      */
     protected byte[] generateMac(byte[] data) {
 
@@ -726,8 +721,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /**
-     * @param command
-     * @return
+     * Encrypt APDU command in a specific SCP version.
+     * <p/>
+     * Only SCP 01 protocol is yet implemented
+     *
+     * @param command command to encrypt
+     * @return encrypted command
      */
     protected byte[] encryptCommand(byte[] command) {
 
@@ -790,7 +789,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /**
-     *
+     * ICV Initialization. All values set to 0
      */
     protected void initIcv() {
         logger.debug("==> Init ICV begin");
@@ -803,7 +802,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /**
-     *
+     * Calculate Cryptogramms in SCP01 et SCP02 protocol
      */
     protected void calculateCryptograms() {
 
@@ -898,9 +897,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /**
-     * @param staticKenc
-     * @param staticKmac
-     * @param staticKkek
+     * Generate session keys depending with SCP protocol used
+     *
+     * @param staticKenc Static Encrypt key
+     * @param staticKmac Static Mac key
+     * @param staticKkek Static data encryption key
      */
     protected void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek) {
 
@@ -919,7 +920,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             if ((this.scp == SCPMode.SCP_UNDEFINED)
                     || (this.scp == SCPMode.SCP_01_05)
-                    || (this.scp == SCPMode.SCP_01_15)) {  // TODO; SCPMode.SCP_UNDEFINED Here ?
+                    || (this.scp == SCPMode.SCP_01_15)) {  // TODO: SCPMode.SCP_UNDEFINED Here ?
 
                 this.sessEnc = new byte[24];
                 this.sessMac = new byte[24];
@@ -927,6 +928,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
 
+                /* Calculating session encryption key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessEnc, 0, 16);
@@ -934,6 +936,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));
 
+                /* Calculating session mac key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessMac, 0, 16);
@@ -941,6 +944,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* sessMac = " + Conversion.arrayToHex(this.sessMac));
 
+                /* Calculating session data encryption key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessKek, 0, 16);
@@ -1015,6 +1019,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("==> Generate Session Keys Data End");
     }
 
+    /**
+     * Calculate Derivation data. This step depending to the @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} card response.
+     */
     protected void calculateDerivationData() {
 
         logger.debug("==> Calculate Derivation Data");
@@ -1045,12 +1052,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     // SECURITY DOMAIN
 
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.library.Commands#deleteOnCardKey(byte[], boolean)
+     */
     @Override
     public ResponseAPDU deleteOnCardObj(byte[] aid, boolean cascade) throws CardException {
 
         logger.debug("=> Delete On Card Object begin");
 
-        logger.debug("+ " + (aid != null ? "AID to delete is " + Conversion.arrayToHex(aid):"There is not AID"));
+        logger.debug("+ " + (aid != null ? "AID to delete is " + Conversion.arrayToHex(aid) : "There is not AID"));
         logger.debug("+ Cascade mode ? " + cascade);
         logger.debug("+ Security mode is " + this.secMode);
 
@@ -1068,16 +1078,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         byte[] deleteComm = new byte[headerSize + dataSize];
 
-        deleteComm[0] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84); // (CLA) command class (GlobalPlatform command + secure messaging with GlobalPlatform format)
-        deleteComm[1] = (byte) 0xE4; // (INS) DELETE command
-        deleteComm[2] = (byte) 0x00; // (P1) the only and the last DELETE command
-        deleteComm[3] = (cascade ? (byte) 0x80 : (byte) 0x00); // (P2) 0x00 : only delete the specified object
+        deleteComm[ISO7816.OFFSET_CLA.getValue()] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84); // (CLA) command class (GlobalPlatform command + secure messaging with GlobalPlatform format)
+        deleteComm[ISO7816.OFFSET_INS.getValue()] = (byte) 0xE4; // (INS) DELETE command
+        deleteComm[ISO7816.OFFSET_P1.getValue()] = (byte) 0x00; // (P1) the only and the last DELETE command
+        deleteComm[ISO7816.OFFSET_P2.getValue()] = (cascade ? (byte) 0x80 : (byte) 0x00); // (P2) 0x00 : only delete the specified object
         //      0x80 : delete object and related objects
-        deleteComm[4] = dataSize;   // (LC) data length
+        deleteComm[ISO7816.OFFSET_LC.getValue()] = dataSize;   // (LC) data length
 
-        deleteComm[5] = (byte) 0x4F; // the object being deleted is specified by its AID
-        deleteComm[6] = (byte) aid.length; // AID length
-        System.arraycopy(aid, 0, deleteComm, 7, aid.length); // put the AID into deleteComm
+        deleteComm[ISO7816.OFFSET_CDATA.getValue()] = (byte) 0x4F; // the object being deleted is specified by its AID
+        deleteComm[ISO7816.OFFSET_CDATA.getValue() + 1] = (byte) aid.length; // AID length
+        System.arraycopy(aid, 0, deleteComm, ISO7816.OFFSET_CDATA.getValue() + 2, aid.length); // put the AID into deleteComm
 
         logger.debug("* Delete Command is " + Conversion.arrayToHex(deleteComm));
 
@@ -1103,7 +1113,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 + "(-> " + Conversion.arrayToHex(cmd_delete.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-        if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in DELETE OBJECT : " + Integer.toHexString(resp.getSW()));
         }
 
@@ -1113,16 +1123,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#deleteOnCardKey(byte, byte)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#deleteOnCardKey(byte, byte)
      */
 
     @Override
     public ResponseAPDU deleteOnCardKey(byte keySetVersion, byte keyId) throws CardException {
 
         logger.debug("=> Delete On Card Key begin");
-        
-        logger.debug("+ Key Set Version to delete is " + Integer.toHexString((int)(keySetVersion)&0xFF));
-        logger.debug("+ Key Id to delete is " + Integer.toHexString((int)(keyId)&0xFF));
+
+        logger.debug("+ Key Set Version to delete is " + Integer.toHexString((int) (keySetVersion) & 0xFF));
+        logger.debug("+ Key Id to delete is " + Integer.toHexString((int) (keyId) & 0xFF));
         logger.debug("+ SecLevel is " + this.secMode);
 
         byte dataSize = (byte) 4; // '0xD0' + Key Identifier + '0xD2' + Key Version Number
@@ -1180,7 +1190,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#installForLoad(byte[], byte[], byte[])
+     * @see fr.xlim.ssd.opal.library.commands.Commands#installForLoad(byte[], byte[], byte[])
      */
 
     @Override
@@ -1188,9 +1198,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("=> Install for load begin");
 
-        logger.debug("+ " + (packageAid!=null?"Package AID to install is " + Conversion.arrayToHex(packageAid):"There is not Package AID"));
-        logger.debug("+ " + (securityDomainAid!=null ?"Security Domain AID is " + Conversion.arrayToHex(securityDomainAid):"There is not Security Domain AID"));
-        logger.debug("+ " + (params != null ? "Parameters is " + Conversion.arrayToHex(params):"There is not parameter"));
+        logger.debug("+ " + (packageAid != null ? "Package AID to install is " + Conversion.arrayToHex(packageAid) : "There is not Package AID"));
+        logger.debug("+ " + (securityDomainAid != null ? "Security Domain AID is " + Conversion.arrayToHex(securityDomainAid) : "There is not Security Domain AID"));
+        logger.debug("+ " + (params != null ? "Parameters is " + Conversion.arrayToHex(params) : "There is not parameter"));
         logger.debug("+ SecLevel is " + this.secMode);
 
         if (packageAid == null) {
@@ -1213,7 +1223,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new IllegalArgumentException("params must size must be <= 255");
         }
 
-        logger.debug("* Parameters Length is " + paramLength + " (0x" + Integer.toHexString(paramLength)+")");
+        logger.debug("* Parameters Length is " + paramLength + " (0x" + Integer.toHexString(paramLength) + ")");
         logger.debug("* Parameters Length Encoded is " + Conversion.arrayToHex(paramLengthEncoded));
 
         int secDomLength = securityDomainAid.length;
@@ -1231,13 +1241,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         byte[] installForLoadComm = new byte[(headerSize + (short) (dataSize & 0xFF))];
 
-        installForLoadComm[0] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84); // (CLA) command class (GlobalPlatform command + secure messaging with GlobalPlatform format)
-        installForLoadComm[1] = (byte) 0xE6; // (INS) INSTALL command
-        installForLoadComm[2] = (byte) 0x02; // (P1) For load
-        installForLoadComm[3] = (byte) 0x00; // (P2) no information provided
-        installForLoadComm[4] = dataSize; // (LC) data length
+        installForLoadComm[ISO7816.OFFSET_CLA.getValue()] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84); // (CLA) command class (GlobalPlatform command + secure messaging with GlobalPlatform format)
+        installForLoadComm[ISO7816.OFFSET_INS.getValue()] = (byte) 0xE6; // (INS) INSTALL command
+        installForLoadComm[ISO7816.OFFSET_P1.getValue()] = (byte) 0x02; // (P1) For load
+        installForLoadComm[ISO7816.OFFSET_P2.getValue()] = (byte) 0x00; // (P2) no information provided
+        installForLoadComm[ISO7816.OFFSET_LC.getValue()] = dataSize; // (LC) data length
 
-        installForLoadComm[5] = (byte) packageAid.length; // AID length
+        installForLoadComm[ISO7816.OFFSET_CDATA.getValue()] = (byte) packageAid.length; // AID length
 
         int i = 6; // next index of installForLoadComm to deal with
 
@@ -1286,7 +1296,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 + "(-> " + Conversion.arrayToHex(cmd_installForLoad.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-        if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR LOAD : " + Integer.toHexString(resp.getSW()));
         }
 
@@ -1296,7 +1306,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#load(java.io.File)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#load(java.io.File)
      */
 
     @Override
@@ -1306,7 +1316,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#load(java.io.File, byte)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#load(java.io.File, byte)
      */
 
     @Override
@@ -1315,8 +1325,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("=> Load Command Begin");
 
         logger.debug("+ Cap File size to load is " + capFile.length);
-        logger.debug("+ Max Data Length is " + (short)(maxDataLength&0xFF)
-                + "(0x" + Integer.toHexString((int)(maxDataLength&0xFF)) + ")");
+        logger.debug("+ Max Data Length is " + (short) (maxDataLength & 0xFF)
+                + "(0x" + Integer.toHexString((int) (maxDataLength & 0xFF)) + ")");
         logger.debug("+ SecLevel is " + this.secMode);
 
         List<ResponseAPDU> responses = new LinkedList<ResponseAPDU>();
@@ -1409,10 +1419,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     capFileRemainLen -= dataBlockSize;
                 }
             }
-            cmd[0] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84);
-            cmd[1] = (byte) 0xE8;
-            cmd[2] = (byte) ((i == nbBlock - 1) ? 0x80 : 0x00);
-            cmd[3] = (byte) i;
+            cmd[ISO7816.OFFSET_CLA.getValue()] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84);
+            cmd[ISO7816.OFFSET_INS.getValue()] = (byte) 0xE8;
+            cmd[ISO7816.OFFSET_P1.getValue()] = (byte) ((i == nbBlock - 1) ? 0x80 : 0x00);
+            cmd[ISO7816.OFFSET_P2.getValue()] = (byte) i;
 
             logger.debug("* Load Command is " + Conversion.arrayToHex(cmd));
 
@@ -1439,7 +1449,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
             responses.add(resp);
-            if (resp.getSW() != 0x9000) {
+            if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
                 throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
         }
@@ -1451,7 +1461,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#installForInstallAndMakeSelectable(byte[], byte[], byte[], byte[], byte[])
+     * @see fr.xlim.ssd.opal.library.commands.Commands#installForInstallAndMakeSelectable(byte[], byte[], byte[], byte[], byte[])
      */
 
     @Override
@@ -1461,11 +1471,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("=> Install For Install And Make Selectable Begin");
 
-        logger.debug("+ " + (loadFileAID!=null?"Load File AID is " + Conversion.arrayToHex(loadFileAID):"There is not Load File AID"));
-        logger.debug("+ " + (moduleAID!= null?"Module AID is " + Conversion.arrayToHex(moduleAID):"There is not Module AID"));
-        logger.debug("+ " + (applicationAID!= null?"Application AID is " + Conversion.arrayToHex(applicationAID):"There is not Application AID"));
-        logger.debug("+ " + (privileges != null?"Privileges AID is " + Conversion.arrayToHex(privileges):"There is not privileges"));
-        logger.debug("+ " + (params != null?"Parameters is " + Conversion.arrayToHex(params):"There is not parameters"));
+        logger.debug("+ " + (loadFileAID != null ? "Load File AID is " + Conversion.arrayToHex(loadFileAID) : "There is not Load File AID"));
+        logger.debug("+ " + (moduleAID != null ? "Module AID is " + Conversion.arrayToHex(moduleAID) : "There is not Module AID"));
+        logger.debug("+ " + (applicationAID != null ? "Application AID is " + Conversion.arrayToHex(applicationAID) : "There is not Application AID"));
+        logger.debug("+ " + (privileges != null ? "Privileges AID is " + Conversion.arrayToHex(privileges) : "There is not privileges"));
+        logger.debug("+ " + (params != null ? "Parameters is " + Conversion.arrayToHex(params) : "There is not parameters"));
 
         if (loadFileAID == null) {
             throw new IllegalArgumentException("loadFileAID must be not null");
@@ -1520,11 +1530,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         byte[] installForInstallComm = new byte[headerSize + dataSize];
 
-        installForInstallComm[0] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84); // (CLA) command class (GlobalPlatform command + secure messaging with GlobalPlatform format)
-        installForInstallComm[1] = (byte) 0xE6;    // (INS) INSTALL command
-        installForInstallComm[2] = (byte) 0x0C;     // (P1) For install
-        installForInstallComm[3] = (byte) 0x00;    // (P2) no information provided
-        installForInstallComm[4] = dataSize;    // (LC) data length
+        installForInstallComm[ISO7816.OFFSET_CLA.getValue()] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84); // (CLA) command class (GlobalPlatform command + secure messaging with GlobalPlatform format)
+        installForInstallComm[ISO7816.OFFSET_INS.getValue()] = (byte) 0xE6;    // (INS) INSTALL command
+        installForInstallComm[ISO7816.OFFSET_P1.getValue()] = (byte) 0x0C;     // (P1) For install
+        installForInstallComm[ISO7816.OFFSET_P2.getValue()] = (byte) 0x00;    // (P2) no information provided
+        installForInstallComm[ISO7816.OFFSET_LC.getValue()] = dataSize;    // (LC) data length
 
         /* ------------ BEGIN -- Install for install Data Field -------------- */
 
@@ -1588,7 +1598,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 + "(-> " + Conversion.arrayToHex(cmd_installForInstall.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
-        if (resp.getSW() != 0x9000) {
+        if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR INSTALL AND MAKE SELECTABLE : " + Integer.toHexString(resp.getSW()));
         }
 
