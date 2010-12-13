@@ -1,5 +1,7 @@
+package fr.xlim.ssd.opal.library;
+
 /**
- * ISO7816 Constants
+ * fr.xlim.ssd.opal.library.ISO7816 Constants
  *
  * @author Guillaume Bouffard
  */
