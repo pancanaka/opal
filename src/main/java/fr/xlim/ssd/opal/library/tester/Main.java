@@ -148,12 +148,14 @@ import java.util.logging.Level;
 
     }
 
-    public static void main(String[] args) throws CardException, CardConfigNotFoundException, CommandsImplementationNotFound, ClassNotFoundException, FileNotFoundException, IOException {
+    public static void main(String[] args) throws CardException, CardConfigNotFoundException,
+            CommandsImplementationNotFound, ClassNotFoundException, IOException {
 
         channel = null;
 
         SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
 
+        /// get the card config and card channel, detection of t=0 or t=1 is automatic
         CardConfig cardConfig = getCardChannel(1, "*");
 
         if (channel == null) {
@@ -162,7 +164,8 @@ import java.util.logging.Level;
         }
 
         //  select the security domain
-        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel, cardConfig.getIssuerSecurityDomainAID());
+        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
+                cardConfig.getIssuerSecurityDomainAID());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         try {
             securityDomain.select();
@@ -177,13 +180,16 @@ import java.util.logging.Level;
             logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplicationAID()));
 
         if(cardInformation.getGPTagAllocationAuthority() != null)
-        logger.info("GP Tag Allocation Authority: " + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
+        logger.info("GP Tag Allocation Authority: "
+                + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
 
         if(cardInformation.getCardManagementTypeAndVersion() != null)
-            logger.info("Card Manager Type & Version: " + Conversion.arrayToHex(cardInformation.getCardManagementTypeAndVersion()));
+            logger.info("Card Manager Type & Version: "
+                    + Conversion.arrayToHex(cardInformation.getCardManagementTypeAndVersion()));
 
         if (cardInformation.getCardIdentificationScheme() != null)
-            logger.info("Card Identification Scheme: " + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
+            logger.info("Card Identification Scheme: "
+                    + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
 
         if (cardInformation.getSCPInformation() != null)
             logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getSCPInformation()));
@@ -198,13 +204,16 @@ import java.util.logging.Level;
             logger.info("Card Details: " + Conversion.arrayToHex(cardInformation.getCardDetails()));
 
         if (cardInformation.getApplicationProductionLifeCycleData() != null)
-            logger.info("Application production life cyvle data: " + Conversion.arrayToHex(cardInformation.getApplicationProductionLifeCycleData()));
+            logger.info("Application production life cyvle data: "
+                    + Conversion.arrayToHex(cardInformation.getApplicationProductionLifeCycleData()));
 
         if (cardInformation.getMaximumLengthOfDataFieldInCommandMessage() != null)
-            logger.info("Maximun length of data field in command message: " + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));
+            logger.info("Maximun length of data field in command message: "
+                    + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));
 
         // initialize update
-        securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(),
+                cardConfig.getScpMode());
 
         // external authenticate
         securityDomain.externalAuthenticate(secLevel);
@@ -249,7 +258,8 @@ import java.util.logging.Level;
 
         // Select the Card Manager
         securityDomain.select();
-        securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(),
+                cardConfig.getScpMode());
         securityDomain.externalAuthenticate(secLevel);
 
         // Deleting Applet

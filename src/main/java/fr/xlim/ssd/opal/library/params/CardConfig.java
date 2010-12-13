@@ -1,40 +1,30 @@
-/**
- * Contains card configuration informations (instance obtained from
- * CardConfigFactory)
- * 
- * @author Damien Arcuset, Eric Linke
- * @author Julien Iguchi-Cartigny
- */
 package fr.xlim.ssd.opal.library.params;
 
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 
+/**
+ * Contains card configuration information (instance obtained from CardConfigFactory)
+ *
+ * @author Damien Arcuset
+ * @author Eric Linke
+ * @author Julien Iguchi-Cartigny
+ */
 public class CardConfig {
 
-    /**
-     * The Issuer Security Domain (ISD) AID
-     */
+    /// The Issuer Security Domain (ISD) AID
     private byte[] isd;
 
-    /**
-     * The Secure Channel Protocol (SCP) Mode
-     */
+    /// The Secure Channel Protocol (SCP) Mode
     private SCPMode scp;
 
-    /**
-     * The transmission protocol
-     */
+    /// The transmission protocol
     private String tp;
 
-    /**
-     * The credentials keys
-     */
+    /// The credentials keys
     private SCKey[] keys;
 
-    /**
-     * The implementation class name
-     */
+    /// The implementation class name
     private String impl;
 
     /**
@@ -47,7 +37,6 @@ public class CardConfig {
      */
     public CardConfig(byte[] isd, SCPMode scp, String tp, SCKey[] keys, String impl) {
 
-        // TODO: transmission protocol as enum ?
         // TODO: checking legal size of ISD (maybe an ISD object ?)
         if(isd == null)
             throw new IllegalArgumentException("isd must be not null");
