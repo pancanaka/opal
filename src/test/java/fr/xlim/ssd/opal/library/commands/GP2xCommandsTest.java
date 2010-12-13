@@ -3,7 +3,7 @@ package fr.xlim.ssd.opal.library.commands;
 import java.io.FileNotFoundException;
 import static org.junit.Assert.*;
 
-import fr.xlim.ssd.opal.library.FileType;
+import fr.xlim.ssd.opal.library.GetStatusFileType;
 import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import fr.xlim.ssd.opal.library.KeyType;
 import fr.xlim.ssd.opal.library.SCGPKey;
@@ -618,13 +618,13 @@ public class GP2xCommandsTest {
     @Test
     public void testGetStatusSimple() throws CardException {
         Commands commands = createCommands("/021-GP2xCommands-get-status-good.txt");
-        commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
+        commands.getStatus(GetStatusFileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
     }
 
     @Test
     public void testGetStatusExtended() throws CardException {
         Commands commands = createCommands("/022-GP2xCommands-get-status-good.txt");
-        commands.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE, null);
+        commands.getStatus(GetStatusFileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE, null);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -636,7 +636,7 @@ public class GP2xCommandsTest {
     @Test(expected = IllegalArgumentException.class)
     public void testGetStatusFailIfResponseModeNull() throws CardException {
         GP2xCommands commands = new GP2xCommands();
-        commands.getStatus(FileType.ISD, null, null);
+        commands.getStatus(GetStatusFileType.ISD, null, null);
     }
 
     @Test
@@ -648,7 +648,7 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
-        commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
+        commands.getStatus(GetStatusFileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
     }
 
     @Test
@@ -665,7 +665,7 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
-        commands.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.NEW_TYPE, null);
+        commands.getStatus(GetStatusFileType.APP_AND_SD, GetStatusResponseMode.NEW_TYPE, null);
     }
 
     @Test
@@ -674,13 +674,13 @@ public class GP2xCommandsTest {
 
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in Get Status : 1000");
-        commands.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
+        commands.getStatus(GetStatusFileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
     }
 
     @Test
     public void testGetStatusWhenSearchQualifierNotNull() throws CardException {
         Commands commands = createCommands("/026-GP2xCommands-get-status-good.txt");
-        commands.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE,
+        commands.getStatus(GetStatusFileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE,
                 new byte[]{0x01, 0x02, 0x03});
     }
 

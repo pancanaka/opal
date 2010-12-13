@@ -420,7 +420,7 @@ public class GPApplet {
      * @return
      * @throws CardException
      */
-    public ResponseAPDU[] getStatus(FileType ft, GetStatusResponseMode respMode, byte[] searchQualifier) throws CardException {
+    public ResponseAPDU[] getStatus(GetStatusFileType ft, GetStatusResponseMode respMode, byte[] searchQualifier) throws CardException {
         return this.cmds.getStatus(ft, respMode, searchQualifier);
     }
 

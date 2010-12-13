@@ -1,6 +1,6 @@
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.FileType;
+import fr.xlim.ssd.opal.library.GetStatusFileType;
 import fr.xlim.ssd.opal.library.GetStatusResponseMode;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
@@ -103,7 +103,7 @@ public interface Commands {
      * @return
      * @throws CardException
      */
-    ResponseAPDU[] getStatus(FileType ft,
+    ResponseAPDU[] getStatus(GetStatusFileType ft,
             GetStatusResponseMode respMode, byte[] searchQualifier)
             throws CardException;
 
