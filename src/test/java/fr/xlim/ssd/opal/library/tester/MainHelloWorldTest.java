@@ -1004,7 +1004,7 @@ public class MainHelloWorldTest {
 
         File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
 
-        // Installing Applet
+        // Installing Applet -- test
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
         commands.load(convertedBuffer, (byte) 0x10);
