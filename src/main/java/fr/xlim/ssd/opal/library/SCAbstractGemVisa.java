@@ -8,6 +8,13 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 
+/**
+ * Abstract class to define common methods between the two version of Visa Global Platform implementations.
+ *
+ * @author Damien Arcuset
+ * @author Eric Linke
+ * @author Julien Iguchi-Cartigny
+ */
 public abstract class SCAbstractGemVisa implements SCKey,SCDerivableKey {
 
     protected byte setVersion;

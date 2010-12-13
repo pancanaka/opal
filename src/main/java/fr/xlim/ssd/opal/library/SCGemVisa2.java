@@ -2,6 +2,13 @@ package fr.xlim.ssd.opal.library;
 
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 
+/**
+ * Implementation of the mechanism of key derivation for Visa 2
+ *
+ * @author Damien Arcuset
+ * @author Eric Linke
+ * @author Julien Iguchi-Cartigny
+ */
 public class SCGemVisa2 extends SCAbstractGemVisa {
 
     public SCGemVisa2(byte setVersion, byte[] data) {

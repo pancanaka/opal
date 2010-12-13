@@ -3,9 +3,11 @@ package fr.xlim.ssd.opal.library;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 
 /**
- * @author Damien Arcuset
- * @author Julien Iguchi-Cartigny
+ * Implementation of the mechanism of key derivation for Visa
  *
+ * @author Damien Arcuset
+ * @author Eric Linke
+ * @author Julien Iguchi-Cartigny
  */
 public class SCGemVisa extends SCAbstractGemVisa {
 

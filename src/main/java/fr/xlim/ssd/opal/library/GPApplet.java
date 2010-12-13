@@ -9,9 +9,10 @@ import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
 
 /**
- * This class contains methods that could be sent to an Applet. <br/>
+ * This class contains methods that could be sent to an Applet.
  *
- * @author Damien Arcuset, Eric Linke
+ * @author Damien Arcuset
+ * @author Eric Linke
  * @author Julien Iguchi-Cartigny
  */
 public class GPApplet {
