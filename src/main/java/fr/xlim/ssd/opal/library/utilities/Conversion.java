@@ -3,13 +3,19 @@ package fr.xlim.ssd.opal.library.utilities;
 import java.util.regex.Pattern;
 
 /**
- * This class provides differents, but usefull, conversion functions
- * @author University of Limoges - Anthony DESSIATNIKOFF, Damien ARCUSET, &Eacute;milie FAUGERON, &Eacute;ric LINKE
+ * This class provides different but useful conversion functions
+ *
+ * @author Anthony Dessiatnikoff,
+ * @author Damien Arcuset
+ * @author Émilie Faugeron
+ * @author Éric Linke
+ * @author Julien Iguchi-Cartigny
  */
 public class Conversion {
 
     /**
-     * To convert a byte array into an hexadecimal string
+     * Convert a byte array to an hexadecimal string
+     *
      * @param data the byte array to be converted
      * @return the output string
      */
@@ -27,9 +33,12 @@ public class Conversion {
     }
 
     /**
-     * To convert an hexadecimal string into a byte array
-     * @param s the string to be converted, each byte being separated by spaces or not (eg. s = "65 A0 12" <=> "65A012")
+     * Convert an hexadecimal string into a byte array. Each byte in ethe hexadecimal string being separated by spaces
+     * or not (eg. s = "65 A0 12" <=> "65A012").
+     *
+     * @param s the string to be converted
      * @return the corresponding byte array
+     * @throws IllegalArgumentException if not a valid string representation of a byte array
      */
     public static byte[] hexToArray(String s) {
 

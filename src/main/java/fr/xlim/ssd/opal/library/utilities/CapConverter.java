@@ -30,6 +30,8 @@ public class CapConverter {
      *
      * @param is the input stream of the CAP file
      * @return the ordered component in a byte array
+     * @throws IllegalArgumentException if input stream is null
+     * @throws IOException if error during reading of the CAP file
      */
     public static byte[] convert(InputStream is) {
 
@@ -118,6 +120,7 @@ public class CapConverter {
 
         ByteBuffer buffer = ByteBuffer.allocate(size);
 
+        // concatenate components in one buffer
         for (int i = 0; i < components.length; i++) {
             if (components[i] != null) {
                 buffer.put(components[i]);
