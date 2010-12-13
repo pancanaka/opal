@@ -11,7 +11,7 @@ package fr.xlim.ssd.opal.library;
  */
 public enum SecLevel {
 
-     /// No encryption or authentication
+    /// No encryption or authentication
     NO_SECURITY_LEVEL((byte) 0x00),
 
     /// MAC Authentication of each APDU

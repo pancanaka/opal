@@ -3,10 +3,9 @@ package fr.xlim.ssd.opal.library;
 /**
  * Define the key type used.
  *
- * @see SCKey
- *
  * @author Damien Arcuset, Eric Linke
  * @author Julien Iguchi-Cartigny
+ * @see SCKey
  */
 public enum KeyType {
 

@@ -43,7 +43,7 @@ public enum GetStatusFileType {
     /**
      * Get the file type value
      *
-     * @return   the file type value
+     * @return the file type value
      */
     public byte getValue() {
         return this.value;

@@ -1,9 +1,10 @@
 package fr.xlim.ssd.opal.library.utilities;
 
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
 
 /**
  * Random generator. Just a wrapper for SHA1PRNG secure random.

@@ -1,16 +1,15 @@
 package fr.xlim.ssd.opal.library;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import javax.smartcardio.CardChannel;
-
 import fr.xlim.ssd.opal.library.commands.Commands;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 
+import javax.smartcardio.CardChannel;
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Each implementation register its command class with this class.
- *
+ * <p/>
  * TODO: There is a drawback with this approach: it exists one and only one state if several cards are used
  * simultaneously. We need to instance one command by card, or crate a object "state of a card"
  *
@@ -30,7 +29,7 @@ public class CommandsProvider {
      * @throws IllegalArgumentException if command is null
      */
     public static void register(Commands c) {
-        if(c == null) {
+        if (c == null) {
             throw new IllegalArgumentException("command must be not null");
         }
 
@@ -40,9 +39,8 @@ public class CommandsProvider {
     /**
      * get the implementation registered before using the full name and path to find it.
      *
-     *
      * @param name the name of the implementatipon to look for
-     * @param cc the card channel to set into the implementation
+     * @param cc   the card channel to set into the implementation
      * @return the command implementation
      * @throws CommandsImplementationNotFound if command implementation not found
      */

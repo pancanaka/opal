@@ -1,14 +1,13 @@
 package fr.xlim.ssd.opal.library.utilities;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.IllegalFormatException;
 import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 import java.util.zip.ZipInputStream;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * The CAP converter extracts main components from the CAP file and reorder them. This is needed because order of
@@ -31,7 +30,7 @@ public class CapConverter {
      * @param is the input stream of the CAP file
      * @return the ordered component in a byte array
      * @throws IllegalArgumentException if input stream is null
-     * @throws IOException if error during reading of the CAP file
+     * @throws IOException              if error during reading of the CAP file
      */
     public static byte[] convert(InputStream is) {
 

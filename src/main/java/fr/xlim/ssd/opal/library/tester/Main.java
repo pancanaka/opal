@@ -13,24 +13,27 @@ import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.*;
 import javax.smartcardio.CardTerminals.State;
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 
 /**
  * A program to test compatibility SCPO1 and SCP02 between OPAL and a card. It works as follow:
  * <ul>
- *   <li>Get the card channel</li>
- *   <li>GET the ATR and load the card configuration</li>
- *   <li>Select the security domain (card manager)</li>
- *   <li>initialize update and external authenticate on security domain</li>
- *   <li>install the hello applet (from SUN): convert the cap, load and install for install and make selectable</li>
- *   <li>select the hello world applet and exchange a hello world APDU</li>
- *   <li>select the security domain (card manager)</li>
- *   <li>initialize update and external authenticate on security domain</li>
- *   <li>erase the applet then erase the package</li>
+ * <li>Get the card channel</li>
+ * <li>GET the ATR and load the card configuration</li>
+ * <li>Select the security domain (card manager)</li>
+ * <li>initialize update and external authenticate on security domain</li>
+ * <li>install the hello applet (from SUN): convert the cap, load and install for install and make selectable</li>
+ * <li>select the hello world applet and exchange a hello world APDU</li>
+ * <li>select the security domain (card manager)</li>
+ * <li>initialize update and external authenticate on security domain</li>
+ * <li>erase the applet then erase the package</li>
  * </ul>
- *
+ * <p/>
  * For more information about SCP01 and SCP02 steps, please see Chapter D (SCP01) and E (SCP02) of the global platform
  * card specification version 2.1.1 - march 2003.
  *
@@ -38,10 +41,8 @@ import java.util.logging.Level;
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
  * @author Guillaume Bouffard
- *
- *
- *
- */public class Main {
+ */
+public class Main {
 
     /// the logger
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
@@ -178,11 +179,11 @@ import java.util.logging.Level;
         if (cardInformation.getApplicationAID() != null)
             logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplicationAID()));
 
-        if(cardInformation.getGPTagAllocationAuthority() != null)
-        logger.info("GP Tag Allocation Authority: "
-                + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
+        if (cardInformation.getGPTagAllocationAuthority() != null)
+            logger.info("GP Tag Allocation Authority: "
+                    + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
 
-        if(cardInformation.getCardManagementTypeAndVersion() != null)
+        if (cardInformation.getCardManagementTypeAndVersion() != null)
             logger.info("Card Manager Type & Version: "
                     + Conversion.arrayToHex(cardInformation.getCardManagementTypeAndVersion()));
 

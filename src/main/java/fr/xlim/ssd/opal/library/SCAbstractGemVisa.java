@@ -1,12 +1,12 @@
 package fr.xlim.ssd.opal.library;
 
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 
 /**
  * Abstract class to define common methods between the two version of Visa Global Platform implementations.
@@ -15,7 +15,7 @@ import javax.crypto.spec.SecretKeySpec;
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
  */
-public abstract class SCAbstractGemVisa implements SCKey,SCDerivableKey {
+public abstract class SCAbstractGemVisa implements SCKey, SCDerivableKey {
 
     protected byte setVersion;
 
@@ -24,11 +24,11 @@ public abstract class SCAbstractGemVisa implements SCKey,SCDerivableKey {
     public SCAbstractGemVisa(byte setVersion, byte[] data) {
         this.setVersion = setVersion;
 
-        if(data == null) {
+        if (data == null) {
             throw new IllegalArgumentException("data must not be null");
         }
 
-        if(data.length != 24) {
+        if (data.length != 24) {
             throw new IllegalArgumentException("data must be 24 bytes long");
         }
 
@@ -38,11 +38,11 @@ public abstract class SCAbstractGemVisa implements SCKey,SCDerivableKey {
     @Override
     public SCGPKey[] deriveKey(byte[] keydata) {
 
-        if(keydata == null) {
+        if (keydata == null) {
             throw new IllegalArgumentException("keydata must not be null");
         }
 
-        if(keydata.length != 10) {
+        if (keydata.length != 10) {
             throw new IllegalArgumentException("keydata must be 10 bytes long");
         }
 
@@ -75,15 +75,15 @@ public abstract class SCAbstractGemVisa implements SCKey,SCDerivableKey {
             System.arraycopy(sKekKey, 0, staticKekKey, 16, 8);
 
         } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm",e);
+            throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such padding problem",e);
+            throw new UnsupportedOperationException("No such padding problem", e);
         } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem",e);
+            throw new UnsupportedOperationException("Key problem", e);
         } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem",e);
+            throw new UnsupportedOperationException("Block size problem", e);
         } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad padding problem",e);
+            throw new UnsupportedOperationException("Bad padding problem", e);
         }
 
         SCGPKey[] res = new SCGPKey[3];

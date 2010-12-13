@@ -17,11 +17,10 @@ import java.util.Arrays;
 /**
  * Delivers card configuration CardConfig
  *
- * @see CardConfig
- *
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
+ * @see CardConfig
  */
 public class CardConfigFactory {
 
@@ -165,7 +164,7 @@ public class CardConfigFactory {
     /**
      * Return the card config based on the ATR returns by the card.
      *
-     * @param atr  the ATR returns by the card
+     * @param atr the ATR returns by the card
      * @return the name of the card config
      * @throws CardConfigNotFoundException if ATR not found
      */

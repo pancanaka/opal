@@ -27,16 +27,16 @@ public class SCGPKey implements SCKey {
      * Constructor for the SCGPKey
      *
      * @param setVersion the key version
-     * @param id the key id
-     * @param type the key type
-     * @param data the key value
+     * @param id         the key id
+     * @param type       the key type
+     * @param data       the key value
      */
     public SCGPKey(byte setVersion, byte id, KeyType type, byte[] data) {
-        if(data == null) {
+        if (data == null) {
             throw new IllegalArgumentException("data must be not null");
         }
 
-         // TODO: test data key size
+        // TODO: test data key size
 
         this.setVersion = setVersion;
         this.id = id;

@@ -3,7 +3,7 @@ package fr.xlim.ssd.opal.library;
 /**
  * Used by GET STATUS to controls the number of consecutives GET STATUS command and incaites the format of the response
  * message. Please see the description of GET STATUS command in Section 9.4, global Platform Card Specification 2.1.
- *
+ * <p/>
  * TODO: create classes to format responses and extend various mode available
  *
  * @author Damien Arcuset

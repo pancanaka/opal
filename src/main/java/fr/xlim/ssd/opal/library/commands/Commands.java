@@ -14,149 +14,195 @@ public interface Commands {
     void setCc(CardChannel cc);
 
     /**
-     * @return
+     * Get Card Channel used to trasmit APDU
+     *
+     * @return Card Channel
      */
     CardChannel getCc();
 
     /**
      * Get SCP mode used
      *
-     * @return
+     * @return SCP mode used
      */
     SCPMode getScp();
 
     /**
-     * @return
+     * Get Session State used to indicate the Authenticate state
+     *
+     * @return Authenticate state
      */
     SessionState getSessState();
 
     /**
-     * @return
+     * Get the security mode chosen with the @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.externalAuthenticate}
+     *
+     * @return The security level
      */
     SecLevel getSecMode();
 
     /**
-     * @return
+     * Get static keys used to generate session keys
+     *
+     * @return static keys
      */
     SCKey[] getKeys();
 
     /**
-     * @param keySetVersion
-     * @param keyId
-     * @return
+     * Get a specific key, matching with your keySetVersion and keyID.
+     *
+     * @param keySetVersion key version of the wished key
+     * @param keyId         Key id of the wished jey
+     * @return wished key
      */
     SCKey getKey(byte keySetVersion, byte keyId);
 
     /**
-     * @param key
-     * @return
+     * Set the off card static keys with a same input key. Every key does the same.
+     *
+     * @param key new key used to set up static keys
+     * @return the input key
      */
     SCKey setOffCardKey(SCKey key);
 
     /**
-     * @param keys
+     * Set up off card static keys like:
+     * <ul>
+     * <li> keys[0] is the static encrypt key
+     * <li> keys[1] is the static mac key
+     * <li> keys[2] is the static dek key
+     * </ul>
+     *
+     * @param keys new static keys
      */
     void setOffCardKeys(SCKey[] keys);
 
     /**
-     * @param keySetVersion
-     * @param keyId
-     * @return
+     * Delete a off card key matching with its Key set version and its key ID
+     *
+     * @param keySetVersion Key set version of the wished key
+     * @param keyId         key ID of the wished key
+     * @return The deleted key or null if this key had not found
      */
     SCKey deleteOffCardKey(byte keySetVersion, byte keyId);
 
     /**
-     *
+     * Reset all values
      */
     void resetParams();
 
     /**
-     * @param aid
-     * @return
-     * @throws CardException
+     * Select the Applet matching with AID parameter
+     *
+     * @param aid wished Applet AID
+     * @return Select APDU response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU select(byte[] aid) throws CardException;
 
     /**
-     * @param keySetVersion
-     * @param keyId
-     * @param desiredScp
-     * @return
-     * @throws CardException
+     * Initialize Update command
+     *
+     * @param keySetVersion Key Set Version to use to do the authenticate step
+     * @param keyId         Key ID to use to do the authenticate step
+     * @param desiredScp    SCP mode to use to do the authenticate step
+     * @return APDU response
+     * @throws CardException <ul>
+     *                       <il> Card return an error status word
+     *                       <il> The calculated cryptograms are not the same
+     *                       </ul>
      */
     ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId,
                                   SCPMode desiredScp) throws CardException;
 
     /**
-     * @param secLevel
-     * @return
-     * @throws CardException
+     * External Authenticate uses for validate the @see{fr.xlim.ssd.opal.library.commands.Commands.initializeUpdate}
+     *
+     * @param secLevel Security Level will use to communicate
+     * @return APDU response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException;
 
     /**
-     * @param ft
-     * @param respMode
-     * @param searchQualifier
-     * @return
-     * @throws CardException
+     * Get status is used to retrieve ISD, Executable Load File, Executable Module, Application or Security Domain Life
+     * Cycle status information according to a given match/search criteria
+     *
+     * @param ft              File Type wished
+     * @param respMode        @see{fr.xlim.ssd.opal.library.GetStatusResponseMode}
+     * @param searchQualifier Shall used to indicate the Application Identifier (AID). If is null, you search all occurrences that match the
+     *                        selection criteria according to the reference by ft.
+     * @return APDU Response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU[] getStatus(GetStatusFileType ft,
                              GetStatusResponseMode respMode, byte[] searchQualifier)
             throws CardException;
 
     /**
-     * @param aid
-     * @param cascade
-     * @return
-     * @throws CardException
+     * Delete On Card Object
+     *
+     * @param aid     Object AID to delete
+     * @param cascade Delete in cascade mode
+     * @return Delete APDU Response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU deleteOnCardObj(byte[] aid, boolean cascade)
             throws CardException;
 
     /**
-     * @param keySetVersion
-     * @param keyId
-     * @return
-     * @throws CardException
+     * Delete on card key defined with its Key Set Version and its Key ID
+     *
+     * @param keySetVersion Key Set Version to delete
+     * @param keyId         Key ID to delete
+     * @return APDU response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU deleteOnCardKey(byte keySetVersion, byte keyId)
             throws CardException;
 
     /**
-     * @param packageAid
-     * @param securityDomainAID
-     * @param params
-     * @return
-     * @throws CardException
+     * Install for Load Command. This command prepares smart card to receive applet via @see{fr.xlim.ssd.opal.library.commands.Commands.load} command
+     *
+     * @param packageAid        Package AID of the install Applet
+     * @param securityDomainAID Smart Card ISD
+     * @param params            Install parameters
+     * @return APDU response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAID,
                                 byte[] params) throws CardException;
 
     /**
-     * @param capFile
-     * @return
-     * @throws CardException
+     * Load CAP File to the smart card device
+     *
+     * @param capFile cap data to send
+     * @return APDU response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU[] load(byte[] capFile) throws CardException;
 
     /**
-     * @param capFile
-     * @param maxDataLength
-     * @return
-     * @throws CardException
+     * Load CapFile with a specific data length send
+     *
+     * @param capFile       cap data to send
+     * @param maxDataLength Size of each CAP File part sent to the smart card
+     * @return APDU Response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU[] load(byte[] capFile, byte maxDataLength)
             throws CardException;
 
     /**
-     * @param loadFileAID
-     * @param moduleAID
-     * @param applicationAID
-     * @param privileges
-     * @param params
-     * @return
-     * @throws CardException
+     * Install the previously loaded CAP File and select it.
+     *
+     * @param loadFileAID    Load File AID
+     * @param moduleAID      Module AID
+     * @param applicationAID Application AID
+     * @param privileges     Applet privileges
+     * @param params         Install parameters
+     * @return APDU Response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID,
                                                     byte[] moduleAID, byte[] applicationAID, byte[] privileges,

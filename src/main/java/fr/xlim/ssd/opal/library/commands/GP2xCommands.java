@@ -105,7 +105,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /// Initialized Cypher Vector used to initialized encryption steps
     protected byte[] icv;
 
-    /// Sequence counter used in SCP 02. Its value is the number of previous validate authentification
+    /// Sequence counter used in SCP 02. Its value is the number of previous validate authentication
     protected byte[] sequenceCounter;
 
     /**
@@ -173,7 +173,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
         }
         this.keys.add(key);
-        return key;
+        return key;     // Todo: return input key is useless
     }
 
     /* (non-Javadoc)
@@ -347,7 +347,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             /*
              * INITIALIZE UPDATE response in SCP 02 mode
-             * 
+             *
              * -0-----------------------09-10------11-12------------- 13-
              * | Key Diversification Data | Key Info | Sequence Counter |
              * ----------------------------------------------------------

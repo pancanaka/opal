@@ -46,7 +46,7 @@ public class Conversion {
         Pattern p = Pattern.compile("([a-fA-F0-9]{2}[ ]*)*");
         boolean valid = p.matcher(s).matches();
 
-        if(!valid)
+        if (!valid)
             throw new IllegalArgumentException("not a valid string representation of a byte array");
 
         String hex = s.replaceAll(" ", "");

@@ -102,9 +102,14 @@ public enum ISO7816 {
     /// Response status: Not enough memory space in the file
     SW_FILE_FULL(0x6A84);
 
-    ///
+    /// Enumerate value
     int value;
 
+    /**
+     * Link a value to an enumerate value
+     *
+     * @param value enumerate value
+     */
     private ISO7816(int value) {
         if ((value & 0xFF00) != 0) {
             this.value = value & 0xFFFF;
@@ -113,6 +118,11 @@ public enum ISO7816 {
         }
     }
 
+    /**
+     * Get enumerate value
+     *
+     * @return enumerate value
+     */
     public int getValue() {
         return this.value;
     }
