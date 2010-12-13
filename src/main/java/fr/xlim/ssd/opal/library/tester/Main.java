@@ -1,10 +1,3 @@
-/**
- * This is a simple example program
- *
- * @author Damien Arcuset, Eric Linke
- * @author Julien Iguchi-Cartigny
- * @author Guillaume Bouffard
- */
 package fr.xlim.ssd.opal.library.tester;
 
 import fr.xlim.ssd.opal.library.SecLevel;
@@ -25,22 +18,57 @@ import java.io.*;
 import java.util.List;
 import java.util.logging.Level;
 
-public class Main {
+/**
+ * A program to test compatibility SCPO1 and SCP02 between OPAL and a card. It works as follow:
+ * <ul>
+ *   <li>Get the card channel</li>
+ *   <li>GET the ATR and load the card configuration</li>
+ *   <li>Select the security domain (card manager)</li>
+ *   <li>initialize update and external authenticate on security domain</li>
+ *   <li>install the hello applet (from SUN): convert the cap, load and install for install and make selectable</li>
+ *   <li>select the hello world applet and exchange a hello world APDU</li>
+ *   <li>select the security domain (card manager)</li>
+ *   <li>initialize update and external authenticate on security domain</li>
+ *   <li>erase the applet then erase the package</li>
+ * </ul>
+ *
+ * For more information about SCP01 and SCP02 steps, please see Chapter D (SCP01) and E (SCP02) of the global platform
+ * card specification version 2.1.1 - march 2003.
+ *
+ * @author Damien Arcuset
+ * @author Eric Linke
+ * @author Julien Iguchi-Cartigny
+ * @author Guillaume Bouffard
+ *
+ *
+ *
+ */public class Main {
 
+    /// the logger
     private final static Logger logger = LoggerFactory.getLogger(Main.class);
+
+    /// timeout to detect card presence
     private final static int TIMEOUT_CARD_PRESENT = 1000;
+
+    ///
     private final static byte[] HELLO_WORLD = { // "HELLO"
             (byte) 'H', (byte) 'E', (byte) 'L', (byte) 'L', (byte) 'O'
     };
+
+    /// applet ID of hello world CAP
     private final static byte[] APPLET_ID = {
             (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x62,
             (byte) 0x03, (byte) 0x01, (byte) 0x0C, (byte) 0x01, (byte) 0x01
     };
+
+    /// package ID of hello world CAP
     private final static byte[] PACKAGE_ID = {
             (byte) 0xA0, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x62, (byte) 0x03,
             (byte) 0x01, (byte) 0x0C, (byte) 0x01
     };
+
+    /// channel to the card
     private static CardChannel channel;
 
     private static CardConfig getCardChannel(int cardTerminalIndex,
@@ -133,6 +161,7 @@ public class Main {
             System.exit(-1);
         }
 
+        //  select the security domain
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel, cardConfig.getIssuerSecurityDomainAID());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         try {
@@ -141,17 +170,46 @@ public class Main {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        // print information about the security domain
         SecurityDomain.FileControlInformation cardInformation = securityDomain.getCardInformation();
+
+        if (cardInformation.getApplicationAID() != null)
+            logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplicationAID()));
+
+        if(cardInformation.getGPTagAllocationAuthority() != null)
+        logger.info("GP Tag Allocation Authority: " + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
+
+        if(cardInformation.getCardManagementTypeAndVersion() != null)
+            logger.info("Card Manager Type & Version: " + Conversion.arrayToHex(cardInformation.getCardManagementTypeAndVersion()));
+
+        if (cardInformation.getCardIdentificationScheme() != null)
+            logger.info("Card Identification Scheme: " + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
+
+        if (cardInformation.getSCPInformation() != null)
+            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getSCPInformation()));
+
+        logger.info("SCP Version: " + cardInformation.getSCPVersion());
+        logger.info("SCP Mode: " + cardInformation.getSCPMode());
+
+        if (cardInformation.getCardConfiguration() != null)
+            logger.info("Card Configuration: " + Conversion.arrayToHex(cardInformation.getCardConfiguration()));
+
+        if (cardInformation.getCardDetails() != null)
+            logger.info("Card Details: " + Conversion.arrayToHex(cardInformation.getCardDetails()));
+
+        if (cardInformation.getApplicationProductionLifeCycleData() != null)
+            logger.info("Application production life cyvle data: " + Conversion.arrayToHex(cardInformation.getApplicationProductionLifeCycleData()));
+
+        if (cardInformation.getMaximumLengthOfDataFieldInCommandMessage() != null)
+            logger.info("Maximun length of data field in command message: " + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));
+
+        // initialize update
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+
+        // external authenticate
         securityDomain.externalAuthenticate(secLevel);
 
-        //System.exit(0);
-
-        //securityDomain.getStatus(FileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
-        //securityDomain.getStatus(FileType.APP_AND_SD, GetStatusResponseMode.OLD_TYPE, null);
-        //securityDomain.getStatus(FileType.LOAD_FILES, GetStatusResponseMode.OLD_TYPE, null);
-
-        // Installing Applet
+        // install Applet
         securityDomain.installForLoad(PACKAGE_ID, null, null);
         File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
 
@@ -188,12 +246,6 @@ public class Main {
         logger.debug("Say \"Hello\" "
                 + "(-> " + Conversion.arrayToHex(hello.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
-
-        /*if (Arrays.equals(hello.getBytes(), resp.getData())) {
-            logger.info("Hello OK");
-        } else {
-            logger.error("Hello FAIL");
-        }         */
 
         // Select the Card Manager
         securityDomain.select();

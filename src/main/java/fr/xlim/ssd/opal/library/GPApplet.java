@@ -7,9 +7,6 @@ import javax.smartcardio.ResponseAPDU;
 
 import fr.xlim.ssd.opal.library.commands.Commands;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * This class contains methods that could be sent to an Applet. <br/>
@@ -75,7 +72,7 @@ public class GPApplet {
         /**
          * @return the application_AID
          */
-        public byte[] getApplication_AID() {
+        public byte[] getApplicationAID() {
             return application_AID;
         }
 
@@ -271,7 +268,7 @@ public class GPApplet {
         for (int pos = 2; pos < data.length; pos += FileControlInformation.SIZE_TL) {
             if (data[pos] == (byte) 0x84) { // Application / File AID
                 this.fileControlInformation.application_AID = this.readTLV(data, pos);
-                pos += this.fileControlInformation.getApplication_AID().length;
+                pos += this.fileControlInformation.getApplicationAID().length;
 
             } else if (data[pos] == (byte) 0xA5) { // Proprietary data
 
