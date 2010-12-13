@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
+
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -48,5 +50,25 @@ public class CardConfigFactoryTest {
     @Test(expected = CardConfigNotFoundException.class)
     public void testNotExistingCode() throws CardConfigNotFoundException {
         CardConfigFactory.getCardConfig("dummy");
+    }
+
+    @Test
+    public void testGetAllCardFromATR() throws JDOMException, IOException, CardConfigNotFoundException {
+        InputStream input = CardConfigFactoryTest.class.getResourceAsStream("/atr.xml");
+        Reader reader = new InputStreamReader(input);
+
+        SAXBuilder builder = new SAXBuilder();
+        Document document = builder.build(reader);
+
+        Element root = document.getRootElement();
+        List<Element> cards = root.getChildren("card");
+
+        for(Element card : cards) {
+            String atr = card.getAttribute("ATR").getValue();
+            Element config = card.getChild("config");
+            String  configName = config.getValue();
+            String response = CardConfigFactory.getCardConfig(Conversion.hexToArray(atr));
+            assertEquals(response,configName);
+        }
     }
 }
