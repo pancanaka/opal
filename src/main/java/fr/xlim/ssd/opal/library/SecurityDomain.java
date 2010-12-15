@@ -18,7 +18,7 @@ public class SecurityDomain extends GPApplet {
     /**
      * Creates the off-card "Security Domain"
      *
-     * @param CmdImplementation the String representation of the chosen implementation
+     * @param cmdImplementation the String representation of the chosen implementation
      *                          (i.e. "fr.xlim.ssd.opal.commands.GP2xCommands"). This designed implementation must override the class
      *                          {@link fr.xlim.ssd.opal.library.commands.Commands}
      * @param cc                the initialized card channel on which data will be sent to the card
@@ -26,8 +26,8 @@ public class SecurityDomain extends GPApplet {
      * @throws CommandsImplementationNotFound
      * @throws ClassNotFoundException
      */
-    public SecurityDomain(String CmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
-        super(CmdImplementation, cc, aid);
+    public SecurityDomain(String cmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
+        super(cmdImplementation, cc, aid);
     }
 
     /* (non-Javadoc)
@@ -41,10 +41,13 @@ public class SecurityDomain extends GPApplet {
      * @see fr.xlim.ssd.opal.library.commands.Commands.installForLoad
      */
     public ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAID, byte[] params) throws CardException {
-        if (securityDomainAID == null) {
-            securityDomainAID = this.aid.clone();
+
+        byte[] isdAid = securityDomainAID;
+
+        if (isdAid == null) {
+            isdAid = this.aid.clone();
         }
-        return this.cmds.installForLoad(packageAid, securityDomainAID, params);
+        return this.cmds.installForLoad(packageAid, isdAid, params);
     }
 
     /* (non-Javadoc)

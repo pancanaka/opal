@@ -1,8 +1,5 @@
 package fr.xlim.ssd.opal.library.utilities;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
@@ -18,9 +15,6 @@ import java.util.zip.ZipInputStream;
  * @author Julien Iguchi-Cartigny
  */
 public class CapConverter {
-
-    /// logger
-    private final static Logger logger = LoggerFactory.getLogger(CapConverter.class);
 
     /**
      * Get the CAP file (ZIP format) from the input stream and extract each component to a byte array, with respect

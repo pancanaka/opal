@@ -1,8 +1,5 @@
 package fr.xlim.ssd.opal.library.utilities;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 
@@ -12,9 +9,6 @@ import java.security.SecureRandom;
  * @author Julien Iguchi-Cartigny
  */
 public class RandomGenerator {
-
-    /// the logger
-    private final static Logger logger = LoggerFactory.getLogger(RandomGenerator.class);
 
     /**
      * This function is only available during test to set next random, and thus have tests which can be repeated.
@@ -38,7 +32,7 @@ public class RandomGenerator {
         try {
             secureRandom = SecureRandom.getInstance("SHA1PRNG");
         } catch (NoSuchAlgorithmException ex) {
-            throw new UnsupportedOperationException("Cannot create random sequence");
+            throw new UnsupportedOperationException("Cannot create random sequence: " + ex.getMessage());
         }
 
         return secureRandom.generateSeed(size);

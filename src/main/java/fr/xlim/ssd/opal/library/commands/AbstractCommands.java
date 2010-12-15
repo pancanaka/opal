@@ -11,7 +11,7 @@ import javax.smartcardio.CardChannel;
 public abstract class AbstractCommands {
 
     /// Card Channel used to communicate with smart card
-    protected CardChannel cc;
+    private CardChannel cc;
 
     /**
      * Class constructor
@@ -25,8 +25,9 @@ public abstract class AbstractCommands {
      */
     public final void setCc(CardChannel cc) {
 
-        if (cc == null)
+        if (cc == null) {
             throw new IllegalArgumentException("CardChannel must not be null");
+        }
 
         if (this.cc == null) {
             this.cc = cc;

@@ -69,11 +69,11 @@ public class CardConfigFactory {
             impl = getImpl(desiredCard);
 
         } catch (IOException e) {
-            throw new CardConfigNotFoundException("cannot read the config.xml file");
+            throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
         } catch (SAXException e) {
-            throw new CardConfigNotFoundException("SAX error when reading config.xml file");
+            throw new CardConfigNotFoundException("SAX error when reading config.xml file:" + e.getMessage());
         } catch (ParserConfigurationException e) {
-            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file");
+            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
         }
 
         return new CardConfig(isd, scpMode, tp, keys, impl);
@@ -198,11 +198,11 @@ public class CardConfigFactory {
             config = getConfig(desiredCard);
 
         } catch (IOException e) {
-            throw new CardConfigNotFoundException("cannot read the atr.xml file");
+            throw new CardConfigNotFoundException("cannot read the atr.xml file: " + e.getMessage());
         } catch (SAXException e) {
-            throw new CardConfigNotFoundException("SAX error when reading atr.xml file");
+            throw new CardConfigNotFoundException("SAX error when reading atr.xml file: " + e.getMessage());
         } catch (ParserConfigurationException e) {
-            throw new CardConfigNotFoundException("XML parsing error when reading atr.xml file");
+            throw new CardConfigNotFoundException("XML parsing error when reading atr.xml file: " + e.getMessage());
         }
 
         return config;

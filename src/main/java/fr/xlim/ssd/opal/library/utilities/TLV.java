@@ -20,12 +20,6 @@ public class TLV {
     private byte[] value;
 
     /**
-     * Creates a new (empty) TLV.
-     */
-    public TLV() {
-    }
-
-    /**
      * Creates a new TLV.
      *
      * @param data all data of TLV
@@ -43,28 +37,13 @@ public class TLV {
      * @apram type TLV tag
      */
     public TLV(byte tag, byte[] value) throws IOException {
+        if (value.length > 0x00FF) {
+            throw new IOException("Value is too long (" + value.length + ")");
+        }
+
         this.tag = tag;
         this.length = (byte) value.length;
         this.value = value.clone();
-    }
-
-    /**
-     * Creates a new TLV with a 2-byte tag.
-     *
-     * @param tag    the tag of TLV
-     * @param length the length of the TLV
-     * @param value  the value of the TLV
-     * @throws IOException if an error occurs
-     */
-    public TLV(byte tag, byte length, byte[] value) throws IOException {
-        this.tag = tag;
-        this.length = length;
-        if (length < 0 || length > value.length) {
-            throw new IOException("Invalid TLV length "
-                    + Integer.toHexString(length));
-        }
-
-        this.value = value;
     }
 
     /**

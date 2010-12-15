@@ -22,7 +22,7 @@ public class CardManager extends SecurityDomain {
     /**
      * Creates the off-card "Card Manager"
      *
-     * @param CmdImplementation the string representation of the chosen implementation
+     * @param cmdImplementation the string representation of the chosen implementation
      *                          (i.e. "fr.xlim.ssd.opal.commands.GP2xCommands").This designed implementation must override the class
      *                          {@link fr.xlim.ssd.opal.library.commands.Commands}
      * @param cc                the initialized card channel on which data will be sent to the card
@@ -30,8 +30,8 @@ public class CardManager extends SecurityDomain {
      * @throws CommandsImplementationNotFound if command implementation not found
      * @throws ClassNotFoundException         if command implementation class is not found
      */
-    public CardManager(String CmdImplementation, CardChannel cc, byte[] aid)
+    public CardManager(String cmdImplementation, CardChannel cc, byte[] aid)
             throws CommandsImplementationNotFound, ClassNotFoundException {
-        super(CmdImplementation, cc, aid);
+        super(cmdImplementation, cc, aid);
     }
 }

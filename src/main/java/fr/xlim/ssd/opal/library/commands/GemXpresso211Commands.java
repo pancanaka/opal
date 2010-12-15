@@ -25,7 +25,7 @@ public class GemXpresso211Commands extends GP2xCommands {
     }
 
     /**
-     *
+     * Special step after Generate Session Keys.
      */
     private void extraStep() {
         for (int i = 0; i < this.sessEnc.length; i++) {

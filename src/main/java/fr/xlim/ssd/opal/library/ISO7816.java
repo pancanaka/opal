@@ -103,7 +103,7 @@ public enum ISO7816 {
     SW_FILE_FULL(0x6A84);
 
     /// Enumerate value
-    int value;
+    private int value;
 
     /**
      * Link a value to an enumerate value

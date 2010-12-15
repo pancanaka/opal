@@ -16,15 +16,6 @@ public class TLVTest {
             (byte) 0x0C, (byte) 0x0D, (byte) 0x0E, (byte) 0x0F   //    U E
     };
 
-    byte[] aLongTLV = {
-            (byte) 0xAA, (byte) 0xBB, // Long Tag
-            (byte) 0x10, // Length
-            (byte) 0x00, (byte) 0x01, (byte) 0x02, (byte) 0x03, // V
-            (byte) 0x04, (byte) 0x05, (byte) 0x06, (byte) 0x07, //  A
-            (byte) 0x08, (byte) 0x09, (byte) 0x0A, (byte) 0x0B, //   L
-            (byte) 0x0C, (byte) 0x0D, (byte) 0x0E, (byte) 0x0F   //    U E
-    };
-
     byte[] aWrongTLV = {
             (byte) 0xAA, // Long Tag
             (byte) 0xFF, // Wrong Length
@@ -43,7 +34,7 @@ public class TLVTest {
         try {
             byte[] value = new byte[aSimpleTLV[1]];
             System.arraycopy(aSimpleTLV, 2, value, 0, aSimpleTLV[1]);
-            TLV tlv = new TLV(aSimpleTLV[0], aSimpleTLV[1], value);
+            TLV tlv = new TLV(aSimpleTLV[0], value);
 
             Assert.assertEquals((byte) tlv.getTag(), aSimpleTLV[0]);
             Assert.assertEquals(tlv.getLength(), aSimpleTLV[1]);

@@ -20,7 +20,7 @@ import java.io.IOException;
 public class GPApplet {
 
     /// File Control Information Defines in the SELECT Command response
-    FileControlInformation fileControlInformation;
+    private FileControlInformation fileControlInformation;
 
     /// Global Platform AID
     protected byte[] aid;
@@ -31,17 +31,17 @@ public class GPApplet {
     /**
      * Creates the off-card "Applet"
      *
-     * @param CmdImplementation the String representation of the chosen implementation (i.e. "fr.xlim.ssd.opal.commands.GP2xCommands") <br/>
+     * @param cmdImplementation the String representation of the chosen implementation (i.e. "fr.xlim.ssd.opal.commands.GP2xCommands") <br/>
      *                          This designed implementation must override the class {@link fr.xlim.ssd.opal.library.commands.Commands}
      * @param cc                the initialized card channel on which data will be sent to the card
      * @param aid               the byte array containing the aid representation of the Applet
-     * @throws CommandsImplementationNotFound CmdImplementation and cc parameters value prevents from find the card implementation
-     * @throws ClassNotFoundException         CmdImplementation value is a wrong class name
+     * @throws CommandsImplementationNotFound cmdImplementation and cc parameters value prevents from find the card implementation
+     * @throws ClassNotFoundException         cmdImplementation value is a wrong class name
      */
-    public GPApplet(String CmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
+    public GPApplet(String cmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
         this.aid = aid.clone();
-        Class.forName(CmdImplementation);
-        this.cmds = CommandsProvider.getImplementation(CmdImplementation, cc);
+        Class.forName(cmdImplementation);
+        this.cmds = CommandsProvider.getImplementation(cmdImplementation, cc);
         this.fileControlInformation = null;
     }
 

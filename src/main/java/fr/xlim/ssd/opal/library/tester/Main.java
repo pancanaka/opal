@@ -180,9 +180,9 @@ public class Main {
         if (cardInformation.getApplicationAID() != null)
             logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplicationAID()));
 
-        if (cardInformation.getGPTagAllocationAuthority() != null)
+        if (cardInformation.getGpTagAllocationAuthority() != null)
             logger.info("GP Tag Allocation Authority: "
-                    + Conversion.arrayToHex(cardInformation.getGPTagAllocationAuthority()));
+                    + Conversion.arrayToHex(cardInformation.getGpTagAllocationAuthority()));
 
         if (cardInformation.getCardManagementTypeAndVersion() != null)
             logger.info("Card Manager Type & Version: "
@@ -192,11 +192,11 @@ public class Main {
             logger.info("Card Identification Scheme: "
                     + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
 
-        if (cardInformation.getSCPImplementation() != null)
-            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getSCPImplementation()));
+        if (cardInformation.getScpImplementation() != null)
+            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getScpImplementation()));
 
-        logger.info("SCP Version: " + cardInformation.getSCPVersion());
-        logger.info("SCP Mode: " + cardInformation.getSCPMode());
+        logger.info("SCP Version: " + cardInformation.getScpVersion());
+        logger.info("SCP Mode: " + cardInformation.getScpMode());
 
         if (cardInformation.getCardConfiguration() != null)
             logger.info("Card Configuration: " + Conversion.arrayToHex(cardInformation.getCardConfiguration()));

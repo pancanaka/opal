@@ -17,9 +17,9 @@ import java.security.NoSuchAlgorithmException;
  */
 public abstract class SCAbstractGemVisa implements SCKey, SCDerivableKey {
 
-    protected byte setVersion;
+    private byte setVersion;
 
-    protected byte[] data;
+    private byte[] data;
 
     public SCAbstractGemVisa(byte setVersion, byte[] data) {
         this.setVersion = setVersion;
@@ -77,13 +77,13 @@ public abstract class SCAbstractGemVisa implements SCKey, SCDerivableKey {
         } catch (NoSuchAlgorithmException e) {
             throw new UnsupportedOperationException("Cannot find algorithm", e);
         } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such padding problem", e);
+            throw new UnsupportedOperationException("No such PADDING problem", e);
         } catch (InvalidKeyException e) {
             throw new UnsupportedOperationException("Key problem", e);
         } catch (IllegalBlockSizeException e) {
             throw new UnsupportedOperationException("Block size problem", e);
         } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad padding problem", e);
+            throw new UnsupportedOperationException("Bad PADDING problem", e);
         }
 
         SCGPKey[] res = new SCGPKey[3];

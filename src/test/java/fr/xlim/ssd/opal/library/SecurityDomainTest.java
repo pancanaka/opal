@@ -166,10 +166,10 @@ public class SecurityDomainTest {
             Assert.assertArrayEquals(cardInformation.getApplicationAID(), applicationAID);
             Assert.assertArrayEquals(cardInformation.getMaximumLengthOfDataFieldInCommandMessage(), MaximumLengthOfDataFieldInCommandMessage);
             Assert.assertArrayEquals(cardInformation.getApplicationProductionLifeCycleData(), ApplicationProductionLifeCycleData);
-            Assert.assertArrayEquals(cardInformation.getGPTagAllocationAuthority(), GPTagAllocationAuthority);
+            Assert.assertArrayEquals(cardInformation.getGpTagAllocationAuthority(), GPTagAllocationAuthority);
             Assert.assertArrayEquals(cardInformation.getCardManagementTypeAndVersion(), cardManagementTypeAndVersion);
             Assert.assertArrayEquals(cardInformation.getCardIdentificationScheme(), cardIdentificationScheme);
-            Assert.assertArrayEquals(cardInformation.getSCPConfiguration(), scpConfiguration);
+            Assert.assertArrayEquals(cardInformation.getScpConfiguration(), scpConfiguration);
             Assert.assertArrayEquals(cardInformation.getCardConfiguration(), cardConfiguration);
             Assert.assertArrayEquals(cardInformation.getCardDetails(), cardDetails);
 

@@ -32,7 +32,7 @@ public class FileControlInformation {
     private TLV securityDomainManagementData;
     /* |------> 06   */
     /// Identifies Global Platform as the Tag Allocation Authority
-    private TLV GPTagAllocationAuthority;
+    private TLV gpTagAllocationAuthority;
     /* |------> 60   */ // Card Management Type and Version
     /* |--------> 06 */
     private TLV cardManagementTypeAndVersion;
@@ -43,15 +43,15 @@ public class FileControlInformation {
     /* |------> 64   */
     /* |--------> 06 */
     /// Secure Channel Protocol of the selected Security Domain ans its implementation options
-    private TLV SCPConfiguration;
+    private TLV scpConfiguration;
     /* --0---------------6-- */
-    private byte[] SCPImplementation; /*  | SCP Information |  */
+    private byte[] scpImplementation; /*  | SCP Information |  */
     /* --------------------- */
     /* -------7---------     */
-    private byte SCPVersion;       /*  | SCP Version |      */
+    private byte scpVersion;          /*  | SCP Version |      */
     /* -----------------     */
     /* -------8-----         */
-    private byte SCPMode;          /*  | SCP Mode |         */
+    private byte scpMode;             /*  | SCP Mode |         */
     /* -------------         */
     /* |------> 65   */
     /// Card Configuration details
@@ -106,8 +106,8 @@ public class FileControlInformation {
      *
      * @return the Global Platform Allocation Authority
      */
-    public byte[] getGPTagAllocationAuthority() {
-        return GPTagAllocationAuthority.getValue();
+    public byte[] getGpTagAllocationAuthority() {
+        return gpTagAllocationAuthority.getValue();
     }
 
     /**
@@ -133,8 +133,8 @@ public class FileControlInformation {
      *
      * @return the SCP Information
      */
-    public byte[] getSCPImplementation() {
-        return SCPImplementation;
+    public byte[] getScpImplementation() {
+        return scpImplementation;
     }
 
     /**
@@ -142,8 +142,8 @@ public class FileControlInformation {
      *
      * @return the SCP Version
      */
-    public byte getSCPVersion() {
-        return SCPVersion;
+    public byte getScpVersion() {
+        return scpVersion;
     }
 
     /**
@@ -151,8 +151,8 @@ public class FileControlInformation {
      *
      * @return the SCP Mode
      */
-    public byte getSCPMode() {
-        return SCPMode;
+    public byte getScpMode() {
+        return scpMode;
     }
 
     /**
@@ -256,11 +256,7 @@ public class FileControlInformation {
      */
     public void setSecurityDomainsTrustPointCertificateInformation(byte[] securityDomainsTrustPointCertificateInformation) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (securityDomainsTrustPointCertificateInformation.length > 0x00FF) {
-            throw new IOException("Security Domain's Trust Point Certificate Information is too long (" + securityDomainsTrustPointCertificateInformation.length + ")");
-        }
-
-        this.securityDomainsTrustPointCertificateInformation = new TLV((byte) 0x67, (byte) securityDomainsTrustPointCertificateInformation.length, securityDomainsTrustPointCertificateInformation);
+        this.securityDomainsTrustPointCertificateInformation = new TLV((byte) 0x67, securityDomainsTrustPointCertificateInformation);
     }
 
     /**
@@ -281,11 +277,7 @@ public class FileControlInformation {
      */
     public void setSecurityDomainCertificateInformation(byte[] securityDomainCertificateInformation) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (securityDomainCertificateInformation.length > 0x00FF) {
-            throw new IOException("Security Domain's Trust Point Certificate Information is too long (" + securityDomainCertificateInformation.length + ")");
-        }
-
-        this.securityDomainCertificateInformation = new TLV((byte) 0x68, (byte) securityDomainCertificateInformation.length, securityDomainCertificateInformation);
+        this.securityDomainCertificateInformation = new TLV((byte) 0x68, securityDomainCertificateInformation);
     }
 
     /**
@@ -296,11 +288,7 @@ public class FileControlInformation {
      */
     public void setProprietaryData(byte[] proprietaryData) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (proprietaryData.length > 0x00FF) {
-            throw new IOException("Proprietary Data is too long (" + proprietaryData.length + ")");
-        }
-
-        this.proprietaryData = new TLV((byte) 0xA5, (byte) proprietaryData.length, proprietaryData);
+        this.proprietaryData = new TLV((byte) 0xA5, proprietaryData);
 
         ByteBuffer data = ByteBuffer.wrap(proprietaryData).slice().asReadOnlyBuffer();
 
@@ -357,11 +345,7 @@ public class FileControlInformation {
      */
     public void setSecurityDomainManagementData(byte[] securityDomainManagementData) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (securityDomainManagementData.length > 0x00FF) {
-            throw new IOException("Security Domain Management Data is too long (" + securityDomainManagementData.length + ")");
-        }
-
-        this.securityDomainManagementData = new TLV((byte) 0x73, (byte) securityDomainManagementData.length, securityDomainManagementData);
+        this.securityDomainManagementData = new TLV((byte) 0x73, securityDomainManagementData);
 
         ByteBuffer data = ByteBuffer.wrap(securityDomainManagementData).slice().asReadOnlyBuffer();
 
@@ -378,7 +362,7 @@ public class FileControlInformation {
                     value = new byte[length];
                     data.get(value, 0, length);
 
-                    this.setGPTagAllocationAuthority(value);
+                    this.setGpTagAllocationAuthority(value);
                     break;
 
                 case 0x0060:
@@ -414,7 +398,7 @@ public class FileControlInformation {
                     length = data.get();
                     value = new byte[length];
                     data.get(value, 0, length);
-                    this.setSCPConfiguration(value);
+                    this.setScpConfiguration(value);
                     break;
 
                 case 0x0065:
@@ -460,30 +444,26 @@ public class FileControlInformation {
      *
      * @return SCP Implementation value
      */
-    public byte[] getSCPConfiguration() {
-        return SCPConfiguration.getValue();
+    public byte[] getScpConfiguration() {
+        return scpConfiguration.getValue();
     }
 
     /**
      * Set SCP Implementation value
      *
-     * @param SCPConfiguration Set SCP Implementation value
+     * @param scpConfiguration Set SCP Implementation value
      * @throws IOException Incorrect SCP Implementation value
      */
-    public void setSCPConfiguration(byte[] SCPConfiguration) throws IOException {
+    public void setScpConfiguration(byte[] scpConfiguration) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (SCPConfiguration.length > 0x00FF) {
-            throw new IOException("Application AID is too long (" + SCPConfiguration.length + ")");
-        }
+        this.scpConfiguration = new TLV((byte) 0x64, scpConfiguration);
 
-        this.SCPConfiguration = new TLV((byte) 0x64, (byte) SCPConfiguration.length, SCPConfiguration);
+        ByteBuffer buffer = ByteBuffer.wrap(scpConfiguration);
 
-        ByteBuffer buffer = ByteBuffer.wrap(SCPConfiguration);
-
-        this.SCPImplementation = new byte[this.SCPConfiguration.getLength() - 2];
-        buffer.get(this.SCPImplementation, 0, this.SCPImplementation.length);
-        this.setSCPVersion(buffer.get());
-        this.setSCPMode(buffer.get());
+        this.scpImplementation = new byte[this.scpConfiguration.getLength() - 2];
+        buffer.get(this.scpImplementation, 0, this.scpImplementation.length);
+        this.setScpVersion(buffer.get());
+        this.setScpMode(buffer.get());
     }
 
     /**
@@ -494,26 +474,18 @@ public class FileControlInformation {
      */
     public void setApplicationAID(byte[] applicationAID) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (applicationAID.length > 0x00FF) {
-            throw new IOException("Application AID is too long (" + applicationAID.length + ")");
-        }
-
-        this.applicationAID = new TLV((byte) 0x84, (byte) applicationAID.length, applicationAID);
+        this.applicationAID = new TLV((byte) 0x84, applicationAID);
     }
 
     /**
      * Set Global Platform Allocation Authority value
      *
-     * @param GPTagAllocationAuthority new Global Platform Allocation Authority value
+     * @param gpTagAllocationAuthority new Global Platform Allocation Authority value
      * @throws IOException Incorrect Global Platform Allocation Authority value
      */
-    public void setGPTagAllocationAuthority(byte[] GPTagAllocationAuthority) throws IOException {
+    public void setGpTagAllocationAuthority(byte[] gpTagAllocationAuthority) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (GPTagAllocationAuthority.length > 0x00FF) {
-            throw new IOException("Global Platform Tag Allocation Authority is too long (" + GPTagAllocationAuthority.length + ")");
-        }
-
-        this.GPTagAllocationAuthority = new TLV((byte) 0x06, (byte) GPTagAllocationAuthority.length, GPTagAllocationAuthority);
+        this.gpTagAllocationAuthority = new TLV((byte) 0x06, gpTagAllocationAuthority);
     }
 
     /**
@@ -524,38 +496,30 @@ public class FileControlInformation {
      */
     public void setCardManagementTypeAndVersion(byte[] cardManagementTypeAndVersion) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (cardManagementTypeAndVersion.length > 0x00FF) {
-            throw new IOException("Card Management Type And Version is too long (" + cardManagementTypeAndVersion.length + ")");
-        }
-
-        this.cardManagementTypeAndVersion = new TLV((byte) 0x60, (byte) cardManagementTypeAndVersion.length, cardManagementTypeAndVersion);
+        this.cardManagementTypeAndVersion = new TLV((byte) 0x60, cardManagementTypeAndVersion);
     }
 
     public void setCardIdentificationScheme(byte[] cardIdentificationScheme) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (cardIdentificationScheme.length > 0x00FF) {
-            throw new IOException("Card Identification Scheme is too long (" + cardIdentificationScheme.length + ")");
-        }
-
-        this.cardIdentificationScheme = new TLV((byte) 0x63, (byte) cardIdentificationScheme.length, cardIdentificationScheme);
+        this.cardIdentificationScheme = new TLV((byte) 0x63, cardIdentificationScheme);
     }
 
     /**
      * Set SCP Version used for communication with the Smart card
      *
-     * @param SCPVersion new SCP Version used for communication with the Smart card
+     * @param scpVersion new SCP Version used for communication with the Smart card
      */
-    public void setSCPVersion(byte SCPVersion) {
-        this.SCPVersion = SCPVersion;
+    public void setScpVersion(byte scpVersion) {
+        this.scpVersion = scpVersion;
     }
 
     /**
      * Set SCP Mode used for communication with the Smart card
      *
-     * @param SCPMode New SCP mode used for communication with the Smart card
+     * @param scpMode New SCP mode used for communication with the Smart card
      */
-    public void setSCPMode(byte SCPMode) {
-        this.SCPMode = SCPMode;
+    public void setScpMode(byte scpMode) {
+        this.scpMode = scpMode;
     }
 
     /**
@@ -566,11 +530,7 @@ public class FileControlInformation {
      */
     public void setCardConfiguration(byte[] cardConfiguration) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (cardConfiguration.length > 0x00FF) {
-            throw new IOException("Card Configuration is too long (" + cardConfiguration.length + ")");
-        }
-
-        this.cardConfiguration = new TLV((byte) 0x65, (byte) cardConfiguration.length, cardConfiguration);
+        this.cardConfiguration = new TLV((byte) 0x65, cardConfiguration);
     }
 
     /**
@@ -581,11 +541,7 @@ public class FileControlInformation {
      */
     public void setCardDetails(byte[] cardDetails) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (cardDetails.length > 0x00FF) {
-            throw new IOException("Card Details is too long (" + cardDetails.length + ")");
-        }
-
-        this.cardDetails = new TLV((byte) 0x66, (byte) cardDetails.length, cardDetails);
+        this.cardDetails = new TLV((byte) 0x66, cardDetails);
     }
 
     /**
@@ -597,10 +553,7 @@ public class FileControlInformation {
      */
     public void setApplicationProductionLifeCycleData(byte[] applicationProductionLifeCycleData) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (applicationProductionLifeCycleData.length > 0x00FF) {
-            throw new IOException("Application AID size is too long (" + applicationProductionLifeCycleData.length + ")");
-        }
-        this.applicationProductionLifeCycleData = new TLV((byte) 0x6E, (byte) applicationProductionLifeCycleData.length, applicationProductionLifeCycleData);
+        this.applicationProductionLifeCycleData = new TLV((byte) 0x6E, applicationProductionLifeCycleData);
     }
 
     /**
@@ -612,9 +565,6 @@ public class FileControlInformation {
      */
     public void setMaximumLengthOfDataFieldInCommandMessage(byte[] maximumLengthOfDataFieldInCommandMessage) throws IOException {
         // TODO: if this function is called by a other method than FileControlInformation constructor, you should modify each other TLV values
-        if (maximumLengthOfDataFieldInCommandMessage.length > 0x00FF) {
-            throw new IOException("Application AID size is too long (" + maximumLengthOfDataFieldInCommandMessage.length + ")");
-        }
-        this.maximumLengthOfDataFieldInCommandMessage = new TLV((byte) 0x65, (byte) maximumLengthOfDataFieldInCommandMessage.length, maximumLengthOfDataFieldInCommandMessage);
+        this.maximumLengthOfDataFieldInCommandMessage = new TLV((byte) 0x65, maximumLengthOfDataFieldInCommandMessage);
     }
 }

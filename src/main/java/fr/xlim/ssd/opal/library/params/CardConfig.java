@@ -39,20 +39,25 @@ public class CardConfig {
      */
     public CardConfig(byte[] isd, SCPMode scp, String tp, SCKey[] keys, String impl) {
 
-        if (isd == null)
+        if (isd == null) {
             throw new IllegalArgumentException("isd must be not null");
+        }
 
-        if (scp == null)
+        if (scp == null) {
             throw new IllegalArgumentException("scp must be not null");
+        }
 
-        if (tp == null)
+        if (tp == null) {
             throw new IllegalArgumentException("tp must be not null");
+        }
 
-        if (keys == null)
+        if (keys == null) {
             throw new IllegalArgumentException("keys must be not null");
+        }
 
-        if (impl == null)
+        if (impl == null) {
             throw new IllegalArgumentException("impl must be not null");
+        }
 
         this.isd = isd;
         this.scp = scp;
@@ -125,9 +130,10 @@ public class CardConfig {
      * @return the P2 param to send to initUpdtate Command according to the first KeyId found in configured keys
      */
     public byte getDefaultInitUpdateP2() {
-        if (this.keys[0].getId() == 1)
+        if (this.keys[0].getId() == 1) {
             return 0;
-        else
+        } else {
             return this.keys[0].getId();
+        }
     }
 }
