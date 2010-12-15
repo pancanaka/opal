@@ -7,6 +7,8 @@ import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
+import java.io.IOException;
+
 
 /**
  * This class contains methods that could be sent to an Applet.
@@ -17,148 +19,13 @@ import javax.smartcardio.ResponseAPDU;
  */
 public class GPApplet {
 
-    // TODO: Propagate this class use
-    public class FileControlInformation {
-
-        /* 6F                */ // File Control Information (FCI Template)
-        protected byte[] allInformations;
-        /* |-> 84            */ // Application / File AID
-        protected byte[] applicationAID;
-        /* |-> A5            */ // Proprietary data
-        /* |----> 73         */ // Security Domain Management Data
-        /* |------> 66       */ // Tag for 'Card Data'
-        /* |--------> 73     */ // Tag for 'Card Data Recognition Data'
-        /* |----------> 06   */ // Identifies Global Platform as the Tag Allocation Authority
-        protected byte[] GPTagAllocationAuthority;
-        /* |----------> 60   */ // Card Management Type and Version
-        /* |------------> 06 */
-        protected byte[] cardManagementTypeAndVersion;
-        /* |----------> 63   */ // Card Identification Scheme
-        /* |------------> 06 */
-        protected byte[] cardIdentificationScheme;
-        /* |----------> 64   */ // Secure Channel Protocol of the selected Security Domain ans its implementation options
-        /* |------------> 06 */
-        /* --0---------------6-- */
-        protected byte[] SCPInformation; /*  | SCP Information |  */
-        /* --------------------- */
-
-        /* -------7---------     */
-        protected byte SCPVersion;       /*  | SCP Version |      */
-        /* -----------------     */
-
-        /* -------8-----          */
-        protected byte SCPMode;         /*  | SCP Mode |          */
-        /* -------------          */
-        /* |----------> 65   */ // Card Configuration details
-        protected byte[] cardConfiguration;
-        /* |----------> 66   */ // Card / Chip details
-        protected byte[] cardDetails;
-        /* |----> 9F 6E      */ // Application production lice cycle data
-        protected byte[] applicationProductionLifeCycleData;
-        /* |----> 9F 65      */ // Maximum length of data field in command message
-        protected byte[] maximumLengthOfDataFieldInCommandMessage;
-
-        public static final byte SIZE_TL = (byte) 0x02;
-
-        public void setSCPInformation(byte[] info) {
-            this.SCPInformation = new byte[info.length - 2];
-            System.arraycopy(info, 0, getSCPInformation(), 0, info.length - 2);
-            this.SCPVersion = info[info.length - 2];
-            this.SCPMode = info[info.length - 1];
-        }
-
-        public byte[] getAllInformations() {
-            return allInformations;
-        }
-
-        /**
-         * @return the applicationAID
-         */
-        public byte[] getApplicationAID() {
-            return applicationAID;
-        }
-
-        /**
-         * @return the GPTagAllocationAuthority
-         */
-        public byte[] getGPTagAllocationAuthority() {
-            return GPTagAllocationAuthority;
-        }
-
-        /**
-         * @return the cardManagementTypeAndVersion
-         */
-        public byte[] getCardManagementTypeAndVersion() {
-            return cardManagementTypeAndVersion;
-        }
-
-        /**
-         * @return the cardIdentificationScheme
-         */
-        public byte[] getCardIdentificationScheme() {
-            return cardIdentificationScheme;
-        }
-
-        /**
-         * @return the SCPInformation
-         */
-        public byte[] getSCPInformation() {
-            return SCPInformation;
-        }
-
-        /**
-         * @return the SCPVersion
-         */
-        public byte getSCPVersion() {
-            return SCPVersion;
-        }
-
-        /**
-         * @return the SCPMode
-         */
-        public byte getSCPMode() {
-            return SCPMode;
-        }
-
-        /**
-         * @return the cardConfiguration
-         */
-        public byte[] getCardConfiguration() {
-            return cardConfiguration;
-        }
-
-        /**
-         * @return the cardDetails
-         */
-        public byte[] getCardDetails() {
-            return cardDetails;
-        }
-
-        /**
-         * @return the applicationProductionLifeCycleData
-         */
-        public byte[] getApplicationProductionLifeCycleData() {
-            return applicationProductionLifeCycleData;
-        }
-
-        /**
-         * @return the maximumLengthOfDataFieldInCommandMessage
-         */
-        public byte[] getMaximumLengthOfDataFieldInCommandMessage() {
-            return maximumLengthOfDataFieldInCommandMessage;
-        }
-
-    }
-
+    /// File Control Information Defines in the SELECT Command response
     FileControlInformation fileControlInformation;
 
-    /**
-     *
-     */
+    /// Global Platform AID
     protected byte[] aid;
-    /**
-     *
-     */
+
+    /// Commands to dialog to the GP Applet
     protected Commands cmds;
 
     /**
@@ -168,8 +35,8 @@ public class GPApplet {
      *                          This designed implementation must override the class {@link fr.xlim.ssd.opal.library.commands.Commands}
      * @param cc                the initialized card channel on which data will be sent to the card
      * @param aid               the byte array containing the aid representation of the Applet
-     * @throws CommandsImplementationNotFound
-     * @throws ClassNotFoundException
+     * @throws CommandsImplementationNotFound CmdImplementation and cc parameters value prevents from find the card implementation
+     * @throws ClassNotFoundException         CmdImplementation value is a wrong class name
      */
     public GPApplet(String CmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
         this.aid = aid.clone();
@@ -179,203 +46,92 @@ public class GPApplet {
     }
 
     /**
-     * @return
+     * Get Card Channel
+     *
+     * @return Card Channel
      */
     public CardChannel getCc() {
         return this.cmds.getCc();
     }
 
     /**
-     * @return
+     * Get Global Platform AID
+     *
+     * @return Get Global Platform AID
      */
     public byte[] getAid() {
         return aid.clone();
     }
 
-    /**
-     * @return
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#getScp()
      */
     public SCPMode getScp() {
         return this.cmds.getScp();
     }
 
-    /**
-     * @return
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#getSessState()
      */
     public SessionState getSessState() {
         return this.cmds.getSessState();
     }
 
-    /**
-     * @return
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#getSecMode()
      */
     public SecLevel getSecMode() {
         return this.cmds.getSecMode();
     }
 
-    /**
-     * @return
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#getKeys()
      */
     public SCKey[] getKeys() {
         return this.cmds.getKeys();
     }
 
-    /**
-     * @param keySetVersion
-     * @param keyId
-     * @return
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#getKey()
      */
     public SCKey getKey(byte keySetVersion, byte keyId) {
         return this.cmds.getKey(keySetVersion, keyId);
     }
 
-    /**
-     * @param key
-     * @return
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#setOffCardKey(fr.xlim.ssd.opal.library.SCKey)
      */
     public SCKey setOffCardKey(SCKey key) {
         return this.cmds.setOffCardKey(key);
     }
 
-    /**
-     * @param keys
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#setOffCardKeys(fr.xlim.ssd.opal.library.SCKey[])
      */
     public void setOffCardKeys(SCKey[] keys) {
         this.cmds.setOffCardKeys(keys);
     }
 
-    /**
-     * @param keySetVersion
-     * @param keyId
-     * @return
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#deleteOffCardKey(byte, byte)
      */
     public SCKey deleteOffCardKey(byte keySetVersion, byte keyId) {
         return this.cmds.deleteOffCardKey(keySetVersion, keyId);
     }
 
     /**
-     * @return
-     * @throws CardException
+     * Select GP Applet and check card response
+     *
+     * @return Card APDU response
+     * @throws CardException Communication error
+     * @throws IOException   Response Select APDU is ill-formed
      */
-    public ResponseAPDU select() throws CardException {
+    public ResponseAPDU select() throws CardException, IOException {
         ResponseAPDU ret = this.cmds.select(this.aid);
-        this.checkSelectReturn(ret.getData());
+
+        this.fileControlInformation = new FileControlInformation(ret.getData());
+
         return ret;
-    }
-
-    protected void checkSelectReturn(byte[] data) throws CardException {
-        if (data[0] != (byte) 0x6F) {
-            return;
-        }
-
-        this.fileControlInformation = new FileControlInformation();
-
-        for (int pos = 2; pos < data.length; pos += FileControlInformation.SIZE_TL) {
-            if (data[pos] == (byte) 0x84) { // Application / File AID
-                this.fileControlInformation.applicationAID = this.readTLV(data, pos);
-                pos += this.fileControlInformation.getApplicationAID().length;
-
-            } else if (data[pos] == (byte) 0xA5) { // Proprietary data
-
-                byte[] proprietaryData = this.readTLV(data, pos);
-                for (int j = 0; j < proprietaryData.length; j += FileControlInformation.SIZE_TL) {
-                    if (proprietaryData[j] == (byte) 0x73) { // Security Domain Management Data
-                        byte[] securityDomain = readTLV(proprietaryData, j);
-                        for (int i = j; i < securityDomain.length; i += FileControlInformation.SIZE_TL) {
-
-                            switch (securityDomain[i]) {
-                                case (byte) 0x06: // Tag Allocation Authority
-                                    this.fileControlInformation.GPTagAllocationAuthority = this.readTLV(securityDomain, i);
-                                    i += this.fileControlInformation.getGPTagAllocationAuthority().length;
-                                    break;
-
-                                case (byte) 0x60: // Card Manager Type and Version
-                                    if (securityDomain[i + FileControlInformation.SIZE_TL] == (byte) 0x06) {
-                                        this.fileControlInformation.cardManagementTypeAndVersion = this.readTLV(securityDomain, i + FileControlInformation.SIZE_TL);
-                                        i += this.fileControlInformation.getCardManagementTypeAndVersion().length + FileControlInformation.SIZE_TL;
-                                    } else {
-                                        this.resetParams();
-                                        throw new CardException("Unknow Select Return Tag value");
-                                    }
-                                    break;
-
-                                case (byte) 0x63: // Card Identification Scheme
-                                    if (securityDomain[i + FileControlInformation.SIZE_TL] == (byte) 0x06) {
-                                        this.fileControlInformation.cardIdentificationScheme = this.readTLV(securityDomain, i + FileControlInformation.SIZE_TL);
-                                        i += this.fileControlInformation.getCardIdentificationScheme().length + FileControlInformation.SIZE_TL;
-                                    } else {
-                                        this.resetParams();
-                                        throw new CardException("Unknow tag value");
-                                    }
-                                    break;
-
-                                case (byte) 0x64: // Security Channel Domain and its implementation options
-                                    if (securityDomain[i + FileControlInformation.SIZE_TL] == (byte) 0x06) {
-                                        byte[] info = this.readTLV(securityDomain, i + FileControlInformation.SIZE_TL);
-                                        i += info.length + FileControlInformation.SIZE_TL;
-                                        this.fileControlInformation.setSCPInformation(info);
-                                    } else {
-                                        throw new CardException("Unknow tag value");
-                                    }
-                                    break;
-
-                                case (byte) 0x65: // Card Configuration Details
-                                    this.fileControlInformation.cardConfiguration = this.readTLV(securityDomain, i);
-                                    i += this.fileControlInformation.getCardConfiguration().length;
-                                    break;
-
-                                case (byte) 0x66: // Card / Chips details
-                                    this.fileControlInformation.cardDetails = this.readTLV(securityDomain, i);
-                                    i += this.fileControlInformation.getCardDetails().length;
-                                    break;
-                            }
-                        }
-
-                        j += securityDomain.length + FileControlInformation.SIZE_TL;
-
-
-                    } else if ((proprietaryData[j] == (byte) 0x9F)
-                            && (proprietaryData[j + 1] == (byte) 0x6E)) { // Application production lice cycle data
-
-                        this.fileControlInformation.applicationProductionLifeCycleData = this.readTLV(proprietaryData, j + 1);
-                        j += this.fileControlInformation.getApplicationProductionLifeCycleData().length + 1;
-
-                    } else if ((proprietaryData[j] == (byte) 0x9F)
-                            && (proprietaryData[j + 1] == (byte) 0x65)) { // Maximum Length Of Data Field In Command Message
-
-                        this.fileControlInformation.maximumLengthOfDataFieldInCommandMessage = this.readTLV(proprietaryData, j + 1);
-                        j += this.fileControlInformation.getMaximumLengthOfDataFieldInCommandMessage().length + 1;
-
-                    }
-                }
-
-                pos += proprietaryData.length + FileControlInformation.SIZE_TL;
-
-            }
-        }
-    }
-
-    protected byte[] readTLV(byte[] data, int begin) {
-
-        /*
-         * ------------------------
-         * | Tag | Length | Value |
-         * ------------------------
-         */
-
-        byte[] value = null;
-        byte length;
-
-        if (begin >= data.length) {
-            throw new ArrayIndexOutOfBoundsException();
-        }
-
-        length = data[begin + 1];
-        value = new byte[length];
-
-        System.arraycopy(data, begin + 2, value, 0, length);
-
-        return value;
     }
 
     /**
@@ -385,46 +141,39 @@ public class GPApplet {
         this.cmds.resetParams();
     }
 
-    /**
-     * @param keySetVersion
-     * @param keyId
-     * @param desiredScp
-     * @return
-     * @throws CardException
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#initializeUpdate(byte, byte, fr.xlim.ssd.opal.library.SCPMode)
      */
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
         return this.cmds.initializeUpdate(keySetVersion, keyId, desiredScp);
     }
 
-    /**
-     * @param secLevel
-     * @return
-     * @throws CardException
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#externalAuthenticate(fr.xlim.ssd.opal.library.SecLevel)
      */
     public ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException {
         return this.cmds.externalAuthenticate(secLevel);
     }
 
-    /**
-     * @param command
-     * @return
-     * @throws CardException
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#transmit(javax.smartcardio.CommandAPDU)
      */
     public ResponseAPDU send(CommandAPDU command) throws CardException {
         return this.cmds.getCc().transmit(command);
     }
 
-    /**
-     * @param ft
-     * @param respMode
-     * @param searchQualifier
-     * @return
-     * @throws CardException
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#getStatus(fr.xlim.ssd.opal.library.GetStatusFileType, fr.xlim.ssd.opal.library.GetStatusFileType, byte[])
      */
     public ResponseAPDU[] getStatus(GetStatusFileType ft, GetStatusResponseMode respMode, byte[] searchQualifier) throws CardException {
         return this.cmds.getStatus(ft, respMode, searchQualifier);
     }
 
+    /**
+     * Get the analysed result of the GP Applet select command.
+     *
+     * @return Analysed result of the GP Applet select command.
+     */
     public FileControlInformation getCardInformation() {
         return this.fileControlInformation;
     }

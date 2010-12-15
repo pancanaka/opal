@@ -173,8 +173,9 @@ public class Main {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        /*
         // print information about the security domain
-        SecurityDomain.FileControlInformation cardInformation = securityDomain.getCardInformation();
+        FileControlInformation cardInformation = securityDomain.getCardInformation();
 
         if (cardInformation.getApplicationAID() != null)
             logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplicationAID()));
@@ -191,8 +192,8 @@ public class Main {
             logger.info("Card Identification Scheme: "
                     + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
 
-        if (cardInformation.getSCPInformation() != null)
-            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getSCPInformation()));
+        if (cardInformation.getSCPImplementation() != null)
+            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getSCPImplementation()));
 
         logger.info("SCP Version: " + cardInformation.getSCPVersion());
         logger.info("SCP Mode: " + cardInformation.getSCPMode());
@@ -209,7 +210,7 @@ public class Main {
 
         if (cardInformation.getMaximumLengthOfDataFieldInCommandMessage() != null)
             logger.info("Maximun length of data field in command message: "
-                    + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));
+                    + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));  */
 
         // initialize update
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(),
