@@ -4,12 +4,15 @@
     <bannerLeft>
         <name>Opal</name>
         <src>images/logo.png</src>
-        <href>http://www.sonatype.com</href>
+        <href>http://secinfo.msi.unilim.fr/opal/</href>
     </bannerLeft>
     <body>
+        <links>
+          <item name="OPAL INRIA Forge depot" href="https://gforge.inria.fr/projects/opal/" />
+        </links>
         <menu name="The OPAL Project">
             <item name="Overview" href="index.html"/>
         </menu>
-        <menu name="Project Documentation" ref="reports"/>
+        <menu ref="reports"/>
     </body>
 </project>
