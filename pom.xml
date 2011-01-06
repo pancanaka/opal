@@ -97,7 +97,7 @@
 
     <licenses>
         <license>
-            <name>CeCILL</name>
+            <name>CeCILL version 2</name>
             <url>http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt</url>
             <comments>French Free Software license, compatible with the GNU GPL</comments>
         </license>
