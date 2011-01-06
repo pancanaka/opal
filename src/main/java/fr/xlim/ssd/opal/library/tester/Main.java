@@ -173,45 +173,6 @@ public class Main {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        /*
-        // print information about the security domain
-        FileControlInformation cardInformation = securityDomain.getCardInformation();
-
-        if (cardInformation.getApplicationAID() != null)
-            logger.info("Application / File AID: " + Conversion.arrayToHex(cardInformation.getApplicationAID()));
-
-        if (cardInformation.getGpTagAllocationAuthority() != null)
-            logger.info("GP Tag Allocation Authority: "
-                    + Conversion.arrayToHex(cardInformation.getGpTagAllocationAuthority()));
-
-        if (cardInformation.getCardManagementTypeAndVersion() != null)
-            logger.info("Card Manager Type & Version: "
-                    + Conversion.arrayToHex(cardInformation.getCardManagementTypeAndVersion()));
-
-        if (cardInformation.getCardIdentificationScheme() != null)
-            logger.info("Card Identification Scheme: "
-                    + Conversion.arrayToHex(cardInformation.getCardIdentificationScheme()));
-
-        if (cardInformation.getScpImplementation() != null)
-            logger.info("SCP Information: " + Conversion.arrayToHex(cardInformation.getScpImplementation()));
-
-        logger.info("SCP Version: " + cardInformation.getScpVersion());
-        logger.info("SCP Mode: " + cardInformation.getScpMode());
-
-        if (cardInformation.getCardConfiguration() != null)
-            logger.info("Card Configuration: " + Conversion.arrayToHex(cardInformation.getCardConfiguration()));
-
-        if (cardInformation.getCardDetails() != null)
-            logger.info("Card Details: " + Conversion.arrayToHex(cardInformation.getCardDetails()));
-
-        if (cardInformation.getApplicationProductionLifeCycleData() != null)
-            logger.info("Application production life cyvle data: "
-                    + Conversion.arrayToHex(cardInformation.getApplicationProductionLifeCycleData()));
-
-        if (cardInformation.getMaximumLengthOfDataFieldInCommandMessage() != null)
-            logger.info("Maximun length of data field in command message: "
-                    + Conversion.arrayToHex(cardInformation.getMaximumLengthOfDataFieldInCommandMessage()));  */
-
         // initialize update
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(),
                 cardConfig.getScpMode());
@@ -237,7 +198,7 @@ public class Main {
                 , (byte) 0xA4 // INS
                 , (byte) 0x04 // P1
                 , (byte) 0x00 // P2
-                , APPLET_ID // DATA
+                , APPLET_ID   // DATA
         );
         ResponseAPDU resp = securityDomain.send(select);
         logger.debug("Select Hello World Applet "
