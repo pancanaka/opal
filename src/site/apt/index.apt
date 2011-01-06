@@ -159,8 +159,9 @@ Architecture
     the card lifecycle.
 
     * Finally, to send APDU commands to an applet, using your previously
-    Security Domain instance, you should use
-    {{{http://download.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/javax/smartcardio/CommandAPDU.html}CommandAPDU}}.
+    Security Domain instance, you should call its send function with a
+    {{{http://download.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/javax/smartcardio/CommandAPDU.html}CommandAPDU}}
+    in parameter.
 
 Building
 
