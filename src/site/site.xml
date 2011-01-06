@@ -12,6 +12,8 @@
         </links>
         <menu name="The OPAL Project">
             <item name="Overview" href="index.html"/>
+            <item name="Tested Cards" href="cards.html"/>
+            <item name="Code Example" href="example.html"/>
         </menu>
         <menu ref="reports"/>
     </body>

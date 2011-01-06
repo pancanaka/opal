@@ -23,6 +23,33 @@ Presentation
     OPAL is also able to manage different implementations of the specification
     via a pluggable interface.
 
+    The actual implementation has been tested with {{{cards.html}several cards}}.
+
+Architecture
+
+    In order to communicate with a smartcard, you should use this friendly way.
+
+    * First, you should create a
+    {{{./apidocs/fr/xlim/ssd/opal/library/params/CardConfig.html}CardConfig}}
+    to communicate with your smartcard. Here your set up the information uses
+    (transmission protocol, reader and card to use, etc.)
+
+    * Second, to use the Java Card Security Domain, the
+    {{{./apidocs/fr/xlim/ssd/opal/library/.html}SecurityDomain}} class provides
+    some functions to authenticate, install or delete applet and more to manage
+    the card lifecycle.
+
+    * Finally, to send APDU commands to an applet, using your previously
+    Security Domain instance, you should call its send function with a
+    {{{http://download.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/javax/smartcardio/CommandAPDU.html}CommandAPDU}}
+    in parameter.
+
+    Please see {{{example.html}an example here}}.
+
+Building
+
+    OPAL build is based on Maven 2.2.1. Maven 3.X is not supported (the site support is different).
+
 Releases
 
 * Version 0.1 (05/01/2011)
@@ -42,206 +69,3 @@ Roadmap
     * Full implementation of SCP02
 
     * Refactoring
-
-
-Supported Cards
-
-    The following cards have been tested with OPAL.
-
-* Version 0.1
-
-    * Cyberflac Palmera v3
-        
-        * ISD: A0 00 00 00 03 00 00 00
-
-        * ATR: 3B 65 00 00 44 04 01 08 03
-
-        * Protocol: SCP01
-
-    * GemXpresso 211 IS
-        
-        * ISD: A0 00 00 00 18 43 4D
-
-        * ATR: 3B 6E 00 00 80 31 80 65 B0 03 02 01 5E 83 00 00 90 00
-
-        * Protocol: SCP01
-
-    * GemXpresso 211 PKIS
-        
-        * ISD: A0 00 00 00 18 43 4D
-
-        * Protocol: SCP01
-
-    * GemXplore 3G
-        
-        * ISD: A0 00 00 00 18 43 4D FF 33 FF FF 89 00 00 00
-
-        * Protocol: SCP01
-
-    * GemComb Xpresso Lite R2 Std JCOP 30
-
-        * ISD : A0 00 00 00 18 43 4D 00
-
-        * ATR : 3B 6D 00 00 80 31 80 65 B0 07 02 02 89 83 00 90 00
-
-        * NFC ATR : 3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00
-
-        * Protocol: SCP01 (using derivated key from a mother key)
-    
-    * Infineon JTOP V2 16k
-
-        * ISD : A0 00 00 00 03 00 00 00
-
-        * ATR : 3B 6D 00 00 80 31 80 65 40 90 86 01 51 83 07 90 00
-
-        * Protocol: SCP01
-
-    * JCP 2.0 V2.1
-
-        * ISD : A0 00 00 00 03 00 00 00
-
-        * Protocol: SCP01
-
-    * JCOP 3.0 V2.0
-
-        * ISD : A0 00 00 00 03 00 00 00
-
-        * Protocol: SCP01
-
-    * JCOP 3.1 V2.2
-
-        * ISD : A0 00 00 00 03 00 00 00
-
-        * ATR : 3B 66 00 FF 4A 43 4F 50 33 30
-
-        * Protocol: SCP01
-
-    * Oberthur Bleue CosmoPol IC
-
-        * ISD : A0 00 00 00 03 00 00 00
-
-        * ATR : 3B 7D 11 00 00 00 31 80 71 8E 64 52 D9 34 00 82 90 00
-
-        * Protocol: SCP01
-
-    * Oberthur CosmoPol Dual 72k
-
-        * ISD : A0 00 00 00 03 00 00 00
-
-        * ATR : 3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 82 90 00
-
-        * Protocol: SCP01
-
-    * Oberthur Grey (model ?)
-
-        * ISD : A0 00 00 00 03 00 00 00
-
-        * Protocol: SCP01
-
-    * JCOP 2.1 V2.2
-
-        * ISD : A0 00 00 00 03 00 00 00 (warning: same ISD as other JCOP)
-
-        * Protocol : SCP02
-
-Architecture
-
-    In order to communicate with a smartcard, you should use this friendly way.
-
-    * First, you should create a
-    {{{./apidocs/fr/xlim/ssd/opal/library/params/CardConfig.html}CardConfig}}
-    to communicate with your smartcard. Here your set up the information uses
-    (transmission protocol, reader and card to use, etc.)
-    
-    * Second, to use the Java Card Security Domain, the
-    {{{./apidocs/fr/xlim/ssd/opal/library/.html}SecurityDomain}} class provides
-    some functions to authenticate, install or delete applet and more to manage
-    the card lifecycle.
-
-    * Finally, to send APDU commands to an applet, using your previously
-    Security Domain instance, you should call its send function with a
-    {{{http://download.oracle.com/javase/6/docs/jre/api/security/smartcardio/spec/javax/smartcardio/CommandAPDU.html}CommandAPDU}}
-    in parameter.
-
-Building
-
-    OPAL build is based on Maven 2.2.1. Maven 3.X is not supported (the site support is different).
-
-Example
-
---------------------------
-/*
- * get the card config and card channel, detection of t=0 or t=1 is automatic.
- * Here, getCardChannel implementation is in
- * fr.xlim.ssd.opal.librairy.tester.Main
- */
-CardConfig cardConfig = getCardChannel(1, "*");
-
-// select the security domain
-SecurityDomain securityDomain = new SecurityDomain
-        (cardConfig.getImplementation(), channel,
-         cardConfig.getIssuerSecurityDomainAID());
-securityDomain.setOffCardKeys(cardConfig.getSCKeys());
-try {
-        securityDomain.select();
-} catch (Exception ex) {
-        java.util.logging.Logger.getLogger
-                (Main.class.getName()).log(Level.SEVERE, null, ex);
-}
-
-// initialize update
-securityDomain.initializeUpdate
-        (cardConfig.getDefaultInitUpdateP1(),
-         cardConfig.getDefaultInitUpdateP2(),
-         cardConfig.getScpMode());
-
-// external authenticate
-securityDomain.externalAuthenticate(secLevel);
-
-// install Applet
-securityDomain.installForLoad(PACKAGE_ID, null, null);
-File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
-
-InputStream is = new FileInputStream(file);
-byte[] convertedBuffer = CapConverter.convert(is);
-securityDomain.load(convertedBuffer, (byte) 0x10);
-securityDomain.installForInstallAndMakeSelectable
-        ( PACKAGE_ID,
-          APPLET_ID,
-          APPLET_ID,
-          Conversion.hexToArray("00"), null);
-
-// Selecting Applet
-CommandAPDU select = new CommandAPDU(
-          (byte) 0x00 // CLA
-        , (byte) 0xA4 // INS
-        , (byte) 0x04 // P1
-        , (byte) 0x00 // P2
-        , APPLET_ID   // DATA
-);
-ResponseAPDU resp = securityDomain.send(select);
-// Using Applet
-CommandAPDU hello = new CommandAPDU
-        ((byte) 0x00 // CLA
-       , (byte) 0x00 // INS
-       , (byte) 0x00 // P1
-       , (byte) 0x00 // P2
-       , HELLO_WORLD // DATA
-);
-resp = securityDomain.send(hello);
-
-// Select the Card Manager
-securityDomain.select();
-securityDomain.initializeUpdate
-        (cardConfig.getDefaultInitUpdateP1(),
-         cardConfig.getDefaultInitUpdateP2(),
-         cardConfig.getScpMode());
-securityDomain.externalAuthenticate(secLevel);
-
-// Deleting Applet
-securityDomain.deleteOnCardObj(APPLET_ID, false);
-
-// Deleting package if existed
-securityDomain.deleteOnCardObj(PACKAGE_ID, false);
-
--------------------------

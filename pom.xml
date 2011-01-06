@@ -1,5 +1,7 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+            http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.xlim.ssd</groupId>
@@ -62,7 +64,7 @@
 
     <reporting>
         <plugins>
-            <!--plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
             </plugin>
@@ -70,10 +72,6 @@
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-project-info-reports-plugin</artifactId>
-            </plugin-->
         </plugins>
     </reporting>
 
@@ -96,6 +94,41 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
+    <licenses>
+        <license>
+            <name>CeCILL</name>
+            <url>http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt</url>
+            <comments>French Free Software license, compatible with the GNU GPL</comments>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>SSD Team, XLIM Labs, University of Limoges, France</name>
+        <url>http://secinfo.msi.unilim.fr</url>
+    </organization>
+
+    <issueManagement>
+        <system>INRIA GForge Tracker</system>
+        <url>https://gforge.inria.fr/tracker/?group_id=1631</url>
+    </issueManagement>
+
+    <mailingLists>
+        <mailingList>
+            <name>OPAL Commits Archives</name>
+            <subscribe>opal-commits-subscribe@lists.gforge.inria.fr</subscribe>
+            <unsubscribe>opal-commits-unsuscribe@lists.gforge.inria.fr</unsubscribe>
+            <post>opal-commits@lists.gforge.inria.fr</post>
+            <archive>http://lists.gforge.inria.fr/pipermail/opal-commits/</archive>
+        </mailingList>
+    </mailingLists>
+
+    <scm>
+        <connection>scm:svn:https://scm.gforge.inria.fr/svn/opal</connection>
+        <developerConnection>scm:svn:https://scm.gforge.inria.fr/svn/opal</developerConnection>
+        <tag>trunk</tag>
+        <url>https://gforge.inria.fr/scm/viewvc.php/?root=opal</url>
+    </scm>
 
 </project>
 
