@@ -59,7 +59,7 @@ Download
 
     * opal-library-0.1-jar-with-dependencies.jar : compiled version with all dependencies but without the card tester
 
-    You can download them at the {{{{https://gforge.inria.fr/frs/?group_id=1631}OPAL Files releases on INRIA Gforge}}.
+    You can download them at the {{{https://gforge.inria.fr/frs/?group_id=1631}OPAL Files releases on INRIA Gforge}}.
 
 Building
 

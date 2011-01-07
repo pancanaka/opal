@@ -134,22 +134,6 @@
             <timezone>1</timezone>
         </developer>
         <developer>
-            <id>adessiat</id>
-            <name>Anthony Dessiatnikoff</name>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>1</timezone>
-        </developer>
-        <developer>
-            <id>emilie</id>
-            <name>Emilie Faugeron</name>
-            <roles>
-                <role>developer</role>
-            </roles>
-            <timezone>1</timezone>
-        </developer>
-        <developer>
             <id>foxlegend</id>
             <name>David Pequegnot</name>
             <roles>
@@ -186,6 +170,23 @@
             <timezone>1</timezone>
         </developer>
     </developers>
+
+    <contributors>
+        <contributor>
+            <name>Anthony Dessiatnikoff</name>
+            <roles>
+                <role>beta tester</role>
+            </roles>
+            <timezone>1</timezone>
+        </contributor>
+        <contributor>
+            <name>Emilie Faugeron</name>
+            <roles>
+                <role>beta tester</role>
+            </roles>
+            <timezone>1</timezone>
+        </contributor>
+    </contributors>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
