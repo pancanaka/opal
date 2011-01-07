@@ -182,9 +182,9 @@ public class Main {
 
         // install Applet
         securityDomain.installForLoad(PACKAGE_ID, null, null);
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        //File file = new File("cap/HelloWorld-2_1_2.cap");
 
-        InputStream is = new FileInputStream(file);
+        InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
         byte[] convertedBuffer = CapConverter.convert(is);
         securityDomain.load(convertedBuffer, (byte) 0x10);
         securityDomain.installForInstallAndMakeSelectable(
