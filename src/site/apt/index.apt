@@ -1,7 +1,8 @@
     ------
     The Open Platform Access Library (OPAL) Library
     ------
-    Damien Arcuset, Guillaume Bouffard, Julien Iguchi-Cartigny, Eric Linke, David Pequegnot, Julie Rispal
+    Damien Arcuset, Guillaume Bouffard, Julien Iguchi-Cartigny, Eric Linke, David Pequegnot, Julie Rispal, Anthony
+    Dessiatnikoff, Emilie Faugeron and Jean-Louis Lanet
     ------
     2011-01-05
 
@@ -45,6 +46,20 @@ Architecture
     in parameter.
 
     Please see {{{example.html}an example here}}.
+
+Download
+
+    There is 4 files release for the version 0.1:
+
+    * opal-0.1.tgz : the source (TGZ archive)
+
+    * opal-library-0.1-tester.jar : compiled version including a card tester
+
+    * opal-library-0.1.jar : compiled version without any dependencies
+
+    * opal-library-0.1-jar-with-dependencies.jar : compiled version with all dependencies but without the card tester
+
+    You can download them at the {{{{https://gforge.inria.fr/frs/?group_id=1631}OPAL Files releases on INRIA Gforge}}.
 
 Building
 
