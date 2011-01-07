@@ -115,7 +115,55 @@
                 <role>architect</role>
                 <role>developer</role>
             </roles>
-            <timezone>GMT+1</timezone>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <id>dams</id>
+            <name>Damien Arcuset</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <id>linkee</id>
+            <name>Eric Linke</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <id>adessiat</id>
+            <name>Anthony Dessiatnikoff</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <id>emilie</id>
+            <name>Emilie Faugeron</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <id>foxlegend</id>
+            <name>David Pequegnot</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <id>julie87</id>
+            <name>Julie Rispal</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <timezone>1</timezone>
         </developer>
         <developer>
             <id>stroumph</id>
@@ -125,9 +173,17 @@
             <organizationUrl>http://www.xlim.fr/</organizationUrl>
             <roles>
                 <role>developer</role>
-                <role>beta tester</role>
+                <role>tester</role>
             </roles>
-            <timezone>GMT+1</timezone>
+            <timezone>1</timezone>
+        </developer>
+        <developer>
+            <id>Juju</id>
+            <name>Julien Boutet</name>
+            <roles>
+                <role>tester</role>
+            </roles>
+            <timezone>1</timezone>
         </developer>
     </developers>
 
