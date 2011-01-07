@@ -13,8 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.*;
 import javax.smartcardio.CardTerminals.State;
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -164,6 +162,7 @@ public class Main {
         }
 
         //  select the security domain
+        logger.info("Selecting Security Domain");
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
                 cardConfig.getIssuerSecurityDomainAID());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
@@ -174,19 +173,25 @@ public class Main {
         }
 
         // initialize update
+        logger.info("Initialize Update");
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(),
                 cardConfig.getScpMode());
 
         // external authenticate
+        logger.info("External Authenticate");
         securityDomain.externalAuthenticate(secLevel);
 
         // install Applet
+        logger.info("Installing Applet");
+        logger.info("* Install For Load");
         securityDomain.installForLoad(PACKAGE_ID, null, null);
         //File file = new File("cap/HelloWorld-2_1_2.cap");
 
         InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
         byte[] convertedBuffer = CapConverter.convert(is);
+        logger.info("* Loading file");
         securityDomain.load(convertedBuffer, (byte) 0x10);
+        logger.info("* Install for load");
         securityDomain.installForInstallAndMakeSelectable(
                 PACKAGE_ID,
                 APPLET_ID,
@@ -200,6 +205,7 @@ public class Main {
                 , (byte) 0x00 // P2
                 , APPLET_ID   // DATA
         );
+        logger.info("Selecting Applet");
         ResponseAPDU resp = securityDomain.send(select);
         logger.debug("Select Hello World Applet "
                 + "(-> " + Conversion.arrayToHex(select.getBytes()) + ") "
@@ -212,6 +218,7 @@ public class Main {
                 , (byte) 0x00 // P2
                 , HELLO_WORLD // DATA
         );
+        logger.info("Saying Hello");
         resp = securityDomain.send(hello);
 
         logger.debug("Say \"Hello\" "
@@ -219,15 +226,20 @@ public class Main {
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         // Select the Card Manager
+        logger.info("Select the Card Manager");
         securityDomain.select();
+        logger.info("Initialize Update");
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(),
                 cardConfig.getScpMode());
+        logger.info("External Authenticate");
         securityDomain.externalAuthenticate(secLevel);
 
         // Deleting Applet
+        logger.info("Deleting applet");
         securityDomain.deleteOnCardObj(APPLET_ID, false);
 
         // Deleting package if existed
+        logger.info("Deleting package");
         securityDomain.deleteOnCardObj(PACKAGE_ID, false);
     }
 
