@@ -49,11 +49,13 @@ Architecture
 
 Download
 
-    There is 4 files release for the version 0.1:
+    There is 3 files released for the version 0.1:
 
-    * opal-library-0.1.tgz : the source (TGZ archive)
+    * opal-library-0.1.jar : the compiled library without any dependencies
 
-    * opal-library-0.1-tester.jar : compiled version including a card tester
+    * opal-library-0.1-tester.jar : the compiled library with the jar dependencies included
+
+    * opal-library-0.1.tgz: the sources
 
     You can download them at the {{{https://gforge.inria.fr/frs/?group_id=1631}OPAL Files releases on INRIA Gforge}}.
 
