@@ -3,8 +3,7 @@ Example
 --------------------------
 /*
  * get the card config and card channel, detection of t=0 or t=1 is automatic.
- * Here, getCardChannel implementation is in
- * fr.xlim.ssd.opal.librairy.tester.Main
+ * Here, getCardChannel implementation is in fr.xlim.ssd.opal.library.tester.Main
  */
 CardConfig cardConfig = getCardChannel(1, "*");
 

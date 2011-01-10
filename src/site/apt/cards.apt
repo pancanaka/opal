@@ -40,7 +40,7 @@ Supported Cards
 
         * NFC ATR : 3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00
 
-        * Protocol: SCP01 (using derivated key from a mother key)
+        * Protocol: SCP01 (using derived key from a mother key)
 
     * Infineon JTOP V2 16k
 

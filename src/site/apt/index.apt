@@ -17,7 +17,7 @@ Presentation
     are hardware-neutral, operating system neutral, vendor-neutral and
     application independent">.
 
-    OPAL is able to upload and manage JavaCard applet lifecyle on Javacard
+    OPAL is able to upload and manage JavaCard applet lifecycle on Javacard
     while dealing of the authentication of the user and encryption of the
     communication between the user and the card.
 
@@ -28,7 +28,7 @@ Presentation
 
 Architecture
 
-    In order to communicate with a smartcard, you should use this friendly way.
+    In order to communicate with a smart card, you should use this friendly way.
 
     * First, you should create a
     {{{./apidocs/fr/xlim/ssd/opal/library/params/CardConfig.html}CardConfig}}
@@ -51,13 +51,9 @@ Download
 
     There is 4 files release for the version 0.1:
 
-    * opal-0.1.tgz : the source (TGZ archive)
+    * opal-library-0.1.tgz : the source (TGZ archive)
 
     * opal-library-0.1-tester.jar : compiled version including a card tester
-
-    * opal-library-0.1.jar : compiled version without any dependencies
-
-    * opal-library-0.1-jar-with-dependencies.jar : compiled version with all dependencies but without the card tester
 
     You can download them at the {{{https://gforge.inria.fr/frs/?group_id=1631}OPAL Files releases on INRIA Gforge}}.
 
@@ -72,7 +68,7 @@ Releases
     * Support for authentication and encryption mode SCP01_01, SCP01_15 and
     SCP02_15 (authentication only)
 
-    * Support for smartcards which are not strictly compatible with Global
+    * Support for smart cards which are not strictly compatible with Global
     Platform: GemXPresso 211is
 
 Roadmap
