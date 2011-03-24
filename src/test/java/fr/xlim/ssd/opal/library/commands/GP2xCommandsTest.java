@@ -36,6 +36,7 @@ public class GP2xCommandsTest {
     @Before
     public void resetRandomGenerator() {
         RandomGenerator.setRandomSequence(null);
+        
     }
 
     @Before
@@ -234,7 +235,7 @@ public class GP2xCommandsTest {
                     0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,
                     0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17
                 };
-
+        commands.scp = SCPMode.SCP_01_15;
         commands.initIcv();
         commands.calculateCryptograms();
 
@@ -504,6 +505,8 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
+        commands.scp = SCPMode.SCP_01_05;
+        commands.initIcv();
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         assertEquals(SessionState.SESSION_AUTH, commands.sessState);
     }
@@ -521,6 +524,8 @@ public class GP2xCommandsTest {
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
 
+        commands.scp = SCPMode.SCP_01_15;
+        commands.initIcv();
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in External Authenticate : 1000");
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
@@ -541,6 +546,8 @@ public class GP2xCommandsTest {
         byte[] expected = new byte[]{
             (byte) 0xE8, (byte) 0xA5, 0x2C, (byte) 0xD7, 0x1D, 0x5F, 0x4A, 0x6D
         };
+        commands.scp = SCPMode.SCP_01_15;
+        commands.initIcv();
         assertArrayEquals(expected, commands.generateMac(data));
     }
 
@@ -558,6 +565,8 @@ public class GP2xCommandsTest {
         byte[] expected = new byte[]{
             0x2F, (byte) 0xCD, 0x78, 0x2C, 0x1C, (byte) 0xE5, (byte) 0xDE, 0x14
         };
+        commands.scp = SCPMode.SCP_01_05;        
+        commands.initIcv();
         assertArrayEquals(expected, commands.generateMac(data));
     }
 
@@ -576,7 +585,8 @@ public class GP2xCommandsTest {
         byte[] expected = new byte[]{
             0x2F, (byte) 0xCD, 0x78, 0x2C, 0x1C, (byte) 0xE5, (byte) 0xDE, 0x14
         };
-        commands.scp = SCPMode.SCP_01_05;
+        commands.scp = SCPMode.SCP_01_05;        
+        commands.initIcv();
         assertArrayEquals(expected, commands.generateMac(data));
         assertArrayEquals(expected, commands.icv);
     }
@@ -593,7 +603,7 @@ public class GP2xCommandsTest {
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
         commands.scp = SCPMode.SCP_01_15;
-
+        commands.initIcv();
         byte[] expected = new byte[]{
             0x2F, (byte) 0xCD, 0x78, 0x2C, 0x1C, (byte) 0xE5, (byte) 0xDE, 0x14
         };
@@ -642,12 +652,14 @@ public class GP2xCommandsTest {
     @Test
     public void testGetStatusWithCMac() throws CardException {
         GP2xCommands commands = createCommands("/023-GP2xCommands-get-status-good.txt");
+        commands.initIcv();
         commands.secMode = SecLevel.C_MAC;
         commands.sessMac = new byte[]{
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
+        commands.scp = SCPMode.SCP_UNDEFINED;
         commands.getStatus(GetStatusFileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
     }
 
@@ -665,6 +677,8 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
+        commands.scp = SCPMode.SCP_02_15;
+        commands.initIcv();
         commands.getStatus(GetStatusFileType.APP_AND_SD, GetStatusResponseMode.NEW_TYPE, null);
     }
 
@@ -705,6 +719,8 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
+        commands.scp = SCPMode.SCP_01_15;
+        commands.initIcv();
         commands.deleteOnCardObj(aid, true);
     }
 
@@ -725,6 +741,8 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
+        commands.scp = SCPMode.SCP_02_15;
+        commands.initIcv();
         commands.deleteOnCardObj(aid, true);
     }
 
@@ -775,6 +793,8 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
+        commands.scp = SCPMode.SCP_01_15;
+        commands.initIcv();
         commands.deleteOnCardKey((byte) 0x32, (byte) 0X3F);
     }
 
@@ -795,6 +815,8 @@ public class GP2xCommandsTest {
                     0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18,
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
+        commands.scp = SCPMode.SCP_02_15;
+        commands.initIcv();
         commands.deleteOnCardKey((byte) 0x32, (byte) 0X3F);
     }
 
@@ -881,6 +903,8 @@ public class GP2xCommandsTest {
         byte[] securityDomainAid = new byte[]{
             (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
         };
+        commands.scp = SCPMode.SCP_01_15;
+        commands.initIcv();
         commands.installForLoad(packageAid, securityDomainAid, null);
     }
 
@@ -907,6 +931,8 @@ public class GP2xCommandsTest {
         byte[] securityDomainAid = new byte[]{
             (byte) 0xA1, 0x01, 0x01, 0x01, 0x19, 0x44, 0x4E, 0x10, 0x28, 0x53, 0x5D
         };
+        commands.scp = SCPMode.SCP_02_15;
+        commands.initIcv();
         commands.installForLoad(packageAid, securityDomainAid, null);
     }
 
@@ -948,6 +974,8 @@ public class GP2xCommandsTest {
                     0x21, 0x22, 0x23, 0x24, 0x25, 0x26, 0x27, 0x28
                 };
 
+        commands.scp = SCPMode.SCP_UNDEFINED;
+        commands.initIcv();
         byte[] buffer = new byte[(int)file.length()];
         FileInputStream fis = new FileInputStream(file);
         fis.read(buffer);
@@ -970,6 +998,8 @@ public class GP2xCommandsTest {
                     0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
                 };
 
+        commands.scp = SCPMode.SCP_02_15;
+        commands.initIcv();
         byte[] buffer = new byte[(int)file.length()];
         FileInputStream fis = new FileInputStream(file);
         fis.read(buffer);
@@ -1030,6 +1060,8 @@ public class GP2xCommandsTest {
         byte[] privileges = new byte[]{
             0X01, 0x02, 0x03
         };
+        commands.scp = SCPMode.SCP_01_15;
+        commands.initIcv();
         commands.installForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, null);
     }
 
@@ -1059,6 +1091,8 @@ public class GP2xCommandsTest {
         byte[] privileges = new byte[]{
             0X01, 0x02, 0x03
         };
+        commands.scp = SCPMode.SCP_02_15;
+        commands.initIcv();
         commands.installForInstallAndMakeSelectable(loadFileAid, moduleAid, applicationAid, privileges, null);
     }
 

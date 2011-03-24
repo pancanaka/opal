@@ -326,7 +326,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public void resetParams() {
-        this.initIcv(8);
+        this.initIcv();
         this.scp = SCPMode.SCP_UNDEFINED;
         this.secMode = SecLevel.NO_SECURITY_LEVEL;
         this.sessState = SessionState.NO_SESSION;
@@ -349,7 +349,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
 
         logger.debug("=> Initialize Update");
-
+        this.scp = desiredScp;
         this.resetParams();
         this.hostChallenge = RandomGenerator.generateRandom(8);
 
@@ -625,7 +625,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || (scp == SCPMode.SCP_03_0D)
                 || (scp == SCPMode.SCP_03_2D)
                 || (scp == SCPMode.SCP_03_25)){
-            this.initIcv(16);
+            this.initIcv();
             if (key instanceof SCDerivableKey) {
                 SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
                 kEnc = keysFromDerivableKey[0];
@@ -1277,14 +1277,47 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      * ICV Initialization. All values set to 0
      */
-    protected void initIcv(int lengthOfIcv) {
-        logger.debug("==> Init ICV begin");
-        this.icv = new byte[lengthOfIcv];
-        for (int i = 0; i < this.icv.length; i++) {
-            this.icv[i] = (byte) 0x00;
+    protected void initIcv() {
+        if(scp == SCPMode.SCP_01_15 
+                || scp == SCPMode.SCP_01_05
+                || scp == SCPMode.SCP_UNDEFINED
+                || scp == SCPMode.SCP_02_04
+                || scp == SCPMode.SCP_02_05
+                || scp == SCPMode.SCP_02_0A
+                || scp == SCPMode.SCP_02_0B
+                || scp == SCPMode.SCP_02_14
+                || scp == SCPMode.SCP_02_15
+                || scp == SCPMode.SCP_02_1A
+                || scp == SCPMode.SCP_02_1B
+                || scp == SCPMode.SCP_02_45
+                || scp == SCPMode.SCP_02_54
+                || scp == SCPMode.SCP_02_55){
+            
+            logger.debug("==> Init ICV begin");
+            this.icv = new byte[8];
+            for (int i = 0; i < this.icv.length; i++) {
+                this.icv[i] = (byte) 0x00;
+            }
+            logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
+            logger.debug("==> Init ICV end");
         }
-        logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
-        logger.debug("==> Init ICV end");
+        if(scp == SCPMode.SCP_03_05
+                || scp == SCPMode.SCP_03_0D
+                || scp == SCPMode.SCP_03_25
+                || scp == SCPMode.SCP_03_2D
+                || scp == SCPMode.SCP_03_65
+                || scp == SCPMode.SCP_03_6D){
+            
+            logger.debug("==> Init ICV begin");
+            this.icv = new byte[16];
+            for (int i = 0; i < this.icv.length; i++) {
+                this.icv[i] = (byte) 0x00;
+            }
+            logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
+            logger.debug("==> Init ICV end");
+            
+        }
+        
     }
 
 

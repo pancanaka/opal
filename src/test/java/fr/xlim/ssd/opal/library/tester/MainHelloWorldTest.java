@@ -11,6 +11,13 @@ import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,6 +25,9 @@ import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import java.io.*;
+import javax.crypto.Cipher;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 public class MainHelloWorldTest {
 
@@ -33,6 +43,9 @@ public class MainHelloWorldTest {
             (byte) 0x00, (byte) 0x62, (byte) 0x03,
             (byte) 0x01, (byte) 0x0C, (byte) 0x01
     };
+
+    private static byte[] iv_zero = { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+		(byte) 0x00 };
 
     @Before
     public void resetRandomGenerator() {
@@ -1146,12 +1159,12 @@ public class MainHelloWorldTest {
         commands.getCc().close();
     }
 
-    /**
-     * ****************************************************************************************************************
-     * SCP 02
-     * ****************************************************************************************************************
-     */
-
+//    /**
+//     * ****************************************************************************************************************
+//     * SCP 02
+//     * ****************************************************************************************************************
+//     */
+//
     @Test
     public void testJCOP21NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
         Commands commands = createCommands("/HelloWorld-JCOP21-NO_SECURITY_LEVEL.txt");
@@ -1203,5 +1216,2174 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
         commands.getCc().close();
+    }
+
+
+    @Test
+    public void testJCOP21C_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-JCOP21-C_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("JCOP21");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+
+    @Test
+    public void testJCOP21C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-JCOP21-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("JCOP21");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0xF9, (byte) 0x0B, (byte) 0xF1, (byte) 0x91,
+                (byte) 0x5D, (byte) 0x36, (byte) 0x54, (byte) 0x34});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x2C, (byte) 0x3A, (byte) 0x49, (byte) 0x8C,
+                (byte) 0xDA, (byte) 0x30, (byte) 0x0D, (byte) 0xAD});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+    @Test
+    public void testTestCardScp02_04_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_04-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_04");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x9F, (byte) 0x5D, (byte) 0x02, (byte) 0x20,
+                (byte) 0x2D, (byte) 0xF3, (byte) 0x22, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+
+    @Test
+    public void testTestCardScp02_04_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_04-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_04");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+        @Test
+    public void testTestCardScp02_04_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_04-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_04");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0xF9, (byte) 0x0B, (byte) 0xF1, (byte) 0x91,
+                (byte) 0x5D, (byte) 0x36, (byte) 0x54, (byte) 0x34});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x2C, (byte) 0x3A, (byte) 0x49, (byte) 0x8C,
+                (byte) 0xDA, (byte) 0x30, (byte) 0x0D, (byte) 0xAD});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+    @Test
+    public void testTestCardScp02_05_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_05-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_05");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x9F, (byte) 0x5D, (byte) 0x02, (byte) 0x20,
+                (byte) 0x2D, (byte) 0xF3, (byte) 0x22, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+
+    @Test
+    public void testTestCardScp02_05_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_05-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_05");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+    @Test
+    public void testTestCardScp02_05_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_05-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_05");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0xF9, (byte) 0x0B, (byte) 0xF1, (byte) 0x91,
+                (byte) 0x5D, (byte) 0x36, (byte) 0x54, (byte) 0x34});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x2C, (byte) 0x3A, (byte) 0x49, (byte) 0x8C,
+                (byte) 0xDA, (byte) 0x30, (byte) 0x0D, (byte) 0xAD});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+//     Test SCP 02 Option '14'
+    @Test
+    public void testTestCardScp02_14_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_14-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_14");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x9F, (byte) 0x5D, (byte) 0x02, (byte) 0x20,
+                (byte) 0x2D, (byte) 0xF3, (byte) 0x22, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+    @Test
+    public void testTestCardScp02_14_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_14-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_14");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+    @Test
+    public void testTestCardScp02_14_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_14-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_14");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+
+
+
+    //SCP 02_45 Tests
+    @Test
+    public void testTestCardScp02_45_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_45-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_45");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x9F, (byte) 0x5D, (byte) 0x02, (byte) 0x20,
+                (byte) 0x2D, (byte) 0xF3, (byte) 0x22, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+    @Test
+    public void testTestCardScp02_45_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_45-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_45");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+    @Test
+    public void testTestCardScp02_45_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_45-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_45");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+    //SCP 02_55 Tests
+     @Test
+    public void testTestCardScp02_55_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_55-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_55");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x9F, (byte) 0x5D, (byte) 0x02, (byte) 0x20,
+                (byte) 0x2D, (byte) 0xF3, (byte) 0x22, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+    @Test
+    public void testTestCardScp02_55_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_55-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_55");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+    @Test
+    public void testTestCardScp02_55_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test02_55-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest02_55");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x80, (byte) 0x74, (byte) 0x4A, (byte) 0x9F,
+                (byte) 0x76, (byte) 0x69, (byte) 0x88, (byte) 0xB8});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+    @Test
+    public void testTestCardScp03_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_65");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+
+
+    @Test
+    public void testTestCardScp03_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_65");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+
+    @Test
+    public void testTestCardScp03_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_65");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_ENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03-C_ENC_AND_MAC_AND_RMAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_65");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_ENC_AND_MAC_AND_RDNC_AND_RMAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03-C_ENC_AND_MAC_AND_CDEC_AND_RMAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_65");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    
+ 
+
+    @Test
+    public void testTestCardScp03_6D_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_6D-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_6D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+    
+    
+    @Test
+    public void testTestCardScp03_6D_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_6D-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_6D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_6D_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_6D-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_6D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+
+    
+    @Test
+    public void testTestCardScp03_6D_CENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_6D-C_ENC_AND_MAC_AND_RMAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_6D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_05_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_05-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_05");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+    
+    @Test
+    public void testTestCardScp03_05_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_05-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_05");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_05_ENC_AND_MAC_RENC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_05-C_ENC_AND_MAC_RENC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_05");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_0D_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_0D-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_0D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+    
+    @Test
+    public void testTestCardScp03_0D_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_0D-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_0D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_0D_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_0D-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_0D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_2D_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_2D-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_2D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+    
+    @Test
+    public void testTestCardScp03_2D_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_2D-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_2D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_2D_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_2D-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_2D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_2D_CENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_2D-C_ENC_AND_MAC_AND_RMAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_2D");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    
+    @Test
+    public void testTestCardScp03_25_NoSecurityLevel() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_25-NO_SECURITY_LEVEL.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_25");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+    }
+    
+    @Test
+    public void testTestCardScp03_25_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_25-MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_25");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    
+    @Test
+    public void testTestCardScp03_25_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_25-C_ENC_AND_MAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_25");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
+    }
+    
+    @Test
+    public void testTestCardScp03_25_CENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, FileNotFoundException {
+        Commands commands = createCommands("/HelloWorld-Test03_25-C_ENC_AND_MAC_AND_RMAC.txt");
+        CardConfig cardConfig = CardConfigFactory.getCardConfig("CardTest03_25");
+        commands.setOffCardKeys(cardConfig.getSCKeys());
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x87, (byte) 0xB4, (byte) 0xF1, (byte) 0x07,
+                (byte) 0x62, (byte) 0x54, (byte) 0x3F, (byte) 0xC0});
+
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.installForLoad(PACKAGE_ID, cardConfig.getIssuerSecurityDomainAID(), null);
+
+        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+
+        // Installing Applet
+       InputStream is = new FileInputStream(file);
+       byte[] convertedBuffer = CapConverter.convert(is);
+       commands.load(convertedBuffer, (byte) 0x10);
+       commands.installForInstallAndMakeSelectable(
+                PACKAGE_ID,
+                APPLET_ID,
+                APPLET_ID,
+                Conversion.hexToArray("00"), null);
+
+        // Selecting Hello World Applet
+        commands.select(APPLET_ID);
+
+        // Using Hello World Applet
+        CommandAPDU hello = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , HELLO_WORLD // DATA
+        );
+
+        commands.getCc().transmit(hello);
+
+        // Select Security Domain to delete Hello World Applet & Package
+        commands.select(cardConfig.getIssuerSecurityDomainAID());
+        RandomGenerator.setRandomSequence(new byte[]{
+                (byte) 0x53, (byte) 0xEE, (byte) 0x47, (byte) 0x03,
+                (byte) 0xD3, (byte) 0x94, (byte) 0x20, (byte) 0x00});
+        commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
+        commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
+        commands.deleteOnCardObj(APPLET_ID, false);
+        commands.deleteOnCardObj(PACKAGE_ID, false);
+
+        commands.getCc().close();
+
     }
 }
