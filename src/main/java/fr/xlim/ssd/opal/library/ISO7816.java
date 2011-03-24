@@ -27,7 +27,7 @@ public enum ISO7816 {
     /// APDU header offset : P1 = 2
     OFFSET_P1(0x02),
 
-    /// APDU header offset : P1 = 32
+    /// APDU header offset : P1 = 3
     OFFSET_P2(0x03),
 
     /// APDU header offset : LC = 4

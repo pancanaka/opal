@@ -195,4 +195,148 @@
                  keyDatas="33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33"/>
         </defaultKeys>
     </card>
+    <card name="CardTest02_04" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_04"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest02_05" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_05"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest02_14" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_14"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest02_0A" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_0A"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest02_45" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_45"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest02_55" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_55"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest03_65" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="03_65"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="AES" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest03_6D" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="03_6D"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="AES" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest03_05" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="03_05"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="AES" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest03_0D" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="03_0D"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="AES" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest03_2D" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="03_2D"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="AES" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+        </defaultKeys>
+    </card>
+    <card name="CardTest03_25" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="03_25"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key type="AES" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
+        </defaultKeys>
+    </card>
 </cardsconfig>

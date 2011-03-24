@@ -100,6 +100,38 @@ public interface Commands {
      */
     ResponseAPDU select(byte[] aid) throws CardException;
 
+
+    /**
+     * Select the Applet matching with And security canal protocol mode parameter
+     *
+     * @param aid wished Applet AID
+     * @param SCPMode wished the security canal protocol Mode
+     * @return Select APDU response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
+     */
+    ResponseAPDU select(byte[] aid,SCPMode desiredScp) throws CardException;
+
+    /**
+     *
+     * @return
+     * @throws CardException
+     */
+
+    ResponseAPDU getData () throws CardException;
+
+
+
+    /**
+     * initilizate parameters (Sequence counter,Session key, Mac Key,Encription key,ICV)
+     * for Implicit Initiation Mode (SCP_02_0A,SCP_02_0B)
+     * @param aid wished Applet AID
+     * @param SCPMode wished the security canal protocol Mode
+     * @param keyId Key ID to use to do the authenticate step
+     * @throws CardException
+     */
+
+    void InitParamForImplicitInitiationMode (byte[] aid,SCPMode desiredScp,byte keyId) throws CardException;
+
     /**
      * Initialize Update command
      *
@@ -207,4 +239,24 @@ public interface Commands {
     ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID,
                                                     byte[] moduleAID, byte[] applicationAID, byte[] privileges,
                                                     byte[] params) throws CardException;
+
+    /**
+     * The BEGIN R-MAC SESSION command is used to initiate additional response security. The BEGIN R-MAC SESSION command may only be issued to the card within a secure channel. It may only be used to increase the security of the responses
+     *
+     * @return APDU Response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
+     */
+    ResponseAPDU beginRMacSession() throws CardException;
+
+    /**
+     * The END R-MAC SESSION command is used to terminate the additional response security that was initiated by the preceding BEGIN R-MAC SESSION.
+     * The Secure Channel session returns to its original security settings. The END R-MAC SESSION command may be issued to the card at any time during an R-MAC session.
+     * 
+     * @return APDU Response
+     * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
+     */
+    ResponseAPDU endRMacSession() throws CardException;
+    
+    
+   
 }

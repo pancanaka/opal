@@ -15,6 +15,9 @@ public enum KeyType {
     /// DES in CBC mode
     DES_CBC((byte) 0x84),
 
+    /// AES in CBC mode
+    AES_CBC((byte) 0x88),
+
     /// mother key used for derivation
     MOTHER_KEY((byte) 0x00);
 

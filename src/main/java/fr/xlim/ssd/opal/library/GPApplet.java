@@ -134,6 +134,27 @@ public class GPApplet {
         return ret;
     }
 
+
+
+    /**
+     * Select GP Applet and check card response (Used for SCPMode that implement implecit
+     * initiation mode
+     * @return Card APDU response
+     * @throws CardException Communication error
+     * @throws IOException   Response Select APDU is ill-formed
+     */
+    /*
+    public ResponseAPDU select(SCPMode desiredScp) throws CardException, IOException {
+        ResponseAPDU ret = this.cmds.select(this.aid,desiredScp);
+
+        this.fileControlInformation = new FileControlInformation(ret.getData());
+
+        return ret;
+    }
+
+     */
+     
+
     /**
      *
      */
@@ -176,5 +197,19 @@ public class GPApplet {
      */
     public FileControlInformation getCardInformation() {
         return this.fileControlInformation;
+    }
+
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#getData( )
+     */
+    public ResponseAPDU getData() throws CardException {
+        return this.cmds.getData();
+    }
+
+    /* (non-Javadoc)
+     * @see fr.xlim.ssd.opal.commands.Commands#InitParamForImplicitInitiationMode(byte[])
+     */
+    public void InitParamForImplicitInitiationMode(SCPMode desiredScp,byte keyId)throws CardException{
+        this.cmds.InitParamForImplicitInitiationMode(this.aid,desiredScp,keyId);
     }
 }

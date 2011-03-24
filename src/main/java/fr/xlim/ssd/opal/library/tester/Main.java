@@ -151,7 +151,7 @@ public class Main {
 
         channel = null;
 
-        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
+        SecLevel secLevel = SecLevel.C_ENC_AND_MAC;
 
         /// get the card config and card channel, detection of t=0 or t=1 is automatic
         CardConfig cardConfig = getCardChannel(1, "*");
@@ -172,6 +172,7 @@ public class Main {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+
         // initialize update
         logger.info("Initialize Update");
         securityDomain.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(),
@@ -191,7 +192,7 @@ public class Main {
         byte[] convertedBuffer = CapConverter.convert(is);
         logger.info("* Loading file");
         securityDomain.load(convertedBuffer, (byte) 0x10);
-        logger.info("* Install for load");
+        logger.info("* Install for install");
         securityDomain.installForInstallAndMakeSelectable(
                 PACKAGE_ID,
                 APPLET_ID,

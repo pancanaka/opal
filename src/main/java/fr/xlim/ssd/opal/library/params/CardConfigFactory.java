@@ -104,6 +104,30 @@ public class CardConfigFactory {
             res = SCPMode.SCP_01_15;
         } else if (scp.equals("02_15")) {
             res = SCPMode.SCP_02_15;
+        }else if (scp.equals("02_04")) {
+            res = SCPMode.SCP_02_04;
+        }else if (scp.equals("02_05")) {
+            res = SCPMode.SCP_02_05;
+        }else if (scp.equals("02_14")) {
+            res = SCPMode.SCP_02_14;
+        }else if (scp.equals("02_0A")) {
+            res = SCPMode.SCP_02_0A;
+        }else if (scp.equals("02_45")) {
+            res = SCPMode.SCP_02_45;
+        }else if (scp.equals("02_55")) {
+            res = SCPMode.SCP_02_55;
+        }else if (scp.equals("03_65")) {
+            res = SCPMode.SCP_03_65;
+        }else if (scp.equals("03_6D")) {
+            res = SCPMode.SCP_03_6D;
+        }else if (scp.equals("03_05")) {
+            res = SCPMode.SCP_03_05;
+        }else if (scp.equals("03_0D")) {
+            res = SCPMode.SCP_03_0D;
+        }else if (scp.equals("03_2D")) {
+            res = SCPMode.SCP_03_2D;
+        }else if (scp.equals("03_25")) {
+            res = SCPMode.SCP_03_25;
         }
         return res;
     }
@@ -146,6 +170,11 @@ public class CardConfigFactory {
                 keys[i] = new SCGemVisa2((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
             } else if (keyType.equals("SCGemVisa")) {
                 keys[i] = new SCGemVisa((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
+            }
+            if (keyType.equals("AES")) {
+                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
+                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
+                        KeyType.AES_CBC, Conversion.hexToArray(keyDatas));
             }
         }
         return keys;

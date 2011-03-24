@@ -20,14 +20,17 @@ public enum SecLevel {
     /// Encryption and MAC authentication of each APDU
     C_ENC_AND_MAC((byte) 0x03),
 
-    /// TODO: Not implemented
+    /// implemented, Not tested
     R_MAC((byte) 0x10),
 
-    /// TODO: Not implemented
+    /// implemented, Not tested
     C_MAC_AND_R_MAC((byte) 0x11),
 
-    /// TODO: Not implemented
-    C_ENC_AND_C_MAC_AND_R_MAC((byte) 0x13);
+    /// implemented, Not tested
+    C_ENC_AND_C_MAC_AND_R_MAC((byte) 0x13),
+
+    // implemented, Not tested
+    C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC((byte) 0x33);
 
     private byte value;
 
