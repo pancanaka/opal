@@ -151,7 +151,7 @@ public class Main {
 
         channel = null;
 
-        SecLevel secLevel = SecLevel.C_ENC_AND_MAC;
+        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
 
         /// get the card config and card channel, detection of t=0 or t=1 is automatic
         CardConfig cardConfig = getCardChannel(1, "*");

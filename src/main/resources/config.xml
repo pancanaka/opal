@@ -76,7 +76,7 @@
         </defaultKeys>
     </card>
     <card name="Gemalto_TOP_IM_GX4" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-        <isdAID value="A0 00 00 00 18 43 4D"/>
+        <isdAID value="A0 00 00 00 18 43 4D 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
@@ -187,11 +187,11 @@
         <scpMode value="02_15"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key type="DES_ECB" keyVersionNumber="01" keyId="1"
+            <key type="DES_ECB" keyVersionNumber="3" keyId="1"
                  keyDatas="11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11"/>
-            <key type="DES_ECB" keyVersionNumber="01" keyId="2"
+            <key type="DES_ECB" keyVersionNumber="3" keyId="2"
                  keyDatas="22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22"/>
-            <key type="DES_ECB" keyVersionNumber="01" keyId="3"
+            <key type="DES_ECB" keyVersionNumber="3" keyId="3"
                  keyDatas="33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33"/>
         </defaultKeys>
     </card>
