@@ -47,7 +47,7 @@ public class FenetrePrincipale extends JFrame {
 
         this.setJMenuBar(menuBar);
         this.setVisible(true);
-    }
+    } 
 }
 
 class btQuit implements ActionListener {

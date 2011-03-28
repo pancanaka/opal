@@ -19,6 +19,11 @@ import java.util.List;
 import java.util.logging.Level;
 
 import gui.FenetrePrincipale;
+import gui.TestJPanel;
+import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import javax.swing.JFrame;
 
 /**
  * A program to test compatibility SCPO1 and SCP02 between OPAL and a card. It works as follow:
@@ -151,7 +156,27 @@ public class Main {
     public static void main(String[] args) throws CardException, CardConfigNotFoundException,
             CommandsImplementationNotFound, ClassNotFoundException, IOException {
 
+        /*TestJPanel t = new TestJPanel();
+
+        JFrame frame = new JFrame("TabbedPane");
+
+        frame.addWindowListener(new WindowAdapter()
+        {
+            public void windowClosing(WindowEvent e){
+                System.exit(0);
+            }
+
+        });
+
+        frame.getContentPane().add(t, BorderLayout.CENTER);
+
+        frame.setSize(400, 125);
+        frame.setVisible(true);*/
+        TestJPanel t = new TestJPanel();
         FenetrePrincipale f = new FenetrePrincipale();
+        f.setContentPane(t);
+        //f.getContentPane().add(t);
+        //NewJPanel tjp = new NewJPanel();
         
         /*
         channel = null;
