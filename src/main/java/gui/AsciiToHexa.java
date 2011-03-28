@@ -3,6 +3,8 @@
  * and open the template in the editor.
  */
 
+package gui;
+
 /**
  *
  * @author Thibault
@@ -26,13 +28,12 @@ public class AsciiToHexa {
     /**
      * @param args
      */
-    public static void main(String[] args) {
+    /*public static void main(String[] args) {
         // TODO Auto-generated method stub
         byte[] hexa = stringToHex("plopinou");
         for(byte b : hexa) {
             System.out.println(b);
         }
-    }
+    }*/
 
 }
-

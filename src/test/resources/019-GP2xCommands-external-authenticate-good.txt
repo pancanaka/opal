@@ -1,0 +1,5 @@
+# test EXTERNAL AUTHENTICATE operation
+# security level is NO_SECURITY
+#
+84 82 00 00 10 01 02 03 04 05 06 07 08 C2 3C D6 DB E5 85 2A B0
+90 00
