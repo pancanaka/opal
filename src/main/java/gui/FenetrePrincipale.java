@@ -50,7 +50,6 @@ public class FenetrePrincipale extends JFrame {
     }
 }
 
-
 class btQuit implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent arg0) {
