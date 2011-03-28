@@ -90,4 +90,24 @@
         <config>GemXplore_Xpresso</config>
         <description>GemXplore_Xpresso</description>
     </card>
+    <card ATR="3B F9 18 00 00 81 31 FE 45 4A 43 4F 50 33 31 56 32 32 A8">
+            <config>JCOP31_72B1_V2.2</config>
+            <description>Smartcard Dual Interface JCOP31 with 72KB EEPROM and V2.2 Java Card Open Platform</description>
+    </card>
+    <card ATR="3B 8D 80 01 0D 38 33 B1 4A 43 4F 50 33 31 56 32 FF 34">
+            <config>JCOP31_72B1_V2.2_NFC</config>
+            <description>NFC ---  Smartcard Dual Interface JCOP31 with 72KB EEPROM and V2.2 Java Card Open Platform</description>
+    </card>
+    <card ATR="3B 8D 80 01 0D 78 80 80 02 00 73 C8 40 00 00 90 FF EF">
+            <config>SAMSUNG_NFC_SGH-X700N</config>
+            <description>TEST sur un samsung (SGH-X700N) NFC</description>
+    </card>
+    <card ATR="3B 7B 11 00 00 00 31 C0 64 7F E6 10 00 82 90 00">
+            <config>JCOP UNKNOW</config>
+            <description>Cosmo 16 RSA V3.5</description>
+    </card>
+    <card ATR="3B 6D 00 00 80 31 80 65 B0 43 02 00 77 83 00 90 00">
+            <config>GALITT_WADAPA</config>
+            <description>Gemplus ALITT  Wodapa SCT</description>
+    </card>
 </cards>

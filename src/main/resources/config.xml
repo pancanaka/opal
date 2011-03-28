@@ -339,4 +339,66 @@
                  keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F"/>
         </defaultKeys>
     </card>
+    <card name="JCOP31_72B1_V2.2" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+            <isdAID value="A0 00 00 00 03 00 00 00"/>
+            <scpMode value="02_15"/>
+            <transmissionProtocol value="T=0"/>
+            <defaultKeys>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            </defaultKeys>
+    </card>
+    <card name="JCOP31_72B1_V2.2_NFC" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+            <isdAID value="A0 00 00 00 03 00 00 00"/>
+            <scpMode value="02_15"/>
+            <transmissionProtocol value="T=0"/>
+            <defaultKeys>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            </defaultKeys>
+    </card>
+    <card name="SAMSUNG_NFC_SGH-X700N" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+            <isdAID value="A0 00 00 00 03 00 00 00"/>
+            <scpMode value="02_15"/>
+            <transmissionProtocol value="T=0"/>
+            <defaultKeys>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            </defaultKeys>
+    </card>
+    <card name="JCOP UNKNOW" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+            <isdAID value="A0 00 00 00 03 00 00 00"/>
+            <scpMode value="01_05"/>
+            <transmissionProtocol value="T=0"/>
+            <defaultKeys>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            </defaultKeys>
+    </card>
+    <card name="GALITT_WADAPA" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+            <isdAID value="A0 00 00 00 03 00 00 00"/>
+            <scpMode value="01_05"/>
+            <transmissionProtocol value="T=0"/>
+            <defaultKeys>
+                    <key type="SCGemVisa2" keyVersionNumber="255"
+                            keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
+            </defaultKeys>
+    </card>
+                                                                                                                                                       
 </cardsconfig>
