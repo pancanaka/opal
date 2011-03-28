@@ -18,6 +18,8 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
 
+import gui.FenetrePrincipale;
+
 /**
  * A program to test compatibility SCPO1 and SCP02 between OPAL and a card. It works as follow:
  * <ul>
@@ -149,6 +151,9 @@ public class Main {
     public static void main(String[] args) throws CardException, CardConfigNotFoundException,
             CommandsImplementationNotFound, ClassNotFoundException, IOException {
 
+        FenetrePrincipale f = new FenetrePrincipale();
+        
+        /*
         channel = null;
         SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
 
@@ -240,6 +245,8 @@ public class Main {
         // Deleting package if existed
         logger.info("Deleting package");
         securityDomain.deleteOnCardObj(PACKAGE_ID, false);
+         * 
+         */
     }
 
 }
