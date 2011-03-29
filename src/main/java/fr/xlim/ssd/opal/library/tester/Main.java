@@ -8,6 +8,7 @@ import fr.xlim.ssd.opal.library.params.CardConfigFactory;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import gui.AppletPanel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -19,7 +20,10 @@ import java.util.List;
 import java.util.logging.Level;
 
 import gui.FenetrePrincipale;
-import gui.TestJPanel;
+import gui.AuthenticationPanel;
+import gui.DeletePanel;
+import gui.SelectPanel;
+import gui.SendAPDUPanel;
 import java.awt.BorderLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -156,28 +160,19 @@ public class Main {
     public static void main(String[] args) throws CardException, CardConfigNotFoundException,
             CommandsImplementationNotFound, ClassNotFoundException, IOException {
 
-        /*TestJPanel t = new TestJPanel();
+        AuthenticationPanel p1 = new AuthenticationPanel();
+        AppletPanel p2 = new AppletPanel();
+        DeletePanel p3 = new DeletePanel();
+        SelectPanel p4 = new SelectPanel();
+        SendAPDUPanel p5 = new SendAPDUPanel();
 
-        JFrame frame = new JFrame("TabbedPane");
-
-        frame.addWindowListener(new WindowAdapter()
-        {
-            public void windowClosing(WindowEvent e){
-                System.exit(0);
-            }
-
-        });
-
-        frame.getContentPane().add(t, BorderLayout.CENTER);
-
-        frame.setSize(400, 125);
-        frame.setVisible(true);*/
-        TestJPanel t = new TestJPanel();
         FenetrePrincipale f = new FenetrePrincipale();
-        f.setContentPane(t);
-        //f.getContentPane().add(t);
-        //NewJPanel tjp = new NewJPanel();
-        
+
+        f.myPanel.addTab(p1.title, p1);
+        f.myPanel.addTab(p2.title, p2);
+        f.myPanel.addTab(p3.title, p3);
+        f.myPanel.addTab(p4.title, p4);
+        f.myPanel.addTab(p5.title, p5);
         /*
         channel = null;
         SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;

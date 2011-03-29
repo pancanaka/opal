@@ -4,7 +4,8 @@
  */
 
 package gui;
-
+import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -13,6 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 
 /**
@@ -21,7 +23,8 @@ import javax.swing.KeyStroke;
  */
 public class FenetrePrincipale extends JFrame {
     private JMenuBar menuBar = new JMenuBar();
-
+    public JTabbedPane myPanel = new JTabbedPane();
+    
     private JMenu file    = new JMenu("File");
     private JMenu options = new JMenu("Options");
     private JMenu about   = new JMenu("About");
@@ -47,6 +50,8 @@ public class FenetrePrincipale extends JFrame {
 
         this.setJMenuBar(menuBar);
         this.setVisible(true);
+
+         this.add(myPanel, BorderLayout.CENTER);
     } 
 }
 
