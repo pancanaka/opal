@@ -6,6 +6,8 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
@@ -39,14 +41,36 @@ public class DataExchanges extends JPanel {
 
     public class All extends JPanel{
         public String title = "All";
+
+        public All() {
+            setLayout(new BorderLayout());
+            JLabel All_info = new JLabel("All Informations :");
+            add(All_info,BorderLayout.NORTH);
+        }
+
     }
 
     public class Apdu extends JPanel{
         public String title = "APDU";
+
+        public Apdu() {
+            setLayout(new BorderLayout());
+            JLabel Apdu_info = new JLabel("APDU Informations :");
+            add(Apdu_info,BorderLayout.NORTH);
+
+        }
+
     }
 
     public class Logging extends JPanel{
         public String title = "Loggings";
+
+        public Logging() {
+            setLayout(new BorderLayout());
+            JLabel Log_info = new JLabel("Loggings Informations :");
+            add(Log_info,BorderLayout.NORTH);
+        }
+
     }
     
 

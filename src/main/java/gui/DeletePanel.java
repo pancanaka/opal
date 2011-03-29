@@ -1,5 +1,6 @@
 package gui;
 
+import com.sun.org.apache.bcel.internal.generic.GETFIELD;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
@@ -19,6 +20,8 @@ import javax.swing.JTextField;
 public class DeletePanel extends JPanel{
 
     public String title = "Delete";
+    public static JTextField AID;
+    public JButton Delete ;
     /**
      * DeletePanel constructor
      */
@@ -29,11 +32,12 @@ public class DeletePanel extends JPanel{
         add(jplPanel,BorderLayout.WEST);
         jplPanel.setLayout(new FlowLayout());
 
-        JLabel deletelab = new JLabel("AID");
+        JLabel deletelab = new JLabel("Object AID");
         jplPanel.add(deletelab);
 
-        JTextField AID = new JTextField(40);
+        AID = new JTextField(40);
         jplPanel.add(AID);
+      //  AID.addActionListener(new DeleteObject());
 
         JPanel boutton_panel = new JPanel();
         boutton_panel.setLayout(new FlowLayout());
@@ -41,8 +45,12 @@ public class DeletePanel extends JPanel{
 
         JButton Delete = new JButton("Delete");
         boutton_panel.add(Delete);
+        Delete.addActionListener(new DeleteObject());
         
         
        
+    }
+    public static String gettext(){
+        return AID.getText();
     }
 }
