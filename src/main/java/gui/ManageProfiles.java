@@ -10,6 +10,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -19,12 +20,14 @@ import javax.swing.JTable;
  * @author Thibault
  */
 public class ManageProfiles extends JPanel implements ActionListener {
-    FenetrePrincipale f = null;
+    private FenetrePrincipale f = null;
 
-    JButton btModify    = new JButton("Modify");
-    JButton btDelete    = new JButton("Delete");
-    JButton btAdd       = new JButton("Add");
-    JButton btOK        = new JButton("OK");
+    private JTable tableau = null;
+
+    private JButton btModify    = new JButton("Modify");
+    private JButton btDelete    = new JButton("Delete");
+    private JButton btAdd       = new JButton("Add");
+    private JButton btOK        = new JButton("OK");
 
     public ManageProfiles(FenetrePrincipale f) {
         this.f = f;
@@ -37,7 +40,7 @@ public class ManageProfiles extends JPanel implements ActionListener {
 				{"Profile 4", "Description 4", "Value 2"},
 				{"Profile 5", "Description 5", "Value 2"}
         };
-        JTable tableau = new JTable(data, title){
+        tableau = new JTable(data, title){
             @Override
             public boolean isCellEditable(int row, int column) {return false;}
         };
@@ -79,10 +82,22 @@ public class ManageProfiles extends JPanel implements ActionListener {
 
             /* If we click on the Quit menu */
             if(name.equals("Modify")) {
-
+                int row = tableau.getSelectedRow();
+                if(row<0) {
+                    new JOptionPane().showMessageDialog(null, "No profile selected!", "Caution", JOptionPane.WARNING_MESSAGE);
+                }
             }
             else if(name.equals("Delete")) {
-
+                int row = tableau.getSelectedRow();
+                if(row<0) {
+                    new JOptionPane().showMessageDialog(null, "No profile selected!", "Caution", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    int option = JOptionPane.showConfirmDialog(null, "Do you really to remove the profile?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
+                        
+                    }
+                }
             }
             else if(name.equals("Add")) {
 
