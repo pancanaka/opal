@@ -34,12 +34,14 @@ public class ManageProfiles extends JPanel implements ActionListener {
 
         // Data for the profile tab
         String  title[] = {"Profile name", "Description", "ATR"};
-	Object[][] data = {	{"Profile 1", "Description 1", "Value 1"},
+        new TestXML();
+        Object[][] data = TestXML.getProfils();
+	/*Object[][] data = {	{"Profile 1", "Description 1", "Value 1"},
 				{"Profile 2", "Description 2", "Value 1"},
 				{"Profile 3", "Description 3", "Value 2"},
 				{"Profile 4", "Description 4", "Value 2"},
 				{"Profile 5", "Description 5", "Value 2"}
-        };
+        };/**/
         tableau = new JTable(data, title){
             @Override
             public boolean isCellEditable(int row, int column) {return false;}

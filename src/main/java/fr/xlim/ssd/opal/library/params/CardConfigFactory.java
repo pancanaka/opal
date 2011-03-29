@@ -13,8 +13,6 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Delivers card configuration CardConfig
@@ -32,7 +30,7 @@ public class CardConfigFactory {
      * @return a Map of CardConfig objects with the name of the config as a key
      * @throws CardConfigNotFoundException if an error occured while reading the XML file
      */
-    public static Map getAllCardConfigs()
+    public static CardConfig[] getAllCardConfigs()
             throws CardConfigNotFoundException {
 
         byte[] isd;
@@ -40,7 +38,7 @@ public class CardConfigFactory {
         String tp;
         SCKey[] keys;
         String impl;
-        Map configs = new HashMap();
+        CardConfig configs[];
 
         try {
             
@@ -51,6 +49,7 @@ public class CardConfigFactory {
 
             NodeList cards = document.getElementsByTagName("card");
             Element currentCard = null;
+            configs = new CardConfig[cards.getLength()];
 
             // looking for the card identifier in config.xml file
             for (int i = 0; i < cards.getLength(); i++) {
@@ -63,7 +62,7 @@ public class CardConfigFactory {
                 keys = getKeys(currentCard);
                 impl = getImpl(currentCard);
 
-                configs.put(currentCard.getAttribute("name"), new CardConfig(isd, scpMode, tp, keys, impl));
+                configs[i] = new CardConfig(isd, scpMode, tp, keys, impl);
             }
 
         } catch (IOException e) {
