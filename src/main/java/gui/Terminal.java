@@ -31,9 +31,7 @@ public class Terminal extends JPanel implements ActionListener {
         JLabel lMenu = new JLabel("Selected terminal :");
         sousMenu.add(lMenu);
         sousMenu.add(terminaux);
-        Dimension dim = new Dimension(25,250);
 
-        terminaux.setSize(dim);
         terminaux.addItem("Option 1");
         terminaux.addItem("Option 2");
         terminaux.addItem("Option 3");
@@ -57,8 +55,10 @@ public class Terminal extends JPanel implements ActionListener {
         //scrollPane = new JScrollPane(myPanel);
         //myPanel.setSize(800,800);
 
-        this.add(sousMenu, BorderLayout.NORTH);
-        this.add(myPanel, BorderLayout.SOUTH);
+        Box frame = Box.createVerticalBox();
+        frame.add(sousMenu, BorderLayout.NORTH);
+        frame.add(myPanel, BorderLayout.SOUTH);
+        this.add(frame);
     }
 
     @Override
