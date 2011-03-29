@@ -7,13 +7,14 @@ package gui;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 
 /**
- *
+ * @author omar
  * @author chanaa
  */
 public class DataExchanges extends JPanel {
@@ -34,7 +35,12 @@ public class DataExchanges extends JPanel {
         sub_panel.addTab(Apdu.title, Apdu);
         sub_panel.addTab(Logging.title, Logging);
         add(sub_panel,BorderLayout.CENTER);
+        JPanel pnl_send=new JPanel();
+        pnl_send.setLayout(new BorderLayout());
+        JButton btn_send= new JButton("Clear");
+        pnl_send.add(btn_send,BorderLayout.EAST);
 
+        add(pnl_send,BorderLayout.SOUTH);
 
 
 
