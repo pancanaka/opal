@@ -10,6 +10,7 @@ import java.awt.FlowLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
+import javax.swing.JTextArea;
 
 /**
  *
@@ -46,6 +47,8 @@ public class DataExchanges extends JPanel {
             setLayout(new BorderLayout());
             JLabel All_info = new JLabel("All Informations :");
             add(All_info,BorderLayout.NORTH);
+            JTextArea txt_all=new JTextArea();
+            add(txt_all,BorderLayout.CENTER);
         }
 
     }
@@ -57,6 +60,8 @@ public class DataExchanges extends JPanel {
             setLayout(new BorderLayout());
             JLabel Apdu_info = new JLabel("APDU Informations :");
             add(Apdu_info,BorderLayout.NORTH);
+            JTextArea txt_apdu=new JTextArea();
+            add(txt_apdu,BorderLayout.CENTER);
 
         }
 
@@ -69,6 +74,8 @@ public class DataExchanges extends JPanel {
             setLayout(new BorderLayout());
             JLabel Log_info = new JLabel("Loggings Informations :");
             add(Log_info,BorderLayout.NORTH);
+            JTextArea txt_log=new JTextArea();
+            add(txt_log,BorderLayout.CENTER);
         }
 
     }
