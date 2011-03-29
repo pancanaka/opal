@@ -35,7 +35,7 @@ public class FenetrePrincipale extends JFrame {
     private JScrollPane scrollPane;
 
     public FenetrePrincipale() {
-        this.setSize(500,400);
+        this.setSize(700,400);
         this.setLocationRelativeTo(null);
         this.setTitle("OPAL - GUI");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -62,12 +62,14 @@ public class FenetrePrincipale extends JFrame {
         DeletePanel p3 = new DeletePanel();
         SelectPanel p4 = new SelectPanel();
         SendAPDUPanel p5 = new SendAPDUPanel();
+        DataExchanges p6 = new DataExchanges();
 
         myPanel.addTab(p1.title, p1);
         myPanel.addTab(p2.title, p2);
         myPanel.addTab(p3.title, p3);
         myPanel.addTab(p4.title, p4);
         myPanel.addTab(p5.title, p5);
+        myPanel.addTab(p6.title, p6);
 
         //scrollPane = new JScrollPane(myPanel);
        // myPanel.setSize(800,800);
