@@ -62,7 +62,7 @@ public class FenetrePrincipale extends JFrame {
         DeletePanel p3 = new DeletePanel();
         SelectPanel p4 = new SelectPanel();
         SendAPDUPanel p5 = new SendAPDUPanel();
-//
+
         myPanel.addTab(p1.title, p1);
         myPanel.addTab(p2.title, p2);
         myPanel.addTab(p3.title, p3);
