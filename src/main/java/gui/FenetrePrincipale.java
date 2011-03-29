@@ -6,6 +6,7 @@
 package gui;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -14,6 +15,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
@@ -22,7 +24,7 @@ import javax.swing.KeyStroke;
  *
  * @author Thibault
  */
-public class FenetrePrincipale extends JFrame {
+public class FenetrePrincipale extends JFrame implements ActionListener {
     private JMenuBar menuBar = new JMenuBar();
     public JTabbedPane myPanel = new JTabbedPane();
     
@@ -30,9 +32,11 @@ public class FenetrePrincipale extends JFrame {
     private JMenu options = new JMenu("Options");
     private JMenu about   = new JMenu("About");
 
-    private JMenuItem itemQuit      = new JMenuItem("Quit");
-    private JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
+    private JMenuItem   itemQuit      = new JMenuItem("Quit");
+    private JMenuItem   itemMProfiles = new JMenuItem("Manage profiles");
     private JScrollPane scrollPane;
+
+    private ManageProfiles panMProfiles = new ManageProfiles();
 
     public FenetrePrincipale() {
         this.setSize(700,400);
@@ -48,12 +52,14 @@ public class FenetrePrincipale extends JFrame {
         this.file.add(itemQuit);
         
         itemQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.SHIFT_DOWN_MASK));
-        itemQuit.addActionListener(new btQuit());
+        itemQuit.addActionListener(this);
+        itemMProfiles.addActionListener(this);
 
         this.setJMenuBar(menuBar);
-        this.setVisible(true);
 
         initPanels();
+        
+        this.setVisible(true);
     }
     private void initPanels()
     {
@@ -76,14 +82,25 @@ public class FenetrePrincipale extends JFrame {
 
         this.add(myPanel, BorderLayout.CENTER);
     }
-}
 
-class btQuit implements ActionListener {
     @Override
-    public void actionPerformed(ActionEvent arg0) {
-        int option = JOptionPane.showConfirmDialog(null, "Do you really want to quit ?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-        if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
-            System.exit(0);
+    public void actionPerformed(ActionEvent ae) {
+        Object o = ae.getSource();
+
+        if(o instanceof JMenuItem) {
+            JMenuItem menu = (JMenuItem) o;
+            String name    = menu.getText();
+            /* If we click on the Quit menu */
+            if(name.equals("Quit")) {
+                int option = JOptionPane.showConfirmDialog(null, "Do you really want to quit ?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
+                    System.exit(0);
+                }
+            }
+            else if(name.equals("Manage profiles")) {
+                this.setContentPane(panMProfiles);
+                this.setVisible(true);
+            }
         }
     }
 }
