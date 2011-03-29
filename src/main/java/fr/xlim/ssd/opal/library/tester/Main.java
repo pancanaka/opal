@@ -160,19 +160,8 @@ public class Main {
     public static void main(String[] args) throws CardException, CardConfigNotFoundException,
             CommandsImplementationNotFound, ClassNotFoundException, IOException {
 
-        AuthenticationPanel p1 = new AuthenticationPanel();
-        AppletPanel p2 = new AppletPanel();
-        DeletePanel p3 = new DeletePanel();
-        SelectPanel p4 = new SelectPanel();
-        SendAPDUPanel p5 = new SendAPDUPanel();
 
         FenetrePrincipale f = new FenetrePrincipale();
-
-        f.myPanel.addTab(p1.title, p1);
-        f.myPanel.addTab(p2.title, p2);
-        f.myPanel.addTab(p3.title, p3);
-        f.myPanel.addTab(p4.title, p4);
-        f.myPanel.addTab(p5.title, p5);
         /*
         channel = null;
         SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;

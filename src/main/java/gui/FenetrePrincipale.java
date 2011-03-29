@@ -14,6 +14,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.KeyStroke;
 
@@ -31,6 +32,7 @@ public class FenetrePrincipale extends JFrame {
 
     private JMenuItem itemQuit      = new JMenuItem("Quit");
     private JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
+    private JScrollPane scrollPane;
 
     public FenetrePrincipale() {
         this.setSize(500,400);
@@ -51,8 +53,27 @@ public class FenetrePrincipale extends JFrame {
         this.setJMenuBar(menuBar);
         this.setVisible(true);
 
-         this.add(myPanel, BorderLayout.CENTER);
-    } 
+        initPanels();
+    }
+    private void initPanels()
+    {
+        AuthenticationPanel p1 = new AuthenticationPanel();
+        AppletPanel p2 = new AppletPanel();
+        DeletePanel p3 = new DeletePanel();
+        SelectPanel p4 = new SelectPanel();
+        SendAPDUPanel p5 = new SendAPDUPanel();
+
+        myPanel.addTab(p1.title, p1);
+        myPanel.addTab(p2.title, p2);
+        myPanel.addTab(p3.title, p3);
+        myPanel.addTab(p4.title, p4);
+        myPanel.addTab(p5.title, p5);
+
+        //scrollPane = new JScrollPane(myPanel);
+       // myPanel.setSize(800,800);
+
+        this.add(myPanel, BorderLayout.CENTER);
+    }
 }
 
 class btQuit implements ActionListener {
