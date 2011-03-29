@@ -13,6 +13,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Delivers card configuration CardConfig
@@ -23,6 +25,60 @@ import java.util.Arrays;
  * @see CardConfig
  */
 public class CardConfigFactory {
+
+    /**
+     * Get all card configs.
+     *
+     * @return a Map of CardConfig objects with the name of the config as a key
+     * @throws CardConfigNotFoundException if an error occured while reading the XML file
+     */
+    public static Map getAllCardConfigs()
+            throws CardConfigNotFoundException {
+
+        byte[] isd;
+        SCPMode scpMode;
+        String tp;
+        SCKey[] keys;
+        String impl;
+        Map configs = new HashMap();
+
+        try {
+            
+            InputStream input = CardConfigFactory.class.getResourceAsStream("/config.xml");
+
+            Document document = DocumentBuilderFactory.newInstance().
+                    newDocumentBuilder().parse(input);
+
+            NodeList cards = document.getElementsByTagName("card");
+            Element currentCard = null;
+
+            // looking for the card identifier in config.xml file
+            for (int i = 0; i < cards.getLength(); i++) {
+                currentCard = (Element) cards.item(i);
+
+                // set and return CardConfig
+                isd = getISD(currentCard);
+                scpMode = getSCP(currentCard);
+                tp = getTP(currentCard);
+                keys = getKeys(currentCard);
+                impl = getImpl(currentCard);
+
+                configs.put(currentCard.getAttribute("name"), new CardConfig(isd, scpMode, tp, keys, impl));
+            }
+
+        } catch (IOException e) {
+            throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
+        } catch (SAXException e) {
+            throw new CardConfigNotFoundException("SAX error when reading config.xml file:" + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
+        }
+
+        
+
+        return configs;
+
+    }
 
     /**
      * Get the card config based on its name.
