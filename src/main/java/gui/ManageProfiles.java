@@ -6,14 +6,11 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Container;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
@@ -21,28 +18,37 @@ import javax.swing.JTable;
  *
  * @author Thibault
  */
-public class ManageProfiles extends JPanel {
-    JButton btModify = new JButton("Modify");
-    JButton btDelete = new JButton("Delete");
-    JButton btAdd    = new JButton("Add");
-    JButton btOK     = new JButton("OK");
+public class ManageProfiles extends JPanel implements ActionListener {
+    FenetrePrincipale f = null;
 
-    public ManageProfiles() {
-        //Les données du tableau
+    JButton btModify    = new JButton("Modify");
+    JButton btDelete    = new JButton("Delete");
+    JButton btAdd       = new JButton("Add");
+    JButton btOK        = new JButton("OK");
+
+    public ManageProfiles(FenetrePrincipale f) {
+        this.f = f;
+
+        // Data for the profile tab
+        String  title[] = {"Profile name", "Description", "ATR"};
 	Object[][] data = {	{"Profile 1", "Description 1", "Value 1"},
 				{"Profile 2", "Description 2", "Value 1"},
 				{"Profile 3", "Description 3", "Value 2"},
 				{"Profile 4", "Description 4", "Value 2"},
 				{"Profile 5", "Description 5", "Value 2"}
         };
-        String  title[] = {"Profile name", "Description", "ATR"};
-        JTable tableau = new JTable(data, title);
+        JTable tableau = new JTable(data, title){
+            @Override
+            public boolean isCellEditable(int row, int column) {return false;}
+        };
         JScrollPane spTab = new JScrollPane(tableau);
 
-        // Create left column of radio buttons
+
+        // Create left column and put the tab inside
         Box left = Box.createVerticalBox();
         left.add(spTab);
-        
+
+        // Create right column and put buttons inside
         Box right = Box.createVerticalBox();
         right.add(btModify);
         right.add(btDelete);
@@ -55,5 +61,35 @@ public class ManageProfiles extends JPanel {
         
         this.setLayout(new BorderLayout());
         this.add(top, BorderLayout.CENTER);
+
+        // Events
+        btModify.addActionListener(this);
+        btDelete.addActionListener(this);
+        btAdd.addActionListener(this);
+        btOK.addActionListener(this);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        Object o = ae.getSource();
+
+        if(o instanceof JButton) {
+            JButton bt = (JButton) o;
+            String name    = bt.getText();
+
+            /* If we click on the Quit menu */
+            if(name.equals("Modify")) {
+
+            }
+            else if(name.equals("Delete")) {
+
+            }
+            else if(name.equals("Add")) {
+
+            }
+            else if(name.equals("OK")) {
+                this.f.affichePanel("terminal");
+            }
+        }
     }
 }

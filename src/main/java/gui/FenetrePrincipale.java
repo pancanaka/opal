@@ -4,18 +4,23 @@
  */
 
 package gui;
-import java.awt.GridLayout;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import javax.swing.Box;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 /**
@@ -23,50 +28,70 @@ import javax.swing.KeyStroke;
  * @author Thibault
  */
 public class FenetrePrincipale extends JFrame implements ActionListener {
-    private JMenuBar menuBar = new JMenuBar();
-    public JTabbedPane myPanel = new JTabbedPane();
-    
-    private JMenu file    = new JMenu("File");
-    private JMenu options = new JMenu("Options");
-    private JMenu about   = new JMenu("About");
+    // Menus
+    private JMenuBar  menuBar       = new JMenuBar();
+    private JMenu     file          = new JMenu("File");
+    private JMenu     options       = new JMenu("Options");
+    private JMenu     about         = new JMenu("About");
+    private JMenuItem itemQuit      = new JMenuItem("Quit");
+    private JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
 
-    private JMenuItem   itemQuit      = new JMenuItem("Quit");
-    private JMenuItem   itemMProfiles = new JMenuItem("Manage profiles");
-    private JScrollPane scrollPane;
+    // Panels
+    private ManageProfiles panMProfiles = new ManageProfiles(this);
+    private JPanel         panTerminal  = new JPanel();
 
-    private ManageProfiles panMProfiles = new ManageProfiles();
 
     public FenetrePrincipale() {
-        this.setSize(700,400);
+        // informations of the window
+        this.setSize(800,500);
         this.setLocationRelativeTo(null);
         this.setTitle("OPAL - GUI");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+
+        // Initializes the menu bar
         this.menuBar.add(file);
+            this.file.add(itemMProfiles);
+            this.file.add(itemQuit);
         this.menuBar.add(options);
         this.menuBar.add(about);
-
-        this.file.add(itemMProfiles);
-        this.file.add(itemQuit);
-        
-        itemQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.SHIFT_DOWN_MASK));
-        itemQuit.addActionListener(this);
-        itemMProfiles.addActionListener(this);
-
         this.setJMenuBar(menuBar);
 
-        initPanels();
         
-        this.setVisible(true);
+        // Events
+        itemQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.SHIFT_DOWN_MASK));
+        itemMProfiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.SHIFT_DOWN_MASK));
+        itemQuit.addActionListener(this);
+        itemMProfiles.addActionListener(this);
+        
+
+        this.initPanTerminal();
+
+        affichePanel("terminal");
     }
-    private void initPanels()
-    {
+
+    public void initPanTerminal() {
+        Box       sousMenu  = Box.createHorizontalBox();
+        JComboBox terminaux = new JComboBox();
+
+        JLabel lMenu = new JLabel("Selected terminal :");
+        sousMenu.add(lMenu);
+        sousMenu.add(terminaux);
+        Dimension dim = new Dimension(25,250);
+
+        terminaux.setSize(dim);
+        terminaux.addItem("Option 1");
+        terminaux.addItem("Option 2");
+        terminaux.addItem("Option 3");
+        terminaux.addItem("Option 4");
+
         AuthenticationPanel p1 = new AuthenticationPanel();
-        AppletPanel p2 = new AppletPanel();
-        DeletePanel p3 = new DeletePanel();
-        SelectPanel p4 = new SelectPanel();
-        SendAPDUPanel p5 = new SendAPDUPanel();
-        DataExchanges p6 = new DataExchanges();
+        AppletPanel p2         = new AppletPanel();
+        DeletePanel p3         = new DeletePanel();
+        SelectPanel p4         = new SelectPanel();
+        SendAPDUPanel p5       = new SendAPDUPanel();
+        DataExchanges p6       = new DataExchanges();
+        JTabbedPane myPanel    = new JTabbedPane();
 
         myPanel.addTab(p1.title, p1);
         myPanel.addTab(p2.title, p2);
@@ -76,15 +101,27 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         myPanel.addTab(p6.title, p6);
 
         //scrollPane = new JScrollPane(myPanel);
-       // myPanel.setSize(800,800);
+        //myPanel.setSize(800,800);
+        
+        panTerminal.add(sousMenu, BorderLayout.NORTH);
+        panTerminal.add(myPanel, BorderLayout.SOUTH);
+    }
 
-        this.add(myPanel, BorderLayout.CENTER);
+    public void affichePanel(String type) {
+        if(type.equals("terminal")) {
+            this.setContentPane(panTerminal);
+        }
+        else if(type.equals("profiles")) {
+            this.setContentPane(panMProfiles);
+        }
+        this.setVisible(true);
     }
 
 
     /*
      * Called when an action is performed on the principal window
      * @param ae
+     *          the ActionEvent
      */
     @Override
     public void actionPerformed(ActionEvent ae) {
@@ -101,8 +138,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 }
             }
             else if(name.equals("Manage profiles")) {
-                this.setContentPane(panMProfiles);
-                this.setVisible(true);
+                affichePanel("profiles");
             }
         }
     }
