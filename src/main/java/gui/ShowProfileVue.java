@@ -19,7 +19,7 @@ import javax.swing.JTable;
  *
  * @author Thibault
  */
-public class ManageProfiles extends JPanel implements ActionListener {
+class ShowProfileVue extends JPanel implements ActionListener {
     private FenetrePrincipale f = null;
 
     private JTable tableau = null;
@@ -29,19 +29,13 @@ public class ManageProfiles extends JPanel implements ActionListener {
     private JButton btAdd       = new JButton("Add");
     private JButton btOK        = new JButton("OK");
 
-    public ManageProfiles(FenetrePrincipale f) {
+    public ShowProfileVue(FenetrePrincipale f) {
         this.f = f;
 
         // Data for the profile tab
         String  title[] = {"Profile name", "Description", "ATR"};
         new TestXML();
         Object[][] data = TestXML.getProfils();
-	/*Object[][] data = {	{"Profile 1", "Description 1", "Value 1"},
-				{"Profile 2", "Description 2", "Value 1"},
-				{"Profile 3", "Description 3", "Value 2"},
-				{"Profile 4", "Description 4", "Value 2"},
-				{"Profile 5", "Description 5", "Value 2"}
-        };/**/
         tableau = new JTable(data, title){
             @Override
             public boolean isCellEditable(int row, int column) {return false;}
@@ -59,11 +53,11 @@ public class ManageProfiles extends JPanel implements ActionListener {
         right.add(btDelete);
         right.add(btAdd);
         right.add(btOK);
-        
+
         Box top = Box.createHorizontalBox();
         top.add(left);
         top.add(right);
-        
+
         this.setLayout(new BorderLayout());
         this.add(top, BorderLayout.CENTER);
 
@@ -79,8 +73,8 @@ public class ManageProfiles extends JPanel implements ActionListener {
         Object o = ae.getSource();
 
         if(o instanceof JButton) {
-            JButton bt = (JButton) o;
-            String name    = bt.getText();
+            JButton bt  = (JButton) o;
+            String name = bt.getText();
 
             /* If we click on the Quit menu */
             if(name.equals("Modify")) {
@@ -97,12 +91,12 @@ public class ManageProfiles extends JPanel implements ActionListener {
                 else {
                     int option = JOptionPane.showConfirmDialog(null, "Do you really to remove the profile?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
-                        
+
                     }
                 }
             }
             else if(name.equals("Add")) {
-
+                this.f.affichePanel("add update");
             }
             else if(name.equals("OK")) {
                 this.f.affichePanel("terminal");

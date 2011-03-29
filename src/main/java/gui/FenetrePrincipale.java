@@ -29,8 +29,9 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
     private JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
 
     // Panels
-    private ManageProfiles panMProfiles = new ManageProfiles(this);
-    private Terminal       panTerminal  = new Terminal(this);
+    private Terminal            panTerminal     = new Terminal(this);
+    private AddUpdateProfileVue panAddUpdate    = new AddUpdateProfileVue(this);
+    private ShowProfileVue      panShowProfiles = new ShowProfileVue(this);
 
 
     public FenetrePrincipale() {
@@ -63,8 +64,11 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         if(type.equals("terminal")) {
             this.setContentPane(panTerminal);
         }
-        else if(type.equals("profiles")) {
-            this.setContentPane(panMProfiles);
+        else if(type.equals("show profiles")) {
+            this.setContentPane(panShowProfiles);
+        }
+        else if(type.equals("add update")) {
+            this.setContentPane(panAddUpdate);
         }
         this.setVisible(true);
     }
@@ -91,7 +95,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
                 }
             }
             else if(name.equals("Manage profiles")) {
-                affichePanel("profiles");
+                affichePanel("show profiles");
             }
         }
     }
