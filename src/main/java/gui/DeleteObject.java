@@ -25,6 +25,8 @@ public class DeleteObject implements ActionListener {
         String aid = DeletePanel.gettext();
         if(aid != null){
             final byte[] APPLET_ID = AsciiToHexa.stringToHex(aid);
+            // j'atten de voir l'utilité de Securiti Domain pour pouvoir
+            // supprimer l'AID
 
        }else{
             JOptionPane.showMessageDialog(null, "Entrez le AID !");
