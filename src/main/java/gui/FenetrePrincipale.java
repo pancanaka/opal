@@ -36,7 +36,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
 
     public FenetrePrincipale() {
         // informations of the window
-        this.setSize(800,500);
+        this.setSize(800,600);
         this.setLocationRelativeTo(null);
         this.setTitle("OPAL - GUI");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
