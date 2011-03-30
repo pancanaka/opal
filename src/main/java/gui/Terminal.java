@@ -6,7 +6,6 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import javax.swing.Box;
@@ -43,7 +42,7 @@ public class Terminal extends JPanel implements ActionListener {
         DeletePanel p3         = new DeletePanel();
         SelectPanel p4         = new SelectPanel();
         SendAPDUPanel p5       = new SendAPDUPanel();
-        DataExchanges p6       = new DataExchanges();
+   //     DataExchanges p6       = new DataExchanges();
         JTabbedPane myPanel    = new JTabbedPane();
  
         myPanel.addTab(p1.title, p1);
@@ -51,7 +50,7 @@ public class Terminal extends JPanel implements ActionListener {
         myPanel.addTab(p3.title, p3);
         myPanel.addTab(p4.title, p4);
         myPanel.addTab(p5.title, p5);
-        myPanel.addTab(p6.title, p6);
+     //   myPanel.addTab(p6.title, p6);
 
         //scrollPane = new JScrollPane(myPanel);
         //myPanel.setSize(800,800);

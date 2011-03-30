@@ -58,6 +58,7 @@ public class FenetrePrincipale extends JFrame implements ActionListener {
         itemMProfiles.addActionListener(this);
 
         affichePanel("terminal");
+        DataExchanges Data_Exchanges = new DataExchanges("DataExchanges");
     }
 
     public void affichePanel(String type) {

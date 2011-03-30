@@ -8,6 +8,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -17,12 +18,13 @@ import javax.swing.JTextArea;
  * @author omar
  * @author chanaa
  */
-public class DataExchanges extends JPanel {
+public class DataExchanges extends JFrame {
 
     public String title = "Data Exchanges";
     public JTabbedPane sub_panel = new JTabbedPane();
-    public DataExchanges() {
+    public DataExchanges(String s) {
         // setting layout
+        super(s);
         setLayout(new BorderLayout());
         //
         // tabs initialisation
@@ -41,7 +43,9 @@ public class DataExchanges extends JPanel {
         pnl_send.add(btn_send,BorderLayout.EAST);
 
         add(pnl_send,BorderLayout.SOUTH);
-
+        setVisible(true);
+        setSize(400, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 
     }
