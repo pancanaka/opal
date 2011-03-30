@@ -18,6 +18,7 @@ import javax.swing.JTabbedPane;
 /**
  *
  * @author Thibault
+ * @author razaina
  */
 public class Terminal extends JPanel implements ActionListener {
     private FenetrePrincipale f = null;
@@ -44,7 +45,7 @@ public class Terminal extends JPanel implements ActionListener {
         SendAPDUPanel p5       = new SendAPDUPanel();
         DataExchanges p6       = new DataExchanges();
         JTabbedPane myPanel    = new JTabbedPane();
-
+ 
         myPanel.addTab(p1.title, p1);
         myPanel.addTab(p2.title, p2);
         myPanel.addTab(p3.title, p3);

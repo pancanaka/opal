@@ -163,6 +163,9 @@ public class Main {
 
         FenetrePrincipale f = new FenetrePrincipale();
 
+       /* System.out.println("======== Chargement des configurations ========");
+        System.out.println(CardConfigFactory.getAllCardConfigs().toString());
+
         /*
         channel = null;
         SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
