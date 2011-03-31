@@ -13,6 +13,15 @@ import fr.xlim.ssd.opal.library.SCPMode;
  */
 public class CardConfig {
 
+    /// The configuration name
+    private String name;
+
+    /// The configuration description
+    private String description;
+
+    /// The ATR list linked to this card configuration
+    private ATR[] atrs;
+
     /// The Issuer Security Domain (ISD) AID
     private byte[] isd;
 
@@ -31,13 +40,30 @@ public class CardConfig {
     /**
      * Constructor for CardConfig object
      *
-     * @param isd  the issuer security domain AID
-     * @param scp  the SCP mode
-     * @param tp   the transmission protocol
-     * @param keys the credential keys
-     * @param impl the class name of the implementation
+     * @param name          the card configuration name
+     * @param description   the card configuration description
+     * @param atrs          the card ATR linked to this configuration
+     * @param isd           the issuer security domain AID
+     * @param scp           the SCP mode
+     * @param tp            the transmission protocol
+     * @param keys          the credential keys
+     * @param impl          the class name of the implementation
      */
-    public CardConfig(byte[] isd, SCPMode scp, String tp, SCKey[] keys, String impl) {
+    public CardConfig(String name,
+                      String description,
+                      ATR[] atrs,
+                      byte[] isd,
+                      SCPMode scp,
+                      String tp,
+                      SCKey[] keys,
+                      String impl) {
+
+        if (name == null) {
+            throw new IllegalArgumentException("name must be not null");
+        }
+
+        // description may be null
+        // ATR may be null
 
         if (isd == null) {
             throw new IllegalArgumentException("isd must be not null");
@@ -59,11 +85,41 @@ public class CardConfig {
             throw new IllegalArgumentException("impl must be not null");
         }
 
+        this.name = name;
+        this.description = description;
+        this.atrs = atrs;
         this.isd = isd;
         this.scp = scp;
         this.tp = tp;
         this.keys = keys;
         this.impl = impl;
+    }
+
+    /**
+     * Get the name used in the configuration file
+     *
+     * @return A string with the configuration name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Get the description used in the configuration file
+     *
+     * @return A string with the configuration description
+     */
+    public String getDescription() {
+        return description;
+    }
+
+    /**
+     * Get the card ATRs linked to this configuration
+     *
+     * @return An ATR array which contains linked card ATR
+     */
+    public ATR[] getAtrs() {
+        return atrs;
     }
 
     /**
@@ -78,7 +134,7 @@ public class CardConfig {
     /**
      * Get the issuer security domain AID used by this card configuration
      *
-     * @return An byte array of size 6 with the ISD AID
+     * @return An byte array with the ISD AID
      */
     public byte[] getIssuerSecurityDomainAID() {
         return this.isd;
@@ -135,5 +191,79 @@ public class CardConfig {
         } else {
             return this.keys[0].getId();
         }
+
     }
+
+    /**
+     * Set the name used in the configuration file
+     *
+     * @param name A string with the new configuration name
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * Set the description used in the configuration file
+     *
+     * @param description A string with the new configuration description
+     */
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    /**
+     * Set the card ATRs linked to this configuration
+     *
+     * @param atrs An ATR array which contains linked card ATR
+     */
+    public void setAtrs(ATR[] atrs) {
+        this.atrs = atrs;
+    }
+
+    /**
+     * Set the issuer security domain AID used by this card configuration
+     *
+     * @param isd An byte array with the ISD AID
+     */
+    public void setIsd(byte[] isd) {
+        this.isd = isd;
+    }
+
+    /**
+     * Set the secure channel protocol mode used by this card configuration
+     *
+     * @param scp the SCP mode
+     */
+    public void setScp(SCPMode scp) {
+        this.scp = scp;
+    }
+
+    /**
+     * Set the transmission protocol used by this card configuration
+     *
+     * @param tp the transmission protocol used
+     */
+    public void setTp(String tp) {
+        this.tp = tp;
+    }
+
+    /**
+     * Set the Secure Channel Keys used by this card configuration
+     *
+     * @param keys the new default SC keys
+     */
+    public void setKeys(SCKey[] keys) {
+        this.keys = keys;
+    }
+
+    /**
+     * Set the name of the default implementation class used by this card configuration
+     *
+     * @param impl A string with the class name
+     */
+    public void setImpl(String impl) {
+        this.impl = impl;
+    }
+
 }

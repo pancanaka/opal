@@ -135,9 +135,7 @@ public class Main {
         logger.info("Card ATR:  " + Conversion.arrayToHex(atr.getBytes()));
 
         try {
-            String config = CardConfigFactory.getCardConfig(atr.getBytes());
-            logger.info("Card config:  " + config);
-            return CardConfigFactory.getCardConfig(config);
+            return CardConfigFactory.getCardConfig(atr.getBytes());
         } catch (CardConfigNotFoundException ex) {
             logger.error(ex.getMessage());
         }

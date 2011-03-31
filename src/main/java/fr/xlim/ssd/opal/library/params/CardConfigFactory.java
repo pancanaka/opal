@@ -2,6 +2,8 @@ package fr.xlim.ssd.opal.library.params;
 
 import fr.xlim.ssd.opal.library.*;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -24,6 +26,15 @@ import java.util.Arrays;
  */
 public class CardConfigFactory {
 
+    /// the logger
+    private final static Logger logger = LoggerFactory.getLogger(CardConfigFactory.class);
+
+    private static String configFile = "/config.xml";
+
+    public static void setConfigFile (String configFile) {
+        CardConfigFactory.configFile = configFile;
+    }
+
     /**
      * Get the card config based on its name.
      *
@@ -34,15 +45,18 @@ public class CardConfigFactory {
     public static CardConfig getCardConfig(String cardName)
             throws CardConfigNotFoundException {
 
-        byte[] isd;
-        SCPMode scpMode;
-        String tp;
-        SCKey[] keys;
-        String impl;
+        String name = null;
+        String description = null;
+        ATR[] atrs = null ;
+        byte[] isd = null;
+        SCPMode scpMode = null;
+        String tp = null;
+        SCKey[] keys = null;
+        String impl = null;
 
         try {
 
-            InputStream input = CardConfigFactory.class.getResourceAsStream("/config.xml");
+            InputStream input = CardConfigFactory.class.getResourceAsStream(CardConfigFactory.configFile);
 
             Document document = DocumentBuilderFactory.newInstance().
                     newDocumentBuilder().parse(input);
@@ -62,6 +76,9 @@ public class CardConfigFactory {
             }
 
             // set and return CardConfig
+            name = getName(desiredCard);
+            description = getDescription(desiredCard);
+            atrs = getATRs(desiredCard);
             isd = getISD(desiredCard);
             scpMode = getSCP(desiredCard);
             tp = getTP(desiredCard);
@@ -76,8 +93,55 @@ public class CardConfigFactory {
             throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
         }
 
-        return new CardConfig(isd, scpMode, tp, keys, impl);
+        return new CardConfig(name,description, atrs, isd, scpMode, tp, keys, impl);
     }
+
+    /**
+     * Get the value between name tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return A string with the name of the configuration
+     */
+    private static String getName(Element card) {
+        return card.getAttribute("name");
+    }
+
+    /**
+     * Get the value between description tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return A string with the description of the configuration
+     */
+    private static String getDescription(Element card) {
+        return card.getAttribute("description");
+    }
+
+    /**
+     * Get the keys between key tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return the credentials keys
+     */
+    private static ATR[] getATRs(Element card) {
+
+        NodeList listATRElem = card.getElementsByTagName("listATR");
+        ATR[] atrs = null;
+        try {
+            NodeList AtrsElem = ((Element)listATRElem).getElementsByTagName("ATR");
+            atrs = new ATR[AtrsElem.getLength()];
+
+            // for each key in the Element
+            for (int i = 0; i < AtrsElem.getLength(); i++) {
+                atrs[i] = new ATR (Conversion.hexToArray (((Element) AtrsElem.item(i)).getAttribute("value")));
+            }
+        }
+        catch (ClassCastException e){
+            logger.warn("There are not ATR list" + e.getMessage());
+        } finally {
+            return atrs;
+        }
+    }
+
 
     /**
      * Get the value between isdAID tags from an element in the config.xml
@@ -197,14 +261,23 @@ public class CardConfigFactory {
      * @return the name of the card config
      * @throws CardConfigNotFoundException if ATR not found
      */
-    public static String getCardConfig(byte[] atr)
+    public static CardConfig getCardConfig(byte[] atr)
             throws CardConfigNotFoundException {
 
-        String config;
+        String name = null;
+        String description = null;
+        ATR[] atrs = null ;
+        byte[] isd = null;
+        SCPMode scpMode = null;
+        String tp = null;
+        SCKey[] keys = null;
+        String impl = null;
+
+        ATR arr2found = new ATR (atr);
 
         try {
 
-            InputStream input = CardConfigFactory.class.getResourceAsStream("/atr.xml");
+            InputStream input = CardConfigFactory.class.getResourceAsStream(CardConfigFactory.configFile);
 
             Document document = DocumentBuilderFactory.newInstance().
                     newDocumentBuilder().parse(input);
@@ -214,9 +287,12 @@ public class CardConfigFactory {
 
             // looking for the card identifiant in atr.xml file
             for (int i = 0; i < cards.getLength(); i++) {
-
-                if (Arrays.equals(Conversion.hexToArray(((Element) cards.item(i)).getAttribute("ATR")), atr)) {
-                    desiredCard = (Element) cards.item(i);
+                desiredCard = (Element) cards.item(i);
+                atrs = getATRs(desiredCard);
+                for(ATR a: atrs){
+                    if (atr.equals(a)) {
+                        break;
+                    }
                 }
             }
 
@@ -224,7 +300,14 @@ public class CardConfigFactory {
                 throw new CardConfigNotFoundException("ATR \"" + Conversion.arrayToHex(atr) + "\" not found");
             }
 
-            config = getConfig(desiredCard);
+            // set and return CardConfig
+            name = getName(desiredCard);
+            description = getDescription(desiredCard);
+            isd = getISD(desiredCard);
+            scpMode = getSCP(desiredCard);
+            tp = getTP(desiredCard);
+            keys = getKeys(desiredCard);
+            impl = getImpl(desiredCard);
 
         } catch (IOException e) {
             throw new CardConfigNotFoundException("cannot read the atr.xml file: " + e.getMessage());
@@ -234,32 +317,6 @@ public class CardConfigFactory {
             throw new CardConfigNotFoundException("XML parsing error when reading atr.xml file: " + e.getMessage());
         }
 
-        return config;
-    }
-
-    /**
-     * Get the value between config tags from an element in the atr.xml
-     *
-     * @param atr an element in the atr.xml
-     * @return a byte array with the name of configuration for an smart card
-     * @throws CardConfigNotFoundException if ATR tags not found
-     */
-    private static String getConfig(Element atr) throws CardConfigNotFoundException {
-
-        NodeList child = atr.getChildNodes();
-        String config = null;
-
-        for (int i = 0; i < child.getLength(); ++i) {
-            Node node = child.item(i);
-            if (node.getNodeName().equals("config")) {
-                config = node.getTextContent();
-            }
-        }
-
-        if (config == null) {
-            throw new CardConfigNotFoundException("Configuration value not found");
-        }
-
-        return config;
+        return new CardConfig(name,description, atrs, isd, scpMode, tp, keys, impl);
     }
 }

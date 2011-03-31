@@ -2,6 +2,10 @@
 
 <cardsconfig>
     <card name="GemXpresso211" defaultImpl="fr.xlim.ssd.opal.library.commands.GemXpresso211Commands">
+        <description>GemXpresso 211</description>
+        <listATR>
+            <ATR value="3B 6E 00 00 80 31 80 65 B0 03 02 01 5E 83 00 00 90 00"></ATR>
+        </listATR>
         <isdAID value="A0 00 00 00 18 43 4D"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -15,6 +19,10 @@
         </defaultKeys>
     </card>
     <card name="GemXplore3G" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>GemXplore3G</description>
+        <listATR>
+            <ATR value="3B 9F 95 80 1F C7 80 31 E0 73 FE 21 1B 63 E2 08 A8 83 0F 90 00 89"/>
+        </listATR>
         <isdAID value="A0 00 00 00 18 43 4D FF 33 FF FF 89 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -28,6 +36,11 @@
         </defaultKeys>
     </card>
     <card name="GemCombiXpresso_Lite_R2_Std_Jcop30" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>GemCombiXpresso Lite R2 Std Jcop30</description>
+        <listATR>
+            <ATR value="3B 6D 00 00 80 31 80 65 B0 07 02 02 89 83 00 90 00"/>
+            <ATR value="3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00"/> <!-- NFC version -->
+        </listATR>
         <isdAID value="A0 00 00 00 18 43 4D 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -37,6 +50,10 @@
         </defaultKeys>
     </card>
     <card name="JCOP21" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <listATR>
+            <ATR value="3B FA 13 00 00 81 31 FE 45 4A 43 4F 50 32 31 56 32 33 31 91"/>
+        </listATR>
+        <description>Jcop 21</description>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="02_15"/>
         <transmissionProtocol value="T=1"/>
@@ -50,6 +67,10 @@
         </defaultKeys>
     </card>
     <card name="JCOP20" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <listATR>
+            <ATR value="3B 69 00 FF 00 64 4A 10 04 32 05 90 00"/>
+        </listATR>
+        <description>JCOP 20</description>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=1"/>
@@ -63,6 +84,11 @@
         </defaultKeys>
     </card>
     <card name="NXP_JCOP_31V2.2_36K" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>NXP JCOP 31V2.2 36K</description>
+        <listATR>
+            <ATR value="3B EB 00 00 81 31 20 45 4A 43 4F 50 33 31 33 36 47 44 54 78"/>
+            <ATR value="3B 0A 0A 38 77 B1 4A 43 4F 50 33 30" /> <!-- NFC version -->
+        </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -76,6 +102,10 @@
         </defaultKeys>
     </card>
     <card name="Gemalto_TOP_IM_GX4" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Gemalto TOP IM GX4</description>
+        <listATR>
+            <ATR value="3B 7D 96 00 00 80 31 80 65 B0 83 11 D0 A9 83 00 90 00"/>
+        </listATR>
         <isdAID value="A0 00 00 00 18 43 4D 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -85,6 +115,10 @@
         </defaultKeys>
     </card>
     <card name="GemXplore_Xpresso" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>GemXplore Xpresso</description>
+        <listATR>
+            <ATR value="3B 3F 94 00 80 65 AF 03 12 01 6F 73 32 21 1B 83 0F 90 00"/>
+        </listATR>
         <isdAID value="A0 00 00 00 18 43 4D"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -105,6 +139,11 @@
         </defaultKeys>
     </card>
     <card name="Oberthur_Cosmopolic" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Oberthur Cosmopolic</description>
+        <listATR>
+            <ATR value="3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 84 90 00"/>
+            <ATR value="3B 7D 11 00 00 00 31 80 71 8E 64 52 D9 34 00 82 90 00"/>
+        </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -118,6 +157,10 @@
         </defaultKeys>
     </card>
     <card name="Sm@rtcafe_Expert_64_V2" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+         <listATR>
+            <ATR value="3B FD 18 00 FF 80 B1 FE 45 1F 07 80 73 00 21 13 57 4A 54 48 61 31 48 00 50"/>
+        </listATR>
+        <description>Sm@rtcafe Expert 64 V2</description>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -131,6 +174,10 @@
         </defaultKeys>
     </card>
     <card name="Infineon_JTOP_V2_16k" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Infineon JTOP V2 16k</description>
+        <listATR>
+            <ATR value="3B 6D 00 00 80 31 80 65 40 90 86 01 51 83 07 90 00"/>
+        </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -144,6 +191,11 @@
         </defaultKeys>
     </card>
     <card name="Oberthur_Cosmo_Dual_72k" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Oberthur Cosmo Dual 72k</description>
+        <listATR>
+            <ATR value="3B 0F 10 78 B3 C0 02 00 31 C0 64 77 E3 03 00 82 90"/>
+            <ATR value="3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 82 90 00" />
+        </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -157,6 +209,10 @@
         </defaultKeys>
     </card>
     <card name="Cyberflex_Palmera_V3" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Cyberflex Palmera V3</description>
+        <listATR>
+            <ATR value="3B 65 00 00 44 04 01 08 03"/>
+        </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -170,6 +226,10 @@
         </defaultKeys>
     </card>
     <card name="Cyberflex_Access_Augmented_Crypto" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Schlumberger Cyberflex Access Augmented Crypto</description>
+        <listATR>
+            <ATR value="3B 16 94 81 10 06 01 81 2F"/>
+        </listATR>
         <isdAID value="A0 00 00 00 03 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
@@ -183,7 +243,11 @@
         </defaultKeys>
     </card>
     <card name="mNF1.2/SCWS" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <listATR>
+            <ATR value="3B 9F 96 C0 0A 3F C7 A0 80 31 E0 73 FE 21 1B 63 F1 00 E8 83 00 90 00 14"/>
+        </listATR>
         <isdAID value="A0 00 00 00 18 43 4D 08 09 0A 0B 0C 00 00 00"/>
+        <description>Gemalto mNF1.2 with Smart Card WebServer</description>
         <scpMode value="02_15"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
@@ -340,65 +404,69 @@
         </defaultKeys>
     </card>
     <card name="JCOP31_72B1_V2.2" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-            <isdAID value="A0 00 00 00 03 00 00 00"/>
-            <scpMode value="02_15"/>
-            <transmissionProtocol value="T=0"/>
-            <defaultKeys>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-            </defaultKeys>
-    </card>
-    <card name="JCOP31_72B1_V2.2_NFC" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-            <isdAID value="A0 00 00 00 03 00 00 00"/>
-            <scpMode value="02_15"/>
-            <transmissionProtocol value="T=0"/>
-            <defaultKeys>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-            </defaultKeys>
+        <description>Smartcard Dual Interface JCOP31 with 72KB EEPROM and V2.2 Java Card Open Platform</description>
+        <listATR>
+            <ATR value="3B F9 18 00 00 81 31 FE 45 4A 43 4F 50 33 31 56 32 32 A8"></ATR>
+            <ATR value="3B 8D 80 01 0D 38 33 B1 4A 43 4F 50 33 31 56 32 FF 34"></ATR>   <!-- NFC Version -->
+        </listATR>
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_15"/>
+        <transmissionProtocol value="T=0"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
     </card>
     <card name="SAMSUNG_NFC_SGH-X700N" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-            <isdAID value="A0 00 00 00 03 00 00 00"/>
-            <scpMode value="02_15"/>
-            <transmissionProtocol value="T=0"/>
-            <defaultKeys>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-            </defaultKeys>
+        <description>Samsung (SGH-X700N) NFC</description>
+        <listATR>
+            <ATR value="3B 8D 80 01 0D 78 80 80 02 00 73 C8 40 00 00 90 FF EF"></ATR>
+        </listATR>
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_15"/>
+        <transmissionProtocol value="T=0"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
     </card>
     <card name="JCOP UNKNOW" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-            <isdAID value="A0 00 00 00 03 00 00 00"/>
-            <scpMode value="01_05"/>
-            <transmissionProtocol value="T=0"/>
-            <defaultKeys>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="1"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="2"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-                    <key type="DES_ECB" keyVersionNumber="255" keyId="3"
-                            keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
-            </defaultKeys>
+        <description>An unknow JCOP card name</description>
+        <listATR>
+            <ATR value="3B 7B 11 00 00 00 31 C0 64 7F E6 10 00 82 90 00"/>
+        </listATR>
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="01_05"/>
+        <transmissionProtocol value="T=0"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="255" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
     </card>
     <card name="GALITT_WADAPA" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-            <isdAID value="A0 00 00 00 03 00 00 00"/>
-            <scpMode value="01_05"/>
-            <transmissionProtocol value="T=0"/>
-            <defaultKeys>
-                    <key type="SCGemVisa2" keyVersionNumber="255"
-                            keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
-            </defaultKeys>
+        <description>GALITT WADAPA</description>
+        <listATR>
+            <ATR value="3B 6D 00 00 80 31 80 65 B0 43 02 00 77 83 00 90 00"></ATR>
+        </listATR>
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="01_05"/>
+        <transmissionProtocol value="T=0"/>
+        <defaultKeys>
+            <key type="SCGemVisa2" keyVersionNumber="255"
+                 keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
+        </defaultKeys>
     </card>
-                                                                                                                                                       
+
 </cardsconfig>

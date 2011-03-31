@@ -52,6 +52,7 @@ public class CardConfigFactoryTest {
         CardConfigFactory.getCardConfig("dummy");
     }
 
+    /*
     @Test
     public void testGetAllCardFromATR() throws JDOMException, IOException, CardConfigNotFoundException {
         InputStream input = CardConfigFactoryTest.class.getResourceAsStream("/atr.xml");
@@ -70,5 +71,5 @@ public class CardConfigFactoryTest {
             String response = CardConfigFactory.getCardConfig(Conversion.hexToArray(atr));
             assertEquals(response,configName);
         }
-    }
+    }*/
 }
