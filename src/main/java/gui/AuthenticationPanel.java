@@ -1,99 +1,212 @@
 package gui;
- 
-import fr.xlim.ssd.opal.library.params.CardConfig;
-import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
-import java.awt.GridLayout; 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.ParallelGroup;
-import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JButton;
+import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JComboBox;
+import javax.swing.Box;
+import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 
-
 /**
- *
+ * Authentication vue
  * @author razaina
  */
 public class AuthenticationPanel extends JPanel{
 
     public String title = "Authentication";
- 
+    private JLabel jlISDAID;
+    public JTextField tfISDAID;
+
+    private JLabel jlSCPMode;
+    private JComboBox cbSCPMode;
+    private String[] SCPMode = {"SCP01_15", "Option 2", "Option 3", "Option 4"};
+
+    private JLabel jlSecurityLevel;
+    private JComboBox cbSecurityLevel;
+    private String[] SecurityLevel = {"NO SECURITY LEVEL", "Option 2",
+    "Option 3", "Option 4"};
+
+    private JLabel jlTransProto;
+    private JComboBox cbTransProto;
+    private String[] TransProto = {"T=0", "T=1"};
+
+    private JLabel jlType;
+    private JComboBox cbType;
+    private String[] Type = {"DES_CBC", "Option 2"};
+
+    private JLabel jlKeyVersion;
+    public JTextField tfKeyVersion;
+
+    private JLabel jlKeyID;
+    public JTextField tfKeyID;
+
+    private JLabel jlKey;
+    public JTextField tfKey;
+
+    private JLabel jlImplementation;
+    private JComboBox cbImplementation;
+    private String[] Implementation = {"GP2xCommands", "Option 2"};
+
+    private JButton jbAdd;
+    private JButton jbRemove;
+    private JButton jbAuthenticate;
+
+    private short lineHeight  = 20;
+
     public AuthenticationPanel()
     {
-        setLayout(new BorderLayout());
+        JPanel jplPanel = new JPanel();
+        add(jplPanel);
 
-        CardXMLManager cardManager = new CardXMLManager("JCOP20"); 
-       
-        //first panel container 
-        JPanel jpl1 = new JPanel();
-        jpl1.setLayout(new GridLayout(0,2));
+        Box verticalBox = Box.createVerticalBox();
+        Box ligne = Box.createHorizontalBox();
+        ligne.setPreferredSize(new Dimension(500, 20));
 
-        //components definitions
-        JLabel ISDAII = new JLabel("Issuer Security Domain AII :");
-        JTextField tf1 = new JTextField(20);
+        // Issuer Security Domain AID
+        jlISDAID = createLabel("Issuer Security Domain AID", 160, lineHeight);
+        tfISDAID = new JTextField();
+        ligne.add(jlISDAID);
+        ligne.add(tfISDAID);
+        verticalBox.add(ligne);
 
+        verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
-        //Card ISD display test
-        tf1.setText(cardManager.getISDAID());
+        // SCP PMode
+        ligne = Box.createHorizontalBox();
+        jlSCPMode = createLabel("SCP Mode", 160, lineHeight);
+        cbSCPMode = new JComboBox(SCPMode);
+        cbSCPMode.setPreferredSize(new Dimension(100,20));
+        ligne.add(jlSCPMode);
+        ligne.add(cbSCPMode);
+        verticalBox.add(ligne);
 
-        JLabel scpMode = new JLabel("SCP Mode : ");
-        JComboBox scpModeCB = new JComboBox();
-        scpModeCB.addItem(cardManager.getScpMode());
+        verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
-        JLabel securityLevel = new JLabel("Security level : ");
-        JComboBox securityLevelCB = new JComboBox();
-        securityLevelCB.addItem("NO SECURITY LEVEL");
+        // Security Level
+        ligne = Box.createHorizontalBox();
+        jlSecurityLevel = createLabel("Security Level", 160, lineHeight);
+        cbSecurityLevel = new JComboBox(SecurityLevel);
+        cbSecurityLevel.setPreferredSize(new Dimension(120,20));
+        ligne.add(jlSecurityLevel);
+        ligne.add(cbSecurityLevel);
+        verticalBox.add(ligne);
 
-        JLabel transProto = new JLabel("Transmission protocol : ");
-        JComboBox transProtoCB = new JComboBox();
-        transProtoCB.addItem(cardManager.getTransmissionProtocol());
+        verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
-        //add components to panel container
-        jpl1.add(ISDAII);
-        jpl1.add(tf1);
-        jpl1.add(scpMode);
-        jpl1.add(scpModeCB);
-        jpl1.add(securityLevel);
-        jpl1.add(securityLevelCB);
-        jpl1.add(transProto);
-        jpl1.add(transProtoCB);
+        // Transmission Protocol
+        ligne = Box.createHorizontalBox();
+        jlTransProto = createLabel("Transmission Protocol", 160, lineHeight);
+        cbTransProto = new JComboBox(TransProto);
+        cbTransProto.setPreferredSize(new Dimension(100,20));
+        ligne.add(jlTransProto);
+        ligne.add(cbTransProto);
+        verticalBox.add(ligne);
 
-        //Second panel
-        JPanel jpl2 = new JPanel();
-        TitledBorder t1 = new TitledBorder("Keys");
-        jpl2.setBorder(t1);
+        // Key Panel
+        JPanel jpKeys = new JPanel();
+        jpKeys.setPreferredSize(new Dimension(500, 180));
+        TitledBorder tbKeys = new TitledBorder("Keys");
+        jpKeys.setBorder(tbKeys);
+        verticalBox.add(jpKeys);
 
-        //Third panel
-        JPanel jpl3 = new JPanel();
-        jpl3.setLayout(new GridLayout(0,2));
-        JLabel implementation = new JLabel("Implementation : ");
-        JComboBox implementationCB = new JComboBox();
-        implementationCB.addItem(cardManager.getImplementation());
+        Box verticalBoxKey = Box.createVerticalBox();
 
-        jpl3.add(implementation);
-        jpl3.add(implementationCB);
-
-
-       /* JPanel jpl4 = new JPanel();
-        jpl4.setLayout(new BorderLayout());
-
-        JButton authenticate = new JButton("Authenticate");
-        jpl4.add(authenticate, BorderLayout.WEST);*/
+        // Type
+        ligne = Box.createHorizontalBox();
+        jlType = createLabel("Type", 50, lineHeight);
+        cbType = new JComboBox(Type);
+        cbType.setPreferredSize(new Dimension(100,20));
+        ligne.add(jlType);
+        ligne.add(cbType);
         
-        add(jpl1, BorderLayout.NORTH);
-        add(jpl2, BorderLayout.CENTER);
-        add(jpl3, BorderLayout.SOUTH); 
+        // Key Version Number
+        jlKeyVersion = createLabel("Key Version Number", 120, lineHeight);
+        tfKeyVersion = new JTextField();
+        ligne.add(jlKeyVersion);
+        ligne.add(tfKeyVersion);
+
+        // Key ID
+        jlKeyID = createLabel("Key ID", 50, lineHeight);
+        tfKeyID = new JTextField();
+        ligne.add(jlKeyID);
+        ligne.add(tfKeyID);
+        verticalBoxKey.add(ligne);
+
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        // Key
+        ligne = Box.createHorizontalBox();
+        jlKey = createLabel("Key", 50, lineHeight);
+        tfKey = new JTextField(38);
+        ligne.add(jlKey);
+        ligne.add(tfKey);
+        verticalBoxKey.add(ligne);
+
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        //Remove field
+        ligne = Box.createHorizontalBox();
+        jbRemove = new JButton("Remove field");
+        ligne.add(jbRemove);
+        verticalBoxKey.add(ligne);
+
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        // Separator
+        verticalBoxKey.add(new JSeparator(SwingConstants.HORIZONTAL));
+
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        // Add field
+        ligne = Box.createHorizontalBox();
+        jbAdd = new JButton("Add field");
+        ligne.add(jbAdd);
+        verticalBoxKey.add(ligne);
+
+        jpKeys.add(verticalBoxKey);
+
+        verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        // Implementation
+        ligne = Box.createHorizontalBox();
+        jlImplementation = createLabel("Implementation", 160, lineHeight);
+        cbImplementation = new JComboBox(Implementation);
+        cbImplementation.setPreferredSize(new Dimension(100,20));
+        ligne.add(jlImplementation);
+        ligne.add(cbImplementation);
+        verticalBox.add(ligne);
+
+        verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        // Authenticate
+        ligne = Box.createHorizontalBox();
+        jbAuthenticate = new JButton("Authenticate");
+        ligne.add(jbAuthenticate);
+        verticalBox.add(ligne);
+
+        jplPanel.add(verticalBox);
+
+    }
+
+    /**
+     * Create a new label
+     * @param name
+     * @param width
+     * @param height
+     * @return the label
+     */
+    public JLabel createLabel(String name, int width, int height) {
+        JLabel label = new JLabel(name);
+        label.setPreferredSize(new Dimension(width,height));
+        //label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        //label.addMouseListener((MouseListener) this);
+        return label;
     }
 }
