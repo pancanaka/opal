@@ -1,0 +1,5 @@
+# test LOAD operation
+# security level is C_ENC_AND_MAC
+#
+80 E6 0C 00 20 07 AA 0A 0A 0A 1A 4A 4A 07 AB 0B 0B 0B 1B 4B 4B 07 AC 0C 0C 0C 1C 4C 4C 03 01 02 03 02 C9 00 00
+90 00

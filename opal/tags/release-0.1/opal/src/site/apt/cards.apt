@@ -1,0 +1,99 @@
+Supported Cards
+
+    The following cards have been tested with OPAL.
+
+* Version 0.1
+
+    * Cyberflac Palmera v3
+
+        * ISD: A0 00 00 00 03 00 00 00
+
+        * ATR: 3B 65 00 00 44 04 01 08 03
+
+        * Protocol: SCP01
+
+    * GemXpresso 211 IS
+
+        * ISD: A0 00 00 00 18 43 4D
+
+        * ATR: 3B 6E 00 00 80 31 80 65 B0 03 02 01 5E 83 00 00 90 00
+
+        * Protocol: SCP01
+
+    * GemXpresso 211 PKIS
+
+        * ISD: A0 00 00 00 18 43 4D
+
+        * Protocol: SCP01
+
+    * GemXplore 3G
+
+        * ISD: A0 00 00 00 18 43 4D FF 33 FF FF 89 00 00 00
+
+        * Protocol: SCP01
+
+    * GemComb Xpresso Lite R2 Std JCOP 30
+
+        * ISD : A0 00 00 00 18 43 4D 00
+
+        * ATR : 3B 6D 00 00 80 31 80 65 B0 07 02 02 89 83 00 90 00
+
+        * NFC ATR : 3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00
+
+        * Protocol: SCP01 (using derived key from a mother key)
+
+    * Infineon JTOP V2 16k
+
+        * ISD : A0 00 00 00 03 00 00 00
+
+        * ATR : 3B 6D 00 00 80 31 80 65 40 90 86 01 51 83 07 90 00
+
+        * Protocol: SCP01
+
+    * JCP 2.0 V2.1
+
+        * ISD : A0 00 00 00 03 00 00 00
+
+        * Protocol: SCP01
+
+    * JCOP 3.0 V2.0
+
+        * ISD : A0 00 00 00 03 00 00 00
+
+        * Protocol: SCP01
+
+    * JCOP 3.1 V2.2
+
+        * ISD : A0 00 00 00 03 00 00 00
+
+        * ATR : 3B 66 00 FF 4A 43 4F 50 33 30
+
+        * Protocol: SCP01
+
+    * Oberthur Bleue CosmoPol IC
+
+        * ISD : A0 00 00 00 03 00 00 00
+
+        * ATR : 3B 7D 11 00 00 00 31 80 71 8E 64 52 D9 34 00 82 90 00
+
+        * Protocol: SCP01
+
+    * Oberthur CosmoPol Dual 72k
+
+        * ISD : A0 00 00 00 03 00 00 00
+
+        * ATR : 3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 82 90 00
+
+        * Protocol: SCP01
+
+    * Oberthur Grey (model ?)
+
+        * ISD : A0 00 00 00 03 00 00 00
+
+        * Protocol: SCP01
+
+    * JCOP 2.1 V2.2
+
+        * ISD : A0 00 00 00 03 00 00 00 (warning: same ISD as other JCOP)
+
+        * Protocol : SCP02

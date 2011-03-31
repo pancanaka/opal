@@ -1,0 +1,322 @@
+package fr.xlim.ssd.opal.library.params;
+
+import fr.xlim.ssd.opal.library.*;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
+
+/**
+ * Delivers card configuration CardConfig
+ *
+ * @author Damien Arcuset
+ * @author Eric Linke
+ * @author Julien Iguchi-Cartigny
+ * @see CardConfig
+ */
+public class CardConfigFactory {
+
+    /// the logger
+    private final static Logger logger = LoggerFactory.getLogger(CardConfigFactory.class);
+
+    private static String configFile = "/config.xml";
+
+    public static void setConfigFile (String configFile) {
+        CardConfigFactory.configFile = configFile;
+    }
+
+    /**
+     * Get the card config based on its name.
+     *
+     * @param cardName the card identifier in config.xml
+     * @return a CardConfig object if the card identifier is found
+     * @throws CardConfigNotFoundException if card configuration not found
+     */
+    public static CardConfig getCardConfig(String cardName)
+            throws CardConfigNotFoundException {
+
+        String name = null;
+        String description = null;
+        ATR[] atrs = null ;
+        byte[] isd = null;
+        SCPMode scpMode = null;
+        String tp = null;
+        SCKey[] keys = null;
+        String impl = null;
+
+        try {
+
+            InputStream input = CardConfigFactory.class.getResourceAsStream(CardConfigFactory.configFile);
+
+            Document document = DocumentBuilderFactory.newInstance().
+                    newDocumentBuilder().parse(input);
+
+            NodeList cards = document.getElementsByTagName("card");
+            Element desiredCard = null;
+
+            // looking for the card identifier in config.xml file
+            for (int i = 0; i < cards.getLength(); i++) {
+                if (((Element) cards.item(i)).getAttribute("name").equals(cardName)) {
+                    desiredCard = (Element) cards.item(i);
+                }
+            }
+
+            if (desiredCard == null) {
+                throw new CardConfigNotFoundException("Card \"" + cardName + "\" not found");
+            }
+
+            // set and return CardConfig
+            name = getName(desiredCard);
+            description = getDescription(desiredCard);
+            atrs = getATRs(desiredCard);
+            isd = getISD(desiredCard);
+            scpMode = getSCP(desiredCard);
+            tp = getTP(desiredCard);
+            keys = getKeys(desiredCard);
+            impl = getImpl(desiredCard);
+
+        } catch (IOException e) {
+            throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
+        } catch (SAXException e) {
+            throw new CardConfigNotFoundException("SAX error when reading config.xml file:" + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
+        }
+
+        return new CardConfig(name,description, atrs, isd, scpMode, tp, keys, impl);
+    }
+
+    /**
+     * Get the value between name tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return A string with the name of the configuration
+     */
+    private static String getName(Element card) {
+        return card.getAttribute("name");
+    }
+
+    /**
+     * Get the value between description tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return A string with the description of the configuration
+     */
+    private static String getDescription(Element card) {
+        return card.getAttribute("description");
+    }
+
+    /**
+     * Get the keys between key tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return the credentials keys
+     */
+    private static ATR[] getATRs(Element card) {
+
+        NodeList listATRElem = card.getElementsByTagName("listATR");
+        ATR[] atrs = null;
+        try {
+            NodeList AtrsElem = ((Element)listATRElem).getElementsByTagName("ATR");
+            atrs = new ATR[AtrsElem.getLength()];
+
+            // for each key in the Element
+            for (int i = 0; i < AtrsElem.getLength(); i++) {
+                atrs[i] = new ATR (Conversion.hexToArray (((Element) AtrsElem.item(i)).getAttribute("value")));
+            }
+        }
+        catch (ClassCastException e){
+            logger.warn("There are not ATR list" + e.getMessage());
+        } finally {
+            return atrs;
+        }
+    }
+
+
+    /**
+     * Get the value between isdAID tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return a byte array with the issuer security domain AID value
+     */
+    private static byte[] getISD(Element card) {
+        return Conversion.hexToArray(((Element) card.getElementsByTagName("isdAID").item(0)).getAttribute("value"));
+    }
+
+    /**
+     * Get the value between scpMode tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return the SCP mode
+     */
+    private static SCPMode getSCP(Element card) {
+        String scp = ((Element) card.getElementsByTagName("scpMode").item(0)).getAttribute("value");
+        SCPMode res = null;
+        if (scp.equals("01_05")) {
+            res = SCPMode.SCP_01_05;
+        } else if (scp.equals("01_15")) {
+            res = SCPMode.SCP_01_15;
+        } else if (scp.equals("02_15")) {
+            res = SCPMode.SCP_02_15;
+        }else if (scp.equals("02_04")) {
+            res = SCPMode.SCP_02_04;
+        }else if (scp.equals("02_05")) {
+            res = SCPMode.SCP_02_05;
+        }else if (scp.equals("02_14")) {
+            res = SCPMode.SCP_02_14;
+        }else if (scp.equals("02_0A")) {
+            res = SCPMode.SCP_02_0A;
+        }else if (scp.equals("02_45")) {
+            res = SCPMode.SCP_02_45;
+        }else if (scp.equals("02_55")) {
+            res = SCPMode.SCP_02_55;
+        }else if (scp.equals("03_65")) {
+            res = SCPMode.SCP_03_65;
+        }else if (scp.equals("03_6D")) {
+            res = SCPMode.SCP_03_6D;
+        }else if (scp.equals("03_05")) {
+            res = SCPMode.SCP_03_05;
+        }else if (scp.equals("03_0D")) {
+            res = SCPMode.SCP_03_0D;
+        }else if (scp.equals("03_2D")) {
+            res = SCPMode.SCP_03_2D;
+        }else if (scp.equals("03_25")) {
+            res = SCPMode.SCP_03_25;
+        }
+        return res;
+    }
+
+    /**
+     * Get the value between transmissionProtocol tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return the transmission protocol used
+     */
+    private static String getTP(Element card) {
+        return ((Element) card.getElementsByTagName("transmissionProtocol").item(0)).getAttribute("value");
+    }
+
+    /**
+     * Get the keys between key tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return the credentials keys
+     */
+    private static SCKey[] getKeys(Element card) {
+
+        NodeList keysElem = card.getElementsByTagName("key");
+        SCKey[] keys = new SCKey[keysElem.getLength()];
+
+        // for each key in the Element
+        for (int i = 0; i < keysElem.getLength(); i++) {
+            String keyType = ((Element) keysElem.item(i)).getAttribute("type");
+            String keyVersionNumber = ((Element) keysElem.item(i)).getAttribute("keyVersionNumber");
+            String keyDatas = ((Element) keysElem.item(i)).getAttribute("keyDatas");
+            if (keyType.equals("DES_ECB")) {
+                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
+                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
+                        KeyType.DES_ECB, Conversion.hexToArray(keyDatas));
+            } else if (keyType.equals("DES_CBC")) {
+                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
+                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
+                        KeyType.DES_CBC, Conversion.hexToArray(keyDatas));
+            } else if (keyType.equals("SCGemVisa2")) {
+                keys[i] = new SCGemVisa2((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
+            } else if (keyType.equals("SCGemVisa")) {
+                keys[i] = new SCGemVisa((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
+            }
+            if (keyType.equals("AES")) {
+                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
+                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
+                        KeyType.AES_CBC, Conversion.hexToArray(keyDatas));
+            }
+        }
+        return keys;
+    }
+
+    /**
+     * Get the value between defaultImpl tags from an element in the config.xml
+     *
+     * @param card an element in the config.xml
+     * @return A string with the name of the implementation
+     */
+    private static String getImpl(Element card) {
+        return card.getAttribute("defaultImpl");
+    }
+
+    /**
+     * Return the card config based on the ATR returns by the card.
+     *
+     * @param atr the ATR returns by the card
+     * @return the name of the card config
+     * @throws CardConfigNotFoundException if ATR not found
+     */
+    public static CardConfig getCardConfig(byte[] atr)
+            throws CardConfigNotFoundException {
+
+        String name = null;
+        String description = null;
+        ATR[] atrs = null ;
+        byte[] isd = null;
+        SCPMode scpMode = null;
+        String tp = null;
+        SCKey[] keys = null;
+        String impl = null;
+
+        ATR arr2found = new ATR (atr);
+
+        try {
+
+            InputStream input = CardConfigFactory.class.getResourceAsStream(CardConfigFactory.configFile);
+
+            Document document = DocumentBuilderFactory.newInstance().
+                    newDocumentBuilder().parse(input);
+
+            NodeList cards = document.getElementsByTagName("card");
+            Element desiredCard = null;
+
+            // looking for the card identifiant in atr.xml file
+            for (int i = 0; i < cards.getLength(); i++) {
+                desiredCard = (Element) cards.item(i);
+                atrs = getATRs(desiredCard);
+                for(ATR a: atrs){
+                    if (atr.equals(a)) {
+                        break;
+                    }
+                }
+            }
+
+            if (desiredCard == null) {
+                throw new CardConfigNotFoundException("ATR \"" + Conversion.arrayToHex(atr) + "\" not found");
+            }
+
+            // set and return CardConfig
+            name = getName(desiredCard);
+            description = getDescription(desiredCard);
+            isd = getISD(desiredCard);
+            scpMode = getSCP(desiredCard);
+            tp = getTP(desiredCard);
+            keys = getKeys(desiredCard);
+            impl = getImpl(desiredCard);
+
+        } catch (IOException e) {
+            throw new CardConfigNotFoundException("cannot read the atr.xml file: " + e.getMessage());
+        } catch (SAXException e) {
+            throw new CardConfigNotFoundException("SAX error when reading atr.xml file: " + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            throw new CardConfigNotFoundException("XML parsing error when reading atr.xml file: " + e.getMessage());
+        }
+
+        return new CardConfig(name,description, atrs, isd, scpMode, tp, keys, impl);
+    }
+}

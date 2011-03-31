@@ -1,0 +1,882 @@
+# test install and use Hello Word Applet operation
+# card is Oberthur CosmoplIC
+# security level is C_MAC
+#
+
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00
+# ==> Init ICV end
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 3D 84 08 A0 00 00 00 03 00 00 00 A5 31 9F 6E 2A 20 50 50 33 40 41 30 45 00 5C 41 56 00 00 00 07 00 00 14 32 41 56 14 33 41 56 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 0C 04 53 91 5F 7E A9 34
+00 00 41 56 00 00 00 07 00 00 FF 01 B0 28 37 9F 18 41 07 3A 91 23 5E F1 A8 9D 7B 43 90 00
+# SCPMode is SCP_01_05
+# * Key Diversification Data is 00 00 41 56 00 00 00 07 00 00
+# * Host Challenge is 0C 04 53 91 5F 7E A9 34
+# * Card Challenge is B0 28 37 9F 18 41 07 3A
+# * Card Crypto Resp is 91 23 5E F1 A8 9D 7B 43
+# ==> Calculate Derivation Data
+# * Derivation Data is 18 41 07 3A 0C 04 53 91 B0 28 37 9F 5F 7E A9 34
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * SCP_Mode is SCP_01_05
+# * sessEnc = AF 13 8B AA A7 E0 2F 21 F8 A6 87 40 D0 59 97 11 AF 13 8B AA A7 E0 2F 21
+# * sessMac = AF 13 8B AA A7 E0 2F 21 F8 A6 87 40 D0 59 97 11 AF 13 8B AA A7 E0 2F 21
+# * sessKek = AF 13 8B AA A7 E0 2F 21 F8 A6 87 40 D0 59 97 11 AF 13 8B AA A7 E0 2F 21
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00
+# * SCP 01 protocol used
+# * Data to encrypt: 0C 04 53 91 5F 7E A9 34 B0 28 37 9F 18 41 07 3A 80 00 00 00 00 00 00 00
+# * Calculated Card Crypto: 91 23 5E F1 A8 9D 7B 43
+# * Calculated Host Crypto: 0F AB E2 06 1C 92 8C 90
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isC_MAC
+# * Data uses to calculate mac value is84 82 01 00 10 0F AB E2 06 1C 92 8C 90
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 82 01 00 10 0F AB E2 06 1C 92 8C 90 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 00 00 00 00 00 00 00 00
+# * Calculated cryptogram is B4 8D 39 C0 CA 29 FD 34
+# * New ICV is B4 8D 39 C0 CA 29 FD 34
+# ==> Generate Mac End
+# * mac value obtainsB4 8D 39 C0 CA 29 FD 34
+# EXTERNAL AUTHENTICATE command
+84 82 01 00 10 0F AB E2 06 1C 92 8C 90 B4 8D 39 C0 CA 29 FD 34
+90 00
+# => External Authenticate end
+# => Install for load begin
+# + Package AID to install is A0 00 00 00 62 03 01 0C 01
+# + Security Domain AID is A0 00 00 00 03 00 00 00
+# + There is not parameter
+# + SecLevel is C_MAC
+# * Parameters Length is 0 (0x0)
+# * Parameters Length Encoded is 00
+# * Install For Load Command is 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 80 00 00 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is B4 8D 39 C0 CA 29 FD 34
+# * Calculated cryptogram is 06 B3 1A B4 41 93 1B 45
+# * New ICV is 06 B3 1A B4 41 93 1B 45
+# ==> Generate Mac End
+# * Install For Load Command which CMAC is 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 06 B3 1A B4 41 93 1B 45
+# INSTALL FOR LOAD command
+84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 06 B3 1A B4 41 93 1B 45
+00 90 00
+# => Install For Load Command End
+# => Load Command Begin
+# + Cap File size to load is 409
+# + Max Data Length is 16(0x10)
+# + SecLevel is C_MAC
+# * SecLevel != NO_SECURITY_LEVEL => new dataBlockSize is 8
+# * Cap File Remain Length is 409
+# * ber is C4 82 01 99
+# * number of block is 52
+# * Load Command is 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 06 B3 1A B4 41 93 1B 45
+# * Calculated cryptogram is A5 0E CF 6A EA 53 FF A6
+# * New ICV is A5 0E CF 6A EA 53 FF A6
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 00 10 C4 82 01 99 01 00 13 DE A5 0E CF 6A EA 53 FF A6
+# LOAD command
+84 E8 00 00 10 C4 82 01 99 01 00 13 DE A5 0E CF 6A EA 53 FF A6
+90 00
+# * Load Command is 84 E8 00 01 10 CA FF ED 01 02 04 00 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 01 10 CA FF ED 01 02 04 00 01 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is A5 0E CF 6A EA 53 FF A6
+# * Calculated cryptogram is D3 46 58 29 D6 EA A4 00
+# * New ICV is D3 46 58 29 D6 EA A4 00
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 01 10 CA FF ED 01 02 04 00 01 D3 46 58 29 D6 EA A4 00
+# LOAD command
+84 E8 00 01 10 CA FF ED 01 02 04 00 01 D3 46 58 29 D6 EA A4 00
+90 00
+# * Load Command is 84 E8 00 02 10 09 A0 00 00 00 62 03 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 02 10 09 A0 00 00 00 62 03 01 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is D3 46 58 29 D6 EA A4 00
+# * Calculated cryptogram is 6E 9B F7 0D 74 27 7B 30
+# * New ICV is 6E 9B F7 0D 74 27 7B 30
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 02 10 09 A0 00 00 00 62 03 01 6E 9B F7 0D 74 27 7B 30
+# LOAD command
+84 E8 00 02 10 09 A0 00 00 00 62 03 01 6E 9B F7 0D 74 27 7B 30
+90 00
+# * Load Command is 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 6E 9B F7 0D 74 27 7B 30
+# * Calculated cryptogram is 67 3F A7 97 16 E8 77 C9
+# * New ICV is 67 3F A7 97 16 E8 77 C9
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 67 3F A7 97 16 E8 77 C9
+# LOAD command
+84 E8 00 03 10 0C 01 02 00 1F 00 13 00 67 3F A7 97 16 E8 77 C9
+90 00
+# * Load Command is 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 67 3F A7 97 16 E8 77 C9
+# * Calculated cryptogram is EA 11 0D 43 F8 3E CF A7
+# * New ICV is EA 11 0D 43 F8 3E CF A7
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 EA 11 0D 43 F8 3E CF A7
+# LOAD command
+84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 EA 11 0D 43 F8 3E CF A7
+90 00
+# * Load Command is 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is EA 11 0D 43 F8 3E CF A7
+# * Calculated cryptogram is 8B 36 86 B8 36 8A A6 F5
+# * New ICV is 8B 36 86 B8 36 8A A6 F5
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 8B 36 86 B8 36 8A A6 F5
+# LOAD command
+84 E8 00 05 10 0C 00 65 00 0A 00 13 00 8B 36 86 B8 36 8A A6 F5
+90 00
+# * Load Command is 84 E8 00 06 10 00 00 6C 00 00 00 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 06 10 00 00 6C 00 00 00 00 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 8B 36 86 B8 36 8A A6 F5
+# * Calculated cryptogram is 99 05 70 2C A5 1C 3D F6
+# * New ICV is 99 05 70 2C A5 1C 3D F6
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 06 10 00 00 6C 00 00 00 00 00 99 05 70 2C A5 1C 3D F6
+# LOAD command
+84 E8 00 06 10 00 00 6C 00 00 00 00 00 99 05 70 2C A5 1C 3D F6
+90 00
+# * Load Command is 84 E8 00 07 10 00 01 01 00 04 00 0B 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 07 10 00 01 01 00 04 00 0B 01 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 99 05 70 2C A5 1C 3D F6
+# * Calculated cryptogram is 37 66 F9 AC 01 34 19 F7
+# * New ICV is 37 66 F9 AC 01 34 19 F7
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 07 10 00 01 01 00 04 00 0B 01 37 66 F9 AC 01 34 19 F7
+# LOAD command
+84 E8 00 07 10 00 01 01 00 04 00 0B 01 37 66 F9 AC 01 34 19 F7
+90 00
+# * Load Command is 84 E8 00 08 10 00 01 07 A0 00 00 00 62 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 08 10 00 01 07 A0 00 00 00 62 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 37 66 F9 AC 01 34 19 F7
+# * Calculated cryptogram is 05 1A 40 F9 00 B9 E3 07
+# * New ICV is 05 1A 40 F9 00 B9 E3 07
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 08 10 00 01 07 A0 00 00 00 62 05 1A 40 F9 00 B9 E3 07
+# LOAD command
+84 E8 00 08 10 00 01 07 A0 00 00 00 62 05 1A 40 F9 00 B9 E3 07
+90 00
+# * Load Command is 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 05 1A 40 F9 00 B9 E3 07
+# * Calculated cryptogram is 87 78 F0 6B 22 AD 54 2E
+# * New ICV is 87 78 F0 6B 22 AD 54 2E
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 87 78 F0 6B 22 AD 54 2E
+# LOAD command
+84 E8 00 09 10 01 01 03 00 0E 01 0A A0 87 78 F0 6B 22 AD 54 2E
+90 00
+# * Load Command is 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 87 78 F0 6B 22 AD 54 2E
+# * Calculated cryptogram is CA B4 DC 9E DC 88 D3 D8
+# * New ICV is CA B4 DC 9E DC 88 D3 D8
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 CA B4 DC 9E DC 88 D3 D8
+# LOAD command
+84 E8 00 0A 10 00 00 00 62 03 01 0C 01 CA B4 DC 9E DC 88 D3 D8
+90 00
+# * Load Command is 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is CA B4 DC 9E DC 88 D3 D8
+# * Calculated cryptogram is 29 83 3D 79 8E BB C0 D4
+# * New ICV is 29 83 3D 79 8E BB C0 D4
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 29 83 3D 79 8E BB C0 D4
+# LOAD command
+84 E8 00 0B 10 01 00 14 06 00 0C 00 80 29 83 3D 79 8E BB C0 D4
+90 00
+# * Load Command is 84 E8 00 0C 10 03 01 00 01 07 01 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 0C 10 03 01 00 01 07 01 00 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 29 83 3D 79 8E BB C0 D4
+# * Calculated cryptogram is 15 90 02 90 43 C1 C2 51
+# * New ICV is 15 90 02 90 43 C1 C2 51
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 0C 10 03 01 00 01 07 01 00 00 15 90 02 90 43 C1 C2 51
+# LOAD command
+84 E8 00 0C 10 03 01 00 01 07 01 00 00 15 90 02 90 43 C1 C2 51
+90 00
+# * Load Command is 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 15 90 02 90 43 C1 C2 51
+# * Calculated cryptogram is BB 97 9F 3D B4 B0 3B 6D
+# * New ICV is BB 97 9F 3D B4 B0 3B 6D
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 BB 97 9F 3D B4 B0 3B 6D
+# LOAD command
+84 E8 00 0D 10 00 1D 07 00 65 00 02 10 BB 97 9F 3D B4 B0 3B 6D
+90 00
+# * Load Command is 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is BB 97 9F 3D B4 B0 3B 6D
+# * Calculated cryptogram is 07 10 17 13 C5 8C F8 C6
+# * New ICV is 07 10 17 13 C5 8C F8 C6
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 07 10 17 13 C5 8C F8 C6
+# LOAD command
+84 E8 00 0E 10 18 8C 00 01 18 11 01 00 07 10 17 13 C5 8C F8 C6
+90 00
+# * Load Command is 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 07 10 17 13 C5 8C F8 C6
+# * Calculated cryptogram is 8A E1 8D D0 D0 EB EA 97
+# * New ICV is 8A E1 8D D0 D0 EB EA 97
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 8A E1 8D D0 D0 EB EA 97
+# LOAD command
+84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 8A E1 8D D0 D0 EB EA 97
+90 00
+# * Load Command is 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 8A E1 8D D0 D0 EB EA 97
+# * Calculated cryptogram is 48 C2 E4 D9 CC 43 6B 69
+# * New ICV is 48 C2 E4 D9 CC 43 6B 69
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 48 C2 E4 D9 CC 43 6B 69
+# LOAD command
+84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 48 C2 E4 D9 CC 43 6B 69
+90 00
+# * Load Command is 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 48 C2 E4 D9 CC 43 6B 69
+# * Calculated cryptogram is AB 2F 7A 90 AA 2E 5E 78
+# * New ICV is AB 2F 7A 90 AA 2E 5E 78
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 AB 2F 7A 90 AA 2E 5E 78
+# LOAD command
+84 E8 00 11 10 04 7A 05 23 19 8B 00 05 AB 2F 7A 90 AA 2E 5E 78
+90 00
+# * Load Command is 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is AB 2F 7A 90 AA 2E 5E 78
+# * Calculated cryptogram is 15 65 72 78 23 E3 21 6E
+# * New ICV is 15 65 72 78 23 E3 21 6E
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 15 65 72 78 23 E3 21 6E
+# LOAD command
+84 E8 00 12 10 2D 19 8B 00 06 32 03 29 15 65 72 78 23 E3 21 6E
+90 00
+# * Load Command is 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 15 65 72 78 23 E3 21 6E
+# * Calculated cryptogram is C8 A8 ED 65 80 BB E1 AC
+# * New ICV is C8 A8 ED 65 80 BB E1 AC
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 C8 A8 ED 65 80 BB E1 AC
+# LOAD command
+84 E8 00 13 10 04 70 19 1A 08 AD 00 16 C8 A8 ED 65 80 BB E1 AC
+90 00
+# * Load Command is 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is C8 A8 ED 65 80 BB E1 AC
+# * Calculated cryptogram is 83 7C 56 05 4C 88 E0 03
+# * New ICV is 83 7C 56 05 4C 88 E0 03
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 83 7C 56 05 4C 88 E0 03
+# LOAD command
+84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 83 7C 56 05 4C 88 E0 03
+90 00
+# * Load Command is 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 83 7C 56 05 4C 88 E0 03
+# * Calculated cryptogram is 4E 76 98 A1 4C E8 3D 56
+# * New ICV is 4E 76 98 A1 4C E8 3D 56
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 4E 76 98 A1 4C E8 3D 56
+# LOAD command
+84 E8 00 15 10 1F 41 29 04 19 08 8B 00 4E 76 98 A1 4C E8 3D 56
+90 00
+# * Load Command is 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 4E 76 98 A1 4C E8 3D 56
+# * Calculated cryptogram is 85 27 C6 B1 1D 16 5A AB
+# * New ICV is 85 27 C6 B1 1D 16 5A AB
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 85 27 C6 B1 1D 16 5A AB
+# LOAD command
+84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 85 27 C6 B1 1D 16 5A AB
+90 00
+# * Load Command is 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 85 27 C6 B1 1D 16 5A AB
+# * Calculated cryptogram is 61 33 B9 2F C9 28 A9 92
+# * New ICV is 61 33 B9 2F C9 28 A9 92
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 61 33 B9 2F C9 28 A9 92
+# LOAD command
+84 E8 00 17 10 07 3B 19 16 04 08 41 8B 61 33 B9 2F C9 28 A9 92
+90 00
+# * Load Command is 84 E8 00 18 10 00 08 19 03 08 8B 00 09 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 18 10 00 08 19 03 08 8B 00 09 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 61 33 B9 2F C9 28 A9 92
+# * Calculated cryptogram is 53 09 1C A7 E2 B3 3B 94
+# * New ICV is 53 09 1C A7 E2 B3 3B 94
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 18 10 00 08 19 03 08 8B 00 09 53 09 1C A7 E2 B3 3B 94
+# LOAD command
+84 E8 00 18 10 00 08 19 03 08 8B 00 09 53 09 1C A7 E2 B3 3B 94
+90 00
+# * Load Command is 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 53 09 1C A7 E2 B3 3B 94
+# * Calculated cryptogram is C8 2A B5 F8 16 08 44 96
+# * New ICV is C8 2A B5 F8 16 08 44 96
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 C8 2A B5 F8 16 08 44 96
+# LOAD command
+84 E8 00 19 10 19 AD 00 03 16 04 8B 00 C8 2A B5 F8 16 08 44 96
+90 00
+# * Load Command is 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is C8 2A B5 F8 16 08 44 96
+# * Calculated cryptogram is 38 27 5C B6 AE 0E 3E 2E
+# * New ICV is 38 27 5C B6 AE 0E 3E 2E
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 38 27 5C B6 AE 0E 3E 2E
+# LOAD command
+84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 38 27 5C B6 AE 0E 3E 2E
+90 00
+# * Load Command is 84 E8 00 1B 10 00 00 00 00 00 00 00 05 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 1B 10 00 00 00 00 00 00 00 05 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 38 27 5C B6 AE 0E 3E 2E
+# * Calculated cryptogram is B1 1B 5A 7F 34 E5 D2 D8
+# * New ICV is B1 1B 5A 7F 34 E5 D2 D8
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 1B 10 00 00 00 00 00 00 00 05 B1 1B 5A 7F 34 E5 D2 D8
+# LOAD command
+84 E8 00 1B 10 00 00 00 00 00 00 00 05 B1 1B 5A 7F 34 E5 D2 D8
+90 00
+# * Load Command is 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is B1 1B 5A 7F 34 E5 D2 D8
+# * Calculated cryptogram is C1 63 45 A1 2C BC 14 DE
+# * New ICV is C1 63 45 A1 2C BC 14 DE
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 C1 63 45 A1 2C BC 14 DE
+# LOAD command
+84 E8 00 1C 10 00 36 00 0D 02 00 00 00 C1 63 45 A1 2C BC 14 DE
+90 00
+# * Load Command is 84 E8 00 1D 10 06 80 03 00 03 80 03 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 1D 10 06 80 03 00 03 80 03 01 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is C1 63 45 A1 2C BC 14 DE
+# * Calculated cryptogram is CA D4 EF 05 29 19 0A 99
+# * New ICV is CA D4 EF 05 29 19 0A 99
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 1D 10 06 80 03 00 03 80 03 01 CA D4 EF 05 29 19 0A 99
+# LOAD command
+84 E8 00 1D 10 06 80 03 00 03 80 03 01 CA D4 EF 05 29 19 0A 99
+90 00
+# * Load Command is 84 E8 00 1E 10 01 00 00 00 06 00 00 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 1E 10 01 00 00 00 06 00 00 01 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is CA D4 EF 05 29 19 0A 99
+# * Calculated cryptogram is C4 ED 5D 3B 05 4A 81 43
+# * New ICV is C4 ED 5D 3B 05 4A 81 43
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 1E 10 01 00 00 00 06 00 00 01 C4 ED 5D 3B 05 4A 81 43
+# LOAD command
+84 E8 00 1E 10 01 00 00 00 06 00 00 01 C4 ED 5D 3B 05 4A 81 43
+90 00
+# * Load Command is 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is C4 ED 5D 3B 05 4A 81 43
+# * Calculated cryptogram is B8 2C 37 26 DC D5 C8 AC
+# * New ICV is B8 2C 37 26 DC D5 C8 AC
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 B8 2C 37 26 DC D5 C8 AC
+# LOAD command
+84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 B8 2C 37 26 DC D5 C8 AC
+90 00
+# * Load Command is 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is B8 2C 37 26 DC D5 C8 AC
+# * Calculated cryptogram is 65 A1 2C D5 79 3D 55 2A
+# * New ICV is 65 A1 2C D5 79 3D 55 2A
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 65 A1 2C D5 79 3D 55 2A
+# LOAD command
+84 E8 00 20 10 03 80 0A 07 03 80 0A 09 65 A1 2C D5 79 3D 55 2A
+90 00
+# * Load Command is 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 65 A1 2C D5 79 3D 55 2A
+# * Calculated cryptogram is E0 E2 0D 7B 6D C0 42 6E
+# * New ICV is E0 E2 0D 7B 6D C0 42 6E
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 E0 E2 0D 7B 6D C0 42 6E
+# LOAD command
+84 E8 00 21 10 03 80 0A 04 03 80 0A 05 E0 E2 0D 7B 6D C0 42 6E
+90 00
+# * Load Command is 84 E8 00 22 10 06 80 10 02 03 80 0A 03 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 22 10 06 80 10 02 03 80 0A 03 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is E0 E2 0D 7B 6D C0 42 6E
+# * Calculated cryptogram is 53 C4 FC E6 2A C6 F4 46
+# * New ICV is 53 C4 FC E6 2A C6 F4 46
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 22 10 06 80 10 02 03 80 0A 03 53 C4 FC E6 2A C6 F4 46
+# LOAD command
+84 E8 00 22 10 06 80 10 02 03 80 0A 03 53 C4 FC E6 2A C6 F4 46
+90 00
+# * Load Command is 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 53 C4 FC E6 2A C6 F4 46
+# * Calculated cryptogram is FE B6 C8 4B 98 60 F1 F0
+# * New ICV is FE B6 C8 4B 98 60 F1 F0
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 23 10 09 00 13 00 03 0E 23 2C FE B6 C8 4B 98 60 F1 F0
+# LOAD command
+84 E8 00 23 10 09 00 13 00 03 0E 23 2C FE B6 C8 4B 98 60 F1 F0
+90 00
+# * Load Command is 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is FE B6 C8 4B 98 60 F1 F0
+# * Calculated cryptogram is 7A D4 75 4E 6E CB B1 99
+# * New ICV is 7A D4 75 4E 6E CB B1 99
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 7A D4 75 4E 6E CB B1 99
+# LOAD command
+84 E8 00 24 10 00 0C 05 0C 06 03 07 05 7A D4 75 4E 6E CB B1 99
+90 00
+# * Load Command is 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 7A D4 75 4E 6E CB B1 99
+# * Calculated cryptogram is A7 8A 34 E5 55 BC AE 0D
+# * New ICV is A7 8A 34 E5 55 BC AE 0D
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 A7 8A 34 E5 55 BC AE 0D
+# LOAD command
+84 E8 00 25 10 10 0C 08 09 06 09 0B 00 A7 8A 34 E5 55 BC AE 0D
+90 00
+# * Load Command is 84 E8 00 26 10 6C 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 26 10 6C 01 00 01 00 00 00 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is A7 8A 34 E5 55 BC AE 0D
+# * Calculated cryptogram is 01 3E 07 7D 51 D2 4B 22
+# * New ICV is 01 3E 07 7D 51 D2 4B 22
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 26 10 6C 01 00 01 00 00 00 00 01 3E 07 7D 51 D2 4B 22
+# LOAD command
+84 E8 00 26 10 6C 01 00 01 00 00 00 00 01 3E 07 7D 51 D2 4B 22
+90 00
+# * Load Command is 84 E8 00 27 10 01 00 03 00 02 00 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 27 10 01 00 03 00 02 00 00 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 01 3E 07 7D 51 D2 4B 22
+# * Calculated cryptogram is B5 29 47 CD D0 92 F1 57
+# * New ICV is B5 29 47 CD D0 92 F1 57
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 27 10 01 00 03 00 02 00 00 00 B5 29 47 CD D0 92 F1 57
+# LOAD command
+84 E8 00 27 10 01 00 03 00 02 00 00 00 B5 29 47 CD D0 92 F1 57
+90 00
+# * Load Command is 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is B5 29 47 CD D0 92 F1 57
+# * Calculated cryptogram is DB EF 7E 24 F0 28 A0 BC
+# * New ICV is DB EF 7E 24 F0 28 A0 BC
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 28 10 00 1C 00 84 00 01 00 1E DB EF 7E 24 F0 28 A0 BC
+# LOAD command
+84 E8 00 28 10 00 1C 00 84 00 01 00 1E DB EF 7E 24 F0 28 A0 BC
+90 00
+# * Load Command is 84 E8 00 29 10 00 11 00 00 00 00 01 09 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 29 10 00 11 00 00 00 00 01 09 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is DB EF 7E 24 F0 28 A0 BC
+# * Calculated cryptogram is 86 94 AE F9 F0 77 0F 79
+# * New ICV is 86 94 AE F9 F0 77 0F 79
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 29 10 00 11 00 00 00 00 01 09 86 94 AE F9 F0 77 0F 79
+# LOAD command
+84 E8 00 29 10 00 11 00 00 00 00 01 09 86 94 AE F9 F0 77 0F 79
+90 00
+# * Load Command is 84 E8 00 2A 10 00 14 00 30 00 07 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 2A 10 00 14 00 30 00 07 00 00 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 86 94 AE F9 F0 77 0F 79
+# * Calculated cryptogram is 04 9E 78 BE 28 5E 02 1F
+# * New ICV is 04 9E 78 BE 28 5E 02 1F
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 2A 10 00 14 00 30 00 07 00 00 04 9E 78 BE 28 5E 02 1F
+# LOAD command
+84 E8 00 2A 10 00 14 00 30 00 07 00 00 04 9E 78 BE 28 5E 02 1F
+90 00
+# * Load Command is 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 04 9E 78 BE 28 5E 02 1F
+# * Calculated cryptogram is DF 1C 6E 18 DC 86 63 71
+# * New ICV is DF 1C 6E 18 DC 86 63 71
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 DF 1C 6E 18 DC 86 63 71
+# LOAD command
+84 E8 00 2B 10 00 00 07 01 00 1D 00 33 DF 1C 6E 18 DC 86 63 71
+90 00
+# * Load Command is 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is DF 1C 6E 18 DC 86 63 71
+# * Calculated cryptogram is 4F 07 36 BE 5A D3 DB AE
+# * New ICV is 4F 07 36 BE 5A D3 DB AE
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 4F 07 36 BE 5A D3 DB AE
+# LOAD command
+84 E8 00 2C 10 00 46 00 00 00 00 00 0D 4F 07 36 BE 5A D3 DB AE
+90 00
+# * Load Command is 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 4F 07 36 BE 5A D3 DB AE
+# * Calculated cryptogram is 59 22 68 10 3A 1E D7 1E
+# * New ICV is 59 22 68 10 3A 1E D7 1E
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 59 22 68 10 3A 1E D7 1E
+# LOAD command
+84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 59 22 68 10 3A 1E D7 1E
+90 00
+# * Load Command is 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 59 22 68 10 3A 1E D7 1E
+# * Calculated cryptogram is 2E 83 63 F3 42 13 41 74
+# * New ICV is 2E 83 63 F3 42 13 41 74
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 2E 83 63 F3 42 13 41 74
+# LOAD command
+84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 2E 83 63 F3 42 13 41 74
+90 00
+# * Load Command is 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 2E 83 63 F3 42 13 41 74
+# * Calculated cryptogram is 6B 0D 06 DB A0 39 B1 9E
+# * New ICV is 6B 0D 06 DB A0 39 B1 9E
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 6B 0D 06 DB A0 39 B1 9E
+# LOAD command
+84 E8 00 2F 10 00 22 00 24 00 27 00 2A 6B 0D 06 DB A0 39 B1 9E
+90 00
+# * Load Command is 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 6B 0D 06 DB A0 39 B1 9E
+# * Calculated cryptogram is 65 0F B0 52 6B F4 0E 0E
+# * New ICV is 65 0F B0 52 6B F4 0E 0E
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 65 0F B0 52 6B F4 0E 0E
+# LOAD command
+84 E8 00 30 10 00 2E 01 B0 01 10 01 40 65 0F B0 52 6B F4 0E 0E
+90 00
+# * Load Command is 84 E8 00 31 10 02 41 03 44 10 04 B4 41 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 31 10 02 41 03 44 10 04 B4 41 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 65 0F B0 52 6B F4 0E 0E
+# * Calculated cryptogram is D1 8C 74 4C DA FA 07 15
+# * New ICV is D1 8C 74 4C DA FA 07 15
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 31 10 02 41 03 44 10 04 B4 41 D1 8C 74 4C DA FA 07 15
+# LOAD command
+84 E8 00 31 10 02 41 03 44 10 04 B4 41 D1 8C 74 4C DA FA 07 15
+90 00
+# * Load Command is 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is D1 8C 74 4C DA FA 07 15
+# * Calculated cryptogram is 9A 0B B1 C8 70 85 C9 F1
+# * New ICV is 9A 0B B1 C8 70 85 C9 F1
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 9A 0B B1 C8 70 85 C9 F1
+# LOAD command
+84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 9A 0B B1 C8 70 85 C9 F1
+90 00
+# * Load Command is 84 E8 80 33 0D 31 06 68 00 A1 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E8 80 33 0D 31 06 68 00 A1 80 00 00 00 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 9A 0B B1 C8 70 85 C9 F1
+# * Calculated cryptogram is EB 55 BC 3A 28 0D 8B 82
+# * New ICV is EB 55 BC 3A 28 0D 8B 82
+# ==> Generate Mac End
+# * Load Command which CMAC is 84 E8 80 33 0D 31 06 68 00 A1 EB 55 BC 3A 28 0D 8B 82
+# LOAD command
+84 E8 80 33 0D 31 06 68 00 A1 EB 55 BC 3A 28 0D 8B 82
+00 90 00
+# => Load Command End
+# => Install For Install And Make Selectable Begin
+# + Load File AID is A0 00 00 00 62 03 01 0C 01
+# + Module AID is A0 00 00 00 62 03 01 0C 01 01
+# + Application AID is A0 00 00 00 62 03 01 0C 01 01
+# + Privileges AID is 00
+# + There is not parameters
+# * New parameters are C9 00
+# * Parameters Length is 2
+# * Parameters Length Encoded is 02
+# * Install For Install Command is 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 80 00 00 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is EB 55 BC 3A 28 0D 8B 82
+# * Calculated cryptogram is B3 79 54 18 9E F1 14 EB
+# * New ICV is B3 79 54 18 9E F1 14 EB
+# ==> Generate Mac End
+# * Install For Install Command whith mac is 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 B3 79 54 18 9E F1 14 EB
+# INSTALL FOR INSTALL AND MAKE SELECTABLE
+84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 B3 79 54 18 9E F1 14 EB
+00 90 00
+# => Install For Install And Make Selectable End
+# Select Hello World Applet
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01 90 00
+# Say "Hello"
+00 00 00 00 05 48 45 4C 4C 4F
+00 00 00 00 05 48 45 4C 4C 4F 90 00
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 3D 84 08 A0 00 00 00 03 00 00 00 A5 31 9F 6E 2A 20 50 50 33 40 41 30 45 00 5C 41 56 00 00 00 07 00 00 14 32 41 56 14 33 41 56 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 56 89 04 7A A1 62 82 06
+00 00 41 56 00 00 00 07 00 00 FF 01 40 6A 4C A2 C8 87 24 48 BE F5 F7 69 71 B4 53 4F 90 00
+# SCPMode is SCP_01_05
+# * Key Diversification Data is 00 00 41 56 00 00 00 07 00 00
+# * Host Challenge is 56 89 04 7A A1 62 82 06
+# * Card Challenge is 40 6A 4C A2 C8 87 24 48
+# * Card Crypto Resp is BE F5 F7 69 71 B4 53 4F
+# ==> Calculate Derivation Data
+# * Derivation Data is C8 87 24 48 56 89 04 7A 40 6A 4C A2 A1 62 82 06
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * SCP_Mode is SCP_01_05
+# * sessEnc = 0A 01 D2 39 FD E0 1C DB 29 44 11 8C 34 C0 AB 0C 0A 01 D2 39 FD E0 1C DB
+# * sessMac = 0A 01 D2 39 FD E0 1C DB 29 44 11 8C 34 C0 AB 0C 0A 01 D2 39 FD E0 1C DB
+# * sessKek = 0A 01 D2 39 FD E0 1C DB 29 44 11 8C 34 C0 AB 0C 0A 01 D2 39 FD E0 1C DB
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00
+# * SCP 01 protocol used
+# * Data to encrypt: 56 89 04 7A A1 62 82 06 40 6A 4C A2 C8 87 24 48 80 00 00 00 00 00 00 00
+# * Calculated Card Crypto: BE F5 F7 69 71 B4 53 4F
+# * Calculated Host Crypto: 90 9B 31 17 46 70 FD FB
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isC_MAC
+# * Data uses to calculate mac value is84 82 01 00 10 90 9B 31 17 46 70 FD FB
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 82 01 00 10 90 9B 31 17 46 70 FD FB 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 00 00 00 00 00 00 00 00
+# * Calculated cryptogram is E4 9C F0 0A 6B 44 7D D1
+# * New ICV is E4 9C F0 0A 6B 44 7D D1
+# ==> Generate Mac End
+# * mac value obtainsE4 9C F0 0A 6B 44 7D D1
+# EXTERNAL AUTHENTICATE command
+84 82 01 00 10 90 9B 31 17 46 70 FD FB E4 9C F0 0A 6B 44 7D D1
+90 00
+# => External Authenticate end
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01 01
+# + Cascade mode ? false
+# + Security mode is C_MAC
+# * Delete Command is 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 80 00 00 00 00 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is E4 9C F0 0A 6B 44 7D D1
+# * Calculated cryptogram is 7E 91 0B 7D 1C 88 83 75
+# * New ICV is 7E 91 0B 7D 1C 88 83 75
+# ==> Generate Mac End
+# * delete Command which CMac is 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 7E 91 0B 7D 1C 88 83 75
+# DELETE OBJECT command
+84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 7E 91 0B 7D 1C 88 83 75
+00 90 00
+# => Delete On Card Object End
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01
+# + Cascade mode ? false
+# + Security mode is C_MAC
+# * Delete Command is 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 00 00 00 00 00 00 00 00
+# ==> Generate Mac
+# * data with padding: 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 80 00 00 00 00 00 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 7E 91 0B 7D 1C 88 83 75
+# * Calculated cryptogram is CE C3 0E 2B A1 92 22 9A
+# * New ICV is CE C3 0E 2B A1 92 22 9A
+# ==> Generate Mac End
+# * delete Command which CMac is 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 CE C3 0E 2B A1 92 22 9A
+# DELETE OBJECT command
+84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 CE C3 0E 2B A1 92 22 9A
+00 90 00
+# => Delete On Card Object End

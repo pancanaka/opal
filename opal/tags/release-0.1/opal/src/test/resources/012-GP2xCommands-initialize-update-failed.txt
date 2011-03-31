@@ -1,0 +1,4 @@
+# test INTIALIZE UPDATE operation (failed beacause SW != 0x9000)
+# random generator must be initialized with 01 23 45 67 01 23 45 67
+80 50 01 02 08 01 23 45 67 01 23 45 67
+00 00 10 00
