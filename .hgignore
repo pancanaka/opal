@@ -1,5 +1,20 @@
+# Temporary file
 \.orig$
 \.orig\..*$
 \.chg\..*$
 \.rej$
 \.conflict\~$
+\~$
+\.back$
+\.backup$
+
+# Intellij idea specific files
+\.iml$
+\.ipr$
+\.iws$
+^opal-.+/\.idea
+
+# Java specific
+\.class$
+^opal-.+/target
+
