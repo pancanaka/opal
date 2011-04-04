@@ -1,6 +1,13 @@
 package fr.xlim.ssd.opal.gui.view;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import java.awt.event.KeyEvent;
+import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JToolBar;
+import javax.swing.KeyStroke;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 
@@ -24,6 +31,11 @@ public class HomeView extends FrameView {
         super(application);
 
         this.controller = controller;
+        
+        this.initializeMenu();
+        this.initializeToolbar();
+
+        this.drawComponents();
     }
 
     /**
@@ -31,6 +43,41 @@ public class HomeView extends FrameView {
      */
     public void drawComponents() {
 
+
+    }
+
+    /**
+     * Draw the menu on the window
+     */
+    private void initializeMenu() {
+        // Menus
+        JMenuBar  menuBar       = new JMenuBar();
+        JMenu     file          = new JMenu("File");
+        JMenu     options       = new JMenu("Options");
+        JMenu     about         = new JMenu("About");
+        JMenuItem itemQuit      = new JMenuItem("Quit");
+        JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
+        
+        menuBar.add(file);
+            file.add(itemMProfiles);
+            file.add(itemQuit);
+        menuBar.add(options);
+        menuBar.add(about);
+       
+        this.setMenuBar(menuBar);
+
+        // Events
+        itemQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
+        itemMProfiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
+        //itemQuit.addActionListener(this);
+        //itemMProfiles.addActionListener(this);
+    }
+
+    private void initializeToolbar() {
+        JToolBar toolbar = new JToolBar();
+        toolbar.add(new JLabel("Selected terminal : "));
+        toolbar.setBorderPainted(true);
+        this.setToolBar(toolbar);
     }
 
     private MainController controller;
