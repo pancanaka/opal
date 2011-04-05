@@ -185,6 +185,17 @@
             </roles>
             <timezone>1</timezone>
         </contributor>
+	<contributor>
+            <name>Thibault Tigeon</name>
+            <email>thibault.tigeon@atosorigin.com</email>
+            <organization>Atos Origin</organization>
+            <organizationUrl>http://www.atosorigin.com/</organizationUrl>
+            <roles>
+                <role>Card tester</role>
+            </roles>
+            
+	    <timezone>1</timezone>
+        </contributor>
     </contributors>
 
     <properties>
