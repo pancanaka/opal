@@ -438,7 +438,7 @@
                  keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
         </defaultKeys>
     </card>
-    <card name="JCOP UNKNOW" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+    <card name="JCOP_UNKNOW" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
         <description>An unknow JCOP card name</description>
         <listATR>
             <ATR value="3B 7B 11 00 00 00 31 C0 64 7F E6 10 00 82 90 00"/>
