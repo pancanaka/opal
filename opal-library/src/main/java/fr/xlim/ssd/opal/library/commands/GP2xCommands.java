@@ -1,6 +1,7 @@
 package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.*;
+import fr.xlim.ssd.opal.library.logging.LogType;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import org.slf4j.Logger;
@@ -266,9 +267,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmdSelect = new CommandAPDU(selectComm);
         ResponseAPDU resp = this.getCc().transmit(cmdSelect);
-        logger.debug("SELECT Command "
-                + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+        logger.info(LogType.COMMAND_TITLE.getMarker(), "SELECT Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdSelect.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -300,9 +303,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             CommandAPDU cmdSelect = new CommandAPDU(selectComm);
             ResponseAPDU resp = this.getCc().transmit(cmdSelect);
-            logger.debug("SELECT Command "
-                    + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
-                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+            logger.info(LogType.COMMAND_TITLE.getMarker(), "SELECT Command");
+            logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdSelect.getBytes()));
+            logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+
             if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
                 this.resetParams();
                 throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -366,9 +371,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         ResponseAPDU resp = this.getCc().transmit(cmdInitUpd);
 
-        logger.debug("INIT UPDATE command "
-                + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TITLE.getMarker(), "INIT UPDATE command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdInitUpd.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
@@ -718,9 +723,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdExtauth = new CommandAPDU(extAuthCmd);
         ResponseAPDU resp = this.getCc().transmit(cmdExtauth);
 
-        logger.debug("EXTERNAL AUTHENTICATE command "
-                + "(-> " + Conversion.arrayToHex(cmdExtauth.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TITLE.getMarker(), "EXTERNAL AUTHENTICATE Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdExtauth.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
