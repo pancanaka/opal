@@ -53,6 +53,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>2.3.2</version>
                     <configuration>
                         <source>1.6</source>
                         <target>1.6</target>
@@ -61,10 +62,11 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
+                    <version>2.3.1</version>
                     <configuration>
                         <archive>
                             <manifestEntries>
-                                <url>${pom.url}</url>
+                                <url>${project.url}</url>
                             </manifestEntries>
                         </archive>
                     </configuration>
@@ -78,7 +80,7 @@
                                 <mainClass>fr.xlim.ssd.opal.library.tester.Main</mainClass>
                             </manifest>-->
                             <manifestEntries>
-                                <url>${pom.url}</url>
+                                <url>${project.url}</url>
                             </manifestEntries>
                         </archive>
                         <descriptorRefs>
@@ -95,10 +97,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
             </plugin>
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>cobertura-maven-plugin</artifactId>
+                <version>2.4</version>
             </plugin>
         </plugins>
     </reporting>
@@ -193,7 +197,7 @@
             <roles>
                 <role>Card tester</role>
             </roles>
-            
+
 	    <timezone>1</timezone>
         </contributor>
     </contributors>
