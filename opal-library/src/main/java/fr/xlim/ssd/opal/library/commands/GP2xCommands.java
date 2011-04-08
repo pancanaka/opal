@@ -141,16 +141,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     // used to calculate Encrypted counter ICV for C-ENC
     protected int CENC_Counter = 01;
-    
+
     // used to calculate Encrypted counter ICV for R-ENC
     protected int RENC_counter = 01;
-    
+
     //Counter ICV padding for R-ENC computing
     protected static final byte[] SCP03_R_ENC_COUNTER_ICV_PADDING = Conversion.hexToArray("80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-    
+
     //Counter ICV padding for R-ENC computing
     protected static final byte[] SCP03_C_ENC_COUNTER_ICV_PADDING = Conversion.hexToArray("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-    
+
     /**
      * Default constructor
      */
@@ -250,7 +250,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public ResponseAPDU select(byte[] aid) throws CardException {
-        
+
         this.aid = new byte[aid.length];
         System.arraycopy(aid, 0, this.aid, 0, aid.length);
 
@@ -268,10 +268,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdSelect = new CommandAPDU(selectComm);
         ResponseAPDU resp = this.getCc().transmit(cmdSelect);
 
-        logger.info(LogType.COMMAND_TITLE.getMarker(), "SELECT Command");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "SELECT Command");
         logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdSelect.getBytes()));
         logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
-        
+
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -304,7 +304,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             CommandAPDU cmdSelect = new CommandAPDU(selectComm);
             ResponseAPDU resp = this.getCc().transmit(cmdSelect);
 
-            logger.info(LogType.COMMAND_TITLE.getMarker(), "SELECT Command");
+            logger.info(LogType.COMMAND_TYPE.getMarker(), "SELECT Command");
             logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdSelect.getBytes()));
             logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
@@ -322,7 +322,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             this.resetParams();
             throw new CardException("this SELECT Command is used for card which implement SCPMode (SCP 02_0A or SCP_02_0B) ");
         }
-        
+
 
     }
 
@@ -371,7 +371,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         ResponseAPDU resp = this.getCc().transmit(cmdInitUpd);
 
-        logger.info(LogType.COMMAND_TITLE.getMarker(), "INIT UPDATE command");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "INIT UPDATE Command");
         logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdInitUpd.getBytes()));
         logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
@@ -503,7 +503,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.scp = desiredScp;
             }
 
-            
+
             this.sequenceCounter = new byte[3];
             this.cardChallenge = new byte[8];
             /*
@@ -601,7 +601,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     throw new CardException("Selected KEK Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
                 }
             }
-            
+
         }else if (scp == SCPMode.SCP_02_04
                 || scp == SCPMode.SCP_02_14 ){
             if (key instanceof SCDerivableKey) {
@@ -655,7 +655,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.generateSessionKeys(kEnc, kMac, kKek);
         this.calculateCryptograms();
 
-        
+
         if (this.scp == SCPMode.SCP_02_45 || this.scp == SCPMode.SCP_02_55){
             byte[] computedCardChallenge = new byte[6];
             computedCardChallenge =  this.pseudoRandomGenerationCardChallenge(this.aid);
@@ -664,7 +664,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 throw new CardException("Error verifying Card Challenge");
             }
         }
-        
+
 
         if (!Arrays.equals(cardCryptoResp, this.cardCrypto)) {
             this.resetParams();
@@ -723,7 +723,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdExtauth = new CommandAPDU(extAuthCmd);
         ResponseAPDU resp = this.getCc().transmit(cmdExtauth);
 
-        logger.info(LogType.COMMAND_TITLE.getMarker(), "EXTERNAL AUTHENTICATE Command");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "EXTERNAL AUTHENTICATE Command");
         logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdExtauth.getBytes()));
         logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
@@ -732,7 +732,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new CardException("Error in External Authenticate : " + Integer.toHexString(resp.getSW()));
         }
         this.sessState = SessionState.SESSION_AUTH;
-        
+
         //Protocol SCP03 - intitialisation of counters for computing of counter ICV for C/R-Enc.
         CENC_Counter = 1;
         RENC_counter = 1;
@@ -819,9 +819,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdGetstatus = new CommandAPDU(getStatusCmd);
         ResponseAPDU resp = this.getCc().transmit(cmdGetstatus);
 
-        logger.debug("GET STATUS command "
-                + "(-> " + Conversion.arrayToHex(cmdGetstatus.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "GET STATUS Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdGetstatus.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         responsesList.add(resp);
 
@@ -840,9 +840,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             cmdGetstatus = new CommandAPDU(getStatusCmd);
             resp = this.getCc().transmit(cmdGetstatus);
 
-            logger.debug("GET STATUS command "
-                    + "(-> " + Conversion.arrayToHex(cmdGetstatus.getBytes()) + ") "
-                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+            logger.info(LogType.COMMAND_TYPE.getMarker(), "GET STATUS Command");
+            logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdGetstatus.getBytes()));
+            logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
             // TODO: no check at responses ?
             responsesList.add(resp);
@@ -868,7 +868,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     protected byte[] generateMac(byte[] data) {
 
         logger.debug("==> Generate Mac");
-        
+
         byte[] dataWithPadding = null;
 
         logger.debug("generateMac with data: " + Conversion.arrayToHex(data));
@@ -920,7 +920,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
 
-            } else if (this.scp == SCPMode.SCP_02_15 
+            } else if (this.scp == SCPMode.SCP_02_15
                     || this.scp == SCPMode.SCP_02_04
                     || this.scp == SCPMode.SCP_02_05
                     || this.scp == SCPMode.SCP_02_14
@@ -972,7 +972,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                         singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
                         this.icv = singleDesCipher.doFinal(res);
                 }
-                
+
                 logger.debug("* Calculated cryptogram is " + Conversion.arrayToHex(res));
                 logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
 
@@ -1026,7 +1026,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 //update ICV : 8 most significant bytes + 8 lest significant bytes
                 System.arraycopy(res, 0, this.icv, 0, 8);
                 System.arraycopy(eightRightMostBit, 0, this.icv, 8, 8);
-                
+
 
             }
         } catch (NoSuchProviderException ex) {
@@ -1065,7 +1065,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         byte[] datas = null;
         byte[] encryptedCmd = null;
-        
+
 
         try {
             if (scp == SCPMode.SCP_01_05 || scp == SCPMode.SCP_01_15){
@@ -1090,9 +1090,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* SCP 01 Protocol used");
                 logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
                 logger.debug("* sessEnc key is " + Conversion.arrayToHex(this.sessEnc));
-                
+
                 Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-                
+
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
                 byte[] res = myCipher.doFinal(datas);
                 encryptedCmd = new byte[5 + res.length + 8];
@@ -1164,7 +1164,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             if (this.scp == SCPMode.SCP_03_65
                     || this.scp == SCPMode.SCP_03_05
                     || this.scp == SCPMode.SCP_03_25){
-                
+
                 int dataLength = command.length - 5; // command without (CLA, INS, P1, P2) AND C-MAC
 
                 if (dataLength % 16 == 0) { // don't need a PADDING
@@ -1180,7 +1180,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     datas = new byte[dataLength + nbBytes];
                     System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
                     System.arraycopy(GP2xCommands.SCP03_PADDING, 0, datas, dataLength, nbBytes); // add necessary PADDING
-                    
+
                 }
                 logger.debug("- New data to encrypt is " + Conversion.arrayToHex(datas));
                 logger.debug("* DATAFIELD from command is " + Conversion.arrayToHex(datas));
@@ -1198,7 +1198,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Encrypted data is " + Conversion.arrayToHex(encryptedCmd));
 
-                
+
 
 
             }
@@ -1213,13 +1213,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 }
                 logger.debug("* icv counter = " + Conversion.arrayToHex(Conversion.hexToArray(hexaCounter)));
                 hexaCounter = Conversion.arrayToHex(Conversion.hexToArray(hexaCounter));
-                
+
                 byte[] byteCounter = Conversion.hexToArray(hexaCounter);
-                
+
                 System.arraycopy(SCP03_C_ENC_COUNTER_ICV_PADDING, 0, icvCEnc, 0, 16 - byteCounter.length);
                 System.arraycopy(byteCounter, 0, icvCEnc, 16 - byteCounter.length, byteCounter.length);
                 logger.debug("* data used to calculate icv = " + Conversion.arrayToHex(icvCEnc));
-                
+
                 IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
                 cipher.init(Cipher.ENCRYPT_MODE,  new SecretKeySpec(this.sessEnc, "AES"),ivSpec);
@@ -1240,7 +1240,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     datas = new byte[dataLength + nbBytes];
                     System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
                     System.arraycopy(GP2xCommands.SCP03_PADDING, 0, datas, dataLength, nbBytes); // add necessary PADDING
-                    
+
                 }
                 logger.debug("- New data to encrypt is " + Conversion.arrayToHex(datas));
                 logger.debug("* DATAFIELD from command is " + Conversion.arrayToHex(datas));
@@ -1254,9 +1254,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(command, 0, encryptedCmd, 0, 5);
                 System.arraycopy(res, 0, encryptedCmd, 5, res.length);
                 encryptedCmd[4] = (byte) (datas.length + 8);
-                
+
                 logger.debug("* Encrypted data " + Conversion.arrayToHex(res));
-                
+
             }
 
         } catch (NoSuchAlgorithmException e) {
@@ -1283,7 +1283,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * ICV Initialization. All values set to 0
      */
     protected void initIcv() {
-        if(scp == SCPMode.SCP_01_15 
+        if(scp == SCPMode.SCP_01_15
                 || scp == SCPMode.SCP_01_05
                 || scp == SCPMode.SCP_UNDEFINED
                 || scp == SCPMode.SCP_02_04
@@ -1297,7 +1297,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || scp == SCPMode.SCP_02_45
                 || scp == SCPMode.SCP_02_54
                 || scp == SCPMode.SCP_02_55){
-            
+
             logger.debug("==> Init ICV begin");
             this.icv = new byte[8];
             for (int i = 0; i < this.icv.length; i++) {
@@ -1312,7 +1312,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || scp == SCPMode.SCP_03_2D
                 || scp == SCPMode.SCP_03_65
                 || scp == SCPMode.SCP_03_6D){
-            
+
             logger.debug("==> Init ICV begin");
             this.icv = new byte[16];
             for (int i = 0; i < this.icv.length; i++) {
@@ -1320,9 +1320,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
             logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
             logger.debug("==> Init ICV end");
-            
+
         }
-        
+
     }
 
 
@@ -1357,7 +1357,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
 
         try {
-            
+
             SecretKeySpec desSingleKey = new SecretKeySpec(this.sessMac, 0, 8, "DES");
             Cipher singleDesCipher;
             singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
@@ -1452,7 +1452,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(this.hostCrypto));
 
-            } else if (this.scp == SCPMode.SCP_02_15 
+            } else if (this.scp == SCPMode.SCP_02_15
                     || this.scp == SCPMode.SCP_02_04
                     || this.scp == SCPMode.SCP_02_05
                     || this.scp == SCPMode.SCP_02_14
@@ -1628,7 +1628,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* sessKek = " + Conversion.arrayToHex(this.sessKek));
 
-            } else if (this.scp == SCPMode.SCP_02_15 
+            } else if (this.scp == SCPMode.SCP_02_15
                     || this.scp == SCPMode.SCP_02_04
                     || this.scp == SCPMode.SCP_02_05
                     || this.scp == SCPMode.SCP_02_14
@@ -1772,7 +1772,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(icvNextBloc, 0, this.sessRMac, 0, icvNextBloc.length);
                 logger.debug("sessRMac = " + Conversion.arrayToHex(this.sessRMac));
 
-                
+
 
 
             }
@@ -1875,7 +1875,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /**
      * Generate the pseudo Random Card Challenge to compare with the Challenge
      * of the card obtained with initializeUpdate Command
-     * 
+     *
      * @param aid AID of the current selected application
      */
     protected byte[] pseudoRandomGenerationCardChallenge(byte[] aid){
@@ -1939,7 +1939,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             computedCardChallenge = new byte[6];
             System.arraycopy(res, 0, computedCardChallenge, 0, 6);
             logger.info("pseudo Random Generation CardChallenge computed is " + Conversion.arrayToHex(computedCardChallenge));
-            
+
         } catch (NoSuchProviderException ex) {
             java.util.logging.Logger.getLogger(GP2xCommands.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NoSuchAlgorithmException e) {
@@ -1994,7 +1994,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("* Delete Command is " + Conversion.arrayToHex(deleteComm));
 
-        
+
 
         if (this.getSecMode() == SecLevel.C_MAC) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
@@ -2005,7 +2005,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             logger.debug("* delete Command which CMac is " + Conversion.arrayToHex(deleteComm));
         }
 
-        if (((this.getSecMode() == SecLevel.C_ENC_AND_MAC) ||(this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)) 
+        if (((this.getSecMode() == SecLevel.C_ENC_AND_MAC) ||(this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC))
                 && (this.scp != SCPMode.SCP_03_65)
                 && (this.scp != SCPMode.SCP_03_6D)
                 && (this.scp != SCPMode.SCP_03_05)
@@ -2046,16 +2046,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdDelete = new CommandAPDU(deleteComm);
         ResponseAPDU resp = this.getCc().transmit(cmdDelete);
 
-        logger.debug("DELETE OBJECT command "
-                + "(-> " + Conversion.arrayToHex(cmdDelete.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "DELETE OBJECT Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdDelete.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in DELETE OBJECT : " + Integer.toHexString(resp.getSW()));
         }
-        
+
         this.compudeAndVerifyRMac(resp.getBytes());
-        
+
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)&&(this.scp == SCPMode.SCP_03_65)){
                 byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
         }
@@ -2066,8 +2066,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || this.getSecMode()==secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC){
             CENC_Counter++;
         }
-        
-        
+
+
         logger.debug("=> Delete On Card Object End");
 
         return resp;
@@ -2127,9 +2127,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdDelete = new CommandAPDU(deleteComm);
         ResponseAPDU resp = this.getCc().transmit(cmdDelete);
 
-        logger.debug("DELETE KEY command "
-                + "(-> " + Conversion.arrayToHex(cmdDelete.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "DELETE KEY Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdDelete.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != 0x9000) {
             throw new CardException("Error in DELETE KEY : " + Integer.toHexString(resp.getSW()));
@@ -2235,7 +2235,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             logger.debug("* Install For Load Command whith CMAC is " + Conversion.arrayToHex(installForLoadComm));
         }
 
-        if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC) 
+        if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)
                 && (this.scp != SCPMode.SCP_03_65)
                 && (this.scp != SCPMode.SCP_03_6D)
                 && (this.scp != SCPMode.SCP_03_05)
@@ -2253,7 +2253,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if (((this.getSecMode() == SecLevel.C_ENC_AND_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)) ) {
-            if (this.scp == SCPMode.SCP_03_65 
+            if (this.scp == SCPMode.SCP_03_65
                     || this.scp == SCPMode.SCP_03_6D
                     || this.scp == SCPMode.SCP_03_05
                     || this.scp == SCPMode.SCP_03_0D
@@ -2271,20 +2271,20 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(cmac, 0, installForLoadComm, encInstallForLoadComm.length,cmac.length);
                 logger.debug("Final install for load Command : " + Conversion.arrayToHex(installForLoadComm));
             }
-            
+
         }
 
         CommandAPDU cmdInstallforload = new CommandAPDU(installForLoadComm);
         ResponseAPDU resp = this.getCc().transmit(cmdInstallforload);
 
-        logger.debug("INSTALL FOR LOAD command "
-                + "(-> " + Conversion.arrayToHex(cmdInstallforload.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "INSTALL FOR LOAD Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdInstallforload.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR LOAD : " + Integer.toHexString(resp.getSW()));
         }
-        
+
         this.compudeAndVerifyRMac(resp.getBytes());
 
         if (this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC){
@@ -2292,9 +2292,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 if (plainCommand != null){
                     logger.debug("plain text response is " + Conversion.arrayToHex(plainCommand));
                 }
-                
+
         }
-        
+
         // increment the value of counter icv for CENC
         if (this.getSecMode()==secMode.C_ENC_AND_MAC
                 || this.getSecMode()==secMode.C_ENC_AND_C_MAC_AND_R_MAC
@@ -2303,7 +2303,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         logger.debug("=> Install For Load Command End");
-        
+
         return resp;
     }
 
@@ -2425,7 +2425,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             logger.debug("* Load Command is " + Conversion.arrayToHex(cmd));
 
-            
+
 
             if (this.getSecMode() == SecLevel.C_MAC) {
                 byte[] dataCmac = new byte[cmd.length - 8]; // data used to generate C-MAC
@@ -2436,7 +2436,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* Load Command whith CMAC is " + Conversion.arrayToHex(cmd));
             }
 
-            if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC) 
+            if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)
                     && (this.scp != SCPMode.SCP_03_65)
                     && (this.scp != SCPMode.SCP_03_6D)
                     && (this.scp != SCPMode.SCP_03_05)
@@ -2478,9 +2478,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             ResponseAPDU resp = null;
             resp = this.getCc().transmit(cmdLoad);
 
-            logger.debug("LOAD command "
-                    + "(-> " + Conversion.arrayToHex(cmdLoad.getBytes()) + ") "
-                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+            logger.info(LogType.COMMAND_TYPE.getMarker(), "LOAD Command");
+            logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdLoad.getBytes()));
+            logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
             responses.add(resp);
             if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
@@ -2495,12 +2495,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || this.getSecMode()==secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC){
                 CENC_Counter++;
             }
-            
+
         }
         ResponseAPDU[] r = new ResponseAPDU[responses.size()];
-        
+
         // increment the value of counter icv for CENC
-        
+
 
         logger.debug("=> Load Command End");
 
@@ -2627,7 +2627,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("* Install For Install Command is " + Conversion.arrayToHex(installForInstallComm));
 
-        
+
 
         if (this.getSecMode() == SecLevel.C_MAC) {
             byte[] dataCmac = new byte[installForInstallComm.length - 8]; // data used to generate C-MAC
@@ -2638,8 +2638,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             logger.debug("* Install For Install Command whith mac is " + Conversion.arrayToHex(installForInstallComm));
         }
 
-        if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC) 
-                && (this.scp != SCPMode.SCP_03_65) 
+        if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)
+                && (this.scp != SCPMode.SCP_03_65)
                 && (this.scp != SCPMode.SCP_03_6D)
                 && (this.scp != SCPMode.SCP_03_05)
                 && (this.scp != SCPMode.SCP_03_0D)
@@ -2656,7 +2656,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)) {
-            if (scp == SCPMode.SCP_03_65 
+            if (scp == SCPMode.SCP_03_65
                     || scp == SCPMode.SCP_03_6D
                     || scp == SCPMode.SCP_03_05
                     || scp == SCPMode.SCP_03_0D
@@ -2676,15 +2676,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmdInstallForInstall = new CommandAPDU(installForInstallComm);
         ResponseAPDU resp = this.getCc().transmit(cmdInstallForInstall);
-        logger.debug("INSTALL FOR INSTALL AND MAKE SELECTABLE "
-                + "(-> " + Conversion.arrayToHex(cmdInstallForInstall.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "INSTALL FOR INSTALL AND MAKE SELECTABLE Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdInstallForInstall.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR INSTALL AND MAKE SELECTABLE : " + Integer.toHexString(resp.getSW()));
         }
         this.compudeAndVerifyRMac(resp.getBytes());
-        
+
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)&&(this.scp == SCPMode.SCP_03_65)){
                 byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
         }
@@ -2695,7 +2696,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || this.getSecMode()==secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC){
             CENC_Counter++;
         }
-        
+
         logger.debug("=> Install For Install And Make Selectable End");
 
         return resp;
@@ -2713,9 +2714,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         getDataComm[4] = (byte) 0x00; // (LC) data length
         CommandAPDU cmdGetData = new CommandAPDU(getDataComm);
         ResponseAPDU resp = this.getCc().transmit(cmdGetData);
-        logger.debug("Get Data Command "
-                + "(-> " + Conversion.arrayToHex(cmdGetData.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "GET DATA Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdGetData.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Invalid response SW after Get Data command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -2728,7 +2731,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public void InitParamForImplicitInitiationMode(byte[] aid,SCPMode desiredScp,byte keyId) throws CardException {
 
-        
+
         byte keyVersNumRec = (byte) 0xFF;
         //if (desiredScp == SCPMode.SCP_02_0A || desiredScp == SCPMode.SCP_02_0B){
         resetParams();
@@ -2795,7 +2798,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
     }
 
-    
+
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.library.commands.Commands#beginRMacSession();
      */
@@ -2845,15 +2848,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdBeginRMac = new CommandAPDU(cmd);
         ResponseAPDU resp = this.getCc().transmit(cmdBeginRMac);
 
-        logger.debug("EXTERNAL AUTHENTICATE command "
-                + "(-> " + Conversion.arrayToHex(cmdBeginRMac.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "EXTERNAL AUTHENTICATE Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdBeginRMac.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Error in External Authenticate : " + Integer.toHexString(resp.getSW()));
         }
-        
+
 
         return resp;
     }
@@ -2883,7 +2886,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
         cmd[ISO7816.OFFSET_CLA.getValue()] = (byte) ((this.getSecMode() == SecLevel.NO_SECURITY_LEVEL) ? 0x80 : 0x84);
         cmd[ISO7816.OFFSET_INS.getValue()] = (byte) 0x78;
-        
+
         cmd[ISO7816.OFFSET_P1.getValue()] = (byte) 0x00;
         cmd[ISO7816.OFFSET_P2.getValue()] = (byte) 0x03;
 
@@ -2903,9 +2906,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdBeginRMac = new CommandAPDU(cmd);
         ResponseAPDU resp = this.getCc().transmit(cmdBeginRMac);
 
-        logger.debug("EXTERNAL AUTHENTICATE command "
-                + "(-> " + Conversion.arrayToHex(cmdBeginRMac.getBytes()) + ") "
-                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+        logger.info(LogType.COMMAND_TYPE.getMarker(), "EXTERNAL AUTHENTICATE Command");
+        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdBeginRMac.getBytes()));
+        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
@@ -2915,19 +2918,19 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         return resp;
     }
-    
-    
+
+
     /**
-     * Compute and verify the Rmac recieved. 
-     * 
+     * Compute and verify the Rmac recieved.
+     *
      * @response Response Message receved by the off card entity
      */
     protected void compudeAndVerifyRMac(byte[] response) throws CardException{
-        if (this.scp == SCPMode.SCP_03_65 
+        if (this.scp == SCPMode.SCP_03_65
                 || this.scp == SCPMode.SCP_03_6D
                 || this.scp == SCPMode.SCP_03_25){
-            if ((this.getSecMode() == SecLevel.R_MAC) || 
-                    (this.getSecMode() == SecLevel.C_MAC_AND_R_MAC) || 
+            if ((this.getSecMode() == SecLevel.R_MAC) ||
+                    (this.getSecMode() == SecLevel.C_MAC_AND_R_MAC) ||
                     (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) ||
                     (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)){
                 byte[] recevedRmac = new byte[8];
@@ -2938,7 +2941,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     System.arraycopy(this.icv, 0, data, 0, this.icv.length);
                     System.arraycopy(response, 0, data, 16, response.length -10);
                     System.arraycopy(response, response.length - 2 , data, 16 + response.length - 10, 2);
-                    
+
                 }
                 else    //the response does not contain data
                 {
@@ -2946,34 +2949,34 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     System.arraycopy(this.icv, 0, data, 0, this.icv.length);
                     System.arraycopy(response, response.length - 2 , data, 16, 2);
                 }
-                
+
                 logger.debug("* data used to  calculate RMac: " + Conversion.arrayToHex(data));
-                
+
                 byte[] copyOfIcv = new byte[16];
                 System.arraycopy(this.icv, 0, copyOfIcv, 0, this.icv.length);
-                
-                
+
+
                 byte[] Rmac = this.generateMac(data);
-                
+
                 logger.debug("* Computed RMac is : " + Conversion.arrayToHex(Rmac));
-                
+
                 System.arraycopy(response, response.length-10,recevedRmac , 0, recevedRmac.length);
-                
+
                 logger.debug("* Receved RMac is : " + Conversion.arrayToHex(recevedRmac));
-                
+
                 System.arraycopy(copyOfIcv, 0, this.icv, 0, copyOfIcv.length);
-                
+
                 boolean eq = Arrays.equals(Rmac, recevedRmac);
                 if (!eq) {
                     throw new CardException("Response APDU error - RMAC Not verification error: ");
                 }
-                
-                
+
+
             }
         }
     }
-    
-    
+
+
     protected byte[] decryptCardResponseData(byte[] response) throws CardException{
 
         try{
@@ -3006,7 +3009,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     System.arraycopy(SCP03_C_ENC_COUNTER_ICV_PADDING, 0, icvCEnc, 0, 16 - byteCounter.length);
                     System.arraycopy(byteCounter, 0, icvCEnc, 16 - byteCounter.length, byteCounter.length);
                     logger.debug("* data used to calculate icv = " + Conversion.arrayToHex(icvCEnc));
-                    
+
                     encryptedData = new byte[(response.length - 10)];
                     System.arraycopy(response, 0, encryptedData, 0, response.length -10);
                     if ((encryptedData.length % 16)!= 0){
@@ -3043,7 +3046,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     System.arraycopy(SCP03_C_ENC_COUNTER_ICV_PADDING, 0, icvCEnc, 0, 16 - byteCounter.length);
                     System.arraycopy(byteCounter, 0, icvCEnc, 16 - byteCounter.length, byteCounter.length);
                     logger.debug("* data used to calculate icv = " + Conversion.arrayToHex(icvCEnc));
-                    
+
                     encryptedData = new byte[(response.length - 2)];
                     System.arraycopy(response, 0, encryptedData, 0, response.length -2);
                     if ((encryptedData.length % 16)!= 0){
@@ -3055,8 +3058,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     res = cipher.doFinal(encryptedData);
                     RENC_counter++;
                 }
-                
-                
+
+
                 return res;
             }
             else if (response.length==10)   //the response does not contain data

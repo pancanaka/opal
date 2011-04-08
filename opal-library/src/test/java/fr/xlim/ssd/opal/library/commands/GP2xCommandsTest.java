@@ -454,7 +454,6 @@ public class GP2xCommandsTest {
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
         commands.initializeUpdate((byte) 13, (byte) 0, SCPMode.SCP_UNDEFINED);
-        System.out.println("tada");
     }
 
     @Test

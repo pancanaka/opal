@@ -14,7 +14,7 @@ import org.slf4j.MarkerFactory;
  */
 public enum LogType {
     // Command title
-    COMMAND_TITLE,
+    COMMAND_TYPE,
     
     // Global APDU command log.
     APDU,
