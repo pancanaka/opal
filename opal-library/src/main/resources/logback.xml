@@ -24,7 +24,7 @@
             <OnMatch>ACCEPT</OnMatch>
         </filter>
         <encoder>
-            <pattern>[%p] %C.%M:%line (-> %m\)%n</pattern>
+            <pattern>%date{HH:mm:ss.SSS} %-5p %-25([%M]) %-30.30(%c{25}:%-4line) - (-> %m\)%n</pattern>
         </encoder>
     </appender>
 
@@ -36,7 +36,7 @@
             <OnMatch>ACCEPT</OnMatch>
         </filter>
         <encoder>
-            <pattern>[%p] %C.%M:%line %caller (&lt;- %m\)%n</pattern>
+            <pattern>%date{HH:mm:ss.SSS} %-5p %-25([%M]) %-30.30(%c{25}:%-4line) - (&lt;- %m\)%n</pattern>
         </encoder>
     </appender>
 
