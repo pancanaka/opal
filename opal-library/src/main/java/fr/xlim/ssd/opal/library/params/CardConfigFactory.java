@@ -124,15 +124,14 @@ public class CardConfigFactory {
      */
     private static ATR[] getATRs(Element card) {
 
-        NodeList listATRElem = card.getElementsByTagName("listATR");
+        NodeList listATR = card.getElementsByTagName("ATR");
         ATR[] atrs = null;
         try {
-            NodeList AtrsElem = ((Element)listATRElem).getElementsByTagName("ATR");
-            atrs = new ATR[AtrsElem.getLength()];
+            atrs = new ATR[listATR.getLength()];
 
             // for each key in the Element
-            for (int i = 0; i < AtrsElem.getLength(); i++) {
-                atrs[i] = new ATR (Conversion.hexToArray (((Element) AtrsElem.item(i)).getAttribute("value")));
+            for (int i = 0; i < listATR.getLength(); i++) {
+                atrs[i] = new ATR (Conversion.hexToArray (((Element) listATR.item(i)).getAttribute("value")));
             }
         }
         catch (ClassCastException e){
