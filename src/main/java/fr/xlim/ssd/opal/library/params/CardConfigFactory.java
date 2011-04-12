@@ -128,7 +128,6 @@ public class CardConfigFactory {
         ATR[] atrs = null;
         try {
             atrs = new ATR[listATR.getLength()];
-
             // for each key in the Element
             for (int i = 0; i < listATR.getLength(); i++) {
                 atrs[i] = new ATR (Conversion.hexToArray (((Element) listATR.item(i)).getAttribute("value")));
@@ -284,12 +283,15 @@ public class CardConfigFactory {
             NodeList cards = document.getElementsByTagName("card");
             Element desiredCard = null;
 
+            boolean stop = false;
+
             // looking for the card identifiant in atr.xml file
-            for (int i = 0; i < cards.getLength(); i++) {
+            for (int i = 0; (i < cards.getLength()) & !stop ; i++) {
                 desiredCard = (Element) cards.item(i);
                 atrs = getATRs(desiredCard);
                 for(ATR a: atrs){
-                    if (atr.equals(a)) {
+                    if (arr2found.equals(a)) {
+                        stop = true;
                         break;
                     }
                 }
@@ -307,6 +309,8 @@ public class CardConfigFactory {
             tp = getTP(desiredCard);
             keys = getKeys(desiredCard);
             impl = getImpl(desiredCard);
+
+            logger.debug("==> card matching is " + name);
 
         } catch (IOException e) {
             throw new CardConfigNotFoundException("cannot read the atr.xml file: " + e.getMessage());

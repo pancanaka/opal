@@ -1,5 +1,7 @@
 package fr.xlim.ssd.opal.library.params;
 
+import sun.font.TrueTypeFont;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
@@ -44,9 +46,10 @@ public class ATR {
      */
     @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof ATR)) {
-            return false;
-        }
+
+        if (this == obj ) return true;
+
+        if (!(obj instanceof ATR)) return false;
 
         return (Arrays.equals(((ATR) obj).getValue(), this.getValue()));
     }
