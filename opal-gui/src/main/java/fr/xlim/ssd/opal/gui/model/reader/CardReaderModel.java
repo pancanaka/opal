@@ -8,12 +8,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
+ * The model which contains the list of card readers connected to the computer.
+ *
  * @author David Pequegnot
  */
 public class CardReaderModel {
 
+    /**
+     * Default constructor.
+     */
     public CardReaderModel() {
-
     }
 
     /**
@@ -156,7 +160,7 @@ public class CardReaderModel {
         CardReaderStateListener[] listenerList = (CardReaderStateListener[]) this.listeners.getListeners(CardReaderStateListener.class);
 
         for (CardReaderStateListener listener : listenerList) {
-            listener.terminalStateChanged(new CardReaderStateChangedEvent(this));
+            listener.cardReaderStateChanged(new CardReaderStateChangedEvent(this));
         }
     }
 

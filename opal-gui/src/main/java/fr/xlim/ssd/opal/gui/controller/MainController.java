@@ -1,7 +1,12 @@
 package fr.xlim.ssd.opal.gui.controller;
 
+import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask;
+import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import org.jdesktop.application.Application;
+import org.jdesktop.application.ApplicationContext;
+import org.jdesktop.application.TaskMonitor;
+import org.jdesktop.application.TaskService;
 
 /**
  * Application main controller.
@@ -23,8 +28,12 @@ public class MainController {
      */
     public MainController(Application application) {
         this.application = application;
+
+        this.cardReaderModel = new CardReaderModel();
+
+        this.startTerminalTask();
         
-        this.homeView = new HomeView(application, this);
+        this.homeView = new HomeView(this.application, this);
     }
 
     /**
@@ -37,13 +46,29 @@ public class MainController {
     }
 
     /**
+     * Get the card reader model.
+     *
+     * @return the card reader model
+     */
+    public CardReaderModel getCardReaderModel() {
+        return this.cardReaderModel;
+    }
+
+    /**
      * Start the terminal task.
      *
      * This <code>Task</code> instance will monitor terminals connected to the computer.
      * It updates the terminal list every time when a new terminal is plugged or removed.
      */
     public void startTerminalTask() {
-        // TODO Needs the startTerminalTask implementation
+        this.cardReaderTask = new CardReaderTask(this.application,  this.cardReaderModel);
+
+        ApplicationContext context = this.application.getContext();
+
+        TaskMonitor monitor = context.getTaskMonitor();
+        TaskService service = context.getTaskService();
+        service.execute(this.cardReaderTask);
+        monitor.setForegroundTask(this.cardReaderTask);
     }
 
     /**
@@ -52,10 +77,11 @@ public class MainController {
      * It is the way to stop the thread which listen for plugged terminals.
      */
     public void stopTerminalTask() {
-        // TODO Needs the stopTerminalTask implementation
+        this.cardReaderTask.cancel(true);
     }
 
     private Application application;
-    
+    private CardReaderModel cardReaderModel;
     private HomeView homeView;
+    private CardReaderTask cardReaderTask;
 }

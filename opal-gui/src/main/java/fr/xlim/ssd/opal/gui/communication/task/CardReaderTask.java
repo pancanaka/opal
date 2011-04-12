@@ -18,33 +18,50 @@ import java.util.List;
 /**
  * Listens to card reader connected to the computer.
  *
+ * This <code>Task</code> listens for card readers connected to the computer. When the list of readers changes,
+ * an event will be published, and the model which contains card terminal list will be updated.
+ *
  * @author David Pequegnot
  */
 public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
     private static final Logger logger = LoggerFactory.getLogger(CardReaderTask.class);
 
-    //private static final int DEFAULT_INITIAL_CR_NUMBER = 10;
     private static final int DEFAULT_REFRESH_INTERVAL  = 2000;
 
     private int refreshInterval;
-
     private CardReaderModel model;
 
+    /**
+     * Default constructor.
+     *
+     * @param application the application life cycle
+     * @param model       the card reader model which contains the list of card readers connected to the
+     *                    computer.
+     */
     public CardReaderTask(Application application, CardReaderModel model) {
         super(application);
 
         this.model = model;
     }
 
+    /**
+     * Parse some options in the corresponding <code>properties</code> file.
+     */
     private void getResources() {
         ResourceMap resourceMap = Application.getInstance(App.class).getContext().getResourceMap(CardReaderTask.class);
 
         Integer refreshInterval = resourceMap.getInteger("CardReaderManagement.refreshInterval");
         this.refreshInterval = (refreshInterval == null) ? DEFAULT_REFRESH_INTERVAL : refreshInterval;
     }
-    
+
+    /**
+     * The <code>Task</code> operations.
+     *
+     * @return Nothing
+     */
+    @SuppressWarnings("unchecked")
     @Override
-    protected Void doInBackground() throws Exception {
+    protected Void doInBackground() {
         message("startMessage");
 
         ArrayList<CardReaderItem> cardReaderItemsListTmp = new ArrayList<CardReaderItem>();
@@ -108,7 +125,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
     /**
      * Publish events to model.
      *
-     * @param chunks new terminal lists
+     * @param chunks new card readers list
      */
     @Override
     protected void process(List<List<CardReaderItem>> chunks) {

@@ -8,15 +8,17 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+
+import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 
 /**
  * Graphical user interface home view.
- * <p/>
+ *
  * Displays the application main view to interact with users.
  *
- * @author David Pequegnot <david.pequegnot@etu.unilim.fr>
+ * @author David Pequegnot
  */
 public class HomeView extends FrameView {
 
@@ -42,8 +44,6 @@ public class HomeView extends FrameView {
      * Contains all instructions to draw components in the "Home view".
      */
     public void drawComponents() {
-
-
     }
 
     /**
@@ -73,12 +73,16 @@ public class HomeView extends FrameView {
         //itemMProfiles.addActionListener(this);
     }
 
+    /**
+     * Initialize the application toolbar.
+     */
     private void initializeToolbar() {
-        JToolBar toolbar = new JToolBar();
-        toolbar.add(new JLabel("Selected terminal : "));
-        toolbar.setBorderPainted(true);
-        this.setToolBar(toolbar);
+        this.cardReaderMonitorToolbar = new CardReaderMonitorToolbar(this.controller);
+
+        this.setToolBar(this.cardReaderMonitorToolbar);
     }
+
+    private CardReaderMonitorToolbar cardReaderMonitorToolbar;
 
     private MainController controller;
 }

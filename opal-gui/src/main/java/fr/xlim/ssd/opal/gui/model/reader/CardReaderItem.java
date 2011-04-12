@@ -71,12 +71,12 @@ public class CardReaderItem {
      */
     @Override
     public boolean equals(Object aThat) {
-        if (!(aThat instanceof CardReaderItem)) {
-            return false;
-        }
-
         if (this == aThat) {
             return true;
+        }
+        
+        if (!(aThat instanceof CardReaderItem)) {
+            return false;
         }
 
         CardReaderItem that = (CardReaderItem) aThat;
