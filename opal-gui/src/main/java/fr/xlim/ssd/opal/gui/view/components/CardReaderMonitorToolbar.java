@@ -26,7 +26,7 @@ public class CardReaderMonitorToolbar extends JToolBar {
 
         setBorderPainted(true);
 
-        this.cardReaderInformationLabel = new JLabel();
+        this.cardReaderInformationLabel = new JLabel("Terminal :");
         this.cardReaderInformationLabel.setName("cardReaderInformationLabel");
 
         this.cardReaderComboBox = new JComboBox();

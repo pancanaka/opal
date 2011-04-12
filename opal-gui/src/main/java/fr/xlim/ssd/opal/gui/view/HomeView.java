@@ -1,8 +1,9 @@
 package fr.xlim.ssd.opal.gui.view;
 
+import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
 import java.awt.event.KeyEvent;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -20,6 +21,11 @@ import org.jdesktop.application.FrameView;
  */
 public class HomeView extends FrameView {
 
+    private MainController controller;
+    private JToolBar       terminalToolBar;
+    private HomePanel      homePanel;
+    
+
     /**
      * Constructor
      *
@@ -31,19 +37,22 @@ public class HomeView extends FrameView {
         super(application);
 
         this.controller = controller;
-        
-        this.initializeMenu();
-        this.initializeToolbar();
 
-        this.drawComponents();
+        drawComponents();
     }
 
     /**
      * Contains all instructions to draw components in the "Home view".
      */
     public void drawComponents() {
+        homePanel = new HomePanel(this.controller);
+        
+        this.initializeMenu();
 
-
+        // Initialize toolbar
+        this.terminalToolBar = new CardReaderMonitorToolbar(this.controller);
+        setToolBar(this.terminalToolBar);
+        setComponent(this.homePanel);
     }
 
     /**
@@ -72,13 +81,4 @@ public class HomeView extends FrameView {
         //itemQuit.addActionListener(this);
         //itemMProfiles.addActionListener(this);
     }
-
-    private void initializeToolbar() {
-        JToolBar toolbar = new JToolBar();
-        toolbar.add(new JLabel("Selected terminal : "));
-        toolbar.setBorderPainted(true);
-        this.setToolBar(toolbar);
-    }
-
-    private MainController controller;
 }
