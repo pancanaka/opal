@@ -1,8 +1,9 @@
 package fr.xlim.ssd.opal.gui.view;
 
+import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
 import java.awt.event.KeyEvent;
-import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -22,6 +23,12 @@ import org.jdesktop.application.FrameView;
  */
 public class HomeView extends FrameView {
 
+    private MainController controller;
+    private JToolBar       terminalToolBar;
+    private HomePanel      homePanel;
+    private CardReaderMonitorToolbar cardReaderMonitorToolbar;
+    
+
     /**
      * Constructor
      *
@@ -33,17 +40,19 @@ public class HomeView extends FrameView {
         super(application);
 
         this.controller = controller;
-        
-        this.initializeMenu();
-        this.initializeToolbar();
 
-        this.drawComponents();
+        drawComponents();
     }
 
     /**
      * Contains all instructions to draw components in the "Home view".
      */
     public void drawComponents() {
+        initializeMenu();
+        initializeToolbar();
+
+        homePanel = new HomePanel(this.controller);
+        setComponent(this.homePanel);
     }
 
     /**
@@ -81,8 +90,4 @@ public class HomeView extends FrameView {
 
         this.setToolBar(this.cardReaderMonitorToolbar);
     }
-
-    private CardReaderMonitorToolbar cardReaderMonitorToolbar;
-
-    private MainController controller;
 }

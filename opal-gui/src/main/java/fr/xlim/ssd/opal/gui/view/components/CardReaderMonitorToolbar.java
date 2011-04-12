@@ -53,7 +53,7 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
 
         setBorderPainted(true);
 
-        this.cardReaderInformationLabel = new JLabel();
+        this.cardReaderInformationLabel = new JLabel("Terminal :");
         this.cardReaderInformationLabel.setName("cardReaderInformationLabel");
 
         this.cardReaderComboBox = new JComboBox();

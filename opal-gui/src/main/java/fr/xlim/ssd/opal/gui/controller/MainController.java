@@ -15,6 +15,13 @@ import org.jdesktop.application.TaskService;
  */
 public class MainController {
 
+    private Application application;
+    private CardReaderModel cardReaderModel;
+    private HomeView homeView;
+    private CardReaderTask cardReaderTask;
+
+    
+
     /**
      * Constructor.
      *
@@ -79,9 +86,4 @@ public class MainController {
     public void stopTerminalTask() {
         this.cardReaderTask.cancel(true);
     }
-
-    private Application application;
-    private CardReaderModel cardReaderModel;
-    private HomeView homeView;
-    private CardReaderTask cardReaderTask;
 }
