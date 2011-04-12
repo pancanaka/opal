@@ -39,7 +39,8 @@
         <description>GemCombiXpresso Lite R2 Std Jcop30</description>
         <listATR>
             <ATR value="3B 6D 00 00 80 31 80 65 B0 07 02 02 89 83 00 90 00"/>
-            <ATR value="3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00"/> <!-- NFC version -->
+            <ATR value="3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00"/>
+            <!-- NFC version -->
         </listATR>
         <isdAID value="A0 00 00 00 18 43 4D 00"/>
         <scpMode value="01_05"/>
@@ -87,7 +88,8 @@
         <description>NXP JCOP 31V2.2 36K</description>
         <listATR>
             <ATR value="3B EB 00 00 81 31 20 45 4A 43 4F 50 33 31 33 36 47 44 54 78"/>
-            <ATR value="3B 0A 0A 38 77 B1 4A 43 4F 50 33 30" /> <!-- NFC version -->
+            <ATR value="3B 0A 0A 38 77 B1 4A 43 4F 50 33 30"/>
+            <!-- NFC version -->
         </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
@@ -157,7 +159,7 @@
         </defaultKeys>
     </card>
     <card name="Sm@rtcafe_Expert_64_V2" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-         <listATR>
+        <listATR>
             <ATR value="3B FD 18 00 FF 80 B1 FE 45 1F 07 80 73 00 21 13 57 4A 54 48 61 31 48 00 50"/>
         </listATR>
         <description>Sm@rtcafe Expert 64 V2</description>
@@ -194,7 +196,7 @@
         <description>Oberthur Cosmo Dual 72k</description>
         <listATR>
             <ATR value="3B 0F 10 78 B3 C0 02 00 31 C0 64 77 E3 03 00 82 90"/>
-            <ATR value="3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 82 90 00" />
+            <ATR value="3B 7B 18 00 00 00 31 C0 64 77 E3 03 00 82 90 00"/>
         </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
@@ -407,7 +409,8 @@
         <description>Smartcard Dual Interface JCOP31 with 72KB EEPROM and V2.2 Java Card Open Platform</description>
         <listATR>
             <ATR value="3B F9 18 00 00 81 31 FE 45 4A 43 4F 50 33 31 56 32 32 A8"></ATR>
-            <ATR value="3B 8D 80 01 0D 38 33 B1 4A 43 4F 50 33 31 56 32 FF 34"></ATR>   <!-- NFC Version -->
+            <ATR value="3B 8D 80 01 0D 38 33 B1 4A 43 4F 50 33 31 56 32 FF 34"></ATR>
+            <!-- NFC Version -->
         </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="02_15"/>
@@ -438,8 +441,8 @@
                  keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
         </defaultKeys>
     </card>
-    <card name="JCOP_UNKNOW" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
-        <description>An unknow JCOP card name</description>
+    <card name="COSMO_16_RSA_V3.5" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Cosmo 16 RSA V3.5</description>
         <listATR>
             <ATR value="3B 7B 11 00 00 00 31 C0 64 7F E6 10 00 82 90 00"/>
         </listATR>

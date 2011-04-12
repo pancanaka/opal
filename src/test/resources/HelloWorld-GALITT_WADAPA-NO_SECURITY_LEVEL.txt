@@ -1,6 +1,6 @@
 # test install and use Hello Word Applet operation
 # card is GALITT WADAPA
-# security level is C_ENC_AND_MAC
+# security level is NO_SECURITY_LEVEL
 #
 
 # ==> Init ICV begin

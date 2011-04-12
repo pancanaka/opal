@@ -1,5 +1,5 @@
 # test install and use Hello Word Applet operation
-# card is JCOP UNKNOW
+# card is COSMO 16 RSA V3.5
 # security level is NO_SECURITY_LEVEL
 #
 

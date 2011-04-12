@@ -1,0 +1,1068 @@
+# test install and use Hello Word Applet operation
+# card is JCOP31 72B1 V2.2 NFC
+# security level is C_MAC
+#
+
+# ==> card matching is JCOP31_72B1_V2.2
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 10 84 08 A0 00 00 00 03 00 00 00 A5 04 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00 
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 CA 69 DC 3C 62 94 8E FA
+00 00 70 81 00 08 32 91 15 09 FF 02 00 0B B6 4F 4A 47 8A 12 37 F6 2D 2A A5 F2 EF A8 90 00
+# SCPMode is SCP_02_15
+# * Key Diversification Data is 00 00 70 81 00 08 32 91 15 09 
+# * Sequence Counter is 00 0B 
+# * Host Challenge is CA 69 DC 3C 62 94 8E FA 
+# * Card Challenge is B6 4F 4A 47 8A 12 
+# * Card Crypto Resp is 37 F6 2D 2A A5 F2 EF A8 
+# ==> Calculate Derivation Data
+# * Derivation Data is 00 00 00 0B 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * SCP_Mode is SCP_02_15
+# *** Initialize IV : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# * sessEnc = 33 59 D8 8B 08 CF 08 0B CC 7C 23 30 16 AB 95 35 33 59 D8 8B 08 CF 08 0B 
+# * sessMac = 37 80 B4 2F 98 5E 5E 07 9E 92 A5 58 2F B9 D0 57 37 80 B4 2F 98 5E 5E 07 
+# * sessRMac = 7C A2 3F 77 C7 E9 AB 44 A3 F6 A3 A7 C7 6A 97 24 7C A2 3F 77 C7 E9 AB 44 
+# * sessKek = 7C A2 3F 77 C7 E9 AB 44 A3 F6 A3 A7 C7 6A 97 24 7C A2 3F 77 C7 E9 AB 44 
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00 
+# * SCP 02 protocol used
+# * Data to encrypt: CA 69 DC 3C 62 94 8E FA 00 0B B6 4F 4A 47 8A 12 80 00 00 00 00 00 00 00 
+# * Calculated Card Crypto: 37 F6 2D 2A A5 F2 EF A8 
+# * Calculated Host Crypto: AB B1 3A 9E CD 35 7A 24 
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isC_MAC
+# * Data uses to calculate mac value is84 82 01 00 10 AB B1 3A 9E CD 35 7A 24 
+# ==> Generate Mac
+# generateMac with data: 84 82 01 00 10 AB B1 3A 9E CD 35 7A 24 
+# - Data needs PADDING!
+# * data with PADDING: 84 82 01 00 10 AB B1 3A 9E CD 35 7A 24 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 00 00 00 00 00 00 00 00 
+# * Calculated cryptogram is for Bolck 0 61 C3 E7 5D 29 A6 DF 78 
+# * Calculated cryptogram is 3B 43 5A A4 CF 2C A6 84 
+# * New ICV is 9C 3A C9 7D 4A 92 77 39 
+# ==> Generate Mac End
+# * mac value obtains3B 43 5A A4 CF 2C A6 84 
+# EXTERNAL AUTHENTICATE command
+84 82 01 00 10 AB B1 3A 9E CD 35 7A 24 3B 43 5A A4 CF 2C A6 84
+90 00
+# => External Authenticate end
+# => Install for load begin
+# + Package AID to install is A0 00 00 00 62 03 01 0C 01 
+# + Security Domain AID is A0 00 00 00 03 00 00 00 
+# + There is not parameter
+# + SecLevel is C_MAC
+# * Parameters Length is 0 (0x0)
+# * Parameters Length Encoded is 00 
+# * Install For Load Command is 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 80 00 00 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 9C 3A C9 7D 4A 92 77 39 
+# * Calculated cryptogram is for Bolck 0 55 DE ED E7 9A DE 1A 70 
+# * Calculated cryptogram is for Bolck 1 74 85 79 6A FB E7 D7 3F 
+# * Calculated cryptogram is for Bolck 2 84 0D FC C5 14 41 00 DE 
+# * Calculated cryptogram is 91 4F 6C F4 91 35 89 6E 
+# * New ICV is 88 B4 35 49 6A 07 F2 C9 
+# ==> Generate Mac End
+# * Install For Load Command whith CMAC is 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 91 4F 6C F4 91 35 89 6E 
+# INSTALL FOR LOAD command
+84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 91 4F 6C F4 91 35 89 6E
+00 90 00
+# => Install For Load Command End
+# => Load Command Begin
+# + Cap File size to load is 409
+# + Max Data Length is 16(0x10)
+# + SecLevel is C_MAC
+# * SecLevel != NO_SECURITY_LEVEL => new dataBlockSize is 8
+# * Cap File Remain Length is 409
+# * ber is C4 82 01 99 
+# * number of block is 52
+# * Load Command is 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 88 B4 35 49 6A 07 F2 C9 
+# * Calculated cryptogram is for Bolck 0 AA E7 E4 6E 08 16 07 BB 
+# * Calculated cryptogram is FF 82 BD 43 0F 55 1A 23 
+# * New ICV is 77 81 50 E3 8A F8 E0 99 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 00 10 C4 82 01 99 01 00 13 DE FF 82 BD 43 0F 55 1A 23 
+# LOAD command
+84 E8 00 00 10 C4 82 01 99 01 00 13 DE FF 82 BD 43 0F 55 1A 23
+00 90 00
+# * Load Command is 84 E8 00 01 10 CA FF ED 01 02 04 00 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 01 10 CA FF ED 01 02 04 00 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 01 10 CA FF ED 01 02 04 00 01 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 77 81 50 E3 8A F8 E0 99 
+# * Calculated cryptogram is for Bolck 0 D0 8F DB 7B 5A FF 87 06 
+# * Calculated cryptogram is 35 FD 3E C3 FC EE BB 18 
+# * New ICV is 77 82 EC 8F 08 F6 5F DB 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 01 10 CA FF ED 01 02 04 00 01 35 FD 3E C3 FC EE BB 18 
+# LOAD command
+84 E8 00 01 10 CA FF ED 01 02 04 00 01 35 FD 3E C3 FC EE BB 18
+00 90 00
+# * Load Command is 84 E8 00 02 10 09 A0 00 00 00 62 03 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 02 10 09 A0 00 00 00 62 03 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 02 10 09 A0 00 00 00 62 03 01 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 77 82 EC 8F 08 F6 5F DB 
+# * Calculated cryptogram is for Bolck 0 70 C1 EB 08 42 17 6C C8 
+# * Calculated cryptogram is AF A1 95 07 85 64 8C 07 
+# * New ICV is 83 6F BC A4 AD 4A E4 56 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 02 10 09 A0 00 00 00 62 03 01 AF A1 95 07 85 64 8C 07 
+# LOAD command
+84 E8 00 02 10 09 A0 00 00 00 62 03 01 AF A1 95 07 85 64 8C 07
+00 90 00
+# * Load Command is 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 83 6F BC A4 AD 4A E4 56 
+# * Calculated cryptogram is for Bolck 0 20 F7 70 AE B1 14 24 04 
+# * Calculated cryptogram is B0 38 0E C7 1E 6A 86 67 
+# * New ICV is 76 D6 02 6F 00 DD 1A 62 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 B0 38 0E C7 1E 6A 86 67 
+# LOAD command
+84 E8 00 03 10 0C 01 02 00 1F 00 13 00 B0 38 0E C7 1E 6A 86 67
+00 90 00
+# * Load Command is 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 76 D6 02 6F 00 DD 1A 62 
+# * Calculated cryptogram is for Bolck 0 DA CB 57 6F D4 51 94 9B 
+# * Calculated cryptogram is 0D C0 37 D5 FF 2C 71 36 
+# * New ICV is E2 17 EC AE 68 76 09 32 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 0D C0 37 D5 FF 2C 71 36 
+# LOAD command
+84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 0D C0 37 D5 FF 2C 71 36
+00 90 00
+# * Load Command is 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is E2 17 EC AE 68 76 09 32 
+# * Calculated cryptogram is for Bolck 0 5B 21 1D 91 C1 53 EC 1E 
+# * Calculated cryptogram is BC 90 71 10 BC AF FA A6 
+# * New ICV is 79 BD 77 1D 03 EF EF D7 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 BC 90 71 10 BC AF FA A6 
+# LOAD command
+84 E8 00 05 10 0C 00 65 00 0A 00 13 00 BC 90 71 10 BC AF FA A6
+00 90 00
+# * Load Command is 84 E8 00 06 10 00 00 6C 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 06 10 00 00 6C 00 00 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 06 10 00 00 6C 00 00 00 00 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 79 BD 77 1D 03 EF EF D7 
+# * Calculated cryptogram is for Bolck 0 0C 07 65 62 83 55 9A D3 
+# * Calculated cryptogram is 90 2A 02 0F 10 CB 4B E2 
+# * New ICV is B0 F8 5A D8 07 AB F7 50 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 06 10 00 00 6C 00 00 00 00 00 90 2A 02 0F 10 CB 4B E2 
+# LOAD command
+84 E8 00 06 10 00 00 6C 00 00 00 00 00 90 2A 02 0F 10 CB 4B E2
+00 90 00
+# * Load Command is 84 E8 00 07 10 00 01 01 00 04 00 0B 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 07 10 00 01 01 00 04 00 0B 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 07 10 00 01 01 00 04 00 0B 01 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is B0 F8 5A D8 07 AB F7 50 
+# * Calculated cryptogram is for Bolck 0 8C 6C 06 FC 55 4E 85 F3 
+# * Calculated cryptogram is 50 F2 BE C1 A9 4A 48 70 
+# * New ICV is 6C 91 9D 5C 2A 65 90 04 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 07 10 00 01 01 00 04 00 0B 01 50 F2 BE C1 A9 4A 48 70 
+# LOAD command
+84 E8 00 07 10 00 01 01 00 04 00 0B 01 50 F2 BE C1 A9 4A 48 70
+00 90 00
+# * Load Command is 84 E8 00 08 10 00 01 07 A0 00 00 00 62 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 08 10 00 01 07 A0 00 00 00 62 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 08 10 00 01 07 A0 00 00 00 62 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 6C 91 9D 5C 2A 65 90 04 
+# * Calculated cryptogram is for Bolck 0 47 10 F5 C0 68 28 31 AB 
+# * Calculated cryptogram is F5 3C DF BB A5 F5 36 CF 
+# * New ICV is FE 89 26 E4 BE 84 A1 D4 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 08 10 00 01 07 A0 00 00 00 62 F5 3C DF BB A5 F5 36 CF 
+# LOAD command
+84 E8 00 08 10 00 01 07 A0 00 00 00 62 F5 3C DF BB A5 F5 36 CF
+00 90 00
+# * Load Command is 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is FE 89 26 E4 BE 84 A1 D4 
+# * Calculated cryptogram is for Bolck 0 9A 49 BB A3 49 67 C2 46 
+# * Calculated cryptogram is 1C 72 37 92 8C DA CD 20 
+# * New ICV is 33 3D C8 90 42 49 CB CE 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 1C 72 37 92 8C DA CD 20 
+# LOAD command
+84 E8 00 09 10 01 01 03 00 0E 01 0A A0 1C 72 37 92 8C DA CD 20
+00 90 00
+# * Load Command is 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 33 3D C8 90 42 49 CB CE 
+# * Calculated cryptogram is for Bolck 0 46 B8 F7 01 C4 AF 54 20 
+# * Calculated cryptogram is 22 D3 9A 30 29 29 41 65 
+# * New ICV is D3 88 01 4C DF FC 87 AD 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 22 D3 9A 30 29 29 41 65 
+# LOAD command
+84 E8 00 0A 10 00 00 00 62 03 01 0C 01 22 D3 9A 30 29 29 41 65
+00 90 00
+# * Load Command is 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is D3 88 01 4C DF FC 87 AD 
+# * Calculated cryptogram is for Bolck 0 11 70 5E 5C 26 33 61 E2 
+# * Calculated cryptogram is ED 8F 2B E7 8B 0C 7B BF 
+# * New ICV is 66 B6 62 38 4D 6A 3E 5F 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 ED 8F 2B E7 8B 0C 7B BF 
+# LOAD command
+84 E8 00 0B 10 01 00 14 06 00 0C 00 80 ED 8F 2B E7 8B 0C 7B BF
+00 90 00
+# * Load Command is 84 E8 00 0C 10 03 01 00 01 07 01 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0C 10 03 01 00 01 07 01 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0C 10 03 01 00 01 07 01 00 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 66 B6 62 38 4D 6A 3E 5F 
+# * Calculated cryptogram is for Bolck 0 50 22 E1 B6 75 BE 7F 29 
+# * Calculated cryptogram is 79 4A 23 2D 3F 71 3C 3A 
+# * New ICV is 0F C2 DE D1 EE 5B 69 5A 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0C 10 03 01 00 01 07 01 00 00 79 4A 23 2D 3F 71 3C 3A 
+# LOAD command
+84 E8 00 0C 10 03 01 00 01 07 01 00 00 79 4A 23 2D 3F 71 3C 3A
+00 90 00
+# * Load Command is 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 0F C2 DE D1 EE 5B 69 5A 
+# * Calculated cryptogram is for Bolck 0 DB A9 1D FF 1D 7B EF BF 
+# * Calculated cryptogram is 30 25 C0 2B D3 A9 C3 50 
+# * New ICV is 3D B5 CC 95 08 9B 58 F1 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 30 25 C0 2B D3 A9 C3 50 
+# LOAD command
+84 E8 00 0D 10 00 1D 07 00 65 00 02 10 30 25 C0 2B D3 A9 C3 50
+00 90 00
+# * Load Command is 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 3D B5 CC 95 08 9B 58 F1 
+# * Calculated cryptogram is for Bolck 0 0E D7 13 44 DA A4 22 F2 
+# * Calculated cryptogram is A2 B2 6C 64 9C 0A B7 C9 
+# * New ICV is 63 B5 07 55 11 1A 51 22 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 A2 B2 6C 64 9C 0A B7 C9 
+# LOAD command
+84 E8 00 0E 10 18 8C 00 01 18 11 01 00 A2 B2 6C 64 9C 0A B7 C9
+00 90 00
+# * Load Command is 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 63 B5 07 55 11 1A 51 22 
+# * Calculated cryptogram is for Bolck 0 17 B2 A5 DA 42 95 00 00 
+# * Calculated cryptogram is D8 60 B5 3C D4 97 8E DC 
+# * New ICV is 40 22 5D 9F 12 B8 37 CA 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 D8 60 B5 3C D4 97 8E DC 
+# LOAD command
+84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 D8 60 B5 3C D4 97 8E DC
+00 90 00
+# * Load Command is 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 40 22 5D 9F 12 B8 37 CA 
+# * Calculated cryptogram is for Bolck 0 45 72 C7 B6 3B B3 82 79 
+# * Calculated cryptogram is 68 F8 E5 DA FF CF 92 08 
+# * New ICV is E4 8E 17 AF 79 37 C5 6C 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 68 F8 E5 DA FF CF 92 08 
+# LOAD command
+84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 68 F8 E5 DA FF CF 92 08
+00 90 00
+# * Load Command is 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is E4 8E 17 AF 79 37 C5 6C 
+# * Calculated cryptogram is for Bolck 0 0F 08 7F 0D F1 90 AF B7 
+# * Calculated cryptogram is 1D 6D 28 70 DD 4F BF D6 
+# * New ICV is 37 35 03 DF 7E 27 C0 7C 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 1D 6D 28 70 DD 4F BF D6 
+# LOAD command
+84 E8 00 11 10 04 7A 05 23 19 8B 00 05 1D 6D 28 70 DD 4F BF D6
+00 90 00
+# * Load Command is 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 37 35 03 DF 7E 27 C0 7C 
+# * Calculated cryptogram is for Bolck 0 8B 4B EF 7F D7 A8 7F 1E 
+# * Calculated cryptogram is 11 A6 F6 C9 01 01 5B F6 
+# * New ICV is 20 95 08 6D 97 27 FF 85 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 11 A6 F6 C9 01 01 5B F6 
+# LOAD command
+84 E8 00 12 10 2D 19 8B 00 06 32 03 29 11 A6 F6 C9 01 01 5B F6
+00 90 00
+# * Load Command is 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 20 95 08 6D 97 27 FF 85 
+# * Calculated cryptogram is for Bolck 0 79 05 8A 76 4E 34 D3 A4 
+# * Calculated cryptogram is 99 12 11 65 42 15 80 C3 
+# * New ICV is D1 FD 45 4E 74 59 07 66 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 99 12 11 65 42 15 80 C3 
+# LOAD command
+84 E8 00 13 10 04 70 19 1A 08 AD 00 16 99 12 11 65 42 15 80 C3
+00 90 00
+# * Load Command is 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is D1 FD 45 4E 74 59 07 66 
+# * Calculated cryptogram is for Bolck 0 55 5D 56 D5 09 B5 B7 53 
+# * Calculated cryptogram is 66 81 8C 79 3D FC 6D 0A 
+# * New ICV is BA 0C 08 AC 11 FF B7 9D 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 66 81 8C 79 3D FC 6D 0A 
+# LOAD command
+84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 66 81 8C 79 3D FC 6D 0A
+00 90 00
+# * Load Command is 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is BA 0C 08 AC 11 FF B7 9D 
+# * Calculated cryptogram is for Bolck 0 99 26 4F 94 BC 38 D0 68 
+# * Calculated cryptogram is D8 77 3B 98 AD A0 0A 0B 
+# * New ICV is D8 B6 9F AD 55 1D 34 74 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 D8 77 3B 98 AD A0 0A 0B 
+# LOAD command
+84 E8 00 15 10 1F 41 29 04 19 08 8B 00 D8 77 3B 98 AD A0 0A 0B
+00 90 00
+# * Load Command is 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is D8 B6 9F AD 55 1D 34 74 
+# * Calculated cryptogram is for Bolck 0 D2 2F E3 C4 77 84 A7 C2 
+# * Calculated cryptogram is B3 F3 DF 78 18 AA BF F5 
+# * New ICV is DE 34 72 A3 76 65 C6 C0 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 B3 F3 DF 78 18 AA BF F5 
+# LOAD command
+84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 B3 F3 DF 78 18 AA BF F5
+00 90 00
+# * Load Command is 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is DE 34 72 A3 76 65 C6 C0 
+# * Calculated cryptogram is for Bolck 0 C6 16 C1 6E 3C AB E2 E0 
+# * Calculated cryptogram is AD 61 B9 96 E2 2B 77 9E 
+# * New ICV is 89 43 03 4E A3 90 81 E6 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 17 10 07 3B 19 16 04 08 41 8B AD 61 B9 96 E2 2B 77 9E 
+# LOAD command
+84 E8 00 17 10 07 3B 19 16 04 08 41 8B AD 61 B9 96 E2 2B 77 9E
+00 90 00
+# * Load Command is 84 E8 00 18 10 00 08 19 03 08 8B 00 09 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 18 10 00 08 19 03 08 8B 00 09 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 18 10 00 08 19 03 08 8B 00 09 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 89 43 03 4E A3 90 81 E6 
+# * Calculated cryptogram is for Bolck 0 CA D1 83 5B 98 BC D7 73 
+# * Calculated cryptogram is D6 3C 4F 91 3B 3F CB 58 
+# * New ICV is 88 75 5D C6 69 55 50 51 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 18 10 00 08 19 03 08 8B 00 09 D6 3C 4F 91 3B 3F CB 58 
+# LOAD command
+84 E8 00 18 10 00 08 19 03 08 8B 00 09 D6 3C 4F 91 3B 3F CB 58
+00 90 00
+# * Load Command is 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 88 75 5D C6 69 55 50 51 
+# * Calculated cryptogram is for Bolck 0 DD 13 C4 D9 5A 8B FB 46 
+# * Calculated cryptogram is BE FA 60 AB 0F 2A 9E A7 
+# * New ICV is C2 7D B9 27 9A 17 56 37 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 BE FA 60 AB 0F 2A 9E A7 
+# LOAD command
+84 E8 00 19 10 19 AD 00 03 16 04 8B 00 BE FA 60 AB 0F 2A 9E A7
+00 90 00
+# * Load Command is 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is C2 7D B9 27 9A 17 56 37 
+# * Calculated cryptogram is for Bolck 0 74 C1 E3 2D 9D 56 9B 84 
+# * Calculated cryptogram is 0F 98 6C 6B 67 F9 F9 E7 
+# * New ICV is D5 F6 94 54 B9 13 37 22 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 0F 98 6C 6B 67 F9 F9 E7 
+# LOAD command
+84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 0F 98 6C 6B 67 F9 F9 E7
+00 90 00
+# * Load Command is 84 E8 00 1B 10 00 00 00 00 00 00 00 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1B 10 00 00 00 00 00 00 00 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1B 10 00 00 00 00 00 00 00 05 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is D5 F6 94 54 B9 13 37 22 
+# * Calculated cryptogram is for Bolck 0 BB 5B 39 E6 53 99 49 24 
+# * Calculated cryptogram is 64 39 6B 6F 9B 2F F2 87 
+# * New ICV is A2 4A 15 B6 1F 46 54 04 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1B 10 00 00 00 00 00 00 00 05 64 39 6B 6F 9B 2F F2 87 
+# LOAD command
+84 E8 00 1B 10 00 00 00 00 00 00 00 05 64 39 6B 6F 9B 2F F2 87
+00 90 00
+# * Load Command is 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is A2 4A 15 B6 1F 46 54 04 
+# * Calculated cryptogram is for Bolck 0 DA 1B 3A 0B 17 01 78 DC 
+# * Calculated cryptogram is 1F 57 20 7F B9 C7 1F 36 
+# * New ICV is 8B B3 95 84 25 27 04 48 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 1F 57 20 7F B9 C7 1F 36 
+# LOAD command
+84 E8 00 1C 10 00 36 00 0D 02 00 00 00 1F 57 20 7F B9 C7 1F 36
+00 90 00
+# * Load Command is 84 E8 00 1D 10 06 80 03 00 03 80 03 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1D 10 06 80 03 00 03 80 03 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1D 10 06 80 03 00 03 80 03 01 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 8B B3 95 84 25 27 04 48 
+# * Calculated cryptogram is for Bolck 0 F9 58 D4 03 8A 0C BC 0D 
+# * Calculated cryptogram is 43 E5 FF 2E 97 25 62 00 
+# * New ICV is BE DC 1F 3F 13 9A DE B6 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1D 10 06 80 03 00 03 80 03 01 43 E5 FF 2E 97 25 62 00 
+# LOAD command
+84 E8 00 1D 10 06 80 03 00 03 80 03 01 43 E5 FF 2E 97 25 62 00
+00 90 00
+# * Load Command is 84 E8 00 1E 10 01 00 00 00 06 00 00 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1E 10 01 00 00 00 06 00 00 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1E 10 01 00 00 00 06 00 00 01 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is BE DC 1F 3F 13 9A DE B6 
+# * Calculated cryptogram is for Bolck 0 6F 2F EB 91 09 24 EE 5C 
+# * Calculated cryptogram is 9B AC F9 99 DA 93 C5 F9 
+# * New ICV is 03 B5 9A BE 97 4C D2 E5 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1E 10 01 00 00 00 06 00 00 01 9B AC F9 99 DA 93 C5 F9 
+# LOAD command
+84 E8 00 1E 10 01 00 00 00 06 00 00 01 9B AC F9 99 DA 93 C5 F9
+00 90 00
+# * Load Command is 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 03 B5 9A BE 97 4C D2 E5 
+# * Calculated cryptogram is for Bolck 0 99 6C F5 10 37 68 74 14 
+# * Calculated cryptogram is 31 AC 07 A3 E9 2C 43 4D 
+# * New ICV is 58 D8 32 AB 7F C7 9C 21 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 31 AC 07 A3 E9 2C 43 4D 
+# LOAD command
+84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 31 AC 07 A3 E9 2C 43 4D
+00 90 00
+# * Load Command is 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 58 D8 32 AB 7F C7 9C 21 
+# * Calculated cryptogram is for Bolck 0 CF D5 5F AA 94 81 3A 50 
+# * Calculated cryptogram is 9A 53 FA 09 9A 9B 66 3E 
+# * New ICV is 94 33 8C 37 51 99 63 C3 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 9A 53 FA 09 9A 9B 66 3E 
+# LOAD command
+84 E8 00 20 10 03 80 0A 07 03 80 0A 09 9A 53 FA 09 9A 9B 66 3E
+00 90 00
+# * Load Command is 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 94 33 8C 37 51 99 63 C3 
+# * Calculated cryptogram is for Bolck 0 AA 37 4D 62 DE CC D0 43 
+# * Calculated cryptogram is 3A 89 15 4B 48 CE 30 22 
+# * New ICV is 8F C4 B1 11 77 64 B8 E8 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 3A 89 15 4B 48 CE 30 22 
+# LOAD command
+84 E8 00 21 10 03 80 0A 04 03 80 0A 05 3A 89 15 4B 48 CE 30 22
+00 90 00
+# * Load Command is 84 E8 00 22 10 06 80 10 02 03 80 0A 03 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 22 10 06 80 10 02 03 80 0A 03 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 22 10 06 80 10 02 03 80 0A 03 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 8F C4 B1 11 77 64 B8 E8 
+# * Calculated cryptogram is for Bolck 0 EC 3A 8E 49 A0 4D B1 2F 
+# * Calculated cryptogram is 02 26 BD 88 5F FD 1E 8D 
+# * New ICV is 16 D0 7A 09 68 9F B0 65 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 22 10 06 80 10 02 03 80 0A 03 02 26 BD 88 5F FD 1E 8D 
+# LOAD command
+84 E8 00 22 10 06 80 10 02 03 80 0A 03 02 26 BD 88 5F FD 1E 8D
+00 90 00
+# * Load Command is 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 16 D0 7A 09 68 9F B0 65 
+# * Calculated cryptogram is for Bolck 0 57 E6 A4 09 BF 38 A7 51 
+# * Calculated cryptogram is 07 3B AE 20 31 24 80 D7 
+# * New ICV is E5 A4 98 07 73 E0 22 41 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 07 3B AE 20 31 24 80 D7 
+# LOAD command
+84 E8 00 23 10 09 00 13 00 03 0E 23 2C 07 3B AE 20 31 24 80 D7
+00 90 00
+# * Load Command is 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is E5 A4 98 07 73 E0 22 41 
+# * Calculated cryptogram is for Bolck 0 77 6A 61 FD B5 62 84 16 
+# * Calculated cryptogram is 3C 36 D0 EE 8E D3 82 09 
+# * New ICV is C5 9F F9 B9 9E 89 A1 35 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 3C 36 D0 EE 8E D3 82 09 
+# LOAD command
+84 E8 00 24 10 00 0C 05 0C 06 03 07 05 3C 36 D0 EE 8E D3 82 09
+00 90 00
+# * Load Command is 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is C5 9F F9 B9 9E 89 A1 35 
+# * Calculated cryptogram is for Bolck 0 FE BA 5D 68 77 80 4E CB 
+# * Calculated cryptogram is 71 B2 1D 0C AD CE 61 7A 
+# * New ICV is C7 4E 6E 33 C7 C3 51 24 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 71 B2 1D 0C AD CE 61 7A 
+# LOAD command
+84 E8 00 25 10 10 0C 08 09 06 09 0B 00 71 B2 1D 0C AD CE 61 7A
+00 90 00
+# * Load Command is 84 E8 00 26 10 6C 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 26 10 6C 01 00 01 00 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 26 10 6C 01 00 01 00 00 00 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is C7 4E 6E 33 C7 C3 51 24 
+# * Calculated cryptogram is for Bolck 0 ED 54 9B E7 96 A5 C4 D9 
+# * Calculated cryptogram is B2 DD 60 23 3C 60 4C B9 
+# * New ICV is 54 DD FD B6 EE 2E E4 CD 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 26 10 6C 01 00 01 00 00 00 00 B2 DD 60 23 3C 60 4C B9 
+# LOAD command
+84 E8 00 26 10 6C 01 00 01 00 00 00 00 B2 DD 60 23 3C 60 4C B9
+00 90 00
+# * Load Command is 84 E8 00 27 10 01 00 03 00 02 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 27 10 01 00 03 00 02 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 27 10 01 00 03 00 02 00 00 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 54 DD FD B6 EE 2E E4 CD 
+# * Calculated cryptogram is for Bolck 0 AA 43 29 10 A3 44 8D F0 
+# * Calculated cryptogram is CE 55 F5 E5 4E ED 33 7D 
+# * New ICV is 89 FD F3 AF 11 DF CB C5 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 27 10 01 00 03 00 02 00 00 00 CE 55 F5 E5 4E ED 33 7D 
+# LOAD command
+84 E8 00 27 10 01 00 03 00 02 00 00 00 CE 55 F5 E5 4E ED 33 7D
+00 90 00
+# * Load Command is 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 89 FD F3 AF 11 DF CB C5 
+# * Calculated cryptogram is for Bolck 0 EF 53 6D 22 06 8B C4 B6 
+# * Calculated cryptogram is 47 24 8A 34 01 9E 1A 88 
+# * New ICV is 3A E0 94 F7 38 EB 52 63 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 47 24 8A 34 01 9E 1A 88 
+# LOAD command
+84 E8 00 28 10 00 1C 00 84 00 01 00 1E 47 24 8A 34 01 9E 1A 88
+00 90 00
+# * Load Command is 84 E8 00 29 10 00 11 00 00 00 00 01 09 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 29 10 00 11 00 00 00 00 01 09 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 29 10 00 11 00 00 00 00 01 09 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 3A E0 94 F7 38 EB 52 63 
+# * Calculated cryptogram is for Bolck 0 25 85 6A B0 2A FE 1E C6 
+# * Calculated cryptogram is F1 31 2A 54 31 58 02 43 
+# * New ICV is 98 5D 37 CA E4 5A 93 E0 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 29 10 00 11 00 00 00 00 01 09 F1 31 2A 54 31 58 02 43 
+# LOAD command
+84 E8 00 29 10 00 11 00 00 00 00 01 09 F1 31 2A 54 31 58 02 43
+00 90 00
+# * Load Command is 84 E8 00 2A 10 00 14 00 30 00 07 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2A 10 00 14 00 30 00 07 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2A 10 00 14 00 30 00 07 00 00 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 98 5D 37 CA E4 5A 93 E0 
+# * Calculated cryptogram is for Bolck 0 42 95 EA 0B B3 8F 8E 68 
+# * Calculated cryptogram is F5 B4 AB 02 7F 93 27 09 
+# * New ICV is F6 34 59 7E B1 9C CC 64 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2A 10 00 14 00 30 00 07 00 00 F5 B4 AB 02 7F 93 27 09 
+# LOAD command
+84 E8 00 2A 10 00 14 00 30 00 07 00 00 F5 B4 AB 02 7F 93 27 09
+00 90 00
+# * Load Command is 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is F6 34 59 7E B1 9C CC 64 
+# * Calculated cryptogram is for Bolck 0 DF E6 57 D2 8C EF 70 DA 
+# * Calculated cryptogram is 60 B3 3C D3 B7 8A 68 5C 
+# * New ICV is C5 91 D0 67 E3 3C DE 1F 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 60 B3 3C D3 B7 8A 68 5C 
+# LOAD command
+84 E8 00 2B 10 00 00 07 01 00 1D 00 33 60 B3 3C D3 B7 8A 68 5C
+00 90 00
+# * Load Command is 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is C5 91 D0 67 E3 3C DE 1F 
+# * Calculated cryptogram is for Bolck 0 30 BA 42 0F CD 84 2E 74 
+# * Calculated cryptogram is CE 5E E2 BD CB 9F 94 B3 
+# * New ICV is DB C7 65 8F 19 E4 F6 9C 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2C 10 00 46 00 00 00 00 00 0D CE 5E E2 BD CB 9F 94 B3 
+# LOAD command
+84 E8 00 2C 10 00 46 00 00 00 00 00 0D CE 5E E2 BD CB 9F 94 B3
+00 90 00
+# * Load Command is 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is DB C7 65 8F 19 E4 F6 9C 
+# * Calculated cryptogram is for Bolck 0 7B C5 F7 B3 A8 AB EA 22 
+# * Calculated cryptogram is 73 A4 E4 98 9E 03 ED F3 
+# * New ICV is 8F 87 22 93 4B 74 B7 7B 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 73 A4 E4 98 9E 03 ED F3 
+# LOAD command
+84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 73 A4 E4 98 9E 03 ED F3
+00 90 00
+# * Load Command is 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 8F 87 22 93 4B 74 B7 7B 
+# * Calculated cryptogram is for Bolck 0 4D DF 1D D3 27 B2 FB 67 
+# * Calculated cryptogram is 5C C4 80 48 D1 7E 86 BC 
+# * New ICV is AB 55 C1 92 3E 38 E2 AB 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 5C C4 80 48 D1 7E 86 BC 
+# LOAD command
+84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 5C C4 80 48 D1 7E 86 BC
+00 90 00
+# * Load Command is 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is AB 55 C1 92 3E 38 E2 AB 
+# * Calculated cryptogram is for Bolck 0 A4 1A A8 8F F8 86 DA EC 
+# * Calculated cryptogram is 53 8F 1A 43 E8 12 B3 2F 
+# * New ICV is 84 B6 B0 AF 9C 34 10 EE 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 53 8F 1A 43 E8 12 B3 2F 
+# LOAD command
+84 E8 00 2F 10 00 22 00 24 00 27 00 2A 53 8F 1A 43 E8 12 B3 2F
+00 90 00
+# * Load Command is 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 84 B6 B0 AF 9C 34 10 EE 
+# * Calculated cryptogram is for Bolck 0 58 72 E9 82 DA 09 61 98 
+# * Calculated cryptogram is B9 1A 9A FE 3A EF 37 CA 
+# * New ICV is F6 E6 58 3F 11 64 83 8A 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 B9 1A 9A FE 3A EF 37 CA 
+# LOAD command
+84 E8 00 30 10 00 2E 01 B0 01 10 01 40 B9 1A 9A FE 3A EF 37 CA
+00 90 00
+# * Load Command is 84 E8 00 31 10 02 41 03 44 10 04 B4 41 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 31 10 02 41 03 44 10 04 B4 41 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 31 10 02 41 03 44 10 04 B4 41 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is F6 E6 58 3F 11 64 83 8A 
+# * Calculated cryptogram is for Bolck 0 18 FD 0A DE 53 5B 78 2C 
+# * Calculated cryptogram is 41 37 F7 84 45 60 6B 05 
+# * New ICV is AA 0F 3E 83 E6 2F F3 B4 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 31 10 02 41 03 44 10 04 B4 41 41 37 F7 84 45 60 6B 05 
+# LOAD command
+84 E8 00 31 10 02 41 03 44 10 04 B4 41 41 37 F7 84 45 60 6B 05
+00 90 00
+# * Load Command is 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is AA 0F 3E 83 E6 2F F3 B4 
+# * Calculated cryptogram is for Bolck 0 4E 5D 12 FE AF 03 9A 0D 
+# * Calculated cryptogram is EF 5D 92 E5 B9 B0 4A 5B 
+# * New ICV is D2 CD 07 CD 6A 6B FE 31 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 EF 5D 92 E5 B9 B0 4A 5B 
+# LOAD command
+84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 EF 5D 92 E5 B9 B0 4A 5B
+00 90 00
+# * Load Command is 84 E8 80 33 0D 31 06 68 00 A1 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 80 33 0D 31 06 68 00 A1 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 80 33 0D 31 06 68 00 A1 80 00 00 00 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is D2 CD 07 CD 6A 6B FE 31 
+# * Calculated cryptogram is for Bolck 0 85 15 F3 36 E8 DB 0F 7D 
+# * Calculated cryptogram is 52 F6 E3 7E 2E 4A 2D 92 
+# * New ICV is 2F 6D 80 00 AE 19 F3 1E 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 80 33 0D 31 06 68 00 A1 52 F6 E3 7E 2E 4A 2D 92 
+# LOAD command
+84 E8 80 33 0D 31 06 68 00 A1 52 F6 E3 7E 2E 4A 2D 92
+00 90 00
+# => Load Command End
+# => Install For Install And Make Selectable Begin
+# + Load File AID is A0 00 00 00 62 03 01 0C 01 
+# + Module AID is A0 00 00 00 62 03 01 0C 01 01 
+# + Application AID is A0 00 00 00 62 03 01 0C 01 01 
+# + Privileges AID is 00 
+# + There is not parameters
+# * New parameters are C9 00 
+# * Parameters Length is 2
+# * Parameters Length Encoded is 02 
+# * Install For Install Command is 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 80 00 00 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 2F 6D 80 00 AE 19 F3 1E 
+# * Calculated cryptogram is for Bolck 0 AA DA 7F 99 62 9F 77 32 
+# * Calculated cryptogram is for Bolck 1 BE 6E F9 43 51 68 1B 80 
+# * Calculated cryptogram is for Bolck 2 EF 74 B7 7B 49 66 92 29 
+# * Calculated cryptogram is for Bolck 3 F4 37 99 24 C1 FE B7 6F 
+# * Calculated cryptogram is for Bolck 4 D9 66 65 6A 8E 9E 03 A7 
+# * Calculated cryptogram is 8D 3E E9 07 56 7C 7D 47 
+# * New ICV is C5 F5 7A EF F4 06 97 3C 
+# ==> Generate Mac End
+# * Install For Install Command whith mac is 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 8D 3E E9 07 56 7C 7D 47 
+# INSTALL FOR INSTALL AND MAKE SELECTABLE
+84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 8D 3E E9 07 56 7C 7D 47
+90 00
+# => Install For Install And Make Selectable End
+# Select Hello World Applet
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01 90 00
+# Say "Hello"
+00 00 00 00 05 48 45 4C 4C 4F
+00 00 00 00 05 48 45 4C 4C 4F 90 00
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 10 84 08 A0 00 00 00 03 00 00 00 A5 04 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00 
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 20 91 46 04 B3 14 D9 1F
+00 00 70 81 00 08 32 91 15 09 FF 02 00 0C D9 5D 45 65 91 E6 6E AA C9 70 AA 20 4E 48 90 00
+# SCPMode is SCP_02_15
+# * Key Diversification Data is 00 00 70 81 00 08 32 91 15 09 
+# * Sequence Counter is 00 0C 
+# * Host Challenge is 20 91 46 04 B3 14 D9 1F 
+# * Card Challenge is D9 5D 45 65 91 E6 
+# * Card Crypto Resp is 6E AA C9 70 AA 20 4E 48 
+# ==> Calculate Derivation Data
+# * Derivation Data is 00 00 00 0C 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * SCP_Mode is SCP_02_15
+# *** Initialize IV : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# * sessEnc = 40 00 54 38 2C 6F A2 52 45 C5 F3 97 DE 65 39 18 40 00 54 38 2C 6F A2 52 
+# * sessMac = 98 DB 12 57 49 C3 7B 1E 52 99 38 15 47 5B 3A 09 98 DB 12 57 49 C3 7B 1E 
+# * sessRMac = A5 F3 CE 87 8C 28 AC 25 3C B7 44 35 66 54 A3 45 A5 F3 CE 87 8C 28 AC 25 
+# * sessKek = A5 F3 CE 87 8C 28 AC 25 3C B7 44 35 66 54 A3 45 A5 F3 CE 87 8C 28 AC 25 
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00 
+# * SCP 02 protocol used
+# * Data to encrypt: 20 91 46 04 B3 14 D9 1F 00 0C D9 5D 45 65 91 E6 80 00 00 00 00 00 00 00 
+# * Calculated Card Crypto: 6E AA C9 70 AA 20 4E 48 
+# * Calculated Host Crypto: 67 3C 94 73 DE 72 20 C8 
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isC_MAC
+# * Data uses to calculate mac value is84 82 01 00 10 67 3C 94 73 DE 72 20 C8 
+# ==> Generate Mac
+# generateMac with data: 84 82 01 00 10 67 3C 94 73 DE 72 20 C8 
+# - Data needs PADDING!
+# * data with PADDING: 84 82 01 00 10 67 3C 94 73 DE 72 20 C8 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 00 00 00 00 00 00 00 00 
+# * Calculated cryptogram is for Bolck 0 18 B9 AA 59 FC 44 57 33 
+# * Calculated cryptogram is 91 6B C6 ED 5F 62 A0 9E 
+# * New ICV is 38 FA A4 F4 41 66 AB 52 
+# ==> Generate Mac End
+# * mac value obtains91 6B C6 ED 5F 62 A0 9E 
+# EXTERNAL AUTHENTICATE command
+84 82 01 00 10 67 3C 94 73 DE 72 20 C8 91 6B C6 ED 5F 62 A0 9E
+90 00
+# => External Authenticate end
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01 01 
+# + Cascade mode ? false
+# + Security mode is C_MAC
+# * Delete Command is 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 80 00 00 00 00 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 38 FA A4 F4 41 66 AB 52 
+# * Calculated cryptogram is for Bolck 0 0E 1F A1 8D F2 CD D0 62 
+# * Calculated cryptogram is for Bolck 1 D3 0B FB 22 D8 AE AB 5B 
+# * Calculated cryptogram is B4 06 EF C3 0C 3B 50 5D 
+# * New ICV is 9A CE 47 9C EC 99 A4 E3 
+# ==> Generate Mac End
+# * delete Command which CMac is 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 B4 06 EF C3 0C 3B 50 5D 
+# DELETE OBJECT command
+84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 B4 06 EF C3 0C 3B 50 5D
+00 90 00
+# => Delete On Card Object End
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01 
+# + Cascade mode ? false
+# + Security mode is C_MAC
+# * Delete Command is 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 
+# * data with PADDING: 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 80 00 00 00 00 00 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 9A CE 47 9C EC 99 A4 E3 
+# * Calculated cryptogram is for Bolck 0 DC D6 CE 5B D8 BC 83 82 
+# * Calculated cryptogram is for Bolck 1 43 BC 91 41 D0 AB FC C0 
+# * Calculated cryptogram is F7 F6 A9 66 40 86 EC D9 
+# * New ICV is 08 DC B6 63 3C AD 97 0E 
+# ==> Generate Mac End
+# * delete Command which CMac is 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 F7 F6 A9 66 40 86 EC D9 
+# DELETE OBJECT command
+84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 F7 F6 A9 66 40 86 EC D9
+00 90 00
+# => Delete On Card Object End

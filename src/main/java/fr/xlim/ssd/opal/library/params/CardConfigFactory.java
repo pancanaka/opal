@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -14,7 +13,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 
 /**
  * Delivers card configuration CardConfig
@@ -31,7 +29,7 @@ public class CardConfigFactory {
 
     private static String configFile = "/config.xml";
 
-    public static void setConfigFile (String configFile) {
+    public static void setConfigFile(String configFile) {
         CardConfigFactory.configFile = configFile;
     }
 
@@ -47,7 +45,7 @@ public class CardConfigFactory {
 
         String name = null;
         String description = null;
-        ATR[] atrs = null ;
+        ATR[] atrs = null;
         byte[] isd = null;
         SCPMode scpMode = null;
         String tp = null;
@@ -93,7 +91,7 @@ public class CardConfigFactory {
             throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
         }
 
-        return new CardConfig(name,description, atrs, isd, scpMode, tp, keys, impl);
+        return new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
     }
 
     /**
@@ -130,10 +128,9 @@ public class CardConfigFactory {
             atrs = new ATR[listATR.getLength()];
             // for each key in the Element
             for (int i = 0; i < listATR.getLength(); i++) {
-                atrs[i] = new ATR (Conversion.hexToArray (((Element) listATR.item(i)).getAttribute("value")));
+                atrs[i] = new ATR(Conversion.hexToArray(((Element) listATR.item(i)).getAttribute("value")));
             }
-        }
-        catch (ClassCastException e){
+        } catch (ClassCastException e) {
             logger.warn("There are not ATR list" + e.getMessage());
         } finally {
             return atrs;
@@ -166,29 +163,29 @@ public class CardConfigFactory {
             res = SCPMode.SCP_01_15;
         } else if (scp.equals("02_15")) {
             res = SCPMode.SCP_02_15;
-        }else if (scp.equals("02_04")) {
+        } else if (scp.equals("02_04")) {
             res = SCPMode.SCP_02_04;
-        }else if (scp.equals("02_05")) {
+        } else if (scp.equals("02_05")) {
             res = SCPMode.SCP_02_05;
-        }else if (scp.equals("02_14")) {
+        } else if (scp.equals("02_14")) {
             res = SCPMode.SCP_02_14;
-        }else if (scp.equals("02_0A")) {
+        } else if (scp.equals("02_0A")) {
             res = SCPMode.SCP_02_0A;
-        }else if (scp.equals("02_45")) {
+        } else if (scp.equals("02_45")) {
             res = SCPMode.SCP_02_45;
-        }else if (scp.equals("02_55")) {
+        } else if (scp.equals("02_55")) {
             res = SCPMode.SCP_02_55;
-        }else if (scp.equals("03_65")) {
+        } else if (scp.equals("03_65")) {
             res = SCPMode.SCP_03_65;
-        }else if (scp.equals("03_6D")) {
+        } else if (scp.equals("03_6D")) {
             res = SCPMode.SCP_03_6D;
-        }else if (scp.equals("03_05")) {
+        } else if (scp.equals("03_05")) {
             res = SCPMode.SCP_03_05;
-        }else if (scp.equals("03_0D")) {
+        } else if (scp.equals("03_0D")) {
             res = SCPMode.SCP_03_0D;
-        }else if (scp.equals("03_2D")) {
+        } else if (scp.equals("03_2D")) {
             res = SCPMode.SCP_03_2D;
-        }else if (scp.equals("03_25")) {
+        } else if (scp.equals("03_25")) {
             res = SCPMode.SCP_03_25;
         }
         return res;
@@ -264,14 +261,14 @@ public class CardConfigFactory {
 
         String name = null;
         String description = null;
-        ATR[] atrs = null ;
+        ATR[] atrs = null;
         byte[] isd = null;
         SCPMode scpMode = null;
         String tp = null;
         SCKey[] keys = null;
         String impl = null;
 
-        ATR arr2found = new ATR (atr);
+        ATR arr2found = new ATR(atr);
 
         try {
 
@@ -281,34 +278,33 @@ public class CardConfigFactory {
                     newDocumentBuilder().parse(input);
 
             NodeList cards = document.getElementsByTagName("card");
-            Element desiredCard = null;
-
-            boolean stop = false;
+            Element card = null;
+            Element cardFound = null;
 
             // looking for the card identifiant in atr.xml file
-            for (int i = 0; (i < cards.getLength()) & !stop ; i++) {
-                desiredCard = (Element) cards.item(i);
-                atrs = getATRs(desiredCard);
-                for(ATR a: atrs){
+            for (int i = 0; (i < cards.getLength()) & (cardFound != null); i++) {
+                card = (Element) cards.item(i);
+                atrs = getATRs(card);
+                for (ATR a : atrs) {
                     if (arr2found.equals(a)) {
-                        stop = true;
+                        cardFound = card;
                         break;
                     }
                 }
             }
 
-            if (desiredCard == null) {
+            if (cardFound == null) {
                 throw new CardConfigNotFoundException("ATR \"" + Conversion.arrayToHex(atr) + "\" not found");
             }
 
             // set and return CardConfig
-            name = getName(desiredCard);
-            description = getDescription(desiredCard);
-            isd = getISD(desiredCard);
-            scpMode = getSCP(desiredCard);
-            tp = getTP(desiredCard);
-            keys = getKeys(desiredCard);
-            impl = getImpl(desiredCard);
+            name = getName(cardFound);
+            description = getDescription(cardFound);
+            isd = getISD(cardFound);
+            scpMode = getSCP(cardFound);
+            tp = getTP(cardFound);
+            keys = getKeys(cardFound);
+            impl = getImpl(cardFound);
 
             logger.debug("==> card matching is " + name);
 
@@ -320,6 +316,6 @@ public class CardConfigFactory {
             throw new CardConfigNotFoundException("XML parsing error when reading atr.xml file: " + e.getMessage());
         }
 
-        return new CardConfig(name,description, atrs, isd, scpMode, tp, keys, impl);
+        return new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
     }
 }
