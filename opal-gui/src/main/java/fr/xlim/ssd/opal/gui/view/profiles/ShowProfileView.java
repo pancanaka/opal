@@ -1,7 +1,7 @@
 package fr.xlim.ssd.opal.gui.view.profiles;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
-import fr.xlim.ssd.opal.gui.controller.TestXML;
+import fr.xlim.ssd.opal.gui.controller.profilesController;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -19,7 +19,7 @@ import javax.swing.JTable;
  *
  * @author Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>
  */
-public class ShowProfileVue extends JPanel implements ActionListener {
+public class ShowProfileView extends JPanel implements ActionListener {
     private HomeView f = null;
 
     private JTable tableau = null;
@@ -29,12 +29,12 @@ public class ShowProfileVue extends JPanel implements ActionListener {
     private JButton btAdd       = new JButton("Add");
     private JButton btOK        = new JButton("OK");
 
-    public ShowProfileVue(HomeView f) {
+    public ShowProfileView(HomeView f) {
         this.f = f;
 
         // Data for the profile tab
         String  title[] = {"Profile name", "Description", "ATR"};
-        new TestXML();
+        new profilesController();
         /*Object[][] data = TestXML.getProfils();
         tableau = new JTable(data, title){
             @Override

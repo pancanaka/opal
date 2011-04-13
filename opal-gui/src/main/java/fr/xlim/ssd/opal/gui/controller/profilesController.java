@@ -36,15 +36,10 @@ import javax.xml.transform.stream.StreamResult;
  *
  * @author Yorick Lesecque
  */
-public class TestXML {/*
+public class profilesController {
     private static CardConfig profils[];
 
-    public TestXML() {
-        try {
-            profils = CardConfigFactory.getAllCardConfigs();
-        } catch (CardConfigNotFoundException ex) {
-            Logger.getLogger(TestXML.class.getName()).log(Level.SEVERE, null, ex);
-        }
+    public profilesController() {
     }
 
     public static String[][] getProfils() {
@@ -60,7 +55,7 @@ public class TestXML {/*
     }
 
     public static boolean deleteProfil(int id)
-            throws CardConfigNotFoundException, TransformerException {
+            throws CardConfigNotFoundException, TransformerException, ParserConfigurationException {
 
         String isAID = Conversion.arrayToHex(profils[id].getIssuerSecurityDomainAID());
         boolean t = false;
@@ -89,7 +84,6 @@ public class TestXML {/*
             if (!t) {
                 throw new CardConfigNotFoundException("Card \"" + isAID + "\" not found");
             } else {
-                /**//*
                 try {
                     //write the content into xml file
                     TransformerFactory transformerFactory = TransformerFactory.newInstance();
@@ -100,7 +94,6 @@ public class TestXML {/*
                 } catch (TransformerException tfe){
                     tfe.printStackTrace();
                 }
-                /*
                 try {
                     OutputFormat format = new OutputFormat(document);
                     FileWriter fw = new FileWriter("/config.xml");
@@ -113,7 +106,6 @@ public class TestXML {/*
                     System.out.println("ploooooooooooooooooooooooooooooop");
                     throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
                 }
-                /**//*
             }
 
         } catch (IOException e) {
@@ -125,5 +117,5 @@ public class TestXML {/*
         }
 
         return (t)?true:false;
-    }*/
+    }
 }

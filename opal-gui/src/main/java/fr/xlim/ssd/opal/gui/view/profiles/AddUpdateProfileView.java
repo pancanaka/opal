@@ -18,7 +18,7 @@ import javax.swing.border.TitledBorder;
  *
  * @author Thibault Desmoulins
  */
-public class AddUpdateProfileVue extends JPanel implements ActionListener {
+public class AddUpdateProfileView extends JPanel implements ActionListener {
     private HomeView f = null;
 
     private JButton btOK        = new JButton("Save");
@@ -39,7 +39,7 @@ public class AddUpdateProfileVue extends JPanel implements ActionListener {
     private JCheckBox atr = new JCheckBox("Default");
 
 
-    public AddUpdateProfileVue(HomeView f) {
+    public AddUpdateProfileView(HomeView f) {
         this.f = f;
 
         Box v = Box.createVerticalBox();
@@ -77,7 +77,7 @@ public class AddUpdateProfileVue extends JPanel implements ActionListener {
         v.add(createLigneForm("SCP Mode : ", cbSCP));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
-        
+
         // Line "Transmission Protocol"
         String[] tab2 = {"T=0", "T=1", "T=*"};
         cbTP = new JComboBox(tab2);
@@ -103,7 +103,7 @@ public class AddUpdateProfileVue extends JPanel implements ActionListener {
         cbImp = new JComboBox(tab3);
         v.add(createLigneForm("", Box.createRigidArea(new Dimension(300,80)), btSave));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
-        
+
 
         this.add(v);
     }
@@ -115,7 +115,7 @@ public class AddUpdateProfileVue extends JPanel implements ActionListener {
 
         lbl.setPreferredSize(new Dimension(180,lineHeight));
         ligne.setPreferredSize(new Dimension(500, lineHeight));
-        
+
         ligne.add(lbl);
         ligne.add(field);
 
@@ -137,7 +137,7 @@ public class AddUpdateProfileVue extends JPanel implements ActionListener {
     }
 
 
-    
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         throw new UnsupportedOperationException("Not supported yet.");

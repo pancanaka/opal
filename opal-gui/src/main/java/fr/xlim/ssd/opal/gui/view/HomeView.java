@@ -12,8 +12,8 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
-import fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileVue;
-import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileVue;
+import fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileView;
+import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileView;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import org.jdesktop.application.Application;
@@ -32,8 +32,8 @@ public class HomeView extends FrameView implements ActionListener {
     private MainController           controller;
     private JToolBar                 terminalToolBar;
     private HomePanel                homePanel;
-    private ShowProfileVue           showProfilesPanel;
-    private AddUpdateProfileVue      panAddUpdate;
+    private ShowProfileView           showProfilesPanel;
+    private AddUpdateProfileView      panAddUpdate;
     private CardReaderMonitorToolbar cardReaderMonitorToolbar;
     
 
@@ -60,8 +60,8 @@ public class HomeView extends FrameView implements ActionListener {
         initializeToolbar();
 
         homePanel         = new HomePanel(this.controller);
-        showProfilesPanel = new ShowProfileVue(this);
-        panAddUpdate      = new AddUpdateProfileVue(this);
+        showProfilesPanel = new ShowProfileView(this);
+        panAddUpdate      = new AddUpdateProfileView(this);
 
         this.getFrame().setContentPane(homePanel);
     }
