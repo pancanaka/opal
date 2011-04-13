@@ -2,6 +2,7 @@ package fr.xlim.ssd.opal.gui.model.reader;
 
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
+import fr.xlim.ssd.opal.library.params.ATR;
 
 import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
@@ -38,6 +39,15 @@ public class CardReaderModel {
      */
     public String getSelectedCardName() {
         return this.selectedCardReaderItem.getCardName();
+    }
+
+    /**
+     * Get selected card ATR.
+     *
+     * @return the selected card ATR
+     */
+    public ATR getSelectedCardATR() {
+        return this.selectedCardReaderItem.getCardATR();
     }
 
     /**

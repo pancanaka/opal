@@ -1,29 +1,88 @@
 package fr.xlim.ssd.opal.gui.model.reader;
 
+import fr.xlim.ssd.opal.library.params.ATR;
+
 /**
  * A simple card reader representation.
  *
- * This representation contains only two strings:
+ * The card reader representation contains:
  * <ul>
  *     <li>the card reader name;</li>
- *     <li>the card name.</li>
+ *     <li>the card name;</li>
+ *     <li>the card ATR.</li>
  * </ul>
+ *
+ * Please notice that a card reader may not contain a card. A good representation can be an empty <code>String</code>
+ * for the card name and a <code>null ATR</code> instance for the card ATR.
  * 
  * @author David Pequegnot
  */
 public class CardReaderItem {
     private String cardReaderName;
     private String cardName;
+    private ATR    cardATR;
+
+    /**
+     * Default constructor.
+     *
+     * Card reader and card names will be set to an empty <code>String</code> and the card ATR to <code>null</code>.
+     */
+    public CardReaderItem() {
+        this("", "", null);
+    }
 
     /**
      * Constructor.
      *
-     * @param cardReaderName the name of the card reader
-     * @param cardName       the name of the card
+     * Card reader name will be set with the <code>cardReaderName</code> value, card name will be set to an empty
+     * <code>String</code> and the card ATR to <code>null</code>.
+     *
+     * @param cardReaderName the card reader name
+     */
+    public CardReaderItem(String cardReaderName) {
+        this(cardReaderName, "", null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * Card reader name will be set with the <code>cardReaderName</code> value, card name will be set to an empty
+     * <code>String</code> and the card ATR with the <code>cardATR</code> instance.
+     *
+     * @param cardReaderName the card reader name
+     * @param cardATR        the card ATR in an <code>ATR</code> instance
+     */
+    public CardReaderItem(String cardReaderName, ATR cardATR) {
+        this(cardReaderName, "", cardATR);
+    }
+
+    /**
+     * Constructor.
+     *
+     * Card reader name will be set with the <code>cardReaderName</code> value, card name with the <code>cardName</code>
+     * value and the card ATR to <code>null</code>.
+     *
+     * @param cardReaderName the card reader name
+     * @param cardName       the card name
      */
     public CardReaderItem(String cardReaderName, String cardName) {
-        this.setCardReaderName(cardReaderName);
-        this.setCardName(cardName);
+        this(cardReaderName, cardName, null);
+    }
+
+    /**
+     * Constructor.
+     *
+     * Card reader name will be set with the <code>cardReaderName</code> value, card name with the <code>cardName</code>
+     * value and the card ATR the <code>cardATR</code> instance.
+     *
+     * @param cardReaderName the card reader name
+     * @param cardName       the card name
+     * @param cardATR        the card ATR in an <code>ATR</code> instance
+     */
+    public CardReaderItem(String cardReaderName, String cardName, ATR cardATR) {
+        this.cardReaderName = cardReaderName;
+        this.cardName       = cardName;
+        this.cardATR        = cardATR;
     }
 
     /**
@@ -63,11 +122,29 @@ public class CardReaderItem {
     }
 
     /**
+     * Gets the card ATR.
+     *
+     * @return the card ATR
+     * @see fr.xlim.ssd.opal.library.params.ATR
+     */
+    public ATR getCardATR() {
+        return this.cardATR;
+    }
+
+    /**
+     * Sets the card ATR.
+     *
+     * @param cardATR the card ATR to set
+     */
+    public void setCardATR(ATR cardATR) {
+        this.cardATR = cardATR;
+    }
+
+    /**
      * Equals method.
      *
-     * The equals method has been overridden to compare two <code>CardReaderItem</code> instances by 
-     * @param aThat
-     * @return
+     * @param aThat the object to compare
+     * @return <code>true</code> if object are equal
      */
     @Override
     public boolean equals(Object aThat) {

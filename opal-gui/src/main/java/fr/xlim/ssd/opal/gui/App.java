@@ -1,8 +1,14 @@
 package fr.xlim.ssd.opal.gui;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.tools.SmartCardListParser;
+import fr.xlim.ssd.opal.library.params.ATR;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
+
+import java.io.UnsupportedEncodingException;
+import java.util.regex.Pattern;
 
 /**
  * Application life cycle management.
@@ -43,7 +49,7 @@ public class App extends SingleFrameApplication {
     /**
      * Main method launching the application.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws UnsupportedEncodingException {
         Application.launch(App.class, args);
     }
 

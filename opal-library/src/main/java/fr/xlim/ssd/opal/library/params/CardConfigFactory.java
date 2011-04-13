@@ -133,8 +133,7 @@ public class CardConfigFactory {
             for (int i = 0; i < listATR.getLength(); i++) {
                 atrs[i] = new ATR (Conversion.hexToArray (((Element) listATR.item(i)).getAttribute("value")));
             }
-        }
-        catch (ClassCastException e){
+        } catch (ClassCastException e){
             logger.warn("There are not ATR list" + e.getMessage());
         } finally {
             return atrs;
@@ -282,34 +281,33 @@ public class CardConfigFactory {
                     newDocumentBuilder().parse(input);
 
             NodeList cards = document.getElementsByTagName("card");
-            Element desiredCard = null;
-
-            boolean stop = false;
+            Element card = null;
+            Element cardFound = null;
 
             // looking for the card identifiant in atr.xml file
-            for (int i = 0; i < cards.getLength() & !stop; i++) {
-                desiredCard = (Element) cards.item(i);
-                atrs = getATRs(desiredCard);
+            for (int i = 0; (i < cards.getLength()) & (cardFound != null); i++) {
+                card = (Element) cards.item(i);
+                atrs = getATRs(card);
                 for(ATR a: atrs){
                     if (arr2found.equals(a)) {
-                        stop = true;
+                        cardFound = card;
                         break;
                     }
                 }
             }
 
-            if (desiredCard == null) {
+            if (cardFound == null) {
                 throw new CardConfigNotFoundException("ATR \"" + Conversion.arrayToHex(atr) + "\" not found");
             }
 
             // set and return CardConfig
-            name = getName(desiredCard);
-            description = getDescription(desiredCard);
-            isd = getISD(desiredCard);
-            scpMode = getSCP(desiredCard);
-            tp = getTP(desiredCard);
-            keys = getKeys(desiredCard);
-            impl = getImpl(desiredCard);
+            name = getName(cardFound);
+            description = getDescription(cardFound);
+            isd = getISD(cardFound);
+            scpMode = getSCP(cardFound);
+            tp = getTP(cardFound);
+            keys = getKeys(cardFound);
+            impl = getImpl(cardFound);
 
             logger.debug("==> card matching is " + name);
 

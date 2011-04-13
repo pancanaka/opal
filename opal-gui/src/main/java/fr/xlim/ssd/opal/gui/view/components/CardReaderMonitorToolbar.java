@@ -6,6 +6,7 @@ import fr.xlim.ssd.opal.gui.model.reader.CardReaderItem;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 
@@ -102,14 +103,20 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
             this.cardReaderComboBox.addItem(resourceMap.getString("emptyCardReaderItemsList.text"));
         } else {
             for (CardReaderItem item : cardReaderModel.getCardReaderItems()) {
-                this.cardReaderComboBox.addItem(item.getCardReaderName());
+                this.cardReaderComboBox.addItem(item.getCardReaderName() +
+                        " : " + item.getCardName() +
+                        ((item.getCardATR() == null) ? "" :
+                        " [" + Conversion.arrayToHex(item.getCardATR().getValue()) + ']'));
             }
         }
 
         if (cardReaderModel.getSelectedCardReaderName().equals("")) {
             this.cardReaderComboBox.setSelectedIndex(0);
         } else {
-            this.cardReaderComboBox.setSelectedItem(this.cardReaderModel.getSelectedCardReaderName());
+            this.cardReaderComboBox.setSelectedItem(this.cardReaderModel.getSelectedCardReaderName() +
+                    " : " + this.cardReaderModel.getSelectedCardName() +
+                    ((this.cardReaderModel.getSelectedCardATR() == null) ? "" :
+                    " [" + Conversion.arrayToHex(this.cardReaderModel.getSelectedCardATR().getValue()) + ']'));
         }
     }
 }
