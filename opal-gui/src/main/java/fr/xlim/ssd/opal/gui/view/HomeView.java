@@ -3,6 +3,7 @@ package fr.xlim.ssd.opal.gui.view;
 import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -11,6 +12,10 @@ import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
+import fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileVue;
+import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileVue;
+import java.awt.event.ActionListener;
+import javax.swing.JOptionPane;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 
@@ -20,12 +25,15 @@ import org.jdesktop.application.FrameView;
  * Displays the application main view to interact with users.
  *
  * @author David Pequegnot
+ * @author Thibault Desmoulins
  */
-public class HomeView extends FrameView {
+public class HomeView extends FrameView implements ActionListener {
 
-    private MainController controller;
-    private JToolBar       terminalToolBar;
-    private HomePanel      homePanel;
+    private MainController           controller;
+    private JToolBar                 terminalToolBar;
+    private HomePanel                homePanel;
+    private ShowProfileVue           showProfilesPanel;
+    private AddUpdateProfileVue      panAddUpdate;
     private CardReaderMonitorToolbar cardReaderMonitorToolbar;
     
 
@@ -51,8 +59,11 @@ public class HomeView extends FrameView {
         initializeMenu();
         initializeToolbar();
 
-        homePanel = new HomePanel(this.controller);
-        setComponent(this.homePanel);
+        homePanel         = new HomePanel(this.controller);
+        showProfilesPanel = new ShowProfileVue(this);
+        panAddUpdate      = new AddUpdateProfileVue(this);
+
+        this.getFrame().setContentPane(homePanel);
     }
 
     /**
@@ -78,8 +89,8 @@ public class HomeView extends FrameView {
         // Events
         itemQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
         itemMProfiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
-        //itemQuit.addActionListener(this);
-        //itemMProfiles.addActionListener(this);
+        itemQuit.addActionListener(this);
+        itemMProfiles.addActionListener(this);
     }
 
     /**
@@ -89,5 +100,41 @@ public class HomeView extends FrameView {
         this.cardReaderMonitorToolbar = new CardReaderMonitorToolbar(this.controller);
 
         this.setToolBar(this.cardReaderMonitorToolbar);
+    }
+
+
+    public void affichePanel(String type) {
+        if(type.equals("home")) {
+            this.getFrame().setContentPane(homePanel);
+        }
+        else if(type.equals("show profiles")) {
+            this.getFrame().setContentPane(showProfilesPanel);
+        }
+        else if(type.equals("add update")) {
+            this.getFrame().setContentPane(panAddUpdate);
+        }
+        this.getFrame().setVisible(true);
+    }
+
+
+    @Override
+    public void actionPerformed(ActionEvent ae) {
+        Object o = ae.getSource();
+
+        if(o instanceof JMenuItem) {
+            JMenuItem menu = (JMenuItem) o;
+            String name    = menu.getText();
+
+            /* If we click on the Quit menu */
+            if(name.equals("Quit")) {
+                int option = JOptionPane.showConfirmDialog(null, "Do you really want to quit ?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
+                    System.exit(0);
+                }
+            }
+            else if(name.equals("Manage profiles")) {
+                affichePanel("show profiles");
+            }
+        }
     }
 }
