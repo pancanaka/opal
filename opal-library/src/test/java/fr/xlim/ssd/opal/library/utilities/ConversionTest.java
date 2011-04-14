@@ -10,7 +10,7 @@ public class ConversionTest {
     public void testArrayToHex() {
         byte[] tab = new byte[]{(byte) 0xAB, 0x07, 0x13, 0x56};
         String res = Conversion.arrayToHex(tab);
-        assertEquals("AB 07 13 56 ", res);
+        assertEquals("AB 07 13 56", res);
     }
 
     @Test
