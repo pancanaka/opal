@@ -1,16 +1,19 @@
 package fr.xlim.ssd.opal.gui.view.profiles;
 
 import fr.xlim.ssd.opal.gui.view.HomeView;
+import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.Box;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
@@ -21,11 +24,11 @@ import javax.swing.border.TitledBorder;
 public class AddUpdateProfileView extends JPanel implements ActionListener {
     private HomeView f = null;
 
-    private JButton btOK        = new JButton("Save");
+    private JButton btSave     = new JButton("Save");
+    private JButton btAddATR   = new JButton("Add ATR");
+    private JButton btAddField = new JButton("Add field");
 
-    private JButton btSave = new JButton("Save");
-
-    private short lineHeight  = 20;
+    private short lineHeight  = 25;
     private short lineSpacing = 10;
 
     private JTextField
@@ -36,20 +39,28 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
     private JComboBox cbSCP = null, cbTP  = null, cbImp = null;
 
-    private JCheckBox atr = new JCheckBox("Default");
-
+    private ArrayList<JTextField>   ATRlist = new ArrayList<JTextField>();
+    private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
 
     public AddUpdateProfileView(HomeView f) {
         this.f = f;
 
+        // ATRlist must contain one JTextField at least
+        ATRlist.add(new JTextField());
+
+        Keylist.add(new KeyComponent());
+
+        btAddATR.addActionListener(this);
+        btAddField.addActionListener(this);
+
+        drawWindow();
+    }
+
+    public void drawWindow() {
+        this.removeAll();
+
         Box v = Box.createVerticalBox();
-        JLabel l = null;
-
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing+15)));
-
-        // Line "name"
-        Box ligne = Box.createHorizontalBox();
-
 
         // Line "name"
         v.add(createLigneForm("Name : ", txtName));
@@ -62,8 +73,9 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
 
         // Line "ATR"
-        v.add(createLigneForm("ATR : ", txtATR, atr));
-        v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
+        drawATRLines(v);
+        v.add(createLigneForm("", btAddATR));
+        v.add(Box.createRigidArea(new Dimension(300, lineSpacing*2)));
 
 
         // Line "Issuer Security Domain AID"
@@ -85,24 +97,22 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
-        JPanel jpl2 = new JPanel();
-        TitledBorder t1 = new TitledBorder("Keys");
-        jpl2.setBorder(t1);
-        v.add(jpl2);
-        v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
+        // Line "Keys"
+        drawKeysLines(v);
+        v.add(createLigneForm("", btAddField));
+        v.add(Box.createRigidArea(new Dimension(300, lineSpacing*2)));
 
 
         // Line "Implementation"
         String[] tab3 = {"GP2xCommands", "GP2xCommands", "GP2xCommands"};
         cbImp = new JComboBox(tab3);
         v.add(createLigneForm("Implementation : ", cbImp, Box.createRigidArea(new Dimension(220, lineHeight))));
-        v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
+        v.add(Box.createRigidArea(new Dimension(300, lineSpacing*3)));
 
 
         // Line with the save button
-        cbImp = new JComboBox(tab3);
-        v.add(createLigneForm("", Box.createRigidArea(new Dimension(300,80)), btSave));
-        v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
+        v.add(createLigneForm("", btSave));
+        v.add(Box.createRigidArea(new Dimension(300, 80)));
 
 
         this.add(v);
@@ -113,7 +123,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         Box    ligne  = Box.createHorizontalBox();
         JLabel lbl    = new JLabel(label);
 
-        lbl.setPreferredSize(new Dimension(180,lineHeight));
+        lbl.setPreferredSize(new Dimension(200,lineHeight));
         ligne.setPreferredSize(new Dimension(500, lineHeight));
 
         ligne.add(lbl);
@@ -126,7 +136,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         Box    ligne  = Box.createHorizontalBox();
         JLabel lbl    = new JLabel(label);
 
-        lbl.setPreferredSize(new Dimension(180,lineHeight));
+        lbl.setPreferredSize(new Dimension(200,lineHeight));
         ligne.setPreferredSize(new Dimension(500, lineHeight));
 
         ligne.add(lbl);
@@ -136,10 +146,96 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         return ligne;
     }
 
+    public void drawKeysLines(Box v) {
+        int n      = Keylist.size();
+        JPanel jpl = new JPanel();
+        jpl.setBorder(new TitledBorder("Keys"));
+
+        Box vJPL = Box.createVerticalBox();
+        vJPL.add(Box.createRigidArea(new Dimension(300, 5)));
+
+        for(int i=0 ; i<n ; i++) {
+            Box b = Keylist.get(i).createLineForm();
+            vJPL.add(b);
+            vJPL.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
+        }
+
+        vJPL.add(Box.createRigidArea(new Dimension(300, 10)));
+        jpl.add(vJPL);
+        v.add(jpl);
+    }
+
+    public void drawATRLines(Box v) {
+        int n = ATRlist.size();
+        JPanel jpl = new JPanel();
+        jpl.setBorder(new TitledBorder("ATR list"));
+
+        Box vJPL = Box.createVerticalBox();
+        vJPL.add(Box.createRigidArea(new Dimension(300, 5)));
+
+        for(int i=0 ; i<n ; i++) {
+            Box line = Box.createHorizontalBox();
+
+            line.setPreferredSize(new Dimension(500, lineHeight));
+
+            // Add the label
+            JLabel lbl = new JLabel("ATR "+(i+1)+" : ");
+            lbl.setPreferredSize(new Dimension(100,lineHeight));
+            line.add(lbl);
+
+            // Add the text field
+            line.add(ATRlist.get(i));
+
+            // Add the button "current" with the listener
+            JButton btCurrent = new JButton("Current");
+            btCurrent.addActionListener(this);
+            btCurrent.setName(Integer.toString(i));
+            line.add(btCurrent);
+
+            // Add the button "remove" with the listener
+            JButton btRemove = new JButton("Remove");
+            btRemove.setName(Integer.toString(i));
+            btRemove.addActionListener(this);
+            line.add(btRemove);
+
+            // Add this line in the vertical box
+            vJPL.add(line);
+        }
+
+        vJPL.add(Box.createRigidArea(new Dimension(300, 10)));
+        jpl.add(vJPL);
+        v.add(jpl);
+    }
+
 
 
     @Override
-    public void actionPerformed(ActionEvent ae) {
-        throw new UnsupportedOperationException("Not supported yet.");
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource();
+        
+        if(o instanceof JButton) {
+            JButton b = (JButton) o;
+            
+            if(b.equals(btAddATR)) {
+                ATRlist.add(new JTextField());
+                drawWindow();
+            }
+            if(b.equals(btAddField)) {
+                Keylist.add(new KeyComponent());
+                drawWindow();
+            }
+            else if(b.getText().equals("Current")) {
+                JOptionPane.showMessageDialog(null, "plop : "+b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
+            }
+            else if(b.getText().equals("Remove")) {
+                // The index of the field we want to remove
+                int iRemove = Integer.parseInt(b.getName());
+
+                if(iRemove>=0 && iRemove<ATRlist.size() && ATRlist.size()>1) {
+                    ATRlist.remove(iRemove);
+                    drawWindow();
+                }
+            }
+        }
     }
 }
