@@ -59,6 +59,8 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     public void drawWindow() {
         this.removeAll();
 
+        //this.repaint();
+        
         Box v = Box.createVerticalBox();
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing+15)));
 
