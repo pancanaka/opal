@@ -5,6 +5,7 @@ import java.util.ArrayList;
 /**
  * Container for one profile
  *
+ * @author Yorick Lesecque
  * @author Thibault Desmoulins
  */
 public class ProfileComponent implements Comparable {
@@ -39,7 +40,7 @@ public class ProfileComponent implements Comparable {
     @Override
     public int compareTo(Object o) {
         ProfileComponent p2 = (ProfileComponent) o;
-        return this.name.compareTo(p2.getName());
+        return this.name.compareToIgnoreCase(p2.getName());
     }
 
 }

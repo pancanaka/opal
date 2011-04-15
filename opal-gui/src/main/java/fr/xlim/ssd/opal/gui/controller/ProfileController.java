@@ -16,7 +16,7 @@ public class ProfileController {
 
     public ProfileController()
             throws CardConfigNotFoundException {
-        ProfileModel profileModel = new ProfileModel();
+        profileModel = new ProfileModel();
     }
 
     public String[][] getAllProfiles() {

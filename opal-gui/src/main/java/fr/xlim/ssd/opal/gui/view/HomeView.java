@@ -3,8 +3,11 @@ package fr.xlim.ssd.opal.gui.view;
 import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -56,14 +59,16 @@ public class HomeView extends FrameView implements ActionListener {
      * Contains all instructions to draw components in the "Home view".
      */
     public void drawComponents() {
-        initializeMenu();
-        initializeToolbar();
-
-        homePanel         = new HomePanel(this.controller);
-        showProfilesPanel = new ShowProfileView(this);
-        panAddUpdate      = new AddUpdateProfileView(this);
-
-        this.getFrame().setContentPane(homePanel);
+        try {
+            initializeMenu();
+            initializeToolbar();
+            homePanel = new HomePanel(this.controller);
+            showProfilesPanel = new ShowProfileView(this);
+            panAddUpdate = new AddUpdateProfileView(this);
+            this.getFrame().setContentPane(homePanel);
+        } catch (CardConfigNotFoundException ex) {
+            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

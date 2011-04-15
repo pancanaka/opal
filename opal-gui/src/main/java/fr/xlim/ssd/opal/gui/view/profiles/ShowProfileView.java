@@ -12,14 +12,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.TransformerException;
 
 
 /**
  * Show saved profiles
  *
- * @author Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>
+ * @author Yorick Lesecque
+ * @author Thibault Desmoulins
  */
 public class ShowProfileView extends JPanel implements ActionListener {
     private HomeView f = null;
@@ -37,7 +36,7 @@ public class ShowProfileView extends JPanel implements ActionListener {
         this.f = f;
 
         // Data for the profile tab
-        String  title[] = {"Profile name", "Description", "ATR"};
+        String  title[] = {"Profile name", "Description", "Implementation"};
         profileController = new ProfileController();
         /**/Object[][] data = profileController.getAllProfiles();
         tableau = new JTable(data, title){

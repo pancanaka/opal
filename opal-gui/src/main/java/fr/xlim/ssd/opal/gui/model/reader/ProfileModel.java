@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.gui.model.reader;
 
+import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
@@ -9,6 +10,7 @@ import fr.xlim.ssd.opal.library.params.CardConfigFactory;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.util.ArrayList;
+import java.util.Collections;
 
 
 /**
@@ -35,17 +37,23 @@ public class ProfileModel {
             String SCPMode = getSCPMode(cardConfig.getScpMode());
             SCKey scKey[] = cardConfig.getSCKeys();
 
-            for(int j = 0; j < atrs.length; i++) {
+            for(int j = 0; j < atrs.length; j++) {
                 ret[j] = Conversion.arrayToHex(atrs[j].getValue());
             }
 
-            /*for(int j = 0; j < scKey.length; i++) {
-                addKey(scKey[i]);
-            }*/
-
             profileComponent = new ProfileComponent(cardConfig.getName(), cardConfig.getDescription(), AID, SCPMode, cardConfig.getTransmissionProtocol(), ret, cardConfig.getImplementation());
+
+            for(int j = 0; j < scKey.length; j++) {
+                String type = Integer.toHexString(scKey[j].getType().getValue() & 0xFF).toUpperCase();
+                String version = Integer.toHexString(scKey[j].getSetVersion() & 0xFF).toUpperCase();
+                String id = Integer.toHexString(scKey[j].getId() & 0xFF).toUpperCase();
+                String key = Conversion.arrayToHex(scKey[j].getData());
+                
+                profileComponent.addKey(new KeyComponent(type, version, id, key));
+            }
             
             this.profiles.add(profileComponent);
+            Collections.sort(this.profiles);
         }
     }
 
@@ -61,6 +69,7 @@ public class ProfileModel {
             allProfiles[i][1] = profiles.get(i).getDescription();
             allProfiles[i][2] = profiles.get(i).getImplementation();
         }
+
 
         return allProfiles;
     }
@@ -129,6 +138,10 @@ public class ProfileModel {
         boolean t = false;
 
         t = CardConfigFactory.deleteCardConfig(name);
+
+        if(t) {
+            profiles.remove(id);
+        }
 
         return t;
     }
