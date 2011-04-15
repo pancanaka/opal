@@ -118,6 +118,13 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
 
         this.add(v);
+
+        
+        /*
+         * To fix a problem due to Windows and Mac we have to refresh the content pane
+         * calling setContentPane of the main frame
+         */
+        this.f.getFrame().setContentPane(this);
     }
 
 
