@@ -1,10 +1,7 @@
 package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
-import fr.xlim.ssd.opal.library.params.ATR;
-import fr.xlim.ssd.opal.library.params.CardConfigFactory;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
 
 /**
  *
