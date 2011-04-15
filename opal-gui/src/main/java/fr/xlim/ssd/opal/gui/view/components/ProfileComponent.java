@@ -1,6 +1,5 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
-import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import java.util.ArrayList;
 
 /**
