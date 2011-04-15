@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
+import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import java.util.ArrayList;
 
 /**
@@ -7,7 +8,7 @@ import java.util.ArrayList;
  *
  * @author Thibault Desmoulins
  */
-public class ProfileComponent {
+public class ProfileComponent implements Comparable {
     private String name, description, AID, SCPmode, TP;
     private String[] ATR;
     private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
@@ -31,6 +32,13 @@ public class ProfileComponent {
 
     public void addKey(KeyComponent key) {
         Keylist.add(key);
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        ProfileComponent p2 = (ProfileComponent) o;
+        return this.name.compareTo(p2.getName());
     }
 
 }
