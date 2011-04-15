@@ -1,14 +1,11 @@
 package fr.xlim.ssd.opal.gui.view.profiles;
 
-import fr.xlim.ssd.opal.gui.controller.MainController;
-import fr.xlim.ssd.opal.gui.controller.profilesController;
+import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -34,13 +31,15 @@ public class ShowProfileView extends JPanel implements ActionListener {
     private JButton btAdd       = new JButton("Add");
     private JButton btOK        = new JButton("OK");
 
-    public ShowProfileView(HomeView f) {
+    private ProfileController profileController;
+
+    public ShowProfileView(HomeView f) throws CardConfigNotFoundException {
         this.f = f;
 
         // Data for the profile tab
         String  title[] = {"Profile name", "Description", "ATR"};
-        new profilesController();
-        /**/Object[][] data = profilesController.getProfils();
+        profileController = new ProfileController();
+        /**/Object[][] data = profileController.getAllProfiles();
         tableau = new JTable(data, title){
             @Override
             public boolean isCellEditable(int row, int column) {return false;}
@@ -97,16 +96,12 @@ public class ShowProfileView extends JPanel implements ActionListener {
                     int option = JOptionPane.showConfirmDialog(null, "Do you really want to remove the profile?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
                         try {
-                            boolean res = profilesController.deleteProfile(0);
+                            boolean res = profileController.deleteProfile(0);
                             if(res) {
                                 new JOptionPane().showMessageDialog(null, "Card deleted!", "Caution", JOptionPane.WARNING_MESSAGE);
                             } else {
                                 new JOptionPane().showMessageDialog(null, "No card found!", "Caution", JOptionPane.WARNING_MESSAGE);
                             }
-                        } catch (ParserConfigurationException ex) {
-                            System.out.println("ParserConfigurationException");
-                        } catch (TransformerException ex) {
-                            System.out.println("TransformerException");
                         } catch (CardConfigNotFoundException ex) {
                             System.out.println("CardConfigNotFoundException");
                             System.out.println(ex.getMessage());
