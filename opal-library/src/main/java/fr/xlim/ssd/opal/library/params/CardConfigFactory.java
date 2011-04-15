@@ -6,7 +6,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
@@ -14,11 +13,13 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Delivers card configuration CardConfig
  *
+ * @author Yorick Lesecque
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
@@ -34,6 +35,69 @@ public class CardConfigFactory {
     public static void setConfigFile (String configFile) {
         CardConfigFactory.configFile = configFile;
     }
+
+    public static String getConfigFile () {
+        return CardConfigFactory.configFile;
+    }
+    
+    /**
+     * Get all card configs.
+     *
+     * @return a Map of CardConfig objects with the name of the config as a key
+     * @throws CardConfigNotFoundException if an error occured while reading the XML file
+     */
+    public static CardConfig[] getAllCardConfigs()
+            throws CardConfigNotFoundException {
+
+        String name = null;
+        String description = null;
+        ATR[] atrs = null ;
+        byte[] isd = null;
+        SCPMode scpMode = null;
+        String tp = null;
+        SCKey[] keys = null;
+        String impl = null;
+        CardConfig configs[];
+
+        try {
+
+            InputStream input = CardConfigFactory.class.getResourceAsStream(CardConfigFactory.configFile);
+
+            Document document = DocumentBuilderFactory.newInstance().
+                    newDocumentBuilder().parse(input);
+
+            NodeList cards = document.getElementsByTagName("card");
+            Element currentCard = null;
+            configs = new CardConfig[cards.getLength()];
+
+            for (int i = 0; i < cards.getLength(); i++) {
+                currentCard = (Element) cards.item(i);
+
+                // set and return CardConfig
+                name = getName(currentCard);
+                description = getDescription(currentCard);
+                atrs = getATRs(currentCard);
+                isd = getISD(currentCard);
+                scpMode = getSCP(currentCard);
+                tp = getTP(currentCard);
+                keys = getKeys(currentCard);
+                impl = getImpl(currentCard);
+
+                configs[i] = new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
+            }
+
+        } catch (IOException e) {
+            throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
+        } catch (SAXException e) {
+            throw new CardConfigNotFoundException("SAX error when reading config.xml file:" + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
+        }
+
+        return configs;
+    }
+
+
 
     /**
      * Get the card config based on its name.

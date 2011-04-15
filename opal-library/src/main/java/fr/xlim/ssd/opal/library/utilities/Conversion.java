@@ -27,7 +27,10 @@ public class Conversion {
                 sb.append(0);
             }
             sb.append(bs);
-            sb.append(" ");
+
+            if(i < data.length - 1) {
+                sb.append(" ");
+            }
         }
         return sb.toString();
     }

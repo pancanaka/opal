@@ -22,6 +22,7 @@ public class SendAPDUPanel extends JPanel{
     public String title = "Send APDU";
     public JLabel lbl_cla,lbl_ins,lbl_p1,lbl_p2,lbl_lc,lbl_le,lbl_data;
     public JTextField fld_cla,fld_ins,fld_p1,fld_p2,fld_lc,fld_le;
+    public JTextArea txt_area;
 
      public static SendAPDUPanel SAP;
     public static SendAPDUPanel getinstance(){
@@ -52,6 +53,8 @@ public class SendAPDUPanel extends JPanel{
         fld_p1  = new JTextField(2);
         fld_p2  = new JTextField(2);
         fld_lc  = new JTextField(2);
+       // fld_lc.setEditable(true);
+        fld_lc.setEnabled(false);
         fld_le  = new JTextField(2);
 
         fld_cla.addKeyListener(SendApduController.getinstance());
@@ -75,9 +78,10 @@ public class SendAPDUPanel extends JPanel{
         jplPanel.add(fld_le);
 
         TitledBorder tb = new TitledBorder("");
-        JTextArea txt_area = new JTextArea(20, 40);
+        txt_area = new JTextArea(20, 40);
         txt_area.setBackground(Color.white);
         txt_area.setBorder(tb);
+        txt_area.addKeyListener(SendApduController.getinstance());
         JPanel jpdata = new JPanel(new BorderLayout());
         jpdata.add(lbl_data,BorderLayout.NORTH);
 
@@ -94,4 +98,5 @@ public class SendAPDUPanel extends JPanel{
 
 
     }
+   
 }
