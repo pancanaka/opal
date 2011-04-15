@@ -7,14 +7,17 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 /**
+ * With this class a profile can use différent keys
  *
  * @author Thibault Desmoulins
  */
 public class KeyComponent {
     private JTextField type = new JTextField(), keyVersion = new JTextField(), keyId = new JTextField(), key = new JTextField();
     JComboBox cbImp;
+
     private short lineHeight  = 25;
     private short lineSpacing = 10;
+
 
     public KeyComponent() {
         String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa,", "SCGemVisa2", "AES."};

@@ -79,9 +79,9 @@ public class HomeView extends FrameView implements ActionListener {
         JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
         
         menuBar.add(file);
-            file.add(itemMProfiles);
             file.add(itemQuit);
         menuBar.add(options);
+            options.add(itemMProfiles);
         menuBar.add(about);
        
         this.setMenuBar(menuBar);
@@ -103,7 +103,7 @@ public class HomeView extends FrameView implements ActionListener {
     }
 
 
-    public void affichePanel(String type) {
+    public void showPanel(String type) {
         if(type.equals("home")) {
             this.getFrame().setContentPane(homePanel);
         }
@@ -114,6 +114,10 @@ public class HomeView extends FrameView implements ActionListener {
             this.getFrame().setContentPane(panAddUpdate);
         }
         this.getFrame().setVisible(true);
+    }
+
+    public void setPanAddUpdate(AddUpdateProfileView panAddUpdate) {
+        this.panAddUpdate = panAddUpdate;
     }
 
 
@@ -133,7 +137,7 @@ public class HomeView extends FrameView implements ActionListener {
                 }
             }
             else if(name.equals("Manage profiles")) {
-                affichePanel("show profiles");
+                showPanel("show profiles");
             }
         }
     }

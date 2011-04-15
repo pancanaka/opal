@@ -30,7 +30,7 @@ public class SendApduController implements KeyListener,ActionListener {
         return SAC;
     }
      
-
+    public static int nb_bytes = 0;
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -66,17 +66,16 @@ public class SendApduController implements KeyListener,ActionListener {
         }
         }else if(e.getSource() instanceof JTextArea){
             JTextArea ta = (JTextArea)e.getSource();
-            int nb_bytes = 0;
+            nb_bytes = 0;
             String text;
             text = ta.getText();
             for(int i = 0 ; i<text.length();i++){
                 if(text.charAt(i) != ' '){
                     nb_bytes++;
-                    SendAPDUPanel.getinstance().fld_lc.setText(String.valueOf(nb_bytes));
                 }
             }
-            System.out.println(nb_bytes);
-            
+           // System.out.println(nb_bytes);
+            SendAPDUPanel.settxt();
         }
       
     }
@@ -87,5 +86,7 @@ public class SendApduController implements KeyListener,ActionListener {
         }
 
     }
+
+    
 
 }

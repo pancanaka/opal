@@ -115,10 +115,10 @@ public class ShowProfileView extends JPanel implements ActionListener {
                 }
             }
             else if(name.equals("Add")) {
-                this.f.affichePanel("add update");
+                this.f.showPanel("add update");
             }
             else if(name.equals("OK")) {
-                this.f.affichePanel("home");
+                this.f.showPanel("home");
             }
         }
     }

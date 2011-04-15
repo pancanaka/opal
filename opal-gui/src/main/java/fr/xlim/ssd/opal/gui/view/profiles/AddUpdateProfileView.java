@@ -2,9 +2,9 @@ package fr.xlim.ssd.opal.gui.view.profiles;
 
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
+import fr.xlim.ssd.opal.library.SCPMode;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -18,18 +18,20 @@ import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
 
 /**
+ * View used to add, update or use a card profile
  *
  * @author Thibault Desmoulins
  */
 public class AddUpdateProfileView extends JPanel implements ActionListener {
     private HomeView f = null;
 
+    private short lineHeight  = 25;
+    private short lineSpacing = 10;
+
     private JButton btSave     = new JButton("Save");
     private JButton btAddATR   = new JButton("Add ATR");
     private JButton btAddField = new JButton("Add field");
-
-    private short lineHeight  = 25;
-    private short lineSpacing = 10;
+    private JButton btCancel   = new JButton("Cancel");
 
     private JTextField
                 txtName = new JTextField(),
@@ -38,6 +40,8 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 txtISD  = new JTextField();
 
     private JComboBox cbSCP = null, cbTP  = null, cbImp = null;
+
+    String[] implementationValues = {"GP2xCommands", "GemXpresso211Commands"};
 
     private ArrayList<JTextField>   ATRlist = new ArrayList<JTextField>();
     private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
@@ -52,68 +56,66 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
         btAddATR.addActionListener(this);
         btAddField.addActionListener(this);
+        btCancel.addActionListener(this);
 
         drawWindow();
     }
 
     public void drawWindow() {
         this.removeAll();
-
-        //this.repaint();
         
         Box v = Box.createVerticalBox();
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing+15)));
 
         // Line "name"
-        v.add(createLigneForm("Name : ", txtName));
+        v.add(createFormLine("Name : ", txtName));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
         // Line "description"
-        v.add(createLigneForm("Description : ", txtDesc));
+        v.add(createFormLine("Description : ", txtDesc));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
         // Line "ATR"
         drawATRLines(v);
-        v.add(createLigneForm("", btAddATR));
+        v.add(createFormLine("", btAddATR));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing*2)));
 
 
         // Line "Issuer Security Domain AID"
-        v.add(createLigneForm("Issuer Security Domain AID : ", txtISD));
+        v.add(createFormLine("Issuer Security Domain AID : ", txtISD));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
         // Line "SCP Mode"
-        String[] tab = {"SCP01_15"};
+        SCPMode[] tab = SCPMode.values(); // All SCPMode values are in this enumeration
         cbSCP = new JComboBox(tab);
-        v.add(createLigneForm("SCP Mode : ", cbSCP));
+        v.add(createFormLine("SCP Mode : ", cbSCP));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
         // Line "Transmission Protocol"
-        String[] tab2 = {"T=0", "T=1", "T=*"};
+        String[] tab2 = {"T=0", "T=1", "*"};
         cbTP = new JComboBox(tab2);
-        v.add(createLigneForm("Transmission Protocol : ", cbTP));
+        v.add(createFormLine("Transmission Protocol : ", cbTP));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
         // Line "Keys"
         drawKeysLines(v);
-        v.add(createLigneForm("", btAddField));
+        v.add(createFormLine("", btAddField));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing*2)));
 
 
         // Line "Implementation"
-        String[] tab3 = {"GP2xCommands", "GP2xCommands", "GP2xCommands"};
-        cbImp = new JComboBox(tab3);
-        v.add(createLigneForm("Implementation : ", cbImp, Box.createRigidArea(new Dimension(220, lineHeight))));
+        cbImp = new JComboBox(implementationValues);
+        v.add(createFormLine("Implementation : ", cbImp, Box.createRigidArea(new Dimension(220, lineHeight))));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing*3)));
 
 
         // Line with the save button
-        v.add(createLigneForm("", btSave));
+        v.add(createFormLine("", btCancel, btSave));
         v.add(Box.createRigidArea(new Dimension(300, 80)));
 
 
@@ -128,7 +130,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     }
 
 
-    public Box createLigneForm(String label, Component field) {
+    public Box createFormLine(String label, Component field) {
         Box    ligne  = Box.createHorizontalBox();
         JLabel lbl    = new JLabel(label);
 
@@ -141,7 +143,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         return ligne;
     }
 
-    public Box createLigneForm(String label, Component field, Component field2) {
+    public Box createFormLine(String label, Component field, Component field2) {
         Box    ligne  = Box.createHorizontalBox();
         JLabel lbl    = new JLabel(label);
 
@@ -229,9 +231,16 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 ATRlist.add(new JTextField());
                 drawWindow();
             }
-            if(b.equals(btAddField)) {
+            else if(b.equals(btAddField)) {
                 Keylist.add(new KeyComponent());
                 drawWindow();
+            }
+            else if(b.equals(btCancel)) {
+                int option = JOptionPane.showConfirmDialog(null, "Do you really want to go back?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
+                    this.f.setPanAddUpdate(new AddUpdateProfileView(this.f));
+                    this.f.showPanel("show profiles");
+                }
             }
             else if(b.getText().equals("Current")) {
                 JOptionPane.showMessageDialog(null, "plop : "+b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
