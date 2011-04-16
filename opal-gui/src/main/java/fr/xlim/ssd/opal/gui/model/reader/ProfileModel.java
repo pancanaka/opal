@@ -74,10 +74,10 @@ public class ProfileModel {
         return allProfiles;
     }
 
-    public void addProfile(ProfileComponent p) {
-        profiles.add(p);
+    public void addProfile() 
+            throws CardConfigNotFoundException {
 
-        // Insert the profile in the xml
+        CardConfigFactory.addCardConfig();
         
     }
 

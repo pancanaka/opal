@@ -95,12 +95,15 @@ public class ShowProfileView extends JPanel implements ActionListener {
                     int option = JOptionPane.showConfirmDialog(null, "Do you really want to remove the profile?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
                         try {
+                            /*
                             boolean res = profileController.deleteProfile(0);
                             if(res) {
                                 new JOptionPane().showMessageDialog(null, "Card deleted!", "Caution", JOptionPane.WARNING_MESSAGE);
                             } else {
                                 new JOptionPane().showMessageDialog(null, "No card found!", "Caution", JOptionPane.WARNING_MESSAGE);
                             }
+                            /**/
+                            profileController.addProfile();
                         } catch (CardConfigNotFoundException ex) {
                             System.out.println("CardConfigNotFoundException");
                             System.out.println(ex.getMessage());

@@ -25,6 +25,11 @@ public class ProfileController {
         return profileModel.deleteProfile(id);
     }
 
+    public void addProfile() 
+            throws CardConfigNotFoundException {
+        profileModel.addProfile();
+    }
+
     /*public String[] getAtrs(int id) {
         if(mode.compareTo("modify") == 0 || mode.compareTo("view") == 0) {
             ATR[] atrs = profiles[id].getAtrs();
