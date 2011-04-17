@@ -78,7 +78,7 @@ public class ProfileModel {
             throws CardConfigNotFoundException {
 
         CardConfigFactory.addCardConfig();
-        
+        //profiles.add(id);
     }
 
     private String getSCPMode(SCPMode scp) {

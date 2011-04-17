@@ -13,13 +13,13 @@ import javax.swing.JTextField;
  */
 public class KeyComponent {
     //private JTextField type = new JTextField(), keyId = new JTextField(), key = new JTextField();
-    String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa,", "SCGemVisa2", "AES."};
+    String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa,", "SCGemVisa2", "AES"};
     JComboBox cbImp = new JComboBox(tab);
 
     private short lineHeight  = 25;
     private short lineSpacing = 10;
 
-    private String keyVersion = "", keyId = "", key = "";
+    private String keyVersion = "", keyId = "", key = "", type = "";
 
     public KeyComponent() {}
 
@@ -27,6 +27,7 @@ public class KeyComponent {
         this.keyVersion = keyVersion;
         this.keyId      = keyId;
         this.key        = key;
+        this.type       = type;
 
         int index = getIndexComboBox(type);
         cbImp.setSelectedIndex(index);
@@ -64,5 +65,21 @@ public class KeyComponent {
         v.add(line2);
 
         return v;
+    }
+
+    public String getType() {
+        return this.type;
+    }
+
+    public String getKeyVersion() {
+        return this.keyVersion;
+    }
+
+    public String getKeyId() {
+        return this.keyId;
+    }
+
+    public String getKey() {
+        return this.key;
     }
 }
