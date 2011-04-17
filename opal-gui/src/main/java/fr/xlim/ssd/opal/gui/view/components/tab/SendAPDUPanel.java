@@ -49,13 +49,19 @@ public class SendAPDUPanel extends JPanel{
         lbl_data = new JLabel("Data :");
 
         fld_cla  = new JTextField(2);
+        fld_cla.setDocument(SendApduController.getinstance().createDefaultModel());
         fld_ins = new JTextField(2);
+        fld_ins.setDocument(SendApduController.getinstance().createDefaultModel());
         fld_p1  = new JTextField(2);
+       // fld_lc.setDocument(SendApduController.getinstance().createDefaultModel());
         fld_p2  = new JTextField(2);
+        fld_p1.setDocument(SendApduController.getinstance().createDefaultModel());
         fld_lc  = new JTextField(2);
-        fld_lc.setText(""+SendApduController.nb_bytes);
+        fld_p2.setDocument(SendApduController.getinstance().createDefaultModel());
+       // fld_lc.setText(""+SendApduController.nb_bytes);
         fld_lc.setEnabled(false);
         fld_le  = new JTextField(2);
+        fld_le.setDocument(SendApduController.getinstance().createDefaultModel());
 
         fld_cla.addKeyListener(SendApduController.getinstance());
         fld_ins.addKeyListener(SendApduController.getinstance());
@@ -99,8 +105,15 @@ public class SendAPDUPanel extends JPanel{
 
     }
     public static void settxt(){
-        fld_lc.setText(String.valueOf(SendApduController.nb_bytes/2));
+        if (SendApduController.nb_bytes/2 < 10){
+            fld_lc.setText(String.valueOf("0"+SendApduController.nb_bytes/2));
+        }else{
+            fld_lc.setText(String.valueOf(SendApduController.nb_bytes/2));
+        }
        // SendAPDUPanel.getinstance().fld_lc.repaint();
+    }
+    public static void clear(JTextField jt){
+        jt.setText("");
     }
    
 }

@@ -15,6 +15,10 @@ import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
+import javax.swing.text.PlainDocument;
 
 /**
  *
@@ -29,23 +33,65 @@ public class SendApduController implements KeyListener,ActionListener {
         if(SAC == null) SAC = new SendApduController();
         return SAC;
     }
+    ///////////////////////////////////////mehdi////////////////////////////////////
+    public Document createDefaultModel(){
+        return new FileCaseDocument ();
+    }
+
+    static class FileCaseDocument extends PlainDocument{
+        String text = null;
+        String str1,str2;
+
+        @Override
+        public void insertString(int offs, String str, AttributeSet a) throws BadLocationException {
+
+            if(str == null){
+                return;
+            }
+            text = this.getText(0, this.getLength());
+            str1 = text.substring(0, offs);
+            str2 = text.substring(offs, this.getLength());
+
+            text = str1+str+str2;
+
+            if (text.matches("([0-9]*)|([A-F]*)")){
+                super.insertString(offs, str, a);
+            }
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    ////////////////////////////////////////////////////////////////////////
      
     public static int nb_bytes = 0;
 
     @Override
     public void keyTyped(KeyEvent e) {
-        if(e.getSource() instanceof JTextField){
-        JTextField tf = (JTextField)e.getSource();
-        boolean t =false;
-        for (int i = 0; i < exa.length; i++) {
-            if(e.getKeyChar() == exa[i] ) t=true;
-
-        }
-        if(t==false){
-            JOptionPane.showMessageDialog(null, "the caracters must be Exadecimal and Upper case", null,JOptionPane.ERROR_MESSAGE );
-           // tf.setToolTipText(null);
-        }
-        }
+    
     }
 
     @Override
@@ -64,6 +110,21 @@ public class SendApduController implements KeyListener,ActionListener {
             tf.setText(null);
 
         }
+        // TEST OF THE EXADECIMAL VALUE
+        ////////////////////////////////////
+     /*     boolean t =false;
+            for (int i = 0; i < exa.length; i++) {
+                if(e.getKeyChar() == exa[i] ) t=true;
+
+            }
+            if(t==false){
+                
+                JOptionPane.showMessageDialog(null, "the caracters must be Exadecimal and Upper case", null,JOptionPane.ERROR_MESSAGE );
+                 SendAPDUPanel.clear(tf);
+            }*/
+        ////////////////////////////////////
+
+
         }else if(e.getSource() instanceof JTextArea){
             JTextArea ta = (JTextArea)e.getSource();
             nb_bytes = 0;
@@ -73,8 +134,8 @@ public class SendApduController implements KeyListener,ActionListener {
                 if(text.charAt(i) != ' '){
                     nb_bytes++;
                 }
+               
             }
-           // System.out.println(nb_bytes);
             SendAPDUPanel.settxt();
         }
       
