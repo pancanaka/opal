@@ -56,7 +56,6 @@ public class App extends SingleFrameApplication {
      */
     public static void main(String[] args) throws UnsupportedEncodingException {
         Application.launch(App.class, args);
-        System.out.print("launch");
     }
 
     private MainController mainController;
