@@ -3,7 +3,11 @@ package fr.xlim.ssd.opal.gui;
 import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.tools.SmartCardListParser;
 import fr.xlim.ssd.opal.library.params.ATR;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import fr.xlim.ssd.opal.view.dataExcahnges.DataExchangesVue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -21,11 +25,16 @@ public class App extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-        this.mainController = new MainController(this);
+        try {
+            this.mainController = new MainController(this);
+        } catch (CardConfigNotFoundException ex) {
+            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         this.mainController.startTerminalTask();
 
         show(this.mainController.getHomeView());
+        DataExchangesVue dev = new DataExchangesVue();
     }
 
     /**

@@ -6,8 +6,8 @@
 package fr.xlim.ssd.opal.gui.model.sender;
 import javax.smartcardio.*;
 /**
- *
- * @author chanaa
+ * @author CHANAA Anas
+ * @author EL KHALDI Omar
  */
 public class CardSenderModel  {
     private static CardChannel channel;
