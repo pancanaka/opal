@@ -6,6 +6,7 @@ import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.SelectPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.SendAPDUPanel;
+import fr.xlim.ssd.opal.view.dataExcahnges.DataExchangesVue;
 import java.awt.BorderLayout;
 import javax.swing.Box;
 import javax.swing.JPanel;
@@ -23,7 +24,8 @@ public class HomePanel extends JPanel {
         DeletePanel p3         = new DeletePanel();
         SelectPanel p4         = new SelectPanel();
         SendAPDUPanel p5       = new SendAPDUPanel();
-        //     DataExchanges p6       = new DataExchanges();
+        //DataExchangesVue dev = new DataExchangesVue();
+        //dev.setVisible(true);
         JTabbedPane myPanel    = new JTabbedPane();
 
         myPanel.addTab(p1.title, p1);

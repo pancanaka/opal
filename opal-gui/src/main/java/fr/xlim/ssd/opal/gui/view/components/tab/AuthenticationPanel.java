@@ -27,7 +27,7 @@ import java.util.ArrayList;
 public class AuthenticationPanel extends JPanel implements ActionListener{
 
     public String title = "Authentication";
-    
+
     private JLabel jlISDAID;
     public JTextField tfISDAID;
 
@@ -71,7 +71,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     private short lineHeight  = 20;
 
     public AuthenticationPanel() {
-       
+
        drawWindow();
     }
 
@@ -175,7 +175,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     public void drawKeysLines(Box v) {
         Box ligne = Box.createHorizontalBox();
         ligne.setPreferredSize(new Dimension(500, 20));
-        
+
         int n      = Keylist.size();
         JPanel jpKeys = new JPanel();
         TitledBorder tbKeys = new TitledBorder("Keys");

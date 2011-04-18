@@ -6,13 +6,21 @@
 package fr.xlim.ssd.opal.gui.model.sender;
 import javax.smartcardio.*;
 /**
- *
- * @author chanaa
+ * @author CHANAA Anas
+ * @author EL KHALDI Omar
  */
 public class CardSenderModel  {
-    ResponseAPDU sendApdu(Byte[] apdu){
+    private static CardChannel channel;
+    
+   // ResponseAPDU sendApdu(byte[] apdu){
+      /*  try{
+            CommandAPDU ca = new CommandAPDU(apdu),
+            ResponseAPDU ra = channel.transmit(ca);
+            return ra;
+        }catch (CardException ce){
+        
+        }
+       */
 
-        return sendApdu(apdu);
-
-    }
+    //}
 }

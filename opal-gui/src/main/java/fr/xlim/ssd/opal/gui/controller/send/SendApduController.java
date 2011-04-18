@@ -21,12 +21,12 @@ import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 
 /**
- *
- * @author chanaa
+ * @author CHANAA Anas
+ * @author EL KHALDI Omar
  */
 public class SendApduController implements KeyListener,ActionListener {
     // array of authorized caracters
-    final char exa [] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
+   // final char exa [] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
     // singleton
     public static SendApduController SAC;
     public static SendApduController getinstance(){
@@ -59,33 +59,6 @@ public class SendApduController implements KeyListener,ActionListener {
             }
         }
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ////////////////////////////////////////////////////////////////////////
      
     public static int nb_bytes = 0;
 
