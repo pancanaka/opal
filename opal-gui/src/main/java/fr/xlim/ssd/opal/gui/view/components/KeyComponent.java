@@ -1,10 +1,13 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
+
 
 /**
  * With this class a profile can use different keys
@@ -12,22 +15,28 @@ import javax.swing.JTextField;
  * @author Thibault Desmoulins
  */
 public class KeyComponent {
-    //private JTextField type = new JTextField(), keyId = new JTextField(), key = new JTextField();
-    String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa,", "SCGemVisa2", "AES"};
-    JComboBox cbImp = new JComboBox(tab);
 
     private short lineHeight  = 25;
     private short lineSpacing = 10;
 
-    private String keyVersion = "", keyId = "", key = "", type = "";
+    //private String keyVersion = "", keyId = "", key = "", type = "";
+
+    JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
+
+    String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa,", "SCGemVisa2", "AES"};
+    JComboBox cbImp = new JComboBox(tab);
+
 
     public KeyComponent() {}
 
     public KeyComponent(String type, String keyVersion, String keyId, String key) {
-        this.keyVersion = keyVersion;
+        /*this.keyVersion = keyVersion;
         this.keyId      = keyId;
         this.key        = key;
-        this.type       = type;
+        this.type       = type;*/
+        JkeyVersion.setText(keyVersion);
+        JkeyId.setText(keyId);
+        Jkey.setText(key);
 
         int index = getIndexComboBox(type);
         cbImp.setSelectedIndex(index);
@@ -50,15 +59,15 @@ public class KeyComponent {
         line1.add(new JLabel("Type : "));
         line1.add(cbImp);
         line1.add(new JLabel("Key version number : "));
-        line1.add(new JTextField(keyVersion));
+        line1.add(JkeyVersion);
         line1.add(new JLabel("Key id : "));
-        line1.add(new JTextField(keyId));
+        line1.add(JkeyId);
 
 
         Box line2  = Box.createHorizontalBox();
         line2.setPreferredSize(new Dimension(500, lineHeight));
         line2.add(new JLabel("Key : "));
-        line2.add(new JTextField(key));
+        line2.add(Jkey);
 
         Box v = Box.createVerticalBox();
         v.add(line1);
@@ -67,19 +76,20 @@ public class KeyComponent {
         return v;
     }
 
-    public String getType() {
-        return this.type;
+    // Getters
+    public int getType() {
+        return this.cbImp.getSelectedIndex();
     }
 
     public String getKeyVersion() {
-        return this.keyVersion;
+        return this.JkeyVersion.getText();
     }
 
     public String getKeyId() {
-        return this.keyId;
+        return this.JkeyId.getText();
     }
 
     public String getKey() {
-        return this.key;
+        return this.Jkey.getText();
     }
 }

@@ -19,6 +19,8 @@ import fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileView;
 import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileView;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 
@@ -33,11 +35,10 @@ import org.jdesktop.application.FrameView;
 public class HomeView extends FrameView implements ActionListener {
 
     private MainController           controller;
-    private JToolBar                 terminalToolBar;
-    private HomePanel                homePanel;
-    private ShowProfileView           showProfilesPanel;
-    private AddUpdateProfileView      panAddUpdate;
+    
     private CardReaderMonitorToolbar cardReaderMonitorToolbar;
+
+    private JScrollPane scrollPan;
     
 
     /**
@@ -61,25 +62,14 @@ public class HomeView extends FrameView implements ActionListener {
     public void drawComponents() {
 
         initializeMenu();
+
         initializeToolbar();
 
-        homePanel         = new HomePanel(this.controller);
-        showProfilesPanel = new ShowProfileView(this);
-        panAddUpdate      = new AddUpdateProfileView(this);
+        scrollPan = new JScrollPane(new HomePanel(this.controller));
 
-        this.getFrame().setContentPane(homePanel);
+        this.getFrame().setContentPane(scrollPan);
 
-        initializeMenu();
-        initializeToolbar();
-        homePanel = new HomePanel(this.controller);
-        try {
-            showProfilesPanel = new ShowProfileView(this);
-        } catch (RuntimeException e) {
-            e.printStackTrace();
-        }
-        panAddUpdate = new AddUpdateProfileView(this);
-        this.getFrame().setContentPane(homePanel);
-
+        this.getFrame().setSize(500, 500);
     }
 
     /**
@@ -121,19 +111,22 @@ public class HomeView extends FrameView implements ActionListener {
 
     public void showPanel(String type) {
         if(type.equals("home")) {
-            this.getFrame().setContentPane(homePanel);
+            scrollPan = new JScrollPane(new HomePanel(this.controller));
         }
         else if(type.equals("show profiles")) {
-            this.getFrame().setContentPane(showProfilesPanel);
+            scrollPan = new JScrollPane(new ShowProfileView(this));
         }
         else if(type.equals("add update")) {
-            this.getFrame().setContentPane(panAddUpdate);
+            scrollPan = new JScrollPane(new AddUpdateProfileView(this));
         }
+        this.getFrame().setContentPane(scrollPan);
         this.getFrame().setVisible(true);
     }
 
-    public void setPanAddUpdate(AddUpdateProfileView panAddUpdate) {
-        this.panAddUpdate = panAddUpdate;
+    public void showPanel(JPanel pan) {
+        scrollPan = new JScrollPane(pan);
+        this.getFrame().setContentPane(scrollPan);
+        this.getFrame().setVisible(true);
     }
 
 

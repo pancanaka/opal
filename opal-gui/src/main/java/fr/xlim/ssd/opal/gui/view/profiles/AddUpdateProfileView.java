@@ -3,6 +3,7 @@ package fr.xlim.ssd.opal.gui.view.profiles;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
+import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -15,6 +16,8 @@ import javax.swing.JTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import javax.swing.border.TitledBorder;
 
 /**
@@ -28,16 +31,18 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     private short lineHeight  = 25;
     private short lineSpacing = 10;
 
-    private JButton btSave     = new JButton("Save");
-    private JButton btAddATR   = new JButton("Add ATR");
-    private JButton btAddField = new JButton("Add field");
-    private JButton btCancel   = new JButton("Cancel");
+    private JButton btSave     = new JButton("Save"),
+                btAddATR   = new JButton("Add ATR"),
+                btAddField = new JButton("Add field"),
+                btCancel   = new JButton("Cancel");
 
     private JTextField
                 txtName = new JTextField(),
                 txtDesc = new JTextField(),
                 txtATR  = new JTextField(),
                 txtISD  = new JTextField();
+
+    private Box v = Box.createVerticalBox();
 
     private JComboBox cbSCP = null, cbTP  = null, cbImp = null;
 
@@ -63,10 +68,11 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
     public void drawWindow() {
         this.removeAll();
-        
-        Box v = Box.createVerticalBox();
+
+        v.removeAll();
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing+15)));
 
+        
         // Line "name"
         v.add(createFormLine("Name : ", txtName));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
@@ -117,16 +123,14 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         // Line with the save button
         v.add(createFormLine("", btCancel, btSave));
         v.add(Box.createRigidArea(new Dimension(300, 80)));
-
-
+        
         this.add(v);
-
         
         /*
          * To fix a problem due to Windows and Mac we have to refresh the content pane
          * calling setContentPane of the main frame
          */
-        this.f.getFrame().setContentPane(this);
+        this.f.showPanel(this);
     }
 
 
@@ -166,8 +170,20 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         vJPL.add(Box.createRigidArea(new Dimension(300, 5)));
 
         for(int i=0 ; i<n ; i++) {
+            // Call function createLineForm in KeyComponent class
             Box b = Keylist.get(i).createLineForm();
             vJPL.add(b);
+
+            
+            // Add a "remove field" button (with listener)
+            Box line3  = Box.createHorizontalBox();
+            JButton jbRemove = new JButton("Remove field");
+            jbRemove.setName(Integer.toString(i));
+            jbRemove.addActionListener(this);
+            line3.add(jbRemove);
+            vJPL.add(line3);
+
+
             vJPL.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
         }
 
@@ -238,7 +254,6 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
             else if(b.equals(btCancel)) {
                 int option = JOptionPane.showConfirmDialog(null, "Do you really want to go back?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                 if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
-                    this.f.setPanAddUpdate(new AddUpdateProfileView(this.f));
                     this.f.showPanel("show profiles");
                 }
             }
@@ -246,11 +261,20 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 JOptionPane.showMessageDialog(null, "plop : "+b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
             }
             else if(b.getText().equals("Remove")) {
-                // The index of the field we want to remove
+                // The index of the field we want to remove ("ATR" field)
                 int iRemove = Integer.parseInt(b.getName());
 
                 if(iRemove>=0 && iRemove<ATRlist.size() && ATRlist.size()>1) {
                     ATRlist.remove(iRemove);
+                    drawWindow();
+                }
+            }
+            else if(b.getText().equals("Remove field")) {
+                // The index of the field we want to remove ("Keys" fields)
+                int iRemove = Integer.parseInt(b.getName());
+
+                if(iRemove>=0 && iRemove<Keylist.size() && Keylist.size()>1) {
+                    Keylist.remove(iRemove);
                     drawWindow();
                 }
             }
