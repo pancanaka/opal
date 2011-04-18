@@ -3,6 +3,7 @@ package fr.xlim.ssd.opal.gui.controller;
 import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.TaskMonitor;
@@ -33,7 +34,7 @@ public class MainController {
      * @param application the application context
      * @see HomeView
      */
-    public MainController(Application application) {
+    public MainController(Application application) throws CardConfigNotFoundException {
         this.application = application;
 
         this.cardReaderModel = new CardReaderModel();
