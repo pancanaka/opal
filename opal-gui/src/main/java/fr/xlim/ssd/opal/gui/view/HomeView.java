@@ -47,7 +47,7 @@ public class HomeView extends FrameView implements ActionListener {
      *                    cycle
      * @param controller  the application main controller
      */
-    public HomeView(Application application, MainController controller) throws CardConfigNotFoundException {
+    public HomeView(Application application, MainController controller) {
         super(application);//input control on Send Apdu tab (suite)
 
         this.controller = controller;
@@ -58,7 +58,7 @@ public class HomeView extends FrameView implements ActionListener {
     /**
      * Contains all instructions to draw components in the "Home view".
      */
-    public void drawComponents() throws CardConfigNotFoundException {
+    public void drawComponents() {
 
         initializeMenu();
         initializeToolbar();
@@ -69,16 +69,16 @@ public class HomeView extends FrameView implements ActionListener {
 
         this.getFrame().setContentPane(homePanel);
 
+        initializeMenu();
+        initializeToolbar();
+        homePanel = new HomePanel(this.controller);
         try {
-            initializeMenu();
-            initializeToolbar();
-            homePanel = new HomePanel(this.controller);
             showProfilesPanel = new ShowProfileView(this);
-            panAddUpdate = new AddUpdateProfileView(this);
-            this.getFrame().setContentPane(homePanel);
-        } catch (CardConfigNotFoundException ex) {
-            Logger.getLogger(HomeView.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
         }
+        panAddUpdate = new AddUpdateProfileView(this);
+        this.getFrame().setContentPane(homePanel);
 
     }
 

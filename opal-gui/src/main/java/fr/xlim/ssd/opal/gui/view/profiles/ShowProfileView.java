@@ -35,43 +35,45 @@ public class ShowProfileView extends JPanel implements ActionListener {
 
     private ProfileController profileController;
 
-    public ShowProfileView(HomeView f) throws CardConfigNotFoundException {
-        this.f = f;
+    public ShowProfileView(HomeView f) {
+        try {
+            this.f = f;
+            // Data for the profile tab
+            String[] title = {"Profile name", "Description", "Implementation"};
+            profileController = new ProfileController();
+            /**/
+            /**/
+            Object[][] data = profileController.getAllProfiles();
+            tableau = new JTable(data, title) {
 
-        // Data for the profile tab
-        String  title[] = {"Profile name", "Description", "Implementation"};
-        profileController = new ProfileController();
-        /**/Object[][] data = profileController.getAllProfiles();
-        tableau = new JTable(data, title){
-            @Override
-            public boolean isCellEditable(int row, int column) {return false;}
-        };
-        JScrollPane spTab = new JScrollPane(tableau);/**/
-
-
-        // Create left column and put the tab inside
-        Box left = Box.createVerticalBox();
-        left.add(spTab);
-
-        // Create right column and put buttons inside
-        Box right = Box.createVerticalBox();
-        right.add(btModify);
-        right.add(btDelete);
-        right.add(btAdd);
-        right.add(btOK);
-
-        Box top = Box.createHorizontalBox();
-        top.add(left);
-        top.add(right);
-
-        this.setLayout(new BorderLayout());
-        this.add(top, BorderLayout.CENTER);
-
-        // Events
-        btModify.addActionListener(this);
-        btDelete.addActionListener(this);
-        btAdd.addActionListener(this);
-        btOK.addActionListener(this);
+                @Override
+                public boolean isCellEditable(int row, int column) {
+                    return false;
+                }
+            };
+            JScrollPane spTab = new JScrollPane(tableau); /**/
+            // Create left column and put the tab inside
+            Box left = Box.createVerticalBox();
+            left.add(spTab);
+            // Create right column and put buttons inside
+            Box right = Box.createVerticalBox();
+            right.add(btModify);
+            right.add(btDelete);
+            right.add(btAdd);
+            right.add(btOK);
+            Box top = Box.createHorizontalBox();
+            top.add(left);
+            top.add(right);
+            this.setLayout(new BorderLayout());
+            this.add(top, BorderLayout.CENTER);
+            // Events
+            btModify.addActionListener(this);
+            btDelete.addActionListener(this);
+            btAdd.addActionListener(this);
+            btOK.addActionListener(this);
+        } catch (CardConfigNotFoundException ex) {
+            new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+        }
     }
 
     @Override
@@ -108,9 +110,9 @@ public class ShowProfileView extends JPanel implements ActionListener {
                                 /**/
                                 profileController.addProfile();
                         } catch (ConfigFieldsException ex) {
-                            System.out.println(ex.getMessage());
+                            new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
                         } catch (CardConfigNotFoundException ex) {
-                            System.out.println(ex.getMessage());
+                            new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
                         }
                     }
                 }

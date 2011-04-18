@@ -25,11 +25,7 @@ public class App extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-        try {
-            this.mainController = new MainController(this);
-        } catch (CardConfigNotFoundException ex) {
-            Logger.getLogger(App.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.mainController = new MainController(this);
 
         this.mainController.startTerminalTask();
 
@@ -60,6 +56,7 @@ public class App extends SingleFrameApplication {
      */
     public static void main(String[] args) throws UnsupportedEncodingException {
         Application.launch(App.class, args);
+        System.out.print("launch");
     }
 
     private MainController mainController;

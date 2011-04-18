@@ -34,7 +34,7 @@ public class MainController {
      * @param application the application context
      * @see HomeView
      */
-    public MainController(Application application) throws CardConfigNotFoundException {
+    public MainController(Application application) {
         this.application = application;
 
         this.cardReaderModel = new CardReaderModel();
