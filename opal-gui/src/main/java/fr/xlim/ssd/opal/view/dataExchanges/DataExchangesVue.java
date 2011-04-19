@@ -3,7 +3,7 @@
  */
 
 
-package fr.xlim.ssd.opal.view.dataExcahnges;
+package fr.xlim.ssd.opal.view.dataExchanges;
 
 import fr.xlim.ssd.opal.gui.model.dataExchanges.DataExchangesModel;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.Observer;

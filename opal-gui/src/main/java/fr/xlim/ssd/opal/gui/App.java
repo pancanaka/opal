@@ -5,7 +5,7 @@ import fr.xlim.ssd.opal.gui.tools.SmartCardListParser;
 import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
-import fr.xlim.ssd.opal.view.dataExcahnges.DataExchangesVue;
+import fr.xlim.ssd.opal.view.dataExchanges.DataExchangesVue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.jdesktop.application.Application;
