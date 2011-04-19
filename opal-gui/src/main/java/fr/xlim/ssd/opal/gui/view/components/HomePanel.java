@@ -6,7 +6,6 @@ import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.SelectPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.SendAPDUPanel;
-import fr.xlim.ssd.opal.view.dataExchanges.DataExchangesVue;
 import java.awt.BorderLayout;
 import javax.swing.Box;
 import javax.swing.JPanel;

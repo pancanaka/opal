@@ -1,17 +1,13 @@
 package fr.xlim.ssd.opal.gui.view;
 
+import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
-import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 
 import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
@@ -60,16 +56,13 @@ public class HomeView extends FrameView implements ActionListener {
      * Contains all instructions to draw components in the "Home view".
      */
     public void drawComponents() {
-
         initializeMenu();
 
         initializeToolbar();
 
-        scrollPan = new JScrollPane(new HomePanel(this.controller));
-
-        this.getFrame().setContentPane(scrollPan);
-
         this.getFrame().setSize(500, 500);
+
+        showPanel("home");
     }
 
     /**
@@ -77,17 +70,19 @@ public class HomeView extends FrameView implements ActionListener {
      */
     private void initializeMenu() {
         // Menus
-        JMenuBar  menuBar       = new JMenuBar();
-        JMenu     file          = new JMenu("File");
-        JMenu     options       = new JMenu("Options");
-        JMenu     about         = new JMenu("About");
-        JMenuItem itemQuit      = new JMenuItem("Quit");
-        JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
-        
+        JMenuBar  menuBar           = new JMenuBar();
+        JMenu     file              = new JMenu("File");
+        JMenu     options           = new JMenu("Options");
+        JMenu     about             = new JMenu("About");
+        JMenuItem itemQuit          = new JMenuItem("Quit");
+        JMenuItem itemMProfiles     = new JMenuItem("Manage profiles");
+        JMenuItem itemDataExchanges = new JMenuItem("Open data exchanges");
+
         menuBar.add(file);
             file.add(itemQuit);
         menuBar.add(options);
             options.add(itemMProfiles);
+            options.add(itemDataExchanges);
         menuBar.add(about);
        
         this.setMenuBar(menuBar);
@@ -97,6 +92,7 @@ public class HomeView extends FrameView implements ActionListener {
         itemMProfiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
         itemQuit.addActionListener(this);
         itemMProfiles.addActionListener(this);
+        itemDataExchanges.addActionListener(this);
     }
 
     /**
@@ -147,6 +143,9 @@ public class HomeView extends FrameView implements ActionListener {
             }
             else if(name.equals("Manage profiles")) {
                 showPanel("show profiles");
+            }
+            else if(name.equals("Open data exchanges")) {
+                App.showDataExchangesVue();
             }
         }
     }

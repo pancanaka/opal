@@ -5,11 +5,14 @@
 
 package fr.xlim.ssd.opal.view.dataExchanges;
 
+import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.DataExchangesModel;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.Observer;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
@@ -22,6 +25,7 @@ import javax.swing.JPanel;
  *
  * @author EL KHALDI Omar
  * @author CHANAA Anas
+ * @author Thibault Desmoulins
  */
 public class DataExchangesVue extends JDialog implements ActionListener{
 
@@ -42,6 +46,15 @@ public class DataExchangesVue extends JDialog implements ActionListener{
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setVisible(true);
+
+        // When this window is closed, the App class must be informed
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                App.nbDataExchangesVueOpened = 0;
+            }
+        });
+
         //Instanciating the Components of the JDialog
         jtp_main=new JTabbedPane();
         test_pnl=new JPanel(new BorderLayout());
@@ -51,31 +64,24 @@ public class DataExchangesVue extends JDialog implements ActionListener{
 
         mdl_dte=new DataExchangesModel();
         mdl_dte.addObserver(new Observer(){
-        	public void updateALL(String change_text){
-
-        		txt_all.setText(txt_all.getText().concat(change_text));
-        	}
-        	public void updateAPDU(String change_text){
-
+            public void updateALL(String change_text){
+                txt_all.setText(txt_all.getText().concat(change_text));
+            }
+            public void updateAPDU(String change_text){
                 txt_apdu.setText(txt_apdu.getText().concat(change_text));
-        	}
-        	public void updateLog(String change_text){
-
+            }
+            public void updateLog(String change_text){
                 txt_logging.setText(txt_logging.getText().concat(change_text));
-        	}
-        	public void clearALL(String change_text){
-
-        		txt_all.setText(change_text);
-        	}
-        	public void clearAPDU(String change_text){
-
-        		txt_apdu.setText(change_text);
-        	}
-        	public void clearLog(String change_text){
-
+            }
+            public void clearALL(String change_text){
+                txt_all.setText(change_text);
+            }
+            public void clearAPDU(String change_text){
+                txt_apdu.setText(change_text);
+            }
+            public void clearLog(String change_text){
                 txt_logging.setText(change_text);
-        	}
-
+            }
         });
 
         //Instanciating the components of the JTextPane
@@ -108,13 +114,13 @@ public class DataExchangesVue extends JDialog implements ActionListener{
 
         JButton btn_ae=(JButton)ae.getSource();
         if(btn_ae.equals(test_APDU)){
-        	mdl_dte.displayAllAPDUSendings();
-        	mdl_dte.displayApduSending();
+            mdl_dte.displayAllAPDUSendings();
+            mdl_dte.displayApduSending();
         }
 
         if(btn_ae.equals(Test_Logging)){
-        	mdl_dte.displayAllLogSendings();
-        	mdl_dte.displayLogSending();
+            mdl_dte.displayAllLogSendings();
+            mdl_dte.displayLogSending();
         }
 
         if(btn_ae.equals(txt_all.btn_clrall))	mdl_dte.clearAll();

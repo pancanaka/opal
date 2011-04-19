@@ -1,8 +1,6 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
 import java.awt.Dimension;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -19,8 +17,6 @@ public class KeyComponent {
     private short lineHeight  = 25;
     private short lineSpacing = 10;
 
-    //private String keyVersion = "", keyId = "", key = "", type = "";
-
     JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
 
     String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa,", "SCGemVisa2", "AES"};
@@ -30,10 +26,6 @@ public class KeyComponent {
     public KeyComponent() {}
 
     public KeyComponent(String type, String keyVersion, String keyId, String key) {
-        /*this.keyVersion = keyVersion;
-        this.keyId      = keyId;
-        this.key        = key;
-        this.type       = type;*/
         JkeyVersion.setText(keyVersion);
         JkeyId.setText(keyId);
         Jkey.setText(key);
