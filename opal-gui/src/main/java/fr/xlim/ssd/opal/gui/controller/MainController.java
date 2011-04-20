@@ -1,6 +1,8 @@
 package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask;
+import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
+import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
@@ -18,6 +20,8 @@ public class MainController {
 
     private Application application;
     private CardReaderModel cardReaderModel;
+    private AuthenticationModel authModel;
+    private CommunicationModel communication;
     private HomeView homeView;
     private CardReaderTask cardReaderTask;
 
@@ -39,6 +43,11 @@ public class MainController {
 
         this.cardReaderModel = new CardReaderModel();
 
+        this.communication = new CommunicationModel();
+        
+        this.authModel = new AuthenticationModel(this.cardReaderModel, this.communication);
+        this.authModel.setConfiguration();
+        
         this.startTerminalTask();
         
         this.homeView = new HomeView(this.application, this);
