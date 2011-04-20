@@ -5,6 +5,7 @@ import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView;
+import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ApplicationContext;
@@ -20,6 +21,7 @@ public class MainController {
 
     private Application application;
     private CardReaderModel cardReaderModel;
+    private AuthenticationController authController;
     private AuthenticationModel authModel;
     private CommunicationModel communication;
     private HomeView homeView;
@@ -43,10 +45,9 @@ public class MainController {
 
         this.cardReaderModel = new CardReaderModel();
 
-        this.communication = new CommunicationModel();
-        
-        this.authModel = new AuthenticationModel(this.cardReaderModel, this.communication);
-        this.authModel.setConfiguration();
+        this.communication = new CommunicationModel(SecLevel.C_MAC);
+
+        this.authController = new AuthenticationController(this.cardReaderModel, this.communication);
         
         this.startTerminalTask();
         

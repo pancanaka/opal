@@ -14,7 +14,7 @@ import javax.swing.JTabbedPane;
 /**
  *
  * @author Thibault
- * @author razaina
+ * @author Tiana Razafindralambo
  */
 public class HomePanel extends JPanel {
     public HomePanel(MainController controller) {

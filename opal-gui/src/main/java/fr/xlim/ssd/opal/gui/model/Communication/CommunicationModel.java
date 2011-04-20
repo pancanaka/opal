@@ -5,6 +5,7 @@
 
 package fr.xlim.ssd.opal.gui.model.Communication;
 
+import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
@@ -21,8 +22,18 @@ public class CommunicationModel {
 
     private static final Logger logger = LoggerFactory.getLogger(CommunicationModel.class);
     private SecurityDomain securityDomain;
-    public CommunicationModel(){}
+    private SecLevel securityLevel;
 
+    public CommunicationModel(){}
+    
+    public CommunicationModel(SecLevel securityLevel)
+    {
+        this.securityLevel = securityLevel;
+    }
+    public SecurityDomain getSecurityDomain()
+    {
+        return this.securityDomain;
+    }
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     {
         //  select the security domain 
@@ -39,15 +50,20 @@ public class CommunicationModel {
         }
         catch(ClassNotFoundException ex)
         {
-            logger.error("Class not found excepetion");
+            logger.error("Class not found exception");
         }
 
-        securityDomain.setOffCardKeys(cardConfig.getSCKeys());
+        this.securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         
         try {
-            logger.info("APDU Response : " + securityDomain.select().toString());
+            logger.info("APDU Response to selection : " + securityDomain.select().toString());
         } catch (Exception ex) {
             java.util.logging.Logger.getLogger(CommunicationModel.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+
+    public void setSecurityLevel(SecLevel securityLevel)
+    {
+        this.securityLevel = securityLevel;
     }
 }
