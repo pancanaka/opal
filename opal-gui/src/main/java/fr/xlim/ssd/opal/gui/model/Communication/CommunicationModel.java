@@ -1,8 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package fr.xlim.ssd.opal.gui.model.Communication;
 
 import fr.xlim.ssd.opal.library.SecLevel;
@@ -36,6 +31,7 @@ public class CommunicationModel {
     }
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     {
+        logger.info("Setting security domain...");
         //  select the security domain 
         try
         {

@@ -36,11 +36,11 @@ public class ShowProfileView extends JPanel implements ActionListener {
     private ProfileController profileController;
 
     public ShowProfileView(HomeView f) {
-        try {
+        //try {
             this.f = f;
             // Data for the profile tab
             String[] title = {"Profile name", "Description", "Implementation"};
-            profileController = new ProfileController();
+            profileController = f.getController().getProfileController();
             /**/
             /**/
             Object[][] data = profileController.getAllProfiles();
@@ -71,11 +71,11 @@ public class ShowProfileView extends JPanel implements ActionListener {
             btDelete.addActionListener(this);
             btAdd.addActionListener(this);
             btOK.addActionListener(this);
-        } catch (CardConfigNotFoundException ex) {
+        /*} catch (CardConfigNotFoundException ex) {
             new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
-        }
+        }*/
     }
-
+ 
     @Override
     public void actionPerformed(ActionEvent ae) {
         Object o = ae.getSource();

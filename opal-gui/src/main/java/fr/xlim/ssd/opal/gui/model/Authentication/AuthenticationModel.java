@@ -6,10 +6,13 @@
 package fr.xlim.ssd.opal.gui.model.Authentication;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
+import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
+import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
@@ -33,13 +36,18 @@ public class AuthenticationModel {
     private CommunicationModel communication;
     private CardConfig cardConfig;
     private CardReaderStateListener cardReaderStateListener;
-    
+    private ProfileModel profile;
+    private String[][] profiles;
     public AuthenticationModel(){}
 
-    public AuthenticationModel(CardReaderModel crm, CommunicationModel communication)
+    public AuthenticationModel(CardReaderModel crm, CommunicationModel communication, ProfileController profileController)
     {
         this.cardReaderModel = crm;
         this.communication = communication;
+        this.setConfiguration();
+
+        this.profile = profileController.getProfileModel();
+        loadAllProfile(); 
     }
 
     /**
@@ -74,10 +82,48 @@ public class AuthenticationModel {
                 } 
             }
         };
-
        this.cardReaderModel.addCardReaderStateListener(cardReaderStateListener);
     }
 
+    /**
+     *  Load all profiles (cf. config.xml)
+     */
+    private void loadAllProfile()
+    {
+        logger.info("Getting all profiles ...");
+
+        this.profiles = this.profile.getAllProfiles();
+        int profilesLength = this.profiles.length;
+
+        logger.info(profilesLength + " profiles has been loaded.");
+
+        /*for(int i = 0; i < profilesLength; i++)
+        {
+            logger.debug(profiles[i][0]);
+        }*/
+    }
+
+    public String[] getAllProfileNames()
+    {
+        String[] res = new String[this.profiles.length];
+
+        for(int i = 0; i < this.profiles.length; i++)
+            res[i] = this.profiles[i][0];
+        return res;
+    }
+    /**
+     * Get all profiles
+     * @return all profiles loaded.
+     */
+    public String[][] getAllProfiles()
+    {
+        return this.profiles;
+    }
+
+    public ProfileComponent getProfileByName(String name)
+    {
+        return this.profile.getProfileByName(name);
+    }
     /**
      * Get the card configuration
      *
@@ -87,7 +133,7 @@ public class AuthenticationModel {
      */
     public CardConfig getCardConfig()
     {
-        return cardConfig;
+        return this.cardConfig;
     }
 
     /**
@@ -111,5 +157,4 @@ public class AuthenticationModel {
     {
         this.cardReaderModel = crm;
     }
-
 }

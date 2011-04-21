@@ -35,6 +35,8 @@ public class HomeView extends FrameView implements ActionListener {
     private CardReaderMonitorToolbar cardReaderMonitorToolbar;
 
     private JScrollPane scrollPan;
+
+    private ShowProfileView showProfileView;
     
 
     /**
@@ -52,6 +54,10 @@ public class HomeView extends FrameView implements ActionListener {
         drawComponents();
     }
 
+    public MainController getController()
+    {
+        return this.controller;
+    }
     /**
      * Contains all instructions to draw components in the "Home view".
      */
