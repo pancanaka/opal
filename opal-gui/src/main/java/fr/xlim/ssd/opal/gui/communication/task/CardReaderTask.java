@@ -222,10 +222,13 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                 }
 
                 CardChannel channel = card.getBasicChannel();
+
+                item.setCardChannel(channel);
+                
                 ATR atr = card.getATR();
                 String sAtr = Conversion.arrayToHex(atr.getBytes()).trim();
 
-                item.setCardATR(new fr.xlim.ssd.opal.library.params.ATR(atr.getBytes()));
+                item.setCardATR(new fr.xlim.ssd.opal.library.params.ATR(atr.getBytes())); 
 
                 String cardName = this.atrCache.get(sAtr);
                 if (cardName == null) {

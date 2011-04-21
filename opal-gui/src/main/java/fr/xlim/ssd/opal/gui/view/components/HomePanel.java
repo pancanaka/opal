@@ -14,7 +14,7 @@ import javax.swing.JTabbedPane;
 /**
  *
  * @author Thibault
- * @author razaina
+ * @author Tiana Razafindralambo
  */
 public class HomePanel extends JPanel {
     public HomePanel(MainController controller) {
@@ -23,7 +23,8 @@ public class HomePanel extends JPanel {
         DeletePanel p3         = new DeletePanel();
         SelectPanel p4         = new SelectPanel();
         SendAPDUPanel p5       = new SendAPDUPanel();
-        //     DataExchanges p6       = new DataExchanges();
+        //DataExchangesVue dev = new DataExchangesVue();
+        //dev.setVisible(true);
         JTabbedPane myPanel    = new JTabbedPane();
 
         myPanel.addTab(p1.title, p1);

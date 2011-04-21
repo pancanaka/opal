@@ -2,23 +2,33 @@ package fr.xlim.ssd.opal.library.params;
 
 import fr.xlim.ssd.opal.library.*;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import java.io.ByteArrayInputStream;
+import java.io.File;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
+import org.w3c.dom.Attr;
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
 
 /**
  * Delivers card configuration CardConfig
  *
+ * @author Yorick Lesecque
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
@@ -28,12 +38,74 @@ public class CardConfigFactory {
 
     /// the logger
     private final static Logger logger = LoggerFactory.getLogger(CardConfigFactory.class);
-
-    private static String configFile = "/config.xml";
+    private static String configFile = "/src/main/resources/config.xml";
+    
 
     public static void setConfigFile (String configFile) {
         CardConfigFactory.configFile = configFile;
     }
+
+    public static String getConfigFile () {
+        return CardConfigFactory.configFile;
+    }
+
+    /**
+     * Get all card configs.
+     *
+     * @return a Map of CardConfig objects with the name of the config as a key
+     * @throws CardConfigNotFoundException if an error occured while reading the XML file
+     */
+    public static CardConfig[] getAllCardConfigs()
+            throws CardConfigNotFoundException {
+
+        String name = null;
+        String description = null;
+        ATR[] atrs = null ;
+        byte[] isd = null;
+        SCPMode scpMode = null;
+        String tp = null;
+        SCKey[] keys = null;
+        String impl = null;
+        CardConfig configs[];
+
+        try {
+            File f = new File(System.getProperty("user.dir") + configFile);
+
+            Document document = DocumentBuilderFactory.newInstance().
+                    newDocumentBuilder().parse(f);
+
+            NodeList cards = document.getElementsByTagName("card");
+            Element currentCard = null;
+            configs = new CardConfig[cards.getLength()];
+
+            for (int i = 0; i < cards.getLength(); i++) {
+                currentCard = (Element) cards.item(i);
+
+                // set and return CardConfig
+                name = getName(currentCard);
+                description = getDescription(currentCard);
+                atrs = getATRs(currentCard);
+                isd = getISD(currentCard);
+                scpMode = getSCP(currentCard);
+                tp = getTP(currentCard);
+                keys = getKeys(currentCard);
+                impl = getImpl(currentCard);
+
+                configs[i] = new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
+            }
+
+        } catch (IOException e) {
+            throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
+        } catch (SAXException e) {
+            throw new CardConfigNotFoundException("SAX error when reading config.xml file:" + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
+        }
+
+        return configs;
+    }
+
+
 
     /**
      * Get the card config based on its name.
@@ -56,10 +128,10 @@ public class CardConfigFactory {
 
         try {
 
-            InputStream input = CardConfigFactory.class.getResourceAsStream(CardConfigFactory.configFile);
+            File f = new File(System.getProperty("user.dir") + configFile);
 
             Document document = DocumentBuilderFactory.newInstance().
-                    newDocumentBuilder().parse(input);
+                    newDocumentBuilder().parse(f);
 
             NodeList cards = document.getElementsByTagName("card");
             Element desiredCard = null;
@@ -113,7 +185,14 @@ public class CardConfigFactory {
      * @return A string with the description of the configuration
      */
     private static String getDescription(Element card) {
-        return card.getAttribute("description");
+        NodeList desc = card.getElementsByTagName("description");
+
+        if(desc.getLength() == 0) {
+            return "No description";
+        }
+        else {
+            return desc.item(0).getChildNodes().item(0).getNodeValue();
+        }
     }
 
     /**
@@ -275,10 +354,10 @@ public class CardConfigFactory {
 
         try {
 
-            InputStream input = CardConfigFactory.class.getResourceAsStream(CardConfigFactory.configFile);
+            File f = new File(System.getProperty("user.dir") + configFile);
 
             Document document = DocumentBuilderFactory.newInstance().
-                    newDocumentBuilder().parse(input);
+                    newDocumentBuilder().parse(f);
 
             NodeList cards = document.getElementsByTagName("card");
             Element card = null;
@@ -320,5 +399,155 @@ public class CardConfigFactory {
         }
 
         return new CardConfig(name,description, atrs, isd, scpMode, tp, keys, impl);
+    }
+
+    public static boolean deleteCardConfig(String name)
+            throws CardConfigNotFoundException {
+
+        boolean t = false;
+
+        try {
+            File f = new File(System.getProperty("user.dir") + configFile);
+
+            Document document = DocumentBuilderFactory.newInstance().
+                    newDocumentBuilder().parse(f);
+
+            NodeList cards = document.getElementsByTagName("card");
+            Element desiredCard = null;
+
+            // looking for the card identifier in config.xml file
+            for (int i = 0; i < cards.getLength() && !t; i++) {
+                desiredCard = (Element) cards.item(i);
+
+                if (desiredCard.getAttribute("name").equals(name)) {
+                    desiredCard.getParentNode().removeChild(desiredCard);
+                    t = true;
+                }
+            }
+
+           document.normalize();
+
+            if (!t) {
+                throw new CardConfigNotFoundException("Card \"" + name + "\" not found");
+            } else {
+                try {
+                    //write the content into xml file
+                    Transformer transformer = TransformerFactory.newInstance().newTransformer();
+                    transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+                    StreamResult result =  new StreamResult(f);
+                    DOMSource source = new DOMSource(document);
+                    transformer.transform(source, result);
+                } catch (TransformerException e){
+                    throw new CardConfigNotFoundException("Cannot transform the config file: " + e.getMessage());
+                }
+            }
+        } catch (IOException e) {
+            throw new CardConfigNotFoundException("Cannot read the config file: " + e.getMessage());
+        } catch (SAXException e) {
+            throw new CardConfigNotFoundException("SAX error when reading config file:" + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            throw new CardConfigNotFoundException("XML parsing error when reading config file:" + e.getMessage());
+        }
+
+        return t;
+    }
+
+    public static void addCardConfig()
+            throws CardConfigNotFoundException {
+
+        try {
+            File f = new File(System.getProperty("user.dir") + configFile);
+
+            Document document = DocumentBuilderFactory.newInstance().
+                    newDocumentBuilder().parse(f);
+
+            Node cardsconfig = document.getFirstChild();
+            Node newCard = document.createElement("card");
+            NamedNodeMap newCardAttributes = newCard.getAttributes();
+                Attr defaultImpl = document.createAttribute("defaultImpl");
+                defaultImpl.setValue("fr.xlim.ssd.opal.library.commands.GP2xCommands");
+                newCardAttributes.setNamedItem(defaultImpl);
+
+                Attr name = document.createAttribute("name");
+                name.setValue("name");
+                newCardAttributes.setNamedItem(name);
+            cardsconfig.appendChild(newCard);
+
+                Node description = document.createElement("description");
+                description.setTextContent("GALITT WADAPA");
+                newCard.appendChild(description);
+
+                Node listeATR = document.createElement("listeATR");
+                newCard.appendChild(listeATR);
+                    Node ATR = document.createElement("ATR");
+                    NamedNodeMap ATRAttributes = ATR.getAttributes();
+                        Attr valueATR = document.createAttribute("ATR");
+                        valueATR.setValue("3B 6D 00 00 80 31 80 65 B0 43 02 00 77 83 00 90 00");
+                        ATRAttributes.setNamedItem(valueATR);
+                    listeATR.appendChild(ATR);
+
+                Node isdAID = document.createElement("isdAID");
+                NamedNodeMap isdAIDAttributes = isdAID.getAttributes();
+                    Attr valueidsAID = document.createAttribute("isdAID");
+                    valueidsAID.setValue("A0 00 00 00 03 00 00 00");
+                    isdAIDAttributes.setNamedItem(valueidsAID);
+                newCard.appendChild(isdAID);
+
+                Node scpMode = document.createElement("scpMode");
+                NamedNodeMap scpModeAttributes = scpMode.getAttributes();
+                    Attr valuescpMode = document.createAttribute("value");
+                    valuescpMode.setValue("01_05");
+                    scpModeAttributes.setNamedItem(valuescpMode);
+                newCard.appendChild(scpMode);
+
+                Node transmissionProtocol = document.createElement("transmissionProtocol");
+                NamedNodeMap tPAttributes = transmissionProtocol.getAttributes();
+                    Attr valuesTP = document.createAttribute("value");
+                    valuesTP.setValue("T=0");
+                    tPAttributes.setNamedItem(valuesTP);
+                newCard.appendChild(transmissionProtocol);
+
+                Node listedefaultKeys = document.createElement("defaultKeys");
+                newCard.appendChild(listedefaultKeys);
+                    Node key = document.createElement("key");
+                    NamedNodeMap keyAttributes = key.getAttributes();
+                        Attr keyDatas = document.createAttribute("keyDatas");
+                        keyDatas.setValue("47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53");
+                        keyAttributes.setNamedItem(keyDatas);
+                        
+                        Attr keyVersionNumber = document.createAttribute("keyVersionNumber");
+                        keyVersionNumber.setValue("255");
+                        keyAttributes.setNamedItem(keyVersionNumber);
+
+                        Attr type = document.createAttribute("type");
+                        type.setValue("SCGemVisa2");
+                        keyAttributes.setNamedItem(type);
+                    listedefaultKeys.appendChild(key);
+
+
+            document.normalize();
+
+            try {
+                //write the content into xml file
+                TransformerFactory transfac = TransformerFactory.newInstance();
+                Transformer transformer = transfac.newTransformer();
+                transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
+                transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+
+                StreamResult result =  new StreamResult(f);
+                DOMSource source = new DOMSource(document);
+                transformer.transform(source, result);
+                
+            } catch (TransformerException e){
+                throw new CardConfigNotFoundException("Cannot transform the config file: " + e.getMessage());
+            }
+            
+        } catch (IOException e) {
+            throw new CardConfigNotFoundException("Cannot read the config file: " + e.getMessage());
+        } catch (SAXException e) {
+            throw new CardConfigNotFoundException("SAX error when reading config file:" + e.getMessage());
+        } catch (ParserConfigurationException e) {
+            throw new CardConfigNotFoundException("XML parsing error when reading config file:" + e.getMessage());
+        }
     }
 }

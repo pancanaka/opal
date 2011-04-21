@@ -1,6 +1,7 @@
 package fr.xlim.ssd.opal.gui.model.reader;
 
 import fr.xlim.ssd.opal.library.params.ATR;
+import javax.smartcardio.CardChannel;
 
 /**
  * A simple card reader representation.
@@ -16,11 +17,13 @@ import fr.xlim.ssd.opal.library.params.ATR;
  * for the card name and a <code>null ATR</code> instance for the card ATR.
  * 
  * @author David Pequegnot
+ * @author Tiana Razafindralambo
  */
 public class CardReaderItem {
     private String cardReaderName;
     private String cardName;
     private ATR    cardATR;
+    private CardChannel channel;
 
     /**
      * Default constructor.
@@ -140,6 +143,22 @@ public class CardReaderItem {
         this.cardATR = cardATR;
     }
 
+    /**
+     * 
+     * @return
+     */
+    public CardChannel getCardChannel()
+    {
+        return this.channel;
+    }
+    /**
+     * Sets the card channel
+     * @param channel the card channel to set
+     */
+    public void setCardChannel(CardChannel channel)
+    {
+        this.channel = channel;
+    }
     /**
      * Equals method.
      *

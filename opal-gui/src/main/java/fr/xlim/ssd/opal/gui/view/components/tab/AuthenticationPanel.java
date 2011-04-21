@@ -1,10 +1,13 @@
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 
-import java.awt.BorderLayout;
+import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
+
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JPanel;
-import java.awt.GridLayout;
 import javax.swing.Box;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -14,16 +17,17 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
+import java.util.ArrayList;
 
 
 /**
  * @author Thibault
  * @author razaina
  */
-public class AuthenticationPanel extends JPanel{
+public class AuthenticationPanel extends JPanel implements ActionListener{
 
     public String title = "Authentication";
-    
+
     private JLabel jlISDAID;
     public JTextField tfISDAID;
 
@@ -40,19 +44,21 @@ public class AuthenticationPanel extends JPanel{
     private JComboBox cbTransProto;
     private String[] TransProto = {"T=0", "T=1", "*"};
 
-    private JLabel jlType;
-    private JComboBox cbType;
-    private String[] Type = {"DES_CBC", "DES_ECB", "SCGemVisa", "SCGemVisa2",
-    "AES"};
+    //private JLabel jlType;
+    //private JComboBox cbType;
+    //private String[] Type = {"DES_CBC", "DES_ECB", "SCGemVisa", "SCGemVisa2",
+    //"AES"};
 
-    private JLabel jlKeyVersion;
-    private JTextField tfKeyVersion;
+    //private JLabel jlKeyVersion;
+    //private JTextField tfKeyVersion;
 
-    private JLabel jlKeyID;
-    private JTextField tfKeyID;
+    //private JLabel jlKeyID;
+    //private JTextField tfKeyID;
 
-    private JLabel jlKey;
-    private JTextField tfKey;
+    //private JLabel jlKey;
+    //private JTextField tfKey;
+
+    private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
 
     private JLabel jlImplementation;
     private JComboBox cbImplementation;
@@ -64,8 +70,29 @@ public class AuthenticationPanel extends JPanel{
 
     private short lineHeight  = 20;
 
-    public AuthenticationPanel()
-    {
+    public AuthenticationPanel() {
+
+       drawWindow();
+    }
+
+    /**
+     * Create a new label
+     * @param name
+     * @param width
+     * @param height
+     * @return the label
+     */
+    public JLabel createLabel(String name, int width, int height) {
+        JLabel label = new JLabel(name);
+        label.setPreferredSize(new Dimension(width,height));
+        //label.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        //label.addMouseListener((MouseListener) this);
+        return label;
+    }
+
+    public void drawWindow() {
+        this.removeAll();
+
         JPanel jplPanel = new JPanel();
         add(jplPanel);
 
@@ -114,67 +141,8 @@ public class AuthenticationPanel extends JPanel{
         verticalBox.add(ligne);
 
         // Key Panel
-        JPanel jpKeys = new JPanel();
-        jpKeys.setPreferredSize(new Dimension(500, 180));
-        TitledBorder tbKeys = new TitledBorder("Keys");
-        jpKeys.setBorder(tbKeys);
-        verticalBox.add(jpKeys);
-
-        Box verticalBoxKey = Box.createVerticalBox();
-
-        // Type
-        ligne = Box.createHorizontalBox();
-        jlType = createLabel("Type", 50, lineHeight);
-        cbType = new JComboBox(Type);
-        cbType.setPreferredSize(new Dimension(100,20));
-        ligne.add(jlType);
-        ligne.add(cbType);
-
-        // Key Version Number
-        jlKeyVersion = createLabel("Key Version Number", 120, lineHeight);
-        tfKeyVersion = new JTextField();
-        ligne.add(jlKeyVersion);
-        ligne.add(tfKeyVersion);
-
-        // Key ID
-        jlKeyID = createLabel("Key ID", 50, lineHeight);
-        tfKeyID = new JTextField();
-        ligne.add(jlKeyID);
-        ligne.add(tfKeyID);
-        verticalBoxKey.add(ligne);
-
-        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
-
-        // Key
-        ligne = Box.createHorizontalBox();
-        jlKey = createLabel("Key", 50, lineHeight);
-        tfKey = new JTextField(48);
-        ligne.add(jlKey);
-        ligne.add(tfKey);
-        verticalBoxKey.add(ligne);
-
-        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
-
-        //Remove field
-        ligne = Box.createHorizontalBox();
-        jbRemove = new JButton("Remove field");
-        ligne.add(jbRemove);
-        verticalBoxKey.add(ligne);
-
-        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
-
-        // Separator
-        verticalBoxKey.add(new JSeparator(SwingConstants.HORIZONTAL));
-
-        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
-
-        // Add field
-        ligne = Box.createHorizontalBox();
-        jbAdd = new JButton("Add field");
-        ligne.add(jbAdd);
-        verticalBoxKey.add(ligne);
-
-        jpKeys.add(verticalBoxKey);
+        Keylist.add(new KeyComponent());
+        drawKeysLines(verticalBox);
 
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
@@ -196,20 +164,68 @@ public class AuthenticationPanel extends JPanel{
         verticalBox.add(ligne);
 
         jplPanel.add(verticalBox);
+
+        this.updateUI();
     }
 
     /**
-     * Create a new label
-     * @param name
-     * @param width
-     * @param height
-     * @return the label
+     *
+     * @param v
      */
-    public JLabel createLabel(String name, int width, int height) {
-        JLabel label = new JLabel(name);
-        label.setPreferredSize(new Dimension(width,height));
-        //label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        //label.addMouseListener((MouseListener) this);
-        return label;
+    public void drawKeysLines(Box v) {
+        Box ligne = Box.createHorizontalBox();
+        ligne.setPreferredSize(new Dimension(500, 20));
+
+        int n      = Keylist.size();
+        JPanel jpKeys = new JPanel();
+        TitledBorder tbKeys = new TitledBorder("Keys");
+        jpKeys.setBorder(tbKeys);
+
+        Box verticalBoxKey = Box.createVerticalBox();
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 5)));
+
+        for(int i=0 ; i<n ; i++) {
+            Box b = Keylist.get(i).createLineForm();
+            verticalBoxKey.add(b);
+            verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+        }
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        //Remove field
+        ligne = Box.createHorizontalBox();
+        jbRemove = new JButton("Remove field");
+        ligne.add(jbRemove);
+        verticalBoxKey.add(ligne);
+
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        // Separator
+        verticalBoxKey.add(new JSeparator(SwingConstants.HORIZONTAL));
+
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+
+        // Add field
+        ligne = Box.createHorizontalBox();
+        jbAdd = new JButton("Add field");
+        jbAdd.addActionListener(this);
+        ligne.add(jbAdd);
+        verticalBoxKey.add(ligne);
+
+        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+        jpKeys.add(verticalBoxKey);
+        v.add(jpKeys);
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource();
+        if(o instanceof JButton) {
+            JButton b = (JButton) o;
+
+            if(b.equals(jbAdd)) {
+                Keylist.add(new KeyComponent());
+                drawWindow();
+            }
+        }
     }
 }

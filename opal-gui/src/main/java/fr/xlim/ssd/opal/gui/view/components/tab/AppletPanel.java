@@ -1,18 +1,20 @@
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JSeparator;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.JComboBox;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
-import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileFilter;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 /**
  * Applet vue
@@ -21,7 +23,7 @@ import javax.swing.border.TitledBorder;
  * @author razaina
  * @author Estelle
  */
-public class AppletPanel extends JPanel{
+public class AppletPanel extends JPanel implements ActionListener{
 
     public String title = "Applet";
 
@@ -69,6 +71,8 @@ public class AppletPanel extends JPanel{
         jlAppletFile = createLabel("Applet file", 170, lineHeight);
         tfAppletFile = new JTextField();
         bFile = new JButton("File");
+        bFile.addActionListener((ActionListener) this);
+
         ligne.add(jlAppletFile);
         ligne.add(tfAppletFile);
         ligne.add(bFile);
@@ -198,9 +202,6 @@ public class AppletPanel extends JPanel{
         verticalBox.add(ligne);
 
         jplPanel.add(verticalBox);
-
-        
-
     }
 
     /**
@@ -216,6 +217,24 @@ public class AppletPanel extends JPanel{
         //label.setCursor(new Cursor(Cursor.HAND_CURSOR));
         //label.addMouseListener((MouseListener) this);
         return label;
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource();
+
+        if(o instanceof JButton) {
+            JButton b = (JButton) o;
+
+            if(b.equals(bFile)) {
+                JFileChooser chooser = new JFileChooser();
+                int returnVal = chooser.showOpenDialog(null);
+                if(returnVal == JFileChooser.APPROVE_OPTION) {
+                   System.out.println("You chose to open this file: " +
+                        chooser.getSelectedFile().getName());
+                }
+            }
+        }
     }
 }
 

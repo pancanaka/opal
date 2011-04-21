@@ -7,6 +7,7 @@ import fr.xlim.ssd.opal.library.params.ATR;
 import javax.swing.event.EventListenerList;
 import java.util.ArrayList;
 import java.util.List;
+import javax.smartcardio.CardChannel;
 
 /**
  * The model which contains the list of card readers connected to the computer.
@@ -48,6 +49,16 @@ public class CardReaderModel {
      */
     public ATR getSelectedCardATR() {
         return this.selectedCardReaderItem.getCardATR();
+    }
+
+    /**
+     * Get the selected card channel
+     *
+     * @return the selected card channel
+     */
+    public CardChannel getCardChannel()
+    {
+        return this.selectedCardReaderItem.getCardChannel();
     }
 
     /**
