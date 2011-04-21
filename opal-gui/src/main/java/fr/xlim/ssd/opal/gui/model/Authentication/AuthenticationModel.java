@@ -5,7 +5,6 @@
 
 package fr.xlim.ssd.opal.gui.model.Authentication;
 
-import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
@@ -44,7 +43,7 @@ public class AuthenticationModel {
     {
         this.cardReaderModel = crm;
         this.communication = communication;
-        this.setConfiguration();
+        this.testConfiguration();
 
         this.profile = profileController.getProfileModel();
         loadAllProfile(); 
@@ -59,7 +58,7 @@ public class AuthenticationModel {
      * Note that the securityDomain is set at the same time when the card
      * configuration has been found.
      */
-    public void setConfiguration()
+    public void testConfiguration()
     {
         cardReaderStateListener = new CardReaderStateListener() {
             @Override

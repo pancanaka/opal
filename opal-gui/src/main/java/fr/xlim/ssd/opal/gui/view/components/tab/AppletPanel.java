@@ -7,14 +7,11 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.border.TitledBorder;
-import javax.swing.JFileChooser;
-import javax.swing.filechooser.FileFilter;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
+import javax.swing.JFileChooser;  
 
 /**
  * Applet vue

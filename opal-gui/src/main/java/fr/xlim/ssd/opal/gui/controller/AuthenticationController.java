@@ -9,10 +9,7 @@ import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel; 
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
-import fr.xlim.ssd.opal.library.SCPMode;
-import fr.xlim.ssd.opal.library.params.ATR;
-import fr.xlim.ssd.opal.library.params.CardConfig;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
+import fr.xlim.ssd.opal.library.params.CardConfig; 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

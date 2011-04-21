@@ -6,12 +6,10 @@
 package fr.xlim.ssd.opal.gui.controller.send;
 
 import fr.xlim.ssd.opal.gui.view.components.tab.SendAPDUPanel;
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import javax.swing.JButton;
+import java.awt.event.KeyListener; 
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
