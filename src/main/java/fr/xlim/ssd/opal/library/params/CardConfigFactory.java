@@ -282,7 +282,7 @@ public class CardConfigFactory {
             Element cardFound = null;
 
             // looking for the card identifiant in atr.xml file
-            for (int i = 0; (i < cards.getLength()) & (cardFound != null); i++) {
+            for (int i = 0; (i < cards.getLength()) & (cardFound == null); i++) {
                 card = (Element) cards.item(i);
                 atrs = getATRs(card);
                 for (ATR a : atrs) {
