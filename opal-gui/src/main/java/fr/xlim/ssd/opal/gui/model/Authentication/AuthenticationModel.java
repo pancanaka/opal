@@ -65,21 +65,24 @@ public class AuthenticationModel {
             @Override
             public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
 
-                logger.info("Card Name : " +  cardReaderModel.getSelectedCardName());
-                logger.info("Card ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
-                
-                 //The selected card is completly loaded, then we can use it
-                //getting the card configuration and set the security domain
-                try
+                if(cardReaderModel.hasSelectedCardReaderItem())
                 {
-                    cardConfig = getCardConfigByATR(cardReaderModel.getSelectedCardATR());
-                    communication.setSecurityDomain(cardConfig, cardReaderModel.getCardChannel());
-                    cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
+                    logger.info("Card Name : " +  cardReaderModel.getSelectedCardName());
+                    logger.info("Card ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
+
+                     //The selected card is completly loaded, then we can use it
+                    //getting the card configuration and set the security domain
+                    try
+                    {
+                        cardConfig = getCardConfigByATR(cardReaderModel.getSelectedCardATR());
+                        communication.setSecurityDomain(cardConfig, cardReaderModel.getCardChannel());
+                        cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
+                    }
+                    catch(CardConfigNotFoundException ex)
+                    {
+                        logger.error(ex.getMessage());
+                    }
                 }
-                catch(CardConfigNotFoundException ex)
-                {
-                    logger.error(ex.getMessage());
-                } 
             }
         };
        this.cardReaderModel.addCardReaderStateListener(cardReaderStateListener);

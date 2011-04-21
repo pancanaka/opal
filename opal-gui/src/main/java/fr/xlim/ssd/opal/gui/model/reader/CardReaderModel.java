@@ -13,6 +13,7 @@ import javax.smartcardio.CardChannel;
  * The model which contains the list of card readers connected to the computer.
  *
  * @author David Pequegnot
+ * @author Tiana Razafindralambo
  */
 public class CardReaderModel {
 
@@ -42,6 +43,10 @@ public class CardReaderModel {
         return this.selectedCardReaderItem.getCardName();
     }
 
+    public boolean hasSelectedCardReaderItem()
+    {
+        return (this.selectedCardReaderItem == null);
+    }
     /**
      * Get selected card ATR.
      *
