@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.gui.model.Communication;
 
+import fr.xlim.ssd.opal.gui.model.securityDomain.SecurityDomainModel;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
@@ -16,46 +17,23 @@ import org.slf4j.LoggerFactory;
 public class CommunicationModel {
 
     private static final Logger logger = LoggerFactory.getLogger(CommunicationModel.class);
-    private SecurityDomain securityDomain;
+    private SecurityDomainModel securityModel;
+    private SecurityDomain securityDomain = null;
     private SecLevel securityLevel;
 
-    public CommunicationModel(){}
+    public CommunicationModel(){  }
     
-    public CommunicationModel(SecLevel securityLevel)
-    {
-        this.securityLevel = securityLevel;
-    }
-    public SecurityDomain getSecurityDomain()
-    {
-        return this.securityDomain;
-    }
+    public CommunicationModel(SecLevel securityLevel) { this.securityLevel = securityLevel; }
+    public SecurityDomain getSecurityDomain() { return this.securityDomain; }
+    public SecLevel getSecurityLevel(){ return this.securityLevel;}
+    public SecurityDomainModel getSecurityDomainModel() { return this.securityModel;}
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     {
         logger.info("Setting security domain...");
-        //  select the security domain 
-        try
-        {
-            this.securityDomain = new SecurityDomain(   cardConfig.getImplementation(),
-                                                        channel,
-                                                        cardConfig.getIssuerSecurityDomainAID()
-                                                     );
-        }
-        catch(CommandsImplementationNotFound ex)
-        {
-            logger.error("Commands Implementation not found");
-        }
-        catch(ClassNotFoundException ex)
-        {
-            logger.error("Class not found exception");
-        }
-
-        this.securityDomain.setOffCardKeys(cardConfig.getSCKeys());
-        
-        try {
-            logger.info("APDU Response to selection : " + securityDomain.select().toString());
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(CommunicationModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        this.securityModel = new SecurityDomainModel();
+        //  select the security domain
+        this.securityModel.setSecurityDomain(cardConfig, channel);
+        this.securityDomain = securityModel.getDomain(); 
     }
 
     public void setSecurityLevel(SecLevel securityLevel)

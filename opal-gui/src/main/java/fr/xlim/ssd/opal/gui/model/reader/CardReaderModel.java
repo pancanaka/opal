@@ -45,7 +45,7 @@ public class CardReaderModel {
 
     public boolean hasSelectedCardReaderItem()
     {
-        return (this.selectedCardReaderItem == null);
+        return (this.selectedCardReaderItem != null);
     }
     /**
      * Get selected card ATR.

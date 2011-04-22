@@ -43,8 +43,7 @@ public class AuthenticationModel {
     {
         this.cardReaderModel = crm;
         this.communication = communication;
-        this.testConfiguration();
-
+        
         this.profile = profileController.getProfileModel();
         loadAllProfile(); 
     }
@@ -58,35 +57,30 @@ public class AuthenticationModel {
      * Note that the securityDomain is set at the same time when the card
      * configuration has been found.
      */
-    public void testConfiguration()
+    /*public void setCommunication(CardConfig _cf)
     {
+        logger.info("Setting communication for the given cardConfig");
+        final CardConfig cf = _cf;
         cardReaderStateListener = new CardReaderStateListener() {
             @Override
             public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
 
                 if(cardReaderModel.hasSelectedCardReaderItem())
                 {
-                    logger.info("Card Name : " +  cardReaderModel.getSelectedCardName());
-                    logger.info("Card ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
+                    logger.info("Setting the communication process...");
 
                      //The selected card is completly loaded, then we can use it
                     //getting the card configuration and set the security domain
-                    try
-                    {
-                        cardConfig = getCardConfigByATR(cardReaderModel.getSelectedCardATR());
-                        communication.setSecurityDomain(cardConfig, cardReaderModel.getCardChannel());
-                        cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
-                    }
-                    catch(CardConfigNotFoundException ex)
-                    {
-                        logger.error(ex.getMessage());
-                    }
-                }
+                    cardConfig = cf;
+                    communication.setSecurityDomain(cardConfig, cardReaderModel.getCardChannel());
+                    cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
+                }else logger.error("No card found.");
+                cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
             }
         };
        this.cardReaderModel.addCardReaderStateListener(cardReaderStateListener);
-    }
-
+    }*/
+ 
     /**
      *  Load all profiles (cf. config.xml)
      */
@@ -145,7 +139,7 @@ public class AuthenticationModel {
      * @return CardConfig
      * @throws CardConfigNotFoundException
      */
-    private CardConfig getCardConfigByATR(ATR atr) throws CardConfigNotFoundException
+    public CardConfig getCardConfigByATR(ATR atr) throws CardConfigNotFoundException
     {
         return CardConfigFactory.getCardConfig(atr.getValue());
     }

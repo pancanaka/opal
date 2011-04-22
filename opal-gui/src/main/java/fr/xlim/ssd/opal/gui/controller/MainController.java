@@ -25,12 +25,11 @@ public class MainController {
     private static final Logger logger = LoggerFactory.getLogger(MainController.class);
     private Application application;
     private CardReaderModel cardReaderModel;
-    private AuthenticationController authController;
-    private AuthenticationModel authModel;
+    private AuthenticationController authController; 
     private AppletController appletController;
     private DeleteController deleteController;
     private SelectController selectController;
-    private CommunicationModel communication;
+    private CommunicationController communication;
     private HomeView homeView;
     private CardReaderTask cardReaderTask;
     private ProfileController profileController;
@@ -55,7 +54,7 @@ public class MainController {
 
         this.homeView = new HomeView(this.application, this);
         
-        this.communication = new CommunicationModel(SecLevel.C_MAC);
+        this.communication = new CommunicationController(SecLevel.C_MAC);
 
         try
         {
@@ -73,7 +72,15 @@ public class MainController {
 
         this.selectController = new SelectController(this.homeView);
         
-        this.startTerminalTask(); 
+        this.startTerminalTask();
+
+        TestMyCard();
+    }
+
+    public void TestMyCard()
+    {
+        logger.info("Testing my card .... ");
+        this.authController.test();
     }
 
     /**
