@@ -1,6 +1,5 @@
 package fr.xlim.ssd.opal.gui.model.reader;
-
-import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
+ 
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;

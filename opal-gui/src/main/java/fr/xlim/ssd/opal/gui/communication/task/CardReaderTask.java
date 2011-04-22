@@ -192,6 +192,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
         try {
             cardReaderList = factory.terminals().list();
         } catch (CardException ce) {
+            logger.info("No terminal found");
             //logger.debug("No terminal found", ce);
             return;
         }
@@ -207,6 +208,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                     cardFound = cardReader.waitForCardPresent(this.timeoutCardPresent);
                 } catch (CardException ce) {
                     this.cardReaderItemListTmp.add(item);
+                    logger.info("Unable to state card");
                    // logger.debug("Unable to state card", ce);
                     continue;
                 }
@@ -217,6 +219,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                     card = cardReader.connect("*");
                 } catch (CardException ce) {
                     this.cardReaderItemListTmp.add(item);
+                    logger.info("Error while connectiong to the card");
                    // logger.debug("Error while connecting to the card", ce);
                     continue;
                 }
