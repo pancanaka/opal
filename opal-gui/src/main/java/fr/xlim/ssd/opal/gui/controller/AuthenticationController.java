@@ -8,7 +8,13 @@ package fr.xlim.ssd.opal.gui.controller;
 import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel; 
+import fr.xlim.ssd.opal.gui.view.HomeView;
+import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
+import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
+import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
+import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
+import fr.xlim.ssd.opal.gui.view.components.tab.SelectPanel;
 import fr.xlim.ssd.opal.library.params.CardConfig; 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,14 +29,24 @@ public class AuthenticationController {
     private AuthenticationModel authModel;
     private CardReaderModel cardReaderModel;
     private CommunicationModel communication;
-    private ProfileController profileController;
+    private ProfileController profileController; 
+    private AuthenticationPanel authenticationPanel;
+    private AppletPanel appletPanel;
+    private DeletePanel deletePanel;
+    private SelectPanel selectPanel;
 
-    public AuthenticationController(CardReaderModel cardReaderModel, CommunicationModel communication, ProfileController profileController)
+    public AuthenticationController(CardReaderModel cardReaderModel, CommunicationModel communication, ProfileController profileController, HomeView homeView)
     {
-        this.cardReaderModel = cardReaderModel;
-        this.communication = communication;
-        this.profileController = profileController;
-        this.authModel = new AuthenticationModel(this.cardReaderModel, this.communication, this.profileController);
+        this.cardReaderModel        = cardReaderModel;
+        this.communication          = communication;
+        this.profileController      = profileController;
+        HomePanel homePanel         = homeView.getHomePanel();
+        this.authenticationPanel    = homePanel.getAuthenticationPanel();
+        this.appletPanel            = homePanel.getAppletPanel();
+        this.deletePanel            = homePanel.getDeletePanel();
+        this.selectPanel            = homePanel.getSelectPanel();
+        homePanel = null; //no more needs
+        this.authModel              = new AuthenticationModel(this.cardReaderModel, this.communication, this.profileController);
     }
 
     /**

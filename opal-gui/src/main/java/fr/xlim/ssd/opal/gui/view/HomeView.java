@@ -37,6 +37,8 @@ public class HomeView extends FrameView implements ActionListener {
     private JScrollPane scrollPan;
 
     private ShowProfileView showProfileView;
+
+    private HomePanel homePanel;
     
 
     /**
@@ -113,7 +115,8 @@ public class HomeView extends FrameView implements ActionListener {
 
     public void showPanel(String type) {
         if(type.equals("home")) {
-            scrollPan = new JScrollPane(new HomePanel(this.controller));
+            homePanel = new HomePanel(this.controller);
+            scrollPan = new JScrollPane(homePanel);
         }
         else if(type.equals("show profiles")) {
             scrollPan = new JScrollPane(new ShowProfileView(this));
@@ -154,5 +157,10 @@ public class HomeView extends FrameView implements ActionListener {
                 App.showDataExchangesVue();
             }
         }
+    }
+
+    public HomePanel getHomePanel()
+    {
+        return homePanel;
     }
 }

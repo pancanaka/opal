@@ -45,10 +45,13 @@ public class MainController {
      * @see HomeView
      */
     public MainController(Application application) {
-        this.application = application;
 
+        this.application = application; 
+        
         this.cardReaderModel = new CardReaderModel();
 
+        this.homeView = new HomeView(this.application, this);
+        
         this.communication = new CommunicationModel(SecLevel.C_MAC);
 
         try
@@ -59,12 +62,9 @@ public class MainController {
            logger.error(ex.getMessage());
         }
         
-        this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController);
+        this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
 
-        
-        this.startTerminalTask();
-        
-        this.homeView = new HomeView(this.application, this);
+        this.startTerminalTask(); 
     }
 
     /**

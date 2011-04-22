@@ -26,6 +26,7 @@ import java.util.List;
  * an event will be published, and the model which contains card terminal list will be updated.
  *
  * @author David Pequegnot
+ * @author Tiana Razafindralambo
  */
 public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
     private static final Logger logger = LoggerFactory.getLogger(CardReaderTask.class);
