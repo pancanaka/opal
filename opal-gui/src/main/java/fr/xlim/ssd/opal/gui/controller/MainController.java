@@ -27,6 +27,9 @@ public class MainController {
     private CardReaderModel cardReaderModel;
     private AuthenticationController authController;
     private AuthenticationModel authModel;
+    private AppletController appletController;
+    private DeleteController deleteController;
+    private SelectController selectController;
     private CommunicationModel communication;
     private HomeView homeView;
     private CardReaderTask cardReaderTask;
@@ -64,6 +67,12 @@ public class MainController {
         
         this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
 
+        this.appletController = new AppletController(this.homeView);
+
+        this.deleteController = new DeleteController(this.homeView);
+
+        this.selectController = new SelectController(this.homeView);
+        
         this.startTerminalTask(); 
     }
 

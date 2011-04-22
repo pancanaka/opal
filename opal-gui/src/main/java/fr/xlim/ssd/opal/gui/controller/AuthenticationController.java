@@ -30,22 +30,14 @@ public class AuthenticationController {
     private CardReaderModel cardReaderModel;
     private CommunicationModel communication;
     private ProfileController profileController; 
-    private AuthenticationPanel authenticationPanel;
-    private AppletPanel appletPanel;
-    private DeletePanel deletePanel;
-    private SelectPanel selectPanel;
+    private AuthenticationPanel authenticationPanel; 
 
     public AuthenticationController(CardReaderModel cardReaderModel, CommunicationModel communication, ProfileController profileController, HomeView homeView)
     {
         this.cardReaderModel        = cardReaderModel;
         this.communication          = communication;
         this.profileController      = profileController;
-        HomePanel homePanel         = homeView.getHomePanel();
-        this.authenticationPanel    = homePanel.getAuthenticationPanel();
-        this.appletPanel            = homePanel.getAppletPanel();
-        this.deletePanel            = homePanel.getDeletePanel();
-        this.selectPanel            = homePanel.getSelectPanel();
-        homePanel = null; //no more needs
+        this.authenticationPanel    = homeView.getHomePanel().getAuthenticationPanel();  
         this.authModel              = new AuthenticationModel(this.cardReaderModel, this.communication, this.profileController);
     }
 
