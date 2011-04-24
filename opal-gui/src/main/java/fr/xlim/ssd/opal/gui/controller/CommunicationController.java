@@ -30,8 +30,7 @@ public class CommunicationController {
     
     public CommunicationController(SecLevel secLevel)
     {
-        this.model = new CommunicationModel(secLevel);
-        this.securityDomain = this.model.getSecurityDomain();
+        this.model = new CommunicationModel(secLevel); 
     }
     public CommunicationModel getModel()
     {
@@ -45,8 +44,9 @@ public class CommunicationController {
             @Override
             public void securityDomainStateChanged(SecurityDomainStateChangedEvent event) {
                 ResponseAPDU response = null;
+                securityDomain = model.getSecurityDomain();
                 if(model.getSecurityDomainModel().hasDomain())
-                {
+                { 
                     try
                     {
                         response = securityDomain.initializeUpdate( cardConfig.getDefaultInitUpdateP1(),

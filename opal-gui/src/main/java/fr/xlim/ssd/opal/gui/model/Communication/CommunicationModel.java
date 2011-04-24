@@ -17,23 +17,24 @@ import org.slf4j.LoggerFactory;
 public class CommunicationModel {
 
     private static final Logger logger = LoggerFactory.getLogger(CommunicationModel.class);
-    private SecurityDomainModel securityModel;
-    private SecurityDomain securityDomain = null;
+    private SecurityDomainModel securityModel; 
     private SecLevel securityLevel;
 
     public CommunicationModel(){  }
     
-    public CommunicationModel(SecLevel securityLevel) { this.securityLevel = securityLevel; }
-    public SecurityDomain getSecurityDomain() { return this.securityDomain; }
+    public CommunicationModel(SecLevel securityLevel)
+    {
+        this.securityModel = new SecurityDomainModel();
+        this.securityLevel = securityLevel;
+    }
+    public SecurityDomain getSecurityDomain() { return this.securityModel.getDomain(); }
     public SecLevel getSecurityLevel(){ return this.securityLevel;}
     public SecurityDomainModel getSecurityDomainModel() { return this.securityModel;}
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     {
-        logger.info("Setting security domain...");
-        this.securityModel = new SecurityDomainModel();
+        logger.info("Setting security domain..."); 
         //  select the security domain
-        this.securityModel.setSecurityDomain(cardConfig, channel);
-        this.securityDomain = securityModel.getDomain(); 
+        this.securityModel.setSecurityDomain(cardConfig, channel); 
     }
 
     public void setSecurityLevel(SecLevel securityLevel)

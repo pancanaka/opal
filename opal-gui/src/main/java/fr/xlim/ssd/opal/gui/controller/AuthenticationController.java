@@ -59,9 +59,9 @@ public class AuthenticationController {
 
                 if(cardReaderModel.hasSelectedCardReaderItem())
                 {
-                    communication.getModel().setSecurityDomain(_cf, cardReaderModel.getCardChannel());
-                    communication.authenticate(_cf); 
-
+                   communication.authenticate(_cf);
+                   communication.getModel().setSecurityDomain(_cf, cardReaderModel.getCardChannel());
+               
                 }else logger.error("No card found.");
                 cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
             }
