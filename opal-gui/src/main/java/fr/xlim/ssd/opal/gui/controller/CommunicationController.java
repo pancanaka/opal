@@ -82,7 +82,7 @@ public class CommunicationController {
         }else logger.error("The security domain isn't set yet");
         return null;
     }
-    public void deleteApplet(byte[] APPLET_ID, byte[] PACKAGE_ID)
+    public void deleteApplet(byte[] PACKAGE_ID , byte[] APPLET_ID)
     {
         // Deleting Applet  
         logger.info("Deleting applet");
@@ -90,23 +90,49 @@ public class CommunicationController {
         {
             securityDomain.deleteOnCardObj(APPLET_ID, false);
         }catch(CardException ex){ logger.error(ex.getMessage());}
-
+    }
+    public void deletePackage(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    {
         // Deleting package if existed
         logger.info("Deleting package");
         try
         {
             securityDomain.deleteOnCardObj(PACKAGE_ID, false);
         }catch(CardException ex){ logger.error(ex.getMessage());}
-        
     }
-    public void installApplet(byte[] APPLET_ID, byte[] PACKAGE_ID, String ressource)
+    public void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID)
     {
-        // install Applet 
+        try
+         {
+            logger.info("* Install for install");
+            securityDomain.installForInstallAndMakeSelectable(
+                        PACKAGE_ID,
+                        APPLET_ID,
+                        APPLET_ID,
+                        Conversion.hexToArray("00"), null);
+         }catch(CardException ex)
+         {
+             logger.error(ex.getMessage());
+         }
+    }
+    public void install4load(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    {
         try
         {
             logger.info("* Install For Load");
             securityDomain.installForLoad(PACKAGE_ID, null, null);
-        }catch(CardException ex){ logger.error(ex.getMessage());}
+        }catch(CardException ex)
+        {
+            logger.error(ex.getMessage());
+            logger.info("Deleting previous applet install and package install");
+            deleteApplet(PACKAGE_ID, APPLET_ID);
+            deletePackage(PACKAGE_ID, APPLET_ID);
+            install4load(PACKAGE_ID, APPLET_ID);
+        }
+    }
+    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource)
+    {
+         install4load(PACKAGE_ID, APPLET_ID);
 
          InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
          byte[] convertedBuffer = CapConverter.convert(is);
@@ -115,17 +141,12 @@ public class CommunicationController {
          {
             logger.info("* Loading file");
             securityDomain.load(convertedBuffer, (byte) 0x10);
-         }catch(CardException ex){ logger.error(ex.getMessage());} 
-
-         try
+         }catch(CardException ex)
          {
-            logger.info("* Install for install");
-            securityDomain.installForInstallAndMakeSelectable(
-                        PACKAGE_ID,
-                        APPLET_ID,
-                        APPLET_ID,
-                        Conversion.hexToArray("00"), null);
-         }catch(CardException ex){ logger.error(ex.getMessage());}
+             logger.error(ex.getMessage());
+         }
+         
+         install4install(PACKAGE_ID, APPLET_ID);
     }
     public void authenticate(CardConfig _cardConfig)
     {
