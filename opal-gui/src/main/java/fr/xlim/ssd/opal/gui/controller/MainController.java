@@ -1,8 +1,6 @@
 package fr.xlim.ssd.opal.gui.controller;
 
-import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask;
-import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
-import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
+import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask; 
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.library.SecLevel; 
@@ -25,8 +23,12 @@ public class MainController {
     private static final Logger logger = LoggerFactory.getLogger(MainController.class);
     private Application application;
     private CardReaderModel cardReaderModel;
-    private AuthenticationController authController; 
-    private AppletController appletController;
+    private AuthenticationController authController;
+
+    //AppleController is public just for applet installation process TEST
+    public AppletController appletController;
+    //------------------------------ 
+    
     private DeleteController deleteController;
     private SelectController selectController;
     private CommunicationController communication;
@@ -54,7 +56,7 @@ public class MainController {
 
         this.homeView = new HomeView(this.application, this);
         
-        this.communication = new CommunicationController(SecLevel.C_MAC);
+        this.communication = new CommunicationController(SecLevel.C_MAC, this);
 
         try
         {
@@ -66,11 +68,11 @@ public class MainController {
         
         this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
 
-        this.appletController = new AppletController(this.homeView);
+        this.appletController = new AppletController(this.homeView, this.cardReaderModel, this.communication);
 
-        this.deleteController = new DeleteController(this.homeView);
+        this.deleteController = new DeleteController(this.homeView, this.cardReaderModel, this.communication);
 
-        this.selectController = new SelectController(this.homeView);
+        this.selectController = new SelectController(this.homeView, this.cardReaderModel, this.communication);
         
         this.startTerminalTask();
 
@@ -80,7 +82,7 @@ public class MainController {
     public void TestMyCard()
     {
         logger.info("Testing my card .... ");
-        this.authController.test();
+        this.authController.testAuthenticationProcess();
     }
 
     /**

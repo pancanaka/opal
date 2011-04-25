@@ -17,7 +17,7 @@ import javax.swing.JFileChooser;
  * Applet vue
  *
  * @author Thibault
- * @author razaina
+ * @author Tiana Razafindralambo
  * @author Estelle
  */
 public class AppletPanel extends JPanel implements ActionListener{

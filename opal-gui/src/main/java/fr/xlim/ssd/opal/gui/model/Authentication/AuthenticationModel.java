@@ -1,22 +1,15 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package fr.xlim.ssd.opal.gui.model.Authentication;
 
 import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
-import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException; 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -46,40 +39,7 @@ public class AuthenticationModel {
         
         this.profile = profileController.getProfileModel();
         loadAllProfile(); 
-    }
-
-    /**
-     * Set the card configuration.
-     *
-     * We need to use a CardReaderStateListener here, in order
-     * to catch the event dispatched by the CardReaderModel
-     *
-     * Note that the securityDomain is set at the same time when the card
-     * configuration has been found.
-     */
-    /*public void setCommunication(CardConfig _cf)
-    {
-        logger.info("Setting communication for the given cardConfig");
-        final CardConfig cf = _cf;
-        cardReaderStateListener = new CardReaderStateListener() {
-            @Override
-            public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
-
-                if(cardReaderModel.hasSelectedCardReaderItem())
-                {
-                    logger.info("Setting the communication process...");
-
-                     //The selected card is completly loaded, then we can use it
-                    //getting the card configuration and set the security domain
-                    cardConfig = cf;
-                    communication.setSecurityDomain(cardConfig, cardReaderModel.getCardChannel());
-                    cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
-                }else logger.error("No card found.");
-                cardReaderModel.removeCardReaderStateListener(cardReaderStateListener);
-            }
-        };
-       this.cardReaderModel.addCardReaderStateListener(cardReaderStateListener);
-    }*/
+    } 
  
     /**
      *  Load all profiles (cf. config.xml)

@@ -22,10 +22,13 @@ public class SecurityDomainModel {
     private EventListenerList listeners = new EventListenerList();
     private SecurityDomain domain = null;
     private SecLevel secLevel = null;
+    private boolean authenticated = false;
     public SecurityDomainModel(){}
 
     public SecurityDomain getDomain(){ return domain;}
     public boolean hasDomain(){ return (domain != null);}
+    public void isAuthenticated(boolean bool){ this.authenticated = bool;}
+    public boolean isAuthenticated(){ return this.authenticated;};
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     {
         try
