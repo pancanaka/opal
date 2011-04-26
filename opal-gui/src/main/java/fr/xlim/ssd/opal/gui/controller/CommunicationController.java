@@ -84,7 +84,7 @@ public class CommunicationController {
                 , (byte) 0x00 // P2
                 , APPLET_ID   // DATA
         );
-        ResponseAPDU resp = send(select); 
+        ResponseAPDU resp = send(select);  
     }
     public ResponseAPDU send(CommandAPDU command)
     {
@@ -108,7 +108,7 @@ public class CommunicationController {
         logger.info("Deleting applet");
         try
         {
-            securityDomain.deleteOnCardObj(APPLET_ID, false);
+            ResponseAPDU resp = securityDomain.deleteOnCardObj(APPLET_ID, false);
         }catch(CardException ex){ logger.error(ex.getMessage());}
     } 
     public void deletePackage(byte[] PACKAGE_ID, byte[] APPLET_ID)
@@ -117,7 +117,7 @@ public class CommunicationController {
         logger.info("Deleting package");
         try
         {
-            securityDomain.deleteOnCardObj(PACKAGE_ID, false);
+            ResponseAPDU resp = securityDomain.deleteOnCardObj(PACKAGE_ID, false);
         }catch(CardException ex){ logger.error(ex.getMessage());}
     }
     public void fullDelete(byte[] PACKAGE_ID , byte[] APPLET_ID)
@@ -130,7 +130,7 @@ public class CommunicationController {
         try
          {
             logger.info("* Install for install");
-            securityDomain.installForInstallAndMakeSelectable(
+            ResponseAPDU resp = securityDomain.installForInstallAndMakeSelectable(
                         PACKAGE_ID,
                         APPLET_ID,
                         APPLET_ID,
@@ -145,7 +145,7 @@ public class CommunicationController {
         try
         {
             logger.info("* Install For Load");
-            securityDomain.installForLoad(PACKAGE_ID, null, null);
+            ResponseAPDU resp = securityDomain.installForLoad(PACKAGE_ID, null, null);
         }catch(CardException ex)
         {
             logger.error(ex.getMessage());
@@ -167,7 +167,7 @@ public class CommunicationController {
              try
              {
                 logger.info("* Loading file");
-                securityDomain.load(convertedBuffer, (byte) 0x10);
+                ResponseAPDU[] resp = securityDomain.load(convertedBuffer, (byte) 0x10);
              }catch(CardException ex)
              {
                  logger.error(ex.getMessage());
@@ -179,7 +179,7 @@ public class CommunicationController {
     public void authenticate(CardConfig _cardConfig)
     {
         logger.info("Initialize Update");
-        final CardConfig cardConfig = _cardConfig;
+        final CardConfig cardConfig = _cardConfig; 
         this.model.getSecurityDomainModel().addSecurityDomainStateListener( new SecurityDomainStateListener() {
             @Override
             public void securityDomainStateChanged(SecurityDomainStateChangedEvent event) {

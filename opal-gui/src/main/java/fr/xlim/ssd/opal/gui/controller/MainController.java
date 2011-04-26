@@ -2,8 +2,8 @@ package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask; 
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.view.HomeView;
-import fr.xlim.ssd.opal.library.SecLevel; 
+import fr.xlim.ssd.opal.gui.view.HomeView; 
+import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import org.slf4j.Logger;
 import org.jdesktop.application.Application;
@@ -52,6 +52,7 @@ public class MainController {
 
         this.homeView = new HomeView(this.application, this);
         
+        //this.communication = new CommunicationController(SecLevel.C_MAC);
         this.communication = new CommunicationController();
 
         try
@@ -70,7 +71,7 @@ public class MainController {
 
         this.selectController = new SelectController(this.homeView, this.cardReaderModel, this.communication);
         
-        this.startTerminalTask();
+        this.startTerminalTask();  
     }
 
 

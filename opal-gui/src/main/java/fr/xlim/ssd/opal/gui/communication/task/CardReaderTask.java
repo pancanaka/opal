@@ -3,8 +3,7 @@ package fr.xlim.ssd.opal.gui.communication.task;
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderItem;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.tools.SmartCardListParser;
-import fr.xlim.ssd.opal.library.params.*;
+import fr.xlim.ssd.opal.gui.tools.SmartCardListParser; 
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.*;
 import javax.smartcardio.ATR;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -96,7 +94,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
         while (!isCancelled()) {
             this.populateCardReaderItemList();
 
-            if (this.compareCardReaderItemsLists()) {
+            if (this.compareCardReaderItemsLists()) {  
                 logger.debug("Terminal list changed!");
                 this.updateCardReaderItemList();
             }

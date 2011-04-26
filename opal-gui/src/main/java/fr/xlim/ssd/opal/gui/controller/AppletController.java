@@ -2,6 +2,8 @@
 
 package fr.xlim.ssd.opal.gui.controller;
 
+import fr.xlim.ssd.opal.gui.communication.task.AppletInstallationTask;
+import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener; 
 import fr.xlim.ssd.opal.gui.view.HomeView;
@@ -31,7 +33,9 @@ public class AppletController {
     public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource)
     {
         logger.info("Installing Applet");
-        this.communication.installApplet(PACKAGE_ID, APPLET_ID, ressource);
+        AppletInstallationTask appletInstallationTask = new AppletInstallationTask(PACKAGE_ID, APPLET_ID, ressource, communication);
+        TaskFactory taskFactory = TaskFactory.run(appletInstallationTask);
+        //this.communication.installApplet(PACKAGE_ID, APPLET_ID, ressource);
     } 
    /* public void testAppletInstallationProcess()
     {
