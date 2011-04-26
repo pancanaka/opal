@@ -9,8 +9,6 @@ import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
 import fr.xlim.ssd.opal.library.params.CardConfig; 
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
-import fr.xlim.ssd.opal.library.utilities.Conversion; 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,11 +39,10 @@ public class AuthenticationController {
         //this.authModel.setCommunication(cardConfig);
         final CardConfig _cf = cardConfig;
 
-        logger.info("Waiting for card reader state change event");
+        logger.info("Authenticating card...");
         this.cardReaderModel.addCardReaderStateListener(new CardReaderStateListener() {
             @Override
-            public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
-
+            public void cardReaderStateChanged(CardReaderStateChangedEvent event) { 
                 if(cardReaderModel.hasSelectedCardReaderItem())
                 {
                    communication.authenticate(_cf);
@@ -56,6 +53,29 @@ public class AuthenticationController {
             }
         });
     }
+    /*public void testAuthenticationProcess()
+    {
+        logger.info("Test Authentication Process launched");
+        this.cardReaderModel.addCardReaderStateListener( new CardReaderStateListener() {
+            @Override
+            public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
+                if(cardReaderModel.hasSelectedCardReaderItem())
+                {
+                    logger.info("Card Name : " +  cardReaderModel.getSelectedCardName());
+                    logger.info("Card ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
+
+                    try
+                    {
+                        CardConfig cardConfig = null;
+                        cardConfig = authModel.getCardConfigByATR(cardReaderModel.getSelectedCardATR());
+                        authenticateCard(cardConfig);
+                    }
+                    catch(CardConfigNotFoundException ex) { logger.error(ex.getMessage()); }
+                }else logger.info("No card found");
+                cardReaderModel.removeCardReaderStateListener(this);
+            }
+        });
+    } */
     /**
      *  Get all profiles
      * @return all profiles loaded.
@@ -92,28 +112,5 @@ public class AuthenticationController {
     public CardConfig getCardConfigOf(ProfileComponent profile)
     {
         return profile.convertToCardConfig();
-    }
-    public void testAuthenticationProcess()
-    {
-        logger.info("Test Authentication Process launched");
-        this.cardReaderModel.addCardReaderStateListener( new CardReaderStateListener() {
-            @Override
-            public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
-                if(cardReaderModel.hasSelectedCardReaderItem())
-                { 
-                    logger.info("Card Name : " +  cardReaderModel.getSelectedCardName());
-                    logger.info("Card ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
-
-                    try
-                    {
-                        CardConfig cardConfig = null;
-                        cardConfig = authModel.getCardConfigByATR(cardReaderModel.getSelectedCardATR());
-                        authenticateCard(cardConfig);
-                    }
-                    catch(CardConfigNotFoundException ex) { logger.error(ex.getMessage()); }
-                }else logger.info("No card found");
-                cardReaderModel.removeCardReaderStateListener(this);
-            }
-        });
     } 
 }

@@ -28,18 +28,14 @@ public class CommunicationController {
     private SecurityDomainStateListener securityDomainStateListener;
     private SecurityDomainStateListener securityDomainStageChangedEvent;
 
-    //Just for Applet installation process TEST
-    private MainController mainController;
-    //--------------------------------
-
-    
-    public CommunicationController(SecLevel secLevel, MainController mainController)
+    public CommunicationController(){ this.model = new CommunicationModel();}
+    public CommunicationController(SecLevel secLevel)
     {
-        this.model = new CommunicationModel(secLevel);
-
-        //Just for Applet installation process TEST
-        this.mainController = mainController;
-        //---------------------
+        this.model = new CommunicationModel(secLevel); 
+    }
+    public void setSecurityLevel(SecLevel secLevel)
+    {
+        this.model.setSecurityLevel(secLevel);
     }
     public CommunicationModel getModel()
     {
@@ -52,6 +48,33 @@ public class CommunicationController {
     public boolean isAuthenticated()
     {
         return this.model.getSecurityDomainModel().isAuthenticated();
+    }
+    public boolean canCommunicate()
+    {
+        if(this.hasDomain())
+        {
+            if(this.isAuthenticated())
+            {
+                return true;
+            }else
+            {
+                logger.error("Card isn't authenticated yet");
+                return false;
+            }
+        }
+        logger.error("Security domain isn't set yet");
+        return false;
+    }
+    public void useApplet(byte[] DATA)
+    {
+        // Using Applet
+        CommandAPDU TODO = new CommandAPDU((byte) 0x00 // CLA
+                , (byte) 0x00 // INS
+                , (byte) 0x00 // P1
+                , (byte) 0x00 // P2
+                , DATA // DATA
+        );
+        ResponseAPDU resp = send(TODO);
     }
     public void selectApplet(byte[] APPLET_ID)
     {
@@ -66,20 +89,17 @@ public class CommunicationController {
     public ResponseAPDU send(CommandAPDU command)
     {
         logger.info("Sending an APDU command");
-        if(hasDomain())
+        if(this.canCommunicate())
         {
-            if(isAuthenticated())
+            try
             {
-                try
-                {
-                    ResponseAPDU resp =  securityDomain.send(command);
-                    logger.debug("Response to command "
-                        + "(-> " + Conversion.arrayToHex(resp.getBytes()) + ") "
-                        + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
-                    return resp;
-                }catch(CardException ex){ logger.info(ex.getMessage());}
-            }else logger.error("Card isn't authenticated yet");
-        }else logger.error("The security domain isn't set yet");
+                ResponseAPDU resp =  securityDomain.send(command);
+                logger.debug("Response to command "
+                     + "(-> " + Conversion.arrayToHex(resp.getBytes()) + ") "
+                     + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+                return resp;
+            }catch(CardException ex){ logger.info(ex.getMessage());}
+        }
         return null;
     }
     public void deleteApplet(byte[] PACKAGE_ID , byte[] APPLET_ID)
@@ -90,7 +110,7 @@ public class CommunicationController {
         {
             securityDomain.deleteOnCardObj(APPLET_ID, false);
         }catch(CardException ex){ logger.error(ex.getMessage());}
-    }
+    } 
     public void deletePackage(byte[] PACKAGE_ID, byte[] APPLET_ID)
     {
         // Deleting package if existed
@@ -100,7 +120,12 @@ public class CommunicationController {
             securityDomain.deleteOnCardObj(PACKAGE_ID, false);
         }catch(CardException ex){ logger.error(ex.getMessage());}
     }
-    public void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    public void fullDelete(byte[] PACKAGE_ID , byte[] APPLET_ID)
+    { 
+        deleteApplet(PACKAGE_ID, APPLET_ID);
+        deletePackage(PACKAGE_ID, APPLET_ID);
+    }
+    private void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID)
     {
         try
          {
@@ -115,7 +140,7 @@ public class CommunicationController {
              logger.error(ex.getMessage());
          }
     }
-    public void install4load(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    private void install4load(byte[] PACKAGE_ID, byte[] APPLET_ID)
     {
         try
         {
@@ -132,21 +157,24 @@ public class CommunicationController {
     }
     public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource)
     {
-         install4load(PACKAGE_ID, APPLET_ID);
+        if(this.canCommunicate())
+        {
+             install4load(PACKAGE_ID, APPLET_ID);
 
-         InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
-         byte[] convertedBuffer = CapConverter.convert(is);
+             InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
+             byte[] convertedBuffer = CapConverter.convert(is);
 
-         try
-         {
-            logger.info("* Loading file");
-            securityDomain.load(convertedBuffer, (byte) 0x10);
-         }catch(CardException ex)
-         {
-             logger.error(ex.getMessage());
-         }
-         
-         install4install(PACKAGE_ID, APPLET_ID);
+             try
+             {
+                logger.info("* Loading file");
+                securityDomain.load(convertedBuffer, (byte) 0x10);
+             }catch(CardException ex)
+             {
+                 logger.error(ex.getMessage());
+             }
+
+             install4install(PACKAGE_ID, APPLET_ID);
+        }
     }
     public void authenticate(CardConfig _cardConfig)
     {
@@ -170,11 +198,7 @@ public class CommunicationController {
                         response = securityDomain.externalAuthenticate(model.getSecurityLevel());
                         logger.debug("External Authenticate APDU response : " + response);
 
-                        model.getSecurityDomainModel().isAuthenticated(true);
-                        
-                        //TESTING APPLET INSTALLATION PROCESS
-                        mainController.appletController.testAppletInstallationProcess();
-
+                        model.getSecurityDomainModel().isAuthenticated(true); 
                     }
                     catch(CardException ex) { logger.error(ex.getMessage()); }
                 }else logger.error("No security domain set yet.");

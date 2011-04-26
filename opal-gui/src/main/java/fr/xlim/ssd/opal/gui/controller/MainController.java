@@ -24,11 +24,7 @@ public class MainController {
     private Application application;
     private CardReaderModel cardReaderModel;
     private AuthenticationController authController;
-
-    //AppleController is public just for applet installation process TEST
-    public AppletController appletController;
-    //------------------------------ 
-    
+    private AppletController appletController;
     private DeleteController deleteController;
     private SelectController selectController;
     private CommunicationController communication;
@@ -56,7 +52,7 @@ public class MainController {
 
         this.homeView = new HomeView(this.application, this);
         
-        this.communication = new CommunicationController(SecLevel.C_MAC, this);
+        this.communication = new CommunicationController();
 
         try
         {
@@ -75,15 +71,8 @@ public class MainController {
         this.selectController = new SelectController(this.homeView, this.cardReaderModel, this.communication);
         
         this.startTerminalTask();
-
-        TestMyCard();
     }
 
-    public void TestMyCard()
-    {
-        logger.info("Testing my card .... ");
-        this.authController.testAuthenticationProcess();
-    }
 
     /**
      * Get the home view.

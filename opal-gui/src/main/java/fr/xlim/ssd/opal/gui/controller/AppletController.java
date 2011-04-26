@@ -3,9 +3,7 @@
 package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
-import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
-import fr.xlim.ssd.opal.gui.model.securityDomain.SecurityDomainModel;
+import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener; 
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;  
 import org.slf4j.Logger;
@@ -33,17 +31,9 @@ public class AppletController {
     public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource)
     {
         logger.info("Installing Applet");
-        
-        SecurityDomainModel securityDomainModel = this.communication.getModel().getSecurityDomainModel(); 
-
-        if(this.communication.hasDomain())
-            if(this.communication.isAuthenticated())
-                this.communication.installApplet(PACKAGE_ID, APPLET_ID, ressource);
-            else logger.error("Card isn't authenticated");
-        else logger.error("Security domain isn't set yet"); 
-    }
-    
-    public void testAppletInstallationProcess()
+        this.communication.installApplet(PACKAGE_ID, APPLET_ID, ressource);
+    } 
+   /* public void testAppletInstallationProcess()
     {
         logger.info("Test Applet Installation Process launched");
 
@@ -59,7 +49,13 @@ public class AppletController {
             (byte) 0x00, (byte) 0x62, (byte) 0x03,
             (byte) 0x01, (byte) 0x0C, (byte) 0x01
         };
- 
-        installApplet(PACKAGE_ID, APPLET_ID, "/cap/HelloWorld-2_1_2.cap"); 
-    }
+
+        final byte[] HELLO_WORLD = { // "HELLO"
+            (byte) 'H', (byte) 'E', (byte) 'L', (byte) 'L', (byte) 'O'
+        };
+        installApplet(PACKAGE_ID, APPLET_ID, "/cap/HelloWorld-2_1_2.cap");
+        selectApplet(APPLET_ID);
+        useApplet(HELLO_WORLD);
+        fullDelete(PACKAGE_ID, APPLET_ID); 
+    }*/
 }
