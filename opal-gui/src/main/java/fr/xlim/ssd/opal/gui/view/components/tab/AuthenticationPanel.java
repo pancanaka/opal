@@ -3,6 +3,7 @@ package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,49 +19,36 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import java.util.ArrayList;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 
 /**
  * @author Thibault
  * @author razaina
+ * @author Estelle Blandinieres
  */
 public class AuthenticationPanel extends JPanel implements ActionListener{
 
     public String title = "Authentication";
 
-    private JLabel jlISDAID;
-    public JTextField tfISDAID;
+    private JButton jbLoadConf;
 
-    private JLabel jlSCPMode;
+    private JTextField tfISDAID;
+
     private JComboBox cbSCPMode;
     private String[] SCPMode = {"SCP_UNDEFINED", "SCP_01_05", "SCP_01_15"};
 
-    private JLabel jlSecurityLevel;
     private JComboBox cbSecurityLevel;
     private String[] SecurityLevel = {"NO SECURITY LEVEL", "C_MAC",
     "C_ENC_AND_MAC"};
 
-    private JLabel jlTransProto;
     private JComboBox cbTransProto;
     private String[] TransProto = {"T=0", "T=1", "*"};
 
-    //private JLabel jlType;
-    //private JComboBox cbType;
-    //private String[] Type = {"DES_CBC", "DES_ECB", "SCGemVisa", "SCGemVisa2",
-    //"AES"};
-
-    //private JLabel jlKeyVersion;
-    //private JTextField tfKeyVersion;
-
-    //private JLabel jlKeyID;
-    //private JTextField tfKeyID;
-
-    //private JLabel jlKey;
-    //private JTextField tfKey;
-
     private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
 
-    private JLabel jlImplementation;
     private JComboBox cbImplementation;
     private String[] Implementation = {"GP2xCommands", "GemXpresso211Commands"};
 
@@ -71,23 +59,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     private short lineHeight  = 20;
 
     public AuthenticationPanel() {
-
        drawWindow();
-    }
-
-    /**
-     * Create a new label
-     * @param name
-     * @param width
-     * @param height
-     * @return the label
-     */
-    public JLabel createLabel(String name, int width, int height) {
-        JLabel label = new JLabel(name);
-        label.setPreferredSize(new Dimension(width,height));
-        //label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        //label.addMouseListener((MouseListener) this);
-        return label;
     }
 
     public void drawWindow() {
@@ -100,45 +72,33 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         Box ligne = Box.createHorizontalBox();
         ligne.setPreferredSize(new Dimension(500, 20));
 
-        // Issuer Security Domain AID
-        jlISDAID = createLabel("Issuer Security Domain AID", 160, lineHeight);
-        tfISDAID = new JTextField();
-        ligne.add(jlISDAID);
-        ligne.add(tfISDAID);
-        verticalBox.add(ligne);
+        // Load Configuration
+        jbLoadConf = new JButton("Load Configuration");
+        jbLoadConf.addActionListener(this);
+        verticalBox.add(createFormLine("", jbLoadConf));
 
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
+        // Issuer Security Domain AID
+        tfISDAID = new JTextField();
+        verticalBox.add(createFormLine("Issuer Security Domain AID", tfISDAID));
+        verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
+
         // SCP PMode
-        ligne = Box.createHorizontalBox();
-        jlSCPMode = createLabel("SCP Mode", 160, lineHeight);
         cbSCPMode = new JComboBox(SCPMode);
-        cbSCPMode.setPreferredSize(new Dimension(100,20));
-        ligne.add(jlSCPMode);
-        ligne.add(cbSCPMode);
-        verticalBox.add(ligne);
+        verticalBox.add(createFormLine("SCP Mode", cbSCPMode));
 
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Security Level
-        ligne = Box.createHorizontalBox();
-        jlSecurityLevel = createLabel("Security Level", 160, lineHeight);
         cbSecurityLevel = new JComboBox(SecurityLevel);
-        cbSecurityLevel.setPreferredSize(new Dimension(120,20));
-        ligne.add(jlSecurityLevel);
-        ligne.add(cbSecurityLevel);
-        verticalBox.add(ligne);
+        verticalBox.add(createFormLine("Security Level", cbSecurityLevel));
 
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
-        // Transmission Protocol
-        ligne = Box.createHorizontalBox();
-        jlTransProto = createLabel("Transmission Protocol", 160, lineHeight);
-        cbTransProto = new JComboBox(TransProto);
-        cbTransProto.setPreferredSize(new Dimension(100,20));
-        ligne.add(jlTransProto);
-        ligne.add(cbTransProto);
-        verticalBox.add(ligne);
+        // Transmission Protocol               
+        cbTransProto = new JComboBox(TransProto);        
+        verticalBox.add(createFormLine("Transmission Protocol", cbTransProto));
 
         // Key Panel
         Keylist.add(new KeyComponent());
@@ -147,25 +107,36 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Implementation
-        ligne = Box.createHorizontalBox();
-        jlImplementation = createLabel("Implementation", 160, lineHeight);
-        cbImplementation = new JComboBox(Implementation);
-        cbImplementation.setPreferredSize(new Dimension(100,20));
-        ligne.add(jlImplementation);
-        ligne.add(cbImplementation);
-        verticalBox.add(ligne);
+        cbImplementation = new JComboBox(Implementation);        
+        verticalBox.add(createFormLine("Implementation", cbImplementation));
 
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
-        // Authenticate
-        ligne = Box.createHorizontalBox();
+        // Authenticate        
         jbAuthenticate = new JButton("Authenticate");
         ligne.add(jbAuthenticate);
         verticalBox.add(ligne);
 
         jplPanel.add(verticalBox);
+    }
 
-        this.updateUI();
+    /**
+     * Create a box
+     * @param label
+     * @param field
+     * @return a box with the label and the field
+     */
+    public Box createFormLine(String label, Component field) {
+        Box    ligne  = Box.createHorizontalBox();
+        JLabel lbl    = new JLabel(label);
+
+        lbl.setPreferredSize(new Dimension(150,lineHeight));
+        ligne.setPreferredSize(new Dimension(500, lineHeight));
+
+        ligne.add(lbl);
+        ligne.add(field);
+
+        return ligne;
     }
 
     /**
@@ -173,6 +144,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
      * @param v
      */
     public void drawKeysLines(Box v) {
+
         Box ligne = Box.createHorizontalBox();
         ligne.setPreferredSize(new Dimension(500, 20));
 
@@ -225,6 +197,15 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
             if(b.equals(jbAdd)) {
                 Keylist.add(new KeyComponent());
                 drawWindow();
+            }
+
+            if(b.equals(jbLoadConf)) {
+                String[] possibilities = {"test", "test1", "test2"};
+                String s = (String)JOptionPane.showInputDialog(null, "bli", 
+                        "Configuration choice", JOptionPane.DEFAULT_OPTION,
+                        null, possibilities, o);
+                tfISDAID.setText(s);
+
             }
         }
     }

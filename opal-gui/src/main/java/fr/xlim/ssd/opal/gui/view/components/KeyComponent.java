@@ -19,7 +19,7 @@ public class KeyComponent {
 
     JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
 
-    String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa,", "SCGemVisa2", "AES"};
+    String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa", "SCGemVisa2", "AES"};
     JComboBox cbImp = new JComboBox(tab);
 
 
