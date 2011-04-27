@@ -201,9 +201,9 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
             if(b.equals(jbLoadConf)) {
                 String[] possibilities = {"test", "test1", "test2"};
-                String s = (String)JOptionPane.showInputDialog(null, "bli", 
+                String s = (String)JOptionPane.showInputDialog(null, "Choose a configuration",
                         "Configuration choice", JOptionPane.DEFAULT_OPTION,
-                        null, possibilities, o);
+                        null, possibilities, possibilities[0]);
                 tfISDAID.setText(s);
 
             }

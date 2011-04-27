@@ -3,8 +3,7 @@ package fr.xlim.ssd.opal.gui.communication.task;
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderItem;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.tools.SmartCardListParser;
-import fr.xlim.ssd.opal.library.params.*;
+import fr.xlim.ssd.opal.gui.tools.SmartCardListParser; 
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
@@ -14,7 +13,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.*;
 import javax.smartcardio.ATR;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +24,7 @@ import java.util.List;
  * an event will be published, and the model which contains card terminal list will be updated.
  *
  * @author David Pequegnot
+ * @author Tiana Razafindralambo
  */
 public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
     private static final Logger logger = LoggerFactory.getLogger(CardReaderTask.class);
@@ -95,7 +94,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
         while (!isCancelled()) {
             this.populateCardReaderItemList();
 
-            if (this.compareCardReaderItemsLists()) {
+            if (this.compareCardReaderItemsLists()) {  
                 logger.debug("Terminal list changed!");
                 this.updateCardReaderItemList();
             }
@@ -192,7 +191,8 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
         try {
             cardReaderList = factory.terminals().list();
         } catch (CardException ce) {
-            logger.debug("No terminal found", ce);
+            logger.info("No terminal found");
+            //logger.debug("No terminal found", ce);
             return;
         }
 
@@ -207,7 +207,8 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                     cardFound = cardReader.waitForCardPresent(this.timeoutCardPresent);
                 } catch (CardException ce) {
                     this.cardReaderItemListTmp.add(item);
-                    logger.debug("Unable to state card", ce);
+                    logger.info("Unable to state card");
+                   // logger.debug("Unable to state card", ce);
                     continue;
                 }
 
@@ -217,15 +218,19 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                     card = cardReader.connect("*");
                 } catch (CardException ce) {
                     this.cardReaderItemListTmp.add(item);
-                    logger.debug("Error while connecting to the card", ce);
+                    logger.info("Error while connectiong to the card");
+                   // logger.debug("Error while connecting to the card", ce);
                     continue;
                 }
 
                 CardChannel channel = card.getBasicChannel();
+
+                item.setCardChannel(channel);
+                
                 ATR atr = card.getATR();
                 String sAtr = Conversion.arrayToHex(atr.getBytes()).trim();
 
-                item.setCardATR(new fr.xlim.ssd.opal.library.params.ATR(atr.getBytes()));
+                item.setCardATR(new fr.xlim.ssd.opal.library.params.ATR(atr.getBytes())); 
 
                 String cardName = this.atrCache.get(sAtr);
                 if (cardName == null) {

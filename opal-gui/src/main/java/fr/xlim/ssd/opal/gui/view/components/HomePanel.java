@@ -14,23 +14,29 @@ import javax.swing.JTabbedPane;
 /**
  *
  * @author Thibault
- * @author razaina
+ * @author Tiana Razafindralambo
  */
+
 public class HomePanel extends JPanel {
+    private AuthenticationPanel authentication;
+    private AppletPanel applet;
+    private DeletePanel delete;
+    private SelectPanel select;
+
     public HomePanel(MainController controller) {
-        AuthenticationPanel p1 = new AuthenticationPanel();
-        AppletPanel p2         = new AppletPanel();
-        DeletePanel p3         = new DeletePanel();
-        SelectPanel p4         = new SelectPanel();
+        authentication = new AuthenticationPanel();
+        applet         = new AppletPanel();
+        delete         = new DeletePanel();
+        select         = new SelectPanel();
         SendAPDUPanel p5       = new SendAPDUPanel();
         //DataExchangesVue dev = new DataExchangesVue();
         //dev.setVisible(true);
         JTabbedPane myPanel    = new JTabbedPane();
 
-        myPanel.addTab(p1.title, p1);
-        myPanel.addTab(p2.title, p2);
-        myPanel.addTab(p3.title, p3);
-        myPanel.addTab(p4.title, p4);
+        myPanel.addTab(authentication.title, authentication);
+        myPanel.addTab(applet.title, applet);
+        myPanel.addTab(delete.title, delete);
+        myPanel.addTab(select.title, select);
         myPanel.addTab(p5.title, p5);
         //   myPanel.addTab(p6.title, p6);
 
@@ -41,4 +47,9 @@ public class HomePanel extends JPanel {
         frame.add(myPanel, BorderLayout.SOUTH);
         this.add(frame);
     }
+    public AuthenticationPanel getAuthenticationPanel(){ return authentication;}
+    public AppletPanel getAppletPanel(){ return applet;}
+    public DeletePanel getDeletePanel(){ return delete;}
+    public SelectPanel getSelectPanel(){ return select;}
+
 }

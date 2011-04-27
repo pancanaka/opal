@@ -1,6 +1,5 @@
 package fr.xlim.ssd.opal.gui.model.reader;
-
-import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
+ 
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
@@ -18,19 +17,21 @@ import java.util.Collections;
  *
  * @author Yorick Lesecque
  * @author Thibault Desmoulins
+ * @author Tiana Razafindralambo
  */
 public class ProfileModel {
     ArrayList<ProfileComponent> profiles = new ArrayList<ProfileComponent>();
+    private CardConfig profiles_cf[];
 
     public ProfileModel()
             throws CardConfigNotFoundException {
         
-        CardConfig profiles[] = CardConfigFactory.getAllCardConfigs();
+        CardConfig profiles_cf[] = CardConfigFactory.getAllCardConfigs();
         ProfileComponent profileComponent;
         CardConfig cardConfig;
 
-        for(int i = 0; i < profiles.length; i++) {
-            cardConfig = profiles[i];
+        for(int i = 0; i < profiles_cf.length; i++) {
+            cardConfig = profiles_cf[i];
             ATR[] atrs = cardConfig.getAtrs();
             String[] ret = new String[atrs.length];
             String AID = Conversion.arrayToHex(cardConfig.getIssuerSecurityDomainAID());
@@ -49,7 +50,7 @@ public class ProfileModel {
                 String id = Integer.toHexString(scKey[j].getId() & 0xFF).toUpperCase();
                 String key = Conversion.arrayToHex(scKey[j].getData());
                 
-                profileComponent.addKey(new KeyComponent(type, version, id, key));
+                profileComponent.addKey(type, version, id, key);
             }
             
             this.profiles.add(profileComponent);
@@ -60,6 +61,19 @@ public class ProfileModel {
     public ProfileComponent getProfile(int i) {
         return profiles.get(i);
     }
+    public ProfileComponent getProfileByName(String name)
+    {
+        int i = 0,  profilesLength = profiles.size();
+        ProfileComponent currentProfile = profiles.get(i);
+        while(i < profilesLength && !(currentProfile.getName() == name))
+            currentProfile = profiles.get(++i);
+        return currentProfile;
+    }
+
+    public CardConfig[] getAllCardConfigs()
+    {
+        return this.profiles_cf;
+    }
 
     public String[][] getAllProfiles() {
         String allProfiles[][] = new String[profiles.size()][3];
@@ -69,8 +83,6 @@ public class ProfileModel {
             allProfiles[i][1] = profiles.get(i).getDescription();
             allProfiles[i][2] = profiles.get(i).getImplementation();
         }
-
-
         return allProfiles;
     }
 
@@ -79,8 +91,8 @@ public class ProfileModel {
 
         CardConfigFactory.addCardConfig();
         //profiles.add(id);
-    }
-
+    } 
+    
     private String getSCPMode(SCPMode scp) {
         String res = null;
         

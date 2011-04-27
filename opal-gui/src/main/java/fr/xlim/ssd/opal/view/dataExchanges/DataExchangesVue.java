@@ -64,21 +64,27 @@ public class DataExchangesVue extends JDialog implements ActionListener{
 
         mdl_dte=new DataExchangesModel();
         mdl_dte.addObserver(new Observer(){
+            @Override
             public void updateALL(String change_text){
                 txt_all.setText(txt_all.getText().concat(change_text));
             }
+            @Override
             public void updateAPDU(String change_text){
                 txt_apdu.setText(txt_apdu.getText().concat(change_text));
             }
+            @Override
             public void updateLog(String change_text){
                 txt_logging.setText(txt_logging.getText().concat(change_text));
             }
+            @Override
             public void clearALL(String change_text){
                 txt_all.setText(change_text);
             }
+            @Override
             public void clearAPDU(String change_text){
                 txt_apdu.setText(change_text);
             }
+            @Override
             public void clearLog(String change_text){
                 txt_logging.setText(change_text);
             }
@@ -110,6 +116,7 @@ public class DataExchangesVue extends JDialog implements ActionListener{
 
     }
 
+    @Override
     public void actionPerformed(ActionEvent ae){
 
         JButton btn_ae=(JButton)ae.getSource();

@@ -13,14 +13,16 @@ import java.io.UnsupportedEncodingException;
  */
 public class App extends SingleFrameApplication {
     public static short nbDataExchangesVueOpened = 0;
-
+    public static App instance = null;
     /**
      * At startup create and show the main frame of the application.
      */
     @Override
     protected void startup() {
         this.mainController = new MainController(this);
-
+        
+        this.instance = this;
+        
         this.mainController.startTerminalTask();
 
         show(this.mainController.getHomeView());

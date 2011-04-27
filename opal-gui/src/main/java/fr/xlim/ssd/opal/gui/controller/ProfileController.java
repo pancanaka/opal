@@ -10,6 +10,7 @@ import java.util.regex.Pattern;
 /**
  *
  * @author Yorick Lesecque
+ * @author Tiana Razafindralambo
  */
 public class ProfileController {
     private ProfileModel profileModel;
@@ -18,6 +19,11 @@ public class ProfileController {
     public ProfileController()
             throws CardConfigNotFoundException {
         profileModel = new ProfileModel();
+    }
+
+    public ProfileModel getProfileModel()
+    {
+        return profileModel;
     }
 
     public String[][] getAllProfiles() {

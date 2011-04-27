@@ -12,7 +12,6 @@ import java.awt.event.KeyListener;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JButton;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.Box;
 import javax.swing.JCheckBox;
@@ -22,12 +21,13 @@ import javax.swing.filechooser.*;
 import javax.swing.KeyStroke;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
+
 /**
  * Applet vue
  *
  * @author Thibault
- * @author razaina
  * @author Estelle Blandinieres
+ * @author Tiana Razafindralambo
  */
 public class AppletPanel extends JPanel implements ActionListener, KeyListener{
 

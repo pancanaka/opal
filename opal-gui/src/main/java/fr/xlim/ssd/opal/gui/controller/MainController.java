@@ -1,26 +1,36 @@
 package fr.xlim.ssd.opal.gui.controller;
 
-import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask;
+import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask; 
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.view.HomeView;
+import fr.xlim.ssd.opal.gui.view.HomeView; 
+import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+import org.slf4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.TaskMonitor;
 import org.jdesktop.application.TaskService;
+import org.slf4j.LoggerFactory;
 
 /**
  * Application main controller.
  *
  * @author David Pequegnot <david.pequegnot@etu.unilim.fr>
+ * @author Tiana Razafindralambo
  */
 public class MainController {
 
+    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
     private Application application;
     private CardReaderModel cardReaderModel;
+    private AuthenticationController authController;
+    private AppletController appletController;
+    private DeleteController deleteController;
+    private SelectController selectController;
+    private CommunicationController communication;
     private HomeView homeView;
     private CardReaderTask cardReaderTask;
-
+    private ProfileController profileController;
     
 
     /**
@@ -35,14 +45,35 @@ public class MainController {
      * @see HomeView
      */
     public MainController(Application application) {
-        this.application = application;
 
+        this.application = application; 
+        
         this.cardReaderModel = new CardReaderModel();
 
-        this.startTerminalTask();
-        
         this.homeView = new HomeView(this.application, this);
+        
+        //this.communication = new CommunicationController(SecLevel.C_MAC);
+        this.communication = new CommunicationController();
+
+        try
+        {
+            this.profileController = new ProfileController();
+        }
+        catch (CardConfigNotFoundException ex) {
+           logger.error(ex.getMessage());
+        }
+        
+        this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
+
+        this.appletController = new AppletController(this.homeView, this.cardReaderModel, this.communication);
+
+        this.deleteController = new DeleteController(this.homeView, this.cardReaderModel, this.communication);
+
+        this.selectController = new SelectController(this.homeView, this.cardReaderModel, this.communication);
+        
+        this.startTerminalTask();  
     }
+
 
     /**
      * Get the home view.
@@ -53,6 +84,10 @@ public class MainController {
         return this.homeView;
     }
 
+    public ProfileController getProfileController()
+    {
+        return this.profileController;
+    }
     /**
      * Get the card reader model.
      *
