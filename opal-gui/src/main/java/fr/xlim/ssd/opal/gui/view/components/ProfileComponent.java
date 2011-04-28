@@ -41,27 +41,28 @@ public class ProfileComponent implements Comparable {
     public String getTP() { return this.TP; }
     public String getImplementation() { return this.implementation; }
     public String[] getATR() { return this.ATR; }
-    public ArrayList getKeylist() { return this.Keylist; } 
+    public ArrayList getKeylist() { return this.Keylist; }
+
     public void addKey(String type, String version, String id, String key) {
         Keylist.add(new KeyComponent(type, version, id, key));
         keys.add(new KeyModel(type, version, id, key));
     }
 
-    public ArrayList<KeyModel> getKeys()
-    {
+    public ArrayList<KeyModel> getKeys() {
         return this.keys;
     }
-    public void setKeys(ArrayList<KeyModel> keys)
-    {
+
+    public void setKeys(ArrayList<KeyModel> keys) {
         this.keys = keys;
     }
+
     @Override
     public int compareTo(Object o) {
         ProfileComponent p2 = (ProfileComponent) o;
         return this.name.compareToIgnoreCase(p2.getName());
     }
-    public CardConfig convertToCardConfig()
-    {
+    
+    public CardConfig convertToCardConfig() {
         //convert this.ATR into ATR[]
         int atrLength = this.ATR.length;
         ATR[] atrs = new ATR[atrLength];        
@@ -73,12 +74,13 @@ public class ProfileComponent implements Comparable {
         int keysLength = this.keys.size();
         SCKey[] keys = new SCKey[keysLength];
         KeyModel currentKey = null;
-        for(int i = 0; i < keysLength; i++)
-        {
+
+        for(int i = 0; i < keysLength; i++) {
             currentKey = this.keys.get(i);
             String keyType = currentKey.type;
             String keyVersionNumber = currentKey.version;
             String keyDatas = currentKey.key;
+
             if (keyType.equals("DES_ECB")) {
                 String keyId = currentKey.keyID;
                 keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
@@ -92,18 +94,20 @@ public class ProfileComponent implements Comparable {
             } else if (keyType.equals("SCGemVisa")) {
                 keys[i] = new SCGemVisa2((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
             }
+
             if (keyType.equals("AES")) {
                 String keyId = currentKey.keyID;
                 keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
                         KeyType.AES_CBC, Conversion.hexToArray(keyDatas));
             }
         }
+        
         //---------------------------------------------------------------------------------------------------------
         return new CardConfig(  this.name,
                                 this.description,
                                 atrs,
                                 Conversion.hexToArray(this.AID),
-                                this.getSCPMode(this.SCPmode),
+                                this.getSCPMode(this.SCPmode.replace("SCP_", "")),
                                 this.TP,
                                 keys,
                                 this.implementation
@@ -111,8 +115,49 @@ public class ProfileComponent implements Comparable {
 
     }
 
-    public SCPMode getSCPMode(String scp)
-    {
+
+    public static ProfileComponent convertToProfileComponent(CardConfig card) {
+        //convert ATR[] into String[]
+        ATR[] at = card.getAtrs();
+        int atrLength = at.length;
+        String[] atrs = new String[atrLength];
+        for(int i = 0; i < atrLength; i++)
+            //atrs[i] = Integer.toHexString(at[i].getValue() & 0xFF).toUpperCase();
+            atrs[i] = Conversion.arrayToHex(at[i].getValue());
+        //-----------------------------------------------------------
+
+        //---------------------------------------------------------------------------------------------------------
+        ProfileComponent p = new ProfileComponent(  card.getName(),
+                                                    card.getDescription(),
+                                                    Conversion.arrayToHex(card.getIssuerSecurityDomainAID()),
+                                                    card.getScpMode().name(),
+                                                    card.getTransmissionProtocol(),
+                                                    atrs,
+                                                    card.getImplementation());
+        //---------------------------------------------------------------------------------------------------------
+
+
+        //convert SCKey[] into ArrayList<KeyComponent/KeyModel>
+        SCKey[] sc = card.getSCKeys();
+        int keysLength = sc.length;
+        ArrayList<KeyComponent> kc = new ArrayList<KeyComponent>();
+        ArrayList<KeyModel> km = new ArrayList<KeyModel>();
+        SCKey currentKey = null;
+
+        for(int i = 0; i < keysLength; i++) {
+            currentKey = sc[i];
+            String keyType = currentKey.getType().name();
+            String keyVersionNumber = Integer.toHexString(currentKey.getSetVersion() & 0xFF).toUpperCase();
+            String keyData = Conversion.arrayToHex(currentKey.getData());
+            String keyID = Integer.toHexString(currentKey.getId() & 0xFF).toUpperCase();
+            p.addKey(keyType, keyVersionNumber, keyID, keyData);
+        }
+
+        return p;
+    }
+    
+
+    public SCPMode getSCPMode(String scp) {
         SCPMode res = null;
 
         if (scp.equals("01_05")) {

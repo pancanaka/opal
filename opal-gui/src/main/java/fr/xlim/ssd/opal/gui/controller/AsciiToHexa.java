@@ -14,7 +14,6 @@ public class AsciiToHexa {
 
         for(int i=0 ; i<longueur ; i++) {
             hex = Integer.toHexString((int)chaine.charAt(i));
-            System.out.println(hex);
             tab[i] = (byte)Integer.parseInt(hex,16);
         }
 

@@ -452,7 +452,7 @@ public class CardConfigFactory {
         return t;
     }
 
-    public static void addCardConfig()
+    public static void addCardConfig(CardConfig card)
             throws CardConfigNotFoundException {
 
         try {
@@ -465,64 +465,77 @@ public class CardConfigFactory {
             Node newCard = document.createElement("card");
             NamedNodeMap newCardAttributes = newCard.getAttributes();
                 Attr defaultImpl = document.createAttribute("defaultImpl");
-                defaultImpl.setValue("fr.xlim.ssd.opal.library.commands.GP2xCommands");
+                defaultImpl.setValue("fr.xlim.ssd.opal.library.commands" + card.getImplementation());
                 newCardAttributes.setNamedItem(defaultImpl);
 
                 Attr name = document.createAttribute("name");
-                name.setValue("name");
+                name.setValue(card.getName());
                 newCardAttributes.setNamedItem(name);
             cardsconfig.appendChild(newCard);
 
                 Node description = document.createElement("description");
-                description.setTextContent("GALITT WADAPA");
+                description.setTextContent(card.getDescription());
                 newCard.appendChild(description);
 
+
+                ATR[] atrs = card.getAtrs();
                 Node listeATR = document.createElement("listeATR");
                 newCard.appendChild(listeATR);
+                for(int i = 0; i < atrs.length; i++) {
                     Node ATR = document.createElement("ATR");
                     NamedNodeMap ATRAttributes = ATR.getAttributes();
                         Attr valueATR = document.createAttribute("ATR");
-                        valueATR.setValue("3B 6D 00 00 80 31 80 65 B0 43 02 00 77 83 00 90 00");
+                        valueATR.setValue(Conversion.arrayToHex(atrs[i].getValue()));
                         ATRAttributes.setNamedItem(valueATR);
                     listeATR.appendChild(ATR);
+                }
+
 
                 Node isdAID = document.createElement("isdAID");
                 NamedNodeMap isdAIDAttributes = isdAID.getAttributes();
                     Attr valueidsAID = document.createAttribute("isdAID");
-                    valueidsAID.setValue("A0 00 00 00 03 00 00 00");
+                    valueidsAID.setValue(Conversion.arrayToHex(card.getIssuerSecurityDomainAID()));
                     isdAIDAttributes.setNamedItem(valueidsAID);
                 newCard.appendChild(isdAID);
 
                 Node scpMode = document.createElement("scpMode");
                 NamedNodeMap scpModeAttributes = scpMode.getAttributes();
                     Attr valuescpMode = document.createAttribute("value");
-                    valuescpMode.setValue("01_05");
+                    valuescpMode.setValue(card.getScpMode().toString().replace("SCP_", ""));
                     scpModeAttributes.setNamedItem(valuescpMode);
                 newCard.appendChild(scpMode);
 
                 Node transmissionProtocol = document.createElement("transmissionProtocol");
                 NamedNodeMap tPAttributes = transmissionProtocol.getAttributes();
                     Attr valuesTP = document.createAttribute("value");
-                    valuesTP.setValue("T=0");
+                    valuesTP.setValue(card.getTransmissionProtocol());
                     tPAttributes.setNamedItem(valuesTP);
                 newCard.appendChild(transmissionProtocol);
 
+
+                SCKey[] keys = card.getSCKeys();
                 Node listedefaultKeys = document.createElement("defaultKeys");
                 newCard.appendChild(listedefaultKeys);
+                for(int i = 0; i < keys.length; i++) {
                     Node key = document.createElement("key");
                     NamedNodeMap keyAttributes = key.getAttributes();
                         Attr keyDatas = document.createAttribute("keyDatas");
-                        keyDatas.setValue("47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53");
+                        keyDatas.setValue(Conversion.arrayToHex(keys[i].getData()));
                         keyAttributes.setNamedItem(keyDatas);
+
+                        Attr id = document.createAttribute("keyId");
+                        id.setValue(Integer.toHexString(keys[i].getId() & 0xFF).toUpperCase());
+                        keyAttributes.setNamedItem(id);
                         
                         Attr keyVersionNumber = document.createAttribute("keyVersionNumber");
-                        keyVersionNumber.setValue("255");
+                        keyVersionNumber.setValue(Integer.toHexString(keys[i].getSetVersion() & 0xFF).toUpperCase());
                         keyAttributes.setNamedItem(keyVersionNumber);
 
                         Attr type = document.createAttribute("type");
-                        type.setValue("SCGemVisa2");
+                        type.setValue(keys[i].getType().toString());
                         keyAttributes.setNamedItem(type);
                     listedefaultKeys.appendChild(key);
+                }
 
 
             document.normalize();

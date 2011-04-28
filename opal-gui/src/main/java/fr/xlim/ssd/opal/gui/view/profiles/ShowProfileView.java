@@ -7,6 +7,8 @@ import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener; 
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -97,18 +99,10 @@ public class ShowProfileView extends JPanel implements ActionListener {
                 else {
                     int option = JOptionPane.showConfirmDialog(null, "Do you really want to remove the profile?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
+                        boolean res;
                         try {
-                                /*
-                                boolean res = profileController.deleteProfile(0);
-                                if(res) {
-                                new JOptionPane().showMessageDialog(null, "Card deleted!", "Caution", JOptionPane.WARNING_MESSAGE);
-                                } else {
-                                new JOptionPane().showMessageDialog(null, "No card found!", "Caution", JOptionPane.WARNING_MESSAGE);
-                                }
-                                /**/
-                                profileController.addProfile();
-                        } catch (ConfigFieldsException ex) {
-                            new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                            res = profileController.deleteProfile(row);
+                            this.f.showPanel("show profiles");
                         } catch (CardConfigNotFoundException ex) {
                             new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
                         }

@@ -44,13 +44,18 @@ public class Conversion {
      * @throws IllegalArgumentException if not a valid string representation of a byte array
      */
     public static byte[] hexToArray(String s) {
-
+        
         // check the entry
         Pattern p = Pattern.compile("([a-fA-F0-9]{2}[ ]*)*");
         boolean valid = p.matcher(s).matches();
 
         if (!valid) {
-            throw new IllegalArgumentException("not a valid string representation of a byte array");
+            p = Pattern.compile("[^A-F0-9]+", Pattern.CASE_INSENSITIVE);
+            valid = p.matcher(s).matches();
+            
+            if (!valid) {
+                throw new IllegalArgumentException("not a valid string representation of a byte array");
+            }
         }
 
         String hex = s.replaceAll(" ", "");

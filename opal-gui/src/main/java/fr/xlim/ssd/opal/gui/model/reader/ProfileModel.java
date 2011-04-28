@@ -61,17 +61,17 @@ public class ProfileModel {
     public ProfileComponent getProfile(int i) {
         return profiles.get(i);
     }
-    public ProfileComponent getProfileByName(String name)
-    {
+
+    public ProfileComponent getProfileByName(String name) {
         int i = 0,  profilesLength = profiles.size();
         ProfileComponent currentProfile = profiles.get(i);
+
         while(i < profilesLength && !(currentProfile.getName() == name))
             currentProfile = profiles.get(++i);
         return currentProfile;
     }
 
-    public CardConfig[] getAllCardConfigs()
-    {
+    public CardConfig[] getAllCardConfigs() {
         return this.profiles_cf;
     }
 
@@ -86,11 +86,12 @@ public class ProfileModel {
         return allProfiles;
     }
 
-    public void addProfile() 
+    public void addProfile(CardConfig card)
             throws CardConfigNotFoundException {
 
-        CardConfigFactory.addCardConfig();
-        //profiles.add(id);
+        CardConfigFactory.addCardConfig(card);
+        profiles.add(ProfileComponent.convertToProfileComponent(card));
+        Collections.sort(this.profiles);
     } 
     
     private String getSCPMode(SCPMode scp) {

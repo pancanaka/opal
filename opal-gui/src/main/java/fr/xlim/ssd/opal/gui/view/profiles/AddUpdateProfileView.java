@@ -1,13 +1,22 @@
 package fr.xlim.ssd.opal.gui.view.profiles;
 
+import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
+import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
+import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -24,6 +33,7 @@ import javax.swing.border.TitledBorder;
  */
 public class AddUpdateProfileView extends JPanel implements ActionListener {
     private HomeView f = null;
+    private ProfileController profileController = null;
 
     private short lineHeight  = 25;
     private short lineSpacing = 10;
@@ -44,12 +54,15 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     private JComboBox cbSCP = null, cbTP  = null, cbImp = null;
 
     String[] implementationValues = {"GP2xCommands", "GemXpresso211Commands"};
+    String[] tabTP = {"T=0", "T=1", "*"};
+    SCPMode[] tabSCP = SCPMode.values(); // All SCPMode values are in this enumeration
 
     private ArrayList<JTextField>   ATRlist = new ArrayList<JTextField>();
     private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
 
     public AddUpdateProfileView(HomeView f) {
         this.f = f;
+        profileController = f.getController().getProfileController();
 
         // ATRlist must contain one JTextField at least
         ATRlist.add(new JTextField());
@@ -59,6 +72,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         btAddATR.addActionListener(this);
         btAddField.addActionListener(this);
         btCancel.addActionListener(this);
+        btSave.addActionListener(this);
 
         drawWindow();
     }
@@ -92,15 +106,13 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
 
         // Line "SCP Mode"
-        SCPMode[] tab = SCPMode.values(); // All SCPMode values are in this enumeration
-        cbSCP = new JComboBox(tab);
+        cbSCP = new JComboBox(tabSCP);
         v.add(createFormLine("SCP Mode : ", cbSCP));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
         // Line "Transmission Protocol"
-        String[] tab2 = {"T=0", "T=1", "*"};
-        cbTP = new JComboBox(tab2);
+        cbTP = new JComboBox(tabTP);
         v.add(createFormLine("Transmission Protocol : ", cbTP));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
@@ -232,6 +244,26 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     }
 
 
+    private String[] getATR() {
+         int n = ATRlist.size();
+         String ATRs[] = new String[n];
+
+         for(int i=0 ; i<n ; i++) {
+             ATRs[i] = ATRlist.get(i).getText();
+         }
+
+    return ATRs;
+    }
+
+    private void getKeys(ProfileComponent p) {
+         int n = Keylist.size();
+
+         for(int i=0 ; i<n ; i++) {
+             p.addKey(Keylist.get(i).getType(), Keylist.get(i).getKeyVersion(), Keylist.get(i).getKeyId(), Keylist.get(i).getKey());
+         }
+    }
+
+
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -247,6 +279,21 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
             else if(b.equals(btAddField)) {
                 Keylist.add(new KeyComponent());
                 drawWindow();
+            }
+            else if(b.equals(btSave)) {
+
+                ProfileComponent p = new ProfileComponent(txtName.getText(), txtDesc.getText(), txtISD.getText(), tabSCP[cbSCP.getSelectedIndex()].name(), tabTP[cbTP.getSelectedIndex()], getATR(), implementationValues[cbImp.getSelectedIndex()]);
+                getKeys(p);
+                
+                
+                try {
+                    profileController.addProfile(p);
+                    this.f.showPanel("show profiles");
+                } catch (CardConfigNotFoundException ex) {
+                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                } catch (ConfigFieldsException ex) {
+                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                }
             }
             else if(b.equals(btCancel)) {
                 int option = JOptionPane.showConfirmDialog(null, "Do you really want to go back?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
