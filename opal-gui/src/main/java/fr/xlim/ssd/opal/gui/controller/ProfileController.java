@@ -2,20 +2,17 @@ package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
-import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  *
  * @author Yorick Lesecque
+ * @author Thibault Desmoulins
  * @author Tiana Razafindralambo
  */
 public class ProfileController {
@@ -39,6 +36,11 @@ public class ProfileController {
             throws CardConfigNotFoundException {
         return profileModel.deleteProfile(id);
     }
+
+    public ProfileComponent getProfile(int i) {
+        return profileModel.getProfile(i);
+    }
+
 
     public void addProfile(ProfileComponent p)
             throws CardConfigNotFoundException, ConfigFieldsException {

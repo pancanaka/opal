@@ -12,11 +12,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -61,6 +56,23 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
 
     public AddUpdateProfileView(HomeView f) {
+        this.f = f;
+        profileController = f.getController().getProfileController();
+
+        // ATRlist must contain one JTextField at least
+        ATRlist.add(new JTextField());
+
+        Keylist.add(new KeyComponent());
+
+        btAddATR.addActionListener(this);
+        btAddField.addActionListener(this);
+        btCancel.addActionListener(this);
+        btSave.addActionListener(this);
+
+        drawWindow();
+    }
+
+    public AddUpdateProfileView(HomeView f, ProfileComponent profile) {
         this.f = f;
         profileController = f.getController().getProfileController();
 

@@ -1,14 +1,12 @@
 package fr.xlim.ssd.opal.gui.view.profiles;
 
-import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.view.HomeView;
+import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener; 
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.awt.event.ActionListener;
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
@@ -89,6 +87,10 @@ public class ShowProfileView extends JPanel implements ActionListener {
                 int row = tableau.getSelectedRow();
                 if(row<0) {
                     JOptionPane.showMessageDialog(null, "No profile selected!", "Caution", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    ProfileComponent profile = profileController.getProfile(row);
+                    this.f.showPanel( new AddUpdateProfileView(f, profile) );
                 }
             }
             else if(name.equals("Delete")) {
