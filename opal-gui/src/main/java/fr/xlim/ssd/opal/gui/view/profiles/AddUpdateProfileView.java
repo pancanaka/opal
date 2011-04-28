@@ -2,6 +2,7 @@ package fr.xlim.ssd.opal.gui.view.profiles;
 
 import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.gui.controller.ProfileController;
+import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
@@ -33,16 +34,15 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     private short lineHeight  = 25;
     private short lineSpacing = 10;
 
-    private JButton btSave     = new JButton("Save"),
-                btAddATR   = new JButton("Add ATR"),
-                btAddField = new JButton("Add field"),
-                btCancel   = new JButton("Cancel");
+    private JButton btAction = null,
+                btAddATR     = new JButton("Add ATR"),
+                btAddField   = new JButton("Add field"),
+                btCancel     = new JButton("Cancel");
 
     private JTextField
                 txtName = new JTextField(),
                 txtDesc = new JTextField(),
-                txtATR  = new JTextField(),
-                txtISD  = new JTextField();
+                txtAID  = new JTextField();
 
     private Box v = Box.createVerticalBox();
 
@@ -59,15 +59,9 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         this.f = f;
         profileController = f.getController().getProfileController();
 
-        // ATRlist must contain one JTextField at least
-        ATRlist.add(new JTextField());
+        btAction = new JButton("Save");
 
-        Keylist.add(new KeyComponent());
-
-        btAddATR.addActionListener(this);
-        btAddField.addActionListener(this);
-        btCancel.addActionListener(this);
-        btSave.addActionListener(this);
+        initializeWindow();
 
         drawWindow();
     }
@@ -76,6 +70,40 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         this.f = f;
         profileController = f.getController().getProfileController();
 
+        btAction = new JButton("Update");
+
+        initializeWindow();
+
+
+        txtName.setText(profile.getName());
+        txtDesc.setText(profile.getDescription());
+        txtAID.setText(profile.getAID());
+
+        
+        String[] list = profile.getATR();
+        if(list.length > 0) {
+            ATRlist.clear();
+            for(String s : list) {
+                ATRlist.add(new JTextField(s));
+            }
+        }
+
+        ArrayList<KeyModel> listK = profile.getKeys();
+        if(listK.size() > 0) {
+            Keylist.clear();
+            for(KeyModel k : listK) {
+                Keylist.add(new KeyComponent(k.type, k.version, k.keyID, k.key));
+            }
+        }
+
+        drawWindow();
+
+        cbSCP.setSelectedIndex( getIndexComboBox(cbSCP, profile.getSCPmode()) );
+        cbTP.setSelectedIndex ( getIndexComboBox(cbTP, profile.getTP()) );
+        cbImp.setSelectedIndex( getIndexComboBox(cbImp, profile.getImplementation()) );
+    }
+
+    public void initializeWindow() {
         // ATRlist must contain one JTextField at least
         ATRlist.add(new JTextField());
 
@@ -84,9 +112,17 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         btAddATR.addActionListener(this);
         btAddField.addActionListener(this);
         btCancel.addActionListener(this);
-        btSave.addActionListener(this);
+        btAction.addActionListener(this);
+    }
 
-        drawWindow();
+    public int getIndexComboBox(JComboBox cb, String toFind) {
+        int n = cb.getItemCount();
+        for(int i=1 ; i<n ; i++) {
+            if(cb.getItemAt(i).equals(toFind)) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     public void drawWindow() {
@@ -113,7 +149,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
 
         // Line "Issuer Security Domain AID"
-        v.add(createFormLine("Issuer Security Domain AID : ", txtISD));
+        v.add(createFormLine("Issuer Security Domain AID : ", txtAID));
         v.add(Box.createRigidArea(new Dimension(300, lineSpacing)));
 
 
@@ -142,7 +178,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
 
         // Line with the save button
-        v.add(createFormLine("", btCancel, btSave));
+        v.add(createFormLine("", btCancel, btAction));
         v.add(Box.createRigidArea(new Dimension(300, 80)));
         
         this.add(v);
@@ -292,19 +328,25 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 Keylist.add(new KeyComponent());
                 drawWindow();
             }
-            else if(b.equals(btSave)) {
+            else if(b.equals(btAction)) {
+                if(btAction.getText().equalsIgnoreCase("Save")) {
+                    // When we add a new profile
 
-                ProfileComponent p = new ProfileComponent(txtName.getText(), txtDesc.getText(), txtISD.getText(), tabSCP[cbSCP.getSelectedIndex()].name(), tabTP[cbTP.getSelectedIndex()], getATR(), implementationValues[cbImp.getSelectedIndex()]);
-                getKeys(p);
-                
-                
-                try {
-                    profileController.addProfile(p);
-                    this.f.showPanel("show profiles");
-                } catch (CardConfigNotFoundException ex) {
-                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
-                } catch (ConfigFieldsException ex) {
-                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    ProfileComponent p = new ProfileComponent(txtName.getText(), txtDesc.getText(), txtAID.getText(), tabSCP[cbSCP.getSelectedIndex()].name(), tabTP[cbTP.getSelectedIndex()], getATR(), implementationValues[cbImp.getSelectedIndex()]);
+                    getKeys(p);
+                    
+                    try {
+                        profileController.addProfile(p);
+                        this.f.showPanel("show profiles");
+                    } catch (CardConfigNotFoundException ex) {
+                        new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    } catch (ConfigFieldsException ex) {
+                        new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    }
+                }
+                else if(btAction.getText().equalsIgnoreCase("Update")) {
+                    // When we update an existing profile
+                    
                 }
             }
             else if(b.equals(btCancel)) {
