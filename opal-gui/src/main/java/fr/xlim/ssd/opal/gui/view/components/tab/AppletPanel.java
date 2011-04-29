@@ -269,8 +269,8 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
     public void keyPressed(KeyEvent e) {
 
         Object o = e.getSource();
-        // if the user press CTRL+H, the text is converted to hexa
-        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_H) {
+        // if the user press CTRL+B, the text is converted into hexa
+        if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_B) {
             if (o instanceof JTextField) {
                 JTextField field = (JTextField) o;
                 if (field.equals(tfAppletAID)) {
@@ -287,23 +287,22 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                     tfParam2.setText(Conversion.arrayToHex(tfParam2.getText().getBytes()));
                 }
             }
-        // if the user press CTRL+N, the text is converted to ASCII
+        // if the user press CTRL+N, the text is converted into ASCII
         } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N) {
             if (o instanceof JTextField) {
                 JTextField field = (JTextField) o;
                 if (field.equals(tfAppletAID)) {
-                    tfAppletAID.setText("ascii");
-                    //tfAppletAID.setText(Conversion.hexToArray(tfAppletAID.getText()));
+                    tfAppletAID.setText(byteToString(Conversion.hexToArray(tfAppletAID.getText())));
                 } else if (field.equals(tfInstanceAID)) {
-                    tfInstanceAID.setText("ascii");
+                    tfInstanceAID.setText(byteToString(Conversion.hexToArray(tfInstanceAID.getText())));
                 } else if (field.equals(tfPackageAID)) {
-                    tfPackageAID.setText("ascii");
+                    tfPackageAID.setText(byteToString(Conversion.hexToArray(tfPackageAID.getText())));
                 } else if (field.equals(tfParam)) {
-                    tfParam.setText("ascii");
+                    tfParam.setText(byteToString(Conversion.hexToArray(tfParam.getText())));
                 } else if (field.equals(tfSDAID)) {
-                    tfSDAID.setText("ascii");
+                    tfSDAID.setText(byteToString(Conversion.hexToArray(tfSDAID.getText())));
                 } else if (field.equals(tfParam2)) {
-                    tfParam2.setText("ascii");
+                    tfParam2.setText(byteToString(Conversion.hexToArray(tfParam2.getText())));
                 }
             }
         }
@@ -312,6 +311,14 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
     @Override
     public void keyReleased(KeyEvent e) {
         
+    }
+
+    private String byteToString (byte [] data) {
+        String ascii = "";
+        for (int i = 0; i < data.length; i++) {
+            ascii += (char) data[i];
+        }
+        return ascii;
     }
 }
 

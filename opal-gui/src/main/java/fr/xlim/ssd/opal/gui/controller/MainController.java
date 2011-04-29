@@ -88,6 +88,16 @@ public class MainController {
     {
         return this.profileController;
     }
+
+    /**
+     * Get the authentication controller
+     *
+     * @return the authentication controller
+     */
+    public AuthenticationController getAuthenticationController(){
+        return this.authController;
+    }
+
     /**
      * Get the card reader model.
      *
