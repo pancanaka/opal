@@ -36,6 +36,7 @@ public class AuthenticationController {
         this.communication          = communication;
         this.profileController      = profileController;
         this.authenticationPanel    = homeView.getHomePanel().getAuthenticationPanel();  
+        this.authenticationPanel.setController(this);
         this.authModel              = new AuthenticationModel(this.cardReaderModel, this.communication.getModel(), this.profileController);
     }
 

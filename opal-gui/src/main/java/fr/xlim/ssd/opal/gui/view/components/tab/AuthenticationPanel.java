@@ -62,11 +62,14 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     private short lineHeight  = 20;
 
-    public AuthenticationPanel(MainController mainController) {
-        controller = mainController.getAuthenticationController();
+    public AuthenticationPanel(MainController mainController) { 
         drawWindow();
     }
 
+    public void setController(AuthenticationController controller)
+    {
+        this.controller = controller;
+    }
     private void drawWindow() {
         this.removeAll();
 
@@ -213,6 +216,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                     drawWindow();
                 }
             } else if(b.equals(jbLoadConf)) {
+                System.out.println("________" + (controller==null));
                 String[] configurations = controller.getAllProfileNames();
                 //String[] possibilities = {"test", "test1", "test2"};
                 if (configurations == null) {
