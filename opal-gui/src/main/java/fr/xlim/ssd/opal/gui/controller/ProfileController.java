@@ -49,6 +49,15 @@ public class ProfileController {
         profileModel.addProfile(p.convertToCardConfig());
     }
 
+
+    public void updateProfile(ProfileComponent p)
+            throws CardConfigNotFoundException, ConfigFieldsException {
+
+        checkForm(p);
+        profileModel.updateProfile(p.convertToCardConfig());
+    }
+
+
     private void checkForm(ProfileComponent p)
             throws ConfigFieldsException {
 
@@ -225,7 +234,9 @@ public class ProfileController {
                         value = value.replaceAll(":", "");
                         value = value.replaceAll(" ", "");
 
-                        if(value.length() % 2 == 0 &&  value.length() < 256) {
+                        System.out.println(key.type);
+
+                        if(value.length() % 2 == 0 &&  value.length() < 64) {
                             p1 = Pattern.compile("[^0-9A-F]+", Pattern.CASE_INSENSITIVE);
                             m = p1.matcher(value);
 

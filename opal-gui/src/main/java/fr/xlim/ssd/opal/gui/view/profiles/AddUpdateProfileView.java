@@ -92,13 +92,23 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         if(listK.size() > 0) {
             Keylist.clear();
             for(KeyModel k : listK) {
-                Keylist.add(new KeyComponent(k.type, k.version, k.keyID, k.key));
+                String v = null;
+                if(k.version.compareToIgnoreCase("ff") == 0) {
+                    v = String.valueOf(Integer.parseInt(k.version, 16));
+                }
+                else {
+                    v = String.valueOf(Integer.parseInt(Integer.toHexString(Integer.valueOf(k.version) & 0xFF).toUpperCase(), 16));
+                }
+
+                System.out.println(k.type);
+                
+                Keylist.add(new KeyComponent(k.type, v, k.keyID, k.key));
             }
         }
 
         drawWindow();
 
-        cbSCP.setSelectedIndex( getIndexComboBox(cbSCP, profile.getSCPmode()) );
+        cbSCP.setSelectedIndex( getIndexComboBox(cbSCP, "SCP_" + profile.getSCPmode()) );
         cbTP.setSelectedIndex ( getIndexComboBox(cbTP, profile.getTP()) );
         cbImp.setSelectedIndex( getIndexComboBox(cbImp, profile.getImplementation()) );
     }
@@ -118,7 +128,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     public int getIndexComboBox(JComboBox cb, String toFind) {
         int n = cb.getItemCount();
         for(int i=1 ; i<n ; i++) {
-            if(cb.getItemAt(i).equals(toFind)) {
+            if(String.valueOf(cb.getItemAt(i)).compareToIgnoreCase(toFind) == 0) {
                 return i;
             }
         }
@@ -337,6 +347,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                     
                     try {
                         profileController.addProfile(p);
+                        new JOptionPane().showMessageDialog(null, "Profile added!", "Caution", JOptionPane.WARNING_MESSAGE);
                         this.f.showPanel("show profiles");
                     } catch (CardConfigNotFoundException ex) {
                         new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
@@ -346,7 +357,19 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 }
                 else if(btAction.getText().equalsIgnoreCase("Update")) {
                     // When we update an existing profile
-                    
+
+                    ProfileComponent p = new ProfileComponent(txtName.getText(), txtDesc.getText(), txtAID.getText(), tabSCP[cbSCP.getSelectedIndex()].name(), tabTP[cbTP.getSelectedIndex()], getATR(), implementationValues[cbImp.getSelectedIndex()]);
+                    getKeys(p);
+
+                    try {
+                        profileController.updateProfile(p);
+                        new JOptionPane().showMessageDialog(null, "Profile updated!", "Caution", JOptionPane.WARNING_MESSAGE);
+                        this.f.showPanel("show profiles");
+                    } catch (CardConfigNotFoundException ex) {
+                        new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    } catch (ConfigFieldsException ex) {
+                        new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             }
             else if(b.equals(btCancel)) {

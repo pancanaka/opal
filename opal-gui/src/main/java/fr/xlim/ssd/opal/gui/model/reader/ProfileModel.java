@@ -46,7 +46,7 @@ public class ProfileModel {
 
             for(int j = 0; j < scKey.length; j++) {
                 String type = Integer.toHexString(scKey[j].getType().getValue() & 0xFF).toUpperCase();
-                String version = Integer.toHexString(scKey[j].getSetVersion() & 0xFF).toUpperCase();
+                String version = String.valueOf(Integer.parseInt(Integer.toHexString(scKey[j].getSetVersion() & 0xFF).toUpperCase(), 16));
                 String id = Integer.toHexString(scKey[j].getId() & 0xFF).toUpperCase();
                 String key = Conversion.arrayToHex(scKey[j].getData());
                 
@@ -66,8 +66,9 @@ public class ProfileModel {
         int i = 0,  profilesLength = profiles.size();
         ProfileComponent currentProfile = profiles.get(i);
 
-        while(i < profilesLength && !(currentProfile.getName() == name))
+        while(i < profilesLength && !(currentProfile.getName().compareToIgnoreCase(name) == 0))
             currentProfile = profiles.get(++i);
+        
         return currentProfile;
     }
 
@@ -81,8 +82,9 @@ public class ProfileModel {
         for(int i = 0; i < profiles.size(); i++) {
             allProfiles[i][0] = profiles.get(i).getName();
             allProfiles[i][1] = profiles.get(i).getDescription();
-            allProfiles[i][2] = profiles.get(i).getImplementation();
+            allProfiles[i][2] = profiles.get(i).getImplementation().replace("fr.xlim.ssd.opal.library.commands.", "");
         }
+        
         return allProfiles;
     }
 
@@ -92,7 +94,19 @@ public class ProfileModel {
         CardConfigFactory.addCardConfig(card);
         profiles.add(ProfileComponent.convertToProfileComponent(card));
         Collections.sort(this.profiles);
-    } 
+    }
+
+    public void updateProfile(CardConfig card)
+            throws CardConfigNotFoundException {
+
+        CardConfigFactory.deleteCardConfig(card.getName());
+        CardConfigFactory.addCardConfig(card);
+
+        profiles.remove(getProfileByName(card.getName()));
+        profiles.add(ProfileComponent.convertToProfileComponent(card));
+        
+        Collections.sort(this.profiles);
+    }
     
     private String getSCPMode(SCPMode scp) {
         String res = null;

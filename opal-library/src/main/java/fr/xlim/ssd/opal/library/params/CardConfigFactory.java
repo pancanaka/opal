@@ -465,7 +465,7 @@ public class CardConfigFactory {
             Node newCard = document.createElement("card");
             NamedNodeMap newCardAttributes = newCard.getAttributes();
                 Attr defaultImpl = document.createAttribute("defaultImpl");
-                defaultImpl.setValue("fr.xlim.ssd.opal.library.commands" + card.getImplementation());
+                defaultImpl.setValue("fr.xlim.ssd.opal.library.commands." + card.getImplementation());
                 newCardAttributes.setNamedItem(defaultImpl);
 
                 Attr name = document.createAttribute("name");
@@ -484,7 +484,7 @@ public class CardConfigFactory {
                 for(int i = 0; i < atrs.length; i++) {
                     Node ATR = document.createElement("ATR");
                     NamedNodeMap ATRAttributes = ATR.getAttributes();
-                        Attr valueATR = document.createAttribute("ATR");
+                        Attr valueATR = document.createAttribute("value");
                         valueATR.setValue(Conversion.arrayToHex(atrs[i].getValue()));
                         ATRAttributes.setNamedItem(valueATR);
                     listeATR.appendChild(ATR);
@@ -493,7 +493,7 @@ public class CardConfigFactory {
 
                 Node isdAID = document.createElement("isdAID");
                 NamedNodeMap isdAIDAttributes = isdAID.getAttributes();
-                    Attr valueidsAID = document.createAttribute("isdAID");
+                    Attr valueidsAID = document.createAttribute("value");
                     valueidsAID.setValue(Conversion.arrayToHex(card.getIssuerSecurityDomainAID()));
                     isdAIDAttributes.setNamedItem(valueidsAID);
                 newCard.appendChild(isdAID);
@@ -528,7 +528,7 @@ public class CardConfigFactory {
                         keyAttributes.setNamedItem(id);
                         
                         Attr keyVersionNumber = document.createAttribute("keyVersionNumber");
-                        keyVersionNumber.setValue(Integer.toHexString(keys[i].getSetVersion() & 0xFF).toUpperCase());
+                        keyVersionNumber.setValue(String.valueOf(Integer.parseInt(Integer.toHexString(keys[i].getSetVersion() & 0xFF).toUpperCase(), 16)));
                         keyAttributes.setNamedItem(keyVersionNumber);
 
                         Attr type = document.createAttribute("type");
