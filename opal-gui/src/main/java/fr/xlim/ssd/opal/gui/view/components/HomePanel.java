@@ -1,6 +1,7 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
@@ -24,7 +25,7 @@ public class HomePanel extends JPanel {
     private SelectPanel select;
 
     public HomePanel(MainController controller) {
-        authentication = new AuthenticationPanel();
+        authentication = new AuthenticationPanel(controller);
         applet         = new AppletPanel();
         delete         = new DeletePanel();
         select         = new SelectPanel();

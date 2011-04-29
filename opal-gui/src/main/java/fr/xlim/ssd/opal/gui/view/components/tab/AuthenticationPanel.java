@@ -1,7 +1,8 @@
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
-
-import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
+import fr.xlim.ssd.opal.gui.controller.AuthenticationController;
+import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.view.components.KeyComponentApplet;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -20,7 +21,6 @@ import javax.swing.border.TitledBorder;
 
 import java.util.ArrayList;
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 
@@ -32,6 +32,10 @@ import javax.swing.JOptionPane;
 public class AuthenticationPanel extends JPanel implements ActionListener{
 
     public String title = "Authentication";
+
+    private AuthenticationController controller;
+
+    //private String[] configurations;
 
     private JButton jbLoadConf;
 
@@ -47,7 +51,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     private JComboBox cbTransProto;
     private String[] TransProto = {"T=0", "T=1", "*"};
 
-    private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
+    private ArrayList<KeyComponentApplet> Keylist = new ArrayList<KeyComponentApplet>();
 
     private JComboBox cbImplementation;
     private String[] Implementation = {"GP2xCommands", "GemXpresso211Commands"};
@@ -58,11 +62,12 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     private short lineHeight  = 20;
 
-    public AuthenticationPanel() {
-       drawWindow();
+    public AuthenticationPanel(MainController mainController) {
+        controller = mainController.getAuthenticationController();
+        drawWindow();
     }
 
-    public void drawWindow() {
+    private void drawWindow() {
         this.removeAll();
 
         JPanel jplPanel = new JPanel();
@@ -101,7 +106,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         verticalBox.add(createFormLine("Transmission Protocol", cbTransProto));
 
         // Key Panel
-        Keylist.add(new KeyComponent());
+        Keylist.add(new KeyComponentApplet());
         drawKeysLines(verticalBox);
 
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
@@ -118,6 +123,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         verticalBox.add(ligne);
 
         jplPanel.add(verticalBox);
+
     }
 
     /**
@@ -160,15 +166,15 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
             Box b = Keylist.get(i).createLineForm();
             verticalBoxKey.add(b);
             verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
+             //Remove field
+            ligne = Box.createHorizontalBox();
+            jbRemove = new JButton("Remove field");
+            jbRemove.setName(Integer.toString(i));
+            jbRemove.addActionListener(this);
+            ligne.add(jbRemove);
+            verticalBoxKey.add(ligne);
+            verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
         }
-        verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
-
-        //Remove field
-        ligne = Box.createHorizontalBox();
-        jbRemove = new JButton("Remove field");
-        ligne.add(jbRemove);
-        verticalBoxKey.add(ligne);
-
         verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Separator
@@ -195,17 +201,28 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
             JButton b = (JButton) o;
 
             if(b.equals(jbAdd)) {
-                Keylist.add(new KeyComponent());
+                Keylist.add(new KeyComponentApplet());
                 drawWindow();
-            }
 
-            if(b.equals(jbLoadConf)) {
-                String[] possibilities = {"test", "test1", "test2"};
-                String s = (String)JOptionPane.showInputDialog(null, "Choose a configuration",
+            } else if(b.getText().equals("Remove field")) {
+                // The index of the field we want to remove ("Keys" fields)
+                int iRemove = Integer.parseInt(b.getName());
+
+                if(iRemove>=0 && iRemove<Keylist.size() && Keylist.size()>1) {
+                    Keylist.remove(iRemove);
+                    drawWindow();
+                }
+            } else if(b.equals(jbLoadConf)) {
+                String[] configurations = controller.getAllProfileNames();
+                //String[] possibilities = {"test", "test1", "test2"};
+                if (configurations == null) {
+                    System.out.println("pas de configurations");
+                } else {
+                    String s = (String)JOptionPane.showInputDialog(null, "Choose a configuration",
                         "Configuration choice", JOptionPane.DEFAULT_OPTION,
-                        null, possibilities, possibilities[0]);
+                        null, configurations, configurations[0]);
                 tfISDAID.setText(s);
-
+                }
             }
         }
     }
