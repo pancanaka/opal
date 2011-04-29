@@ -69,8 +69,8 @@ public class KeyComponent {
     }
 
     // Getters
-    public int getType() {
-        return this.cbImp.getSelectedIndex();
+    public String getType() {
+        return tab[this.cbImp.getSelectedIndex()];
     }
 
     public String getKeyVersion() {

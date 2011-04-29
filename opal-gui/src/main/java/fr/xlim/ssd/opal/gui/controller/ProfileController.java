@@ -1,15 +1,18 @@
 package fr.xlim.ssd.opal.gui.controller;
 
+import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
-import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
+import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  *
  * @author Yorick Lesecque
+ * @author Thibault Desmoulins
  * @author Tiana Razafindralambo
  */
 public class ProfileController {
@@ -21,8 +24,7 @@ public class ProfileController {
         profileModel = new ProfileModel();
     }
 
-    public ProfileModel getProfileModel()
-    {
+    public ProfileModel getProfileModel() {
         return profileModel;
     }
 
@@ -35,21 +37,32 @@ public class ProfileController {
         return profileModel.deleteProfile(id);
     }
 
-    public void addProfile() 
+    public ProfileComponent getProfile(int i) {
+        return profileModel.getProfile(i);
+    }
+
+
+    public void addProfile(ProfileComponent p)
             throws CardConfigNotFoundException, ConfigFieldsException {
-        //profileModel.addProfile();
-        checkForm();
+
+        checkForm(p);
+        profileModel.addProfile(p.convertToCardConfig());
     }
 
-    public void checkForm()
+    private void checkForm(ProfileComponent p)
             throws ConfigFieldsException {
-        checkName("Adb19778E-_/.");
-        checkDesc("Voici la super description de la mort qui tue l'truc.");
-        checkSCP("SCP_01_01");
-        checkATR("09 AF BC");
+
+        checkName(p.getName());
+        checkDesc(p.getDescription());
+        checkAID(p.getAID());
+        checkSCP(p.getSCPmode());
+        checkTP(p.getTP());
+        checkImpl(p.getImplementation());
+        checkATRs(p.getATR());
+        checkKeys(p.getKeys());
     }
 
-    public void checkName(String name)
+    private void checkName(String name)
             throws ConfigFieldsException {
         
         if(name.length() >= 4 && name.length() <= 25) {
@@ -65,7 +78,7 @@ public class ProfileController {
         }
     }
 
-    public void checkDesc(String desc)
+    private void checkDesc(String desc)
             throws ConfigFieldsException {
 
         if(desc.length() > 0) {
@@ -83,31 +96,34 @@ public class ProfileController {
         }
     }
 
-    public void checkATR(String atr)
+    private void checkATRs(String[] atrs)
             throws ConfigFieldsException {
 
-        if(atr.length() > 0) {
-            atr = atr.replaceAll(":", "");
-            atr = atr.replaceAll(" ", "");
-
-            if(atr.length() % 2 == 0) {
-                Pattern p1 = Pattern.compile("[^A-F0-9]+", Pattern.CASE_INSENSITIVE);
-                Matcher m = p1.matcher(atr);
-
-                if(m.find()) {
-                    throw new ConfigFieldsException("The ATR has to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
-                }
-            }
-            else {
-                throw new ConfigFieldsException("The ATR is invalid.\n");
-            }
-        }
-        else {
-            throw new ConfigFieldsException("The ATR can't be empty.\n");
+        for(int i = 0; i < atrs.length; i++) {
+            checkATR(atrs[i]);
         }
     }
 
-    public void checkAID(String aid)
+    private void checkATR(String atr)
+            throws ConfigFieldsException {
+
+        atr = atr.replaceAll(":", "");
+        atr = atr.replaceAll(" ", "");
+
+        if(atr.length() % 2 == 0) {
+            Pattern p1 = Pattern.compile("[^A-F0-9]+", Pattern.CASE_INSENSITIVE);
+            Matcher m = p1.matcher(atr);
+
+            if(m.find()) {
+                throw new ConfigFieldsException("The ATR has to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
+            }
+        }
+        else {
+            throw new ConfigFieldsException("The ATR is invalid.\n");
+        }
+    }
+
+    private void checkAID(String aid)
             throws ConfigFieldsException {
 
         if(aid.length() > 0) {
@@ -131,7 +147,7 @@ public class ProfileController {
         }
     }
 
-    public void checkSCP(String scp)
+    private void checkSCP(String scp)
             throws ConfigFieldsException {
 
         if(scp.length() > 0) {
@@ -165,7 +181,7 @@ public class ProfileController {
         }
     }
 
-    public void checkTP(String tp)
+    private void checkTP(String tp)
             throws ConfigFieldsException {
 
         if(tp.length() > 0) {
@@ -180,20 +196,50 @@ public class ProfileController {
         }
     }
 
-    public void checkKeys(KeyComponent[] keys)
+    private void checkKeys(ArrayList<KeyModel> keys)
             throws ConfigFieldsException {
 
-        for(int i = 0; i < keys.length; i++) {
-            Pattern p1 = Pattern.compile("[^0-9]+");
-            Matcher m = p1.matcher(keys[i].getKeyId());
+        int n = keys.size();
 
-            if(!m.find()) {
-                String version = keys[i].getKeyVersion();
+        for(int i = 0; i < n; i++) {
+            checkKey(keys.get(i));
+        }
+    }
+
+    private void checkKey(KeyModel key)
+            throws ConfigFieldsException {
+
+        Pattern p1 = Pattern.compile("[^0-9]+");
+        Matcher m = p1.matcher(key.keyID);
+             //key.put("type", Keylist.get(i).getType());
+
+        if(!m.find()) {
+            String id = key.keyID;
+            if(Integer.valueOf(id) < Integer.MAX_VALUE) {
+                String version = key.version;
                 m = p1.matcher(version);
 
                 if(!m.find()) {
                     if(Integer.valueOf(version) >= 0 && Integer.valueOf(version) < 256) {
-                        //DES_ECB, DES_CBC, SCGemVisa, SCGemVisa2 et d’AES : vérifier la taille de la clé de chaque algo
+                        String value = key.key;
+                        value = value.replaceAll(":", "");
+                        value = value.replaceAll(" ", "");
+
+                        if(value.length() % 2 == 0 &&  value.length() < 256) {
+                            p1 = Pattern.compile("[^0-9A-F]+", Pattern.CASE_INSENSITIVE);
+                            m = p1.matcher(value);
+
+                            if(!m.find()) {
+                                //DES_ECB, DES_CBC, SCGemVisa, SCGemVisa2 et d’AES : vérifier la taille de la clé de chaque algo
+                            }
+                            else {
+                                throw new ConfigFieldsException("Key values have to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
+                            }
+                        }
+                        else {
+                            throw new ConfigFieldsException("Key value is invalid (maximum length: 192 bytes - 24 characters).");
+                        }
+
                     }
                     else {
                         throw new ConfigFieldsException("Key versions must be between 0 and 255.");
@@ -207,9 +253,12 @@ public class ProfileController {
                 throw new ConfigFieldsException("Key IDs must be numeric.");
             }
         }
+        else {
+            throw new ConfigFieldsException("Key IDs must be numeric.");
+        }
     }
 
-    public void checkImpl(String impl)
+    private void checkImpl(String impl)
             throws ConfigFieldsException {
 
         if(impl.length() > 0) {
