@@ -16,6 +16,24 @@ import javax.swing.JLabel;
 public class KeyComponentApplet extends KeyComponent{
     private short lineHeight  = 20;
 
+    /**
+     * Default constructor
+     */
+    public KeyComponentApplet() {
+        super();
+    }
+
+    /**
+     * Constructor with tyoe, version, Id and key
+     * @param type
+     * @param keyVersion
+     * @param keyId
+     * @param key
+     */
+    public KeyComponentApplet(String type, String keyVersion, String keyId, String key) {
+        super(type, keyVersion, keyId, key);
+    }
+
     public Box createLineForm() {
 
         Box line1  = Box.createHorizontalBox();

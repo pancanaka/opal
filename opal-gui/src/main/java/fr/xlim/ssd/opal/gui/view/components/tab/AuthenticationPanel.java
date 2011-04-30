@@ -2,7 +2,9 @@ package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.controller.AuthenticationController;
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponentApplet;
+import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -42,7 +44,10 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     private JTextField tfISDAID;
 
     private JComboBox cbSCPMode;
-    private String[] SCPMode = {"SCP_UNDEFINED", "SCP_01_05", "SCP_01_15"};
+    private String[] SCPMode = {"SCP_UNDEFINED", "SCP_01_05", "SCP_01_15", "SCP_02_04",
+    "SCP_02_05", "SCP_02_0A", "SCP_02_0B", "SCP_02_14", "SCP_02_15", "SCP_02_1A",
+    "SCP_02_1B", "SCP_02_55", "SCP_02_45", "SCP_02_54", "SCP_10", "SCP_03_65",
+    "SCP_03_6D", "SCP_03_05", "SCP_03_0D", "SCP_03_2D", "SCP_03_25"};
 
     private JComboBox cbSecurityLevel;
     private String[] SecurityLevel = {"NO SECURITY LEVEL", "C_MAC",
@@ -62,7 +67,18 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     private short lineHeight  = 20;
 
-    public AuthenticationPanel(MainController mainController) { 
+    public AuthenticationPanel(MainController mainController) {
+        jbLoadConf = new JButton("Load Configuration");
+        jbLoadConf.addActionListener(this);
+        tfISDAID = new JTextField();
+        cbSCPMode = new JComboBox(SCPMode);
+        cbSecurityLevel = new JComboBox(SecurityLevel);
+        cbTransProto = new JComboBox(TransProto);
+        Keylist.add(new KeyComponentApplet());
+        cbImplementation = new JComboBox(Implementation);
+        jbAuthenticate = new JButton("Authenticate");
+
+
         drawWindow();
     }
 
@@ -81,47 +97,33 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         ligne.setPreferredSize(new Dimension(500, 20));
 
         // Load Configuration
-        jbLoadConf = new JButton("Load Configuration");
-        jbLoadConf.addActionListener(this);
         verticalBox.add(createFormLine("", jbLoadConf));
-
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Issuer Security Domain AID
-        tfISDAID = new JTextField();
         verticalBox.add(createFormLine("Issuer Security Domain AID", tfISDAID));
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // SCP PMode
-        cbSCPMode = new JComboBox(SCPMode);
         verticalBox.add(createFormLine("SCP Mode", cbSCPMode));
-
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Security Level
-        cbSecurityLevel = new JComboBox(SecurityLevel);
         verticalBox.add(createFormLine("Security Level", cbSecurityLevel));
-
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Transmission Protocol               
-        cbTransProto = new JComboBox(TransProto);        
         verticalBox.add(createFormLine("Transmission Protocol", cbTransProto));
 
         // Key Panel
-        Keylist.add(new KeyComponentApplet());
         drawKeysLines(verticalBox);
-
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Implementation
-        cbImplementation = new JComboBox(Implementation);        
         verticalBox.add(createFormLine("Implementation", cbImplementation));
-
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
 
         // Authenticate        
-        jbAuthenticate = new JButton("Authenticate");
         ligne.add(jbAuthenticate);
         verticalBox.add(ligne);
 
@@ -216,16 +218,57 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                     drawWindow();
                 }
             } else if(b.equals(jbLoadConf)) {
-                System.out.println("________" + (controller==null));
                 String[] configurations = controller.getAllProfileNames();
-                //String[] possibilities = {"test", "test1", "test2"};
+
                 if (configurations == null) {
-                    System.out.println("pas de configurations");
+                    System.out.println("No configuration found.");
                 } else {
-                    String s = (String)JOptionPane.showInputDialog(null, "Choose a configuration",
+                    // name of the default configuration
+                    //String defaultConfig = controller.getCurrentCardDefaultProfileName();
+                    String defaultConfig = "";
+
+                    int indexDefaultConfig = 0;
+
+                    // default configuration card research
+                    for (int i =0; i<configurations.length; i++) {
+                        if (configurations[i].compareTo(defaultConfig) == 0) {
+                            indexDefaultConfig = i;
+                        }
+                    }
+
+                    // name of the choosen configuration
+                    String configName = (String)JOptionPane.showInputDialog(null, "Choose a configuration",
                         "Configuration choice", JOptionPane.DEFAULT_OPTION,
-                        null, configurations, configurations[0]);
-                tfISDAID.setText(s);
+                        null, configurations, configurations[indexDefaultConfig]);
+
+                    if (configName!=null) {
+                        // the choosen configuration
+                        ProfileComponent config = controller.getProfileByName(configName);
+
+                        // filling the view with all the informations
+                        tfISDAID.setText(config.getAID());
+                        cbSCPMode.setSelectedItem("SCP_" + config.getSCPmode());
+                        cbTransProto.setSelectedItem(config.getTP());
+
+                        // getting all keys
+                        ArrayList<KeyModel> listK = config.getKeys();
+                        if (listK.size() > 0) {
+                            Keylist.clear();
+                            for (KeyModel k : listK) {
+                                String v = null;
+                                if (k.version.compareToIgnoreCase("ff") == 0) {
+                                    v = String.valueOf(Integer.parseInt(k.version, 16));
+                                } else {
+                                    v = String.valueOf(Integer.parseInt(Integer.toHexString(Integer.valueOf(k.version) & 0xFF).toUpperCase(), 16));
+                                }
+
+                                Keylist.add(new KeyComponentApplet(k.type, v, k.keyID, k.key));
+                            }
+                        }
+                        cbImplementation.setSelectedItem("fr.xlim.ssd.opal.library.commands." + config.getImplementation());
+
+                        drawWindow();
+                    }
                 }
             }
         }
