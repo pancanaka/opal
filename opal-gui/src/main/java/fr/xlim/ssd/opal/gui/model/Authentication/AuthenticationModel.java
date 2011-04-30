@@ -29,7 +29,8 @@ public class AuthenticationModel {
     private CardConfig cardConfig;
     private CardReaderStateListener cardReaderStateListener;
     private ProfileModel profile;
-    private String[][] profiles;
+    private String[][] profiles; 
+    
     public AuthenticationModel(){}
 
     public AuthenticationModel(CardReaderModel crm, CommunicationModel communication, ProfileController profileController)
@@ -87,9 +88,13 @@ public class AuthenticationModel {
      * 
      * @return CardConfig
      */
-    public CardConfig getCardConfig()
-    {
+    public CardConfig getDefaultCardConfig()
+    {  
         return this.cardConfig;
+    }
+    public void setDefaultCardConfig(CardConfig cardConfig)
+    {
+        this.cardConfig = cardConfig;
     }
 
     /**

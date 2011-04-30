@@ -29,6 +29,7 @@ public class AuthenticationController {
     private CommunicationController communication;
     private ProfileController profileController; 
     private AuthenticationPanel authenticationPanel;  
+    private boolean defaultCardConfigIsSet = false;
     
     public AuthenticationController(CardReaderModel cardReaderModel, CommunicationController communication, ProfileController profileController, HomeView homeView)
     {
@@ -38,8 +39,31 @@ public class AuthenticationController {
         this.authenticationPanel    = homeView.getHomePanel().getAuthenticationPanel();  
         this.authenticationPanel.setController(this);
         this.authModel              = new AuthenticationModel(this.cardReaderModel, this.communication.getModel(), this.profileController);
+        if(!defaultCardConfigIsSet)
+            this.setDefaultCardConfig();
     }
+    private void setDefaultCardConfig()
+    {
+        this.cardReaderModel.addCardReaderStateListener( new CardReaderStateListener() {
+            @Override
+            public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
+                if(cardReaderModel.hasSelectedCardReaderItem())
+                {
+                    logger.info("Default Card selected Name : " +  cardReaderModel.getSelectedCardName());
+                    logger.info("Default Card selected ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
 
+                    try
+                    {
+                        CardConfig cardConfig = null;
+                        cardConfig = authModel.getCardConfigByATR(cardReaderModel.getSelectedCardATR()); 
+                        authModel.setDefaultCardConfig(cardConfig);
+                    }
+                    catch(CardConfigNotFoundException ex) { logger.error(ex.getMessage()); }
+                }else logger.info("No card found");
+                cardReaderModel.removeCardReaderStateListener(this);
+            }
+        });
+    }
     public void authenticateCard(CardConfig cardConfig)
     {
         AuthenticationTask authenticationTask = new AuthenticationTask(cardConfig, this.cardReaderModel, this.communication); 
@@ -76,8 +100,8 @@ public class AuthenticationController {
         return this.authModel.getAllProfileNames();
     }
     public String getCurrentCardDefaultProfileName()
-    {
-        return this.authModel.getCardConfig().getName();
+    { 
+        return this.authModel.getDefaultCardConfig().getName();
     }
     public ProfileComponent getProfileByName(String name)
     { 

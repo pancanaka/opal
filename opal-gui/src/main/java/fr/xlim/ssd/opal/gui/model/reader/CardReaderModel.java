@@ -109,6 +109,8 @@ public class CardReaderModel {
                         this.selectedCardReaderItem = this.cardReaderItems.get(0);
                     }
                 }
+                System.out.println("Card Reader model fire ! ");
+                System.out.println("Selected " + this.selectedCardReaderItem.getCardATR());
                 this.fireCardReaderStateChanged();
             }
         }
