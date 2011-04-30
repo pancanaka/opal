@@ -40,6 +40,8 @@ public class HomeView extends FrameView implements ActionListener {
 
     private HomePanel homePanel;
     
+    private boolean homePanelIsSet = false;
+    
 
     /**
      * Constructor
@@ -113,9 +115,13 @@ public class HomeView extends FrameView implements ActionListener {
     }
 
 
-    public void showPanel(String type) {
+    public void showPanel(String type) { 
         if(type.equals("home")) {
-            homePanel = new HomePanel(this.controller);
+            if(!homePanelIsSet)
+            {
+                homePanelIsSet = true;
+                homePanel = new HomePanel(this.controller);
+            }
             scrollPan = new JScrollPane(homePanel);
         }
         else if(type.equals("show profiles")) {
@@ -128,7 +134,7 @@ public class HomeView extends FrameView implements ActionListener {
         this.getFrame().setVisible(true);
     }
 
-    public void showPanel(JPanel pan) {
+    public void showPanel(JPanel pan) { 
         scrollPan = new JScrollPane(pan);
         this.getFrame().setContentPane(scrollPan);
         this.getFrame().setVisible(true);
