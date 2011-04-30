@@ -10,6 +10,7 @@ import fr.xlim.ssd.opal.gui.controller.CommunicationController;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
+import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.TaskService;
@@ -27,12 +28,13 @@ public class AuthenticationTask extends Task<Void, Void> implements TaskInterfac
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;
     private Task nextTask = null; 
-    public AuthenticationTask(CardConfig cardConfig, CardReaderModel cardReaderModel, CommunicationController communication)
+    public AuthenticationTask(CardConfig cardConfig, CardReaderModel cardReaderModel, CommunicationController communication, SecLevel secLevel)
     {
         super(App.instance);
         this.cardConfig = cardConfig;
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
+        this.communication.setSecurityLevel(secLevel);
     }
     @Override
     protected Void doInBackground(){

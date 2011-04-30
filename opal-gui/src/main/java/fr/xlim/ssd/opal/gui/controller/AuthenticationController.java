@@ -11,6 +11,7 @@ import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
+import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfig; 
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
@@ -64,9 +65,9 @@ public class AuthenticationController {
             }
         });
     }
-    public void authenticateCard(CardConfig cardConfig)
+    public void authenticateCard(CardConfig cardConfig, SecLevel secLevel)
     {
-        AuthenticationTask authenticationTask = new AuthenticationTask(cardConfig, this.cardReaderModel, this.communication); 
+        AuthenticationTask authenticationTask = new AuthenticationTask(cardConfig, this.cardReaderModel, this.communication, secLevel); 
         TaskFactory taskFactory = TaskFactory.run(authenticationTask);
         
         //this.authModel.setCommunication(cardConfig);
