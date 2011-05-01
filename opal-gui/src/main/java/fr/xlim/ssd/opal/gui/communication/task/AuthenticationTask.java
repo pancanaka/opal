@@ -39,18 +39,11 @@ public class AuthenticationTask extends Task<Void, Void> implements TaskInterfac
     @Override
     protected Void doInBackground(){
        logger.info("Authenticating card...");
-        this.cardReaderModel.addCardReaderStateListener(new CardReaderStateListener() {
-            @Override
-            public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
-                if(cardReaderModel.hasSelectedCardReaderItem())
-                { 
-                   communication.authenticate(cardConfig);
-                   communication.getModel().setSecurityDomain(cardConfig, cardReaderModel.getCardChannel());
-
-                }else logger.error("No card found.");
-                cardReaderModel.removeCardReaderStateListener(this);  
-            }
-        }); 
+       if(cardReaderModel.hasSelectedCardReaderItem())
+       {
+           communication.authenticate(cardConfig);
+           communication.getModel().setSecurityDomain(cardConfig, cardReaderModel.getCardChannel()); 
+       }else logger.error("No card found");
        return null;
     } 
  

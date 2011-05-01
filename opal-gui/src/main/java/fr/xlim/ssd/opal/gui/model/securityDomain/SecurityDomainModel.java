@@ -31,24 +31,27 @@ public class SecurityDomainModel {
     public boolean isAuthenticated(){ return this.authenticated;};
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     {
+        logger.info("Setting security domain..."); 
         try
         {
+            logger.info("-> IMPL : "+cardConfig.getImplementation().toString());
+            logger.info("-> channel : "+channel.toString()); 
             this.domain = new SecurityDomain(   cardConfig.getImplementation(),
                                                 channel,
                                                 cardConfig.getIssuerSecurityDomainAID()
                                             );
+            
+            this.domain.setOffCardKeys(cardConfig.getSCKeys());
+
+            try {
+                logger.info("APDU Response to selection : " + domain.select().toString());
+                this.fireSecurityDomainStateChanged();
+            } catch (Exception ex) {
+                java.util.logging.Logger.getLogger(SecurityDomainModel.class.getName()).log(Level.SEVERE, null, ex);
+            }
         }
         catch(CommandsImplementationNotFound ex) { logger.error("Commands Implementation not found"); }
-        catch(ClassNotFoundException ex) { logger.error("Class not found exception"); }
-
-        this.domain.setOffCardKeys(cardConfig.getSCKeys());
-
-        try {
-            logger.info("APDU Response to selection : " + domain.select().toString());
-            this.fireSecurityDomainStateChanged();
-        } catch (Exception ex) {
-            java.util.logging.Logger.getLogger(SecurityDomainModel.class.getName()).log(Level.SEVERE, null, ex);
-        }
+        catch(ClassNotFoundException ex) { logger.error("Class not found exception"); } 
     }
     /**
      * Add a security domain state listener.

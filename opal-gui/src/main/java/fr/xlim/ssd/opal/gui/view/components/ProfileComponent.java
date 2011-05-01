@@ -72,6 +72,7 @@ public class ProfileComponent implements Comparable {
 
         //convert this.keys into SCKey[]
         int keysLength = this.keys.size();
+        System.out.println("KEYS LENGHT " + keysLength);
         SCKey[] keys = new SCKey[keysLength];
         KeyModel currentKey = null;
 
@@ -103,6 +104,7 @@ public class ProfileComponent implements Comparable {
         }
         
         //---------------------------------------------------------------------------------------------------------
+        
         return new CardConfig(  this.name,
                                 this.description,
                                 atrs,

@@ -56,11 +56,15 @@ public class AuthenticationController {
                 if (cardReaderModel.hasSelectedCardReaderItem()) {
                     logger.info("Default Card selected Name : " + cardReaderModel.getSelectedCardName());
                     logger.info("Default Card selected ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
-
+                    
                     try {
                         CardConfig cardConfig = null;
                         cardConfig = authModel.getCardConfigByATR(cardReaderModel.getSelectedCardATR());
+                        
+                        logger.info("Setting default card config");
                         authModel.setDefaultCardConfig(cardConfig);
+                        
+                        logger.info("Default card selected implementation " + cardConfig.getImplementation());
                     } catch (CardConfigNotFoundException ex) {
                         logger.error(ex.getMessage());
                     }
@@ -73,6 +77,7 @@ public class AuthenticationController {
     }
 
     public void authenticateCard(CardConfig cardConfig, SecLevel secLevel) {
+        logger.info("Proceed to authentication");
         AuthenticationTask authenticationTask = new AuthenticationTask(cardConfig, this.cardReaderModel, this.communication, secLevel);
         TaskFactory taskFactory = TaskFactory.run(authenticationTask);
 
@@ -236,8 +241,8 @@ public class AuthenticationController {
     private void checkImpl(String impl) throws ConfigFieldsException {
         System.out.println(impl);
         if(impl.length() > 0) {
-            if(impl.compareToIgnoreCase("GemXpresso211Commands") != 0
-                    && impl.compareToIgnoreCase("GP2xCommands") != 0
+            if(impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands." + "GemXpresso211Commands") != 0
+                    && impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands." + "GP2xCommands") != 0
                     /* If new implementations are allowed : && impl.compareToIgnoreCase("*Implementation*") != 0  */) {
                 throw new ConfigFieldsException("The Implementation is unknown.\n");
             }

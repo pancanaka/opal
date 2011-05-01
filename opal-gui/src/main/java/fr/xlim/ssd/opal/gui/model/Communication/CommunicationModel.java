@@ -18,7 +18,7 @@ public class CommunicationModel {
     private SecurityDomainModel securityModel; 
     private SecLevel securityLevel;
 
-    public CommunicationModel(){  }
+    public CommunicationModel(){ this.securityModel = new SecurityDomainModel(); }
     
     public CommunicationModel(SecLevel securityLevel)
     {
@@ -29,8 +29,7 @@ public class CommunicationModel {
     public SecLevel getSecurityLevel(){ return this.securityLevel;}
     public SecurityDomainModel getSecurityDomainModel() { return this.securityModel;}
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
-    {
-        logger.info("Setting security domain..."); 
+    { 
         //  select the security domain
         this.securityModel.setSecurityDomain(cardConfig, channel); 
     }

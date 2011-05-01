@@ -287,12 +287,19 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                     }
                 }
             } else if (b.equals(jbAuthenticate)){
-                // ProfileComponent created with user's choices
+                // ProfileComponent created with user's choices 
+                System.out.println(Keylist.size());
+               
                 ProfileComponent authentication = new ProfileComponent(name,
                         description, tfISDAID.getText(),  (String)cbSCPMode.getSelectedItem(),
                         (String)cbTransProto.getSelectedItem(), ATR,
-                        (String)cbImplementation.getSelectedItem());
-
+                        "fr.xlim.ssd.opal.library.commands." + (String)cbImplementation.getSelectedItem()); 
+                
+                ArrayList<KeyModel> keyModels = new ArrayList<KeyModel>();
+                for(KeyComponentApplet kc : Keylist)
+                {
+                    authentication.addKey(kc.type, kc.keyVersion, kc.keyId, kc.key); 
+                } 
                 try {
                     controller.authenticate(authentication,
                             (String)cbSecurityLevel.getSelectedItem());

@@ -35,6 +35,7 @@ public class CommunicationController {
     }
     public void setSecurityLevel(SecLevel secLevel)
     {
+        logger.info("Setting security level to " + secLevel.toString() + " and transmitting to model");
         this.model.setSecurityLevel(secLevel);
     }
     public CommunicationModel getModel()
@@ -178,7 +179,7 @@ public class CommunicationController {
     }
     public void authenticate(CardConfig _cardConfig)
     {
-        logger.info("Initialize Update");
+        logger.info("Initialize Update"); 
         final CardConfig cardConfig = _cardConfig; 
         this.model.getSecurityDomainModel().addSecurityDomainStateListener( new SecurityDomainStateListener() {
             @Override
@@ -200,7 +201,7 @@ public class CommunicationController {
 
                         model.getSecurityDomainModel().isAuthenticated(true); 
                     }
-                    catch(CardException ex) { logger.error(ex.getMessage()); }
+                    catch(CardException ex) { logger.error("_______" + ex.getMessage()); }
                 }else logger.error("No security domain set yet.");
                 model.getSecurityDomainModel().removeSecurityDomainStateListener(this);
             }

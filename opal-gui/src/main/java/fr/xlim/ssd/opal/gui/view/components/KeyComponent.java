@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
+import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JComboBox;
@@ -18,17 +19,25 @@ public class KeyComponent {
     private short lineSpacing = 10;
 
     JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
-
+    public String type, keyVersion, keyId, key;
     String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa", "SCGemVisa2", "AES"};
     JComboBox cbImp = new JComboBox(tab);
 
 
     public KeyComponent() {}
 
+    public KeyModel convert2KeyModel()
+    {
+        return new KeyModel(this.type, this.keyVersion, this.keyId, this.key);
+    }
     public KeyComponent(String type, String keyVersion, String keyId, String key) {
         JkeyVersion.setText(keyVersion);
         JkeyId.setText(keyId);
         Jkey.setText(key);
+        this.type = type;
+        this.keyVersion = keyVersion;
+        this.keyId = keyId;
+        this.key = key;
 
         int index = getIndexComboBox(type);
         cbImp.setSelectedIndex(index);
