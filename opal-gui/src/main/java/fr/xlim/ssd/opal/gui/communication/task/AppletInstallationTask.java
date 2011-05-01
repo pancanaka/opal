@@ -16,8 +16,12 @@ public class AppletInstallationTask extends Task<Void, Void> implements TaskInte
     private CommunicationController communication = null;
     byte[] PACKAGE_ID = null;
     byte[] APPLET_ID = null;
+    byte[] securityDomainAID = null;
+    byte[] params = null;
+    byte[] privileges = null;
     String ressource = "";
-    public AppletInstallationTask(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, CommunicationController communication)
+    
+    public AppletInstallationTask(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params, byte[] privileges, CommunicationController communication)
     {
         super(App.instance);
         this.communication = communication;
@@ -28,7 +32,7 @@ public class AppletInstallationTask extends Task<Void, Void> implements TaskInte
     @Override
     protected Void doInBackground(){
         logger.info("Applet installation task...");
-        this.communication.installApplet(this.PACKAGE_ID, this.APPLET_ID, this.ressource);
+        this.communication.installApplet(this.PACKAGE_ID, this.APPLET_ID, this.ressource, this.securityDomainAID, this.params, this.privileges);
         return null;
     }
 

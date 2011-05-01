@@ -126,41 +126,41 @@ public class CommunicationController {
         deleteApplet(PACKAGE_ID, APPLET_ID);
         deletePackage(PACKAGE_ID, APPLET_ID);
     }
-    private void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    private void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID, byte[] privileges)
     {
         try
          {
-            logger.info("* Install for install");
+            logger.info("* Install for install"); 
             ResponseAPDU resp = securityDomain.installForInstallAndMakeSelectable(
                         PACKAGE_ID,
                         APPLET_ID,
                         APPLET_ID,
-                        Conversion.hexToArray("00"), null);
+                        privileges, null);
          }catch(CardException ex)
          {
              logger.error(ex.getMessage());
          }
     }
-    private void install4load(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    private void install4load(byte[] PACKAGE_ID, byte[] APPLET_ID, byte[] securityDomainAID, byte[] params)
     {
         try
         {
             logger.info("* Install For Load");
-            ResponseAPDU resp = securityDomain.installForLoad(PACKAGE_ID, null, null);
+            ResponseAPDU resp = securityDomain.installForLoad(PACKAGE_ID, securityDomainAID, params);
         }catch(CardException ex)
         {
             logger.error(ex.getMessage());
             logger.info("Deleting previous applet install and package install");
             deleteApplet(PACKAGE_ID, APPLET_ID);
             deletePackage(PACKAGE_ID, APPLET_ID);
-            install4load(PACKAGE_ID, APPLET_ID);
+            install4load(PACKAGE_ID, APPLET_ID, securityDomainAID, params);
         }
     }
-    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource)
+    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params, byte[] privileges)
     {
         if(this.canCommunicate())
         {
-             install4load(PACKAGE_ID, APPLET_ID);
+             install4load(PACKAGE_ID, APPLET_ID, securityDomainAID, params);
 
              InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
              byte[] convertedBuffer = CapConverter.convert(is);
@@ -174,7 +174,7 @@ public class CommunicationController {
                  logger.error(ex.getMessage());
              }
 
-             install4install(PACKAGE_ID, APPLET_ID);
+             install4install(PACKAGE_ID, APPLET_ID, privileges);
         }
     }
     public void authenticate(CardConfig _cardConfig)

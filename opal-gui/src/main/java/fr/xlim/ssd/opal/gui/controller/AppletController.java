@@ -30,10 +30,10 @@ public class AppletController {
         this.communication = communication;
     }
 
-    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource)
+    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params, boolean capConverter, byte maxDataLength, byte[] privileges)
     {
         logger.info("Installing Applet");
-        AppletInstallationTask appletInstallationTask = new AppletInstallationTask(PACKAGE_ID, APPLET_ID, ressource, communication);
+        AppletInstallationTask appletInstallationTask = new AppletInstallationTask(PACKAGE_ID, APPLET_ID, ressource, securityDomainAID, params, privileges, communication);
         TaskFactory taskFactory = TaskFactory.run(appletInstallationTask);
         //this.communication.installApplet(PACKAGE_ID, APPLET_ID, ressource);
     } 
