@@ -12,17 +12,19 @@ import java.io.UnsupportedEncodingException;
  * @author David Pequegnot <david.pequegnot@etu.unilim.fr>
  */
 public class App extends SingleFrameApplication {
+
     public static short nbDataExchangesVueOpened = 0;
     public static App instance = null;
+
     /**
      * At startup create and show the main frame of the application.
      */
     @Override
     protected void startup() {
         this.mainController = new MainController(this);
-        
+
         this.instance = this;
-        
+
         this.mainController.startTerminalTask();
 
         show(this.mainController.getHomeView());
@@ -35,7 +37,7 @@ public class App extends SingleFrameApplication {
      */
     public static void showDataExchangesVue() {
         // If there is no DataExchangesVue opened at this moment
-        if(App.nbDataExchangesVueOpened==0) {
+        if (App.nbDataExchangesVueOpened == 0) {
             App.nbDataExchangesVueOpened++;
             new DataExchangesVue();
         }
@@ -47,7 +49,7 @@ public class App extends SingleFrameApplication {
     @Override
     protected void shutdown() {
         this.mainController.stopTerminalTask();
-        
+
         super.shutdown();
     }
 
@@ -65,6 +67,5 @@ public class App extends SingleFrameApplication {
     public static void main(String[] args) throws UnsupportedEncodingException {
         Application.launch(App.class, args);
     }
-
     private MainController mainController;
 }

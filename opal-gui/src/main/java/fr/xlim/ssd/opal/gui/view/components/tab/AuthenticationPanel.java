@@ -1,10 +1,14 @@
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.controller.AuthenticationController;
+import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponentApplet;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
+import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.params.CardConfig;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 
 import java.awt.Component;
 import java.awt.Dimension;
@@ -51,7 +55,8 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     private JComboBox cbSecurityLevel;
     private String[] SecurityLevel = {"NO SECURITY LEVEL", "C_MAC",
-    "C_ENC_AND_MAC"};
+    "C_ENC_AND_MAC", "R_MAC", "C_MAC_AND_R_MAC", "C_ENC_AND_C_MAC_AND_R_MAC",
+    "C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC"};
 
     private JComboBox cbTransProto;
     private String[] TransProto = {"T=0", "T=1", "*"};
@@ -67,6 +72,11 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     private short lineHeight  = 20;
 
+    //
+    private String name;
+    private String description;
+    private String [] ATR;
+    //String name, String description, String AID, String SCPmode, String TP, String[] ATR, String implementation
     public AuthenticationPanel(MainController mainController) {
         jbLoadConf = new JButton("Load Configuration");
         jbLoadConf.addActionListener(this);
@@ -77,6 +87,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         Keylist.add(new KeyComponentApplet());
         cbImplementation = new JComboBox(Implementation);
         jbAuthenticate = new JButton("Authenticate");
+        jbAuthenticate.addActionListener(this);
 
 
         drawWindow();
@@ -224,8 +235,8 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                     System.out.println("No configuration found.");
                 } else {
                     // name of the default configuration
-                   String defaultConfig = controller.getCurrentCardDefaultProfileName();
-                   // String defaultConfig = "";
+                   //String defaultConfig = controller.getCurrentCardDefaultProfileName();
+                   String defaultConfig = "";
 
                     int indexDefaultConfig = 0;
 
@@ -244,6 +255,11 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                     if (configName!=null) {
                         // the choosen configuration
                         ProfileComponent config = controller.getProfileByName(configName);
+
+                        // keeping informations
+                        name = config.getName();
+                        description = config.getDescription();
+                        ATR = config.getATR();
 
                         // filling the view with all the informations
                         tfISDAID.setText(config.getAID());
@@ -269,6 +285,21 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
                         drawWindow();
                     }
+                }
+            } else if (b.equals(jbAuthenticate)){
+                // ProfileComponent created with user's choices
+                ProfileComponent authentication = new ProfileComponent(name,
+                        description, tfISDAID.getText(),  (String)cbSCPMode.getSelectedItem(),
+                        (String)cbTransProto.getSelectedItem(), ATR,
+                        (String)cbImplementation.getSelectedItem());
+
+                try {
+                    controller.authenticate(authentication,
+                            (String)cbSecurityLevel.getSelectedItem());
+                } catch (CardConfigNotFoundException ex) {
+                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                } catch (ConfigFieldsException ex) {
+                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }

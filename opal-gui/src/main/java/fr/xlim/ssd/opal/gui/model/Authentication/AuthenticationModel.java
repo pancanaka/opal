@@ -60,6 +60,10 @@ public class AuthenticationModel {
         }*/
     }
 
+    public void authenticate(ProfileComponent p, String securityLevel) {
+        
+    }
+
     public String[] getAllProfileNames()
     {
         String[] res = new String[this.profiles.length];
