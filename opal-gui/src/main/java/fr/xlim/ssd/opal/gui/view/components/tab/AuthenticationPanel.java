@@ -54,7 +54,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     "SCP_03_6D", "SCP_03_05", "SCP_03_0D", "SCP_03_2D", "SCP_03_25"};
 
     private JComboBox cbSecurityLevel;
-    private String[] SecurityLevel = {"NO SECURITY LEVEL", "C_MAC",
+    private String[] SecurityLevel = {"NO_SECURITY_LEVEL", "C_MAC",
     "C_ENC_AND_MAC", "R_MAC", "C_MAC_AND_R_MAC", "C_ENC_AND_C_MAC_AND_R_MAC",
     "C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC"};
 

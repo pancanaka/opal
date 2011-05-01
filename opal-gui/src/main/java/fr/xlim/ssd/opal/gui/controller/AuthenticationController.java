@@ -133,7 +133,24 @@ public class AuthenticationController {
     public void authenticate(ProfileComponent p, String securityLevel)
             throws CardConfigNotFoundException, ConfigFieldsException {
         checkForm(p, securityLevel);
-        authModel.authenticate(p, securityLevel);
+
+        CardConfig cardConfig = getCardConfigOf(p);
+
+        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
+        if (securityLevel.compareTo(SecLevel.C_MAC.toString()) == 0) {
+            secLevel = SecLevel.C_MAC;
+        } else if (securityLevel.compareTo(SecLevel.C_ENC_AND_MAC.toString()) == 0) {
+            secLevel = SecLevel.C_ENC_AND_MAC;
+        } else if (securityLevel.compareTo(SecLevel.R_MAC.toString()) == 0) {
+            secLevel = SecLevel.R_MAC;
+        } else if (securityLevel.compareTo(SecLevel.C_MAC_AND_R_MAC.toString()) == 0) {
+            secLevel = SecLevel.C_MAC_AND_R_MAC;
+        } else if (securityLevel.compareTo(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC.toString()) == 0) {
+            secLevel = SecLevel.C_ENC_AND_C_MAC_AND_R_MAC;
+        } else if (securityLevel.compareTo(SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC.toString()) == 0) {
+            secLevel = SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC;
+        }
+        authenticateCard(cardConfig, secLevel);
     }
 
     private void checkForm(ProfileComponent p, String securityLevel)
@@ -301,10 +318,10 @@ public class AuthenticationController {
                     && sl.compareToIgnoreCase(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC.toString()) != 0
                     && sl.compareToIgnoreCase(SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC.toString()) != 0) {
 
-                throw new ConfigFieldsException("The SCPMode is unknown.\n");
+                throw new ConfigFieldsException("The security level is unknown.\n");
             }
         } else {
-            throw new ConfigFieldsException("SCPMode can't be empty.\n");
+            throw new ConfigFieldsException("Security level can't be empty.\n");
         }
     }
 
