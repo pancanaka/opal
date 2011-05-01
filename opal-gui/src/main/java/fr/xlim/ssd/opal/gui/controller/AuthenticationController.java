@@ -63,8 +63,6 @@ public class AuthenticationController {
                         
                         logger.info("Setting default card config");
                         authModel.setDefaultCardConfig(cardConfig);
-                        
-                        logger.info("Default card selected implementation " + cardConfig.getImplementation());
                     } catch (CardConfigNotFoundException ex) {
                         logger.error(ex.getMessage());
                     }
@@ -241,8 +239,8 @@ public class AuthenticationController {
     private void checkImpl(String impl) throws ConfigFieldsException {
         System.out.println(impl);
         if(impl.length() > 0) {
-            if(impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands." + "GemXpresso211Commands") != 0
-                    && impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands." + "GP2xCommands") != 0
+            if(impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands."+"GemXpresso211Commands") != 0
+                    && impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands."+"GP2xCommands") != 0
                     /* If new implementations are allowed : && impl.compareToIgnoreCase("*Implementation*") != 0  */) {
                 throw new ConfigFieldsException("The Implementation is unknown.\n");
             }

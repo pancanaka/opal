@@ -33,16 +33,18 @@ public class KeyComponent {
     public KeyComponent(String type, String keyVersion, String keyId, String key) {
         JkeyVersion.setText(keyVersion);
         JkeyId.setText(keyId);
-        Jkey.setText(key);
-        this.type = type;
+        Jkey.setText(key); 
+       
         this.keyVersion = keyVersion;
         this.keyId = keyId;
         this.key = key;
 
         int index = getIndexComboBox(type);
         cbImp.setSelectedIndex(index);
+        
+         this.type = this.getType();
     }
-
+ 
     public int getIndexComboBox(String type) {
         int n = tab.length;
         for(int i=1 ; i<n ; i++) {
