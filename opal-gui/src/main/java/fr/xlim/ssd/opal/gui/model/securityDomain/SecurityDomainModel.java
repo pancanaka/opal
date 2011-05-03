@@ -1,3 +1,12 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Author : Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>        *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
 
 package fr.xlim.ssd.opal.gui.model.securityDomain;
 
@@ -12,6 +21,7 @@ import java.util.logging.Level;
 import javax.smartcardio.CardChannel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author Tiana Razafindralambo

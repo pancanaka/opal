@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Estelle Blandinieres <estelle.blandinieres@etu.unilim.fr>        *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import java.awt.Component;
@@ -15,8 +27,8 @@ import javax.swing.JButton;
 /**
  *
  * @author Estelle Blandinieres
- * @author Thibault
- * @author razaina
+ * @author Thibault Desmoulins
+ * @author Tiana Razafindralambo
  */
 public class SelectPanel extends JPanel implements ActionListener{
 

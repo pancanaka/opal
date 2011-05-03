@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Yorick Lesecque <yorick.lesecque@etu.unilim.fr>                  *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.profiles;
 
 import fr.xlim.ssd.opal.gui.controller.ProfileController;
@@ -50,20 +61,25 @@ public class ShowProfileView extends JPanel implements ActionListener {
                 }
             };
             JScrollPane spTab = new JScrollPane(tableau); /**/
+
             // Create left column and put the tab inside
             Box left = Box.createVerticalBox();
             left.add(spTab);
+
             // Create right column and put buttons inside
             Box right = Box.createVerticalBox();
             right.add(btModify);
             right.add(btDelete);
             right.add(btAdd);
             right.add(btOK);
+
             Box top = Box.createHorizontalBox();
             top.add(left);
             top.add(right);
+
             this.setLayout(new BorderLayout());
             this.add(top, BorderLayout.CENTER);
+
             // Events
             btModify.addActionListener(this);
             btDelete.addActionListener(this);
@@ -82,7 +98,7 @@ public class ShowProfileView extends JPanel implements ActionListener {
             JButton bt  = (JButton) o;
             String name = bt.getText();
 
-            /* If we click on the Quit menu */
+            /* If we click on the modify button */
             if(name.equals("Modify")) {
                 int row = tableau.getSelectedRow();
                 if(row<0) {

@@ -1,7 +1,14 @@
-/*
- * This class is used to display The Logs and APDUs exchanges.
- */
-
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                    *
+ *           Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
 
 package fr.xlim.ssd.opal.view.dataExchanges;
 

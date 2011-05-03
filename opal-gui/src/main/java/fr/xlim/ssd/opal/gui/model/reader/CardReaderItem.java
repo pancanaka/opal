@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : David Pequegnot <david.pequegnot@etu.unilim.fr>                  *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.model.reader;
 
 import fr.xlim.ssd.opal.library.params.ATR;

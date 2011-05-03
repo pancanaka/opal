@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ *           Estelle Blandinieres <estelle.blandinieres@etu.unilim.fr>        *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.controller.AuthenticationController;
@@ -6,8 +18,6 @@ import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponentApplet;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
-import fr.xlim.ssd.opal.library.SCPMode;
-import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 
 import java.awt.Component;
@@ -26,13 +36,12 @@ import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import java.util.ArrayList;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 
 /**
- * @author Thibault
- * @author razaina
+ * @author Thibault Desmoulins
+ * @author Tiana Razafindralambo
  * @author Estelle Blandinieres
  */
 public class AuthenticationPanel extends JPanel implements ActionListener{

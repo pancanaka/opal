@@ -1,7 +1,12 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Author : Estelle Blandinieres <estelle.blandinieres@etu.unilim.fr>         *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
 
 package fr.xlim.ssd.opal.gui.view.components;
 

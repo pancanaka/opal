@@ -1,7 +1,17 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
-import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
@@ -14,10 +24,9 @@ import javax.swing.JTabbedPane;
 
 /**
  *
- * @author Thibault
+ * @author Thibault Desmoulins
  * @author Tiana Razafindralambo
  */
-
 public class HomePanel extends JPanel {
     private AuthenticationPanel authentication;
     private AppletPanel applet;

@@ -1,7 +1,16 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Author : Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>           *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
-import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JComboBox;
@@ -17,7 +26,6 @@ import javax.swing.JTextField;
 public class KeyComponent {
 
     private short lineHeight  = 25;
-    private short lineSpacing = 10;
 
     public JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
     public String type, keyVersion, keyId, key;
@@ -26,10 +34,6 @@ public class KeyComponent {
 
 
     public KeyComponent() {}
-
-    public KeyModel convert2KeyModel() {
-        return new KeyModel(this.type, this.keyVersion, this.keyId, this.key);
-    }
     
     public KeyComponent(String type, String keyVersion, String keyId, String key) {
         JkeyVersion.setText(keyVersion);
@@ -44,6 +48,10 @@ public class KeyComponent {
         cbImp.setSelectedIndex(index);
         
         this.type = this.getType();
+    }
+
+    public KeyModel convert2KeyModel() {
+        return new KeyModel(this.type, this.keyVersion, this.keyId, this.key);
     }
  
     public int getIndexComboBox(String type) {
@@ -81,6 +89,7 @@ public class KeyComponent {
 
         return v;
     }
+
 
     // Getters
     public String getType() {

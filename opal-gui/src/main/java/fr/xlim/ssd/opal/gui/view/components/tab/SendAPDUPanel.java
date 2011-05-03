@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.controller.send.SendApduController;
@@ -12,9 +24,9 @@ import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
 /**
- * @author chanaa
- * @author razaina
- * @author Thibault
+ * @author Chanaa Anas
+ * @author Tiana Razafindralambo
+ * @author Thibault Desmoulins
  */
 public class SendAPDUPanel extends JPanel{
 

@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
+ *           El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                    *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 /*
  * This is a customised observer interface used to update the DataExchangesVue class
  */

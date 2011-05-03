@@ -1,7 +1,18 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ *           Estelle Blandinieres <estelle.blandinieres@etu.unilim.fr>        *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.library.utilities.Conversion;
-import fr.xlim.ssd.opal.gui.controller.AsciiToHexa;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -19,13 +30,12 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.*;
 import javax.swing.KeyStroke;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 
 /**
  * Applet vue
  *
- * @author Thibault
+ * @author Thibault Desmoulins
  * @author Estelle Blandinieres
  * @author Tiana Razafindralambo
  */

@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : David Pequegnot <david.pequegnot@etu.unilim.fr>                  *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view;
 
 import fr.xlim.ssd.opal.gui.App;

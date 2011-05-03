@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Yorick Lesecque <yorick.lesecque@etu.unilim.fr>                  *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;

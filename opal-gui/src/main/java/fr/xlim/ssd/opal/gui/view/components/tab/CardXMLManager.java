@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.library.params.CardConfig;
@@ -9,8 +20,8 @@ import java.util.logging.Logger;
 
 /**
  *
- * @author razaina
- * @author Thibault
+ * @author Tiana Razafindralambo
+ * @author Thibault Desmoulins
  */
 public class CardXMLManager{
     private CardConfig cardDesired = null;

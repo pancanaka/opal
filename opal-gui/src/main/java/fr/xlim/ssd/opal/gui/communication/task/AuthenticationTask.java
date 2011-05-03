@@ -1,19 +1,21 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Author : Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>        *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
 
 package fr.xlim.ssd.opal.gui.communication.task;
 
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.controller.CommunicationController;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
-import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import org.jdesktop.application.Task;
-import org.jdesktop.application.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

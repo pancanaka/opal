@@ -1,6 +1,16 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : David Pequegnot <david.pequegnot@etu.unilim.fr>                  *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.controller;
 
-import fr.xlim.ssd.opal.gui.communication.task.CardSenderTask;
 import fr.xlim.ssd.opal.gui.controller.send.SendApduController;
 import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask; 
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;

@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
+ *           El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                    *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.controller.send;
 import fr.xlim.ssd.opal.gui.communication.task.CardSenderTask;
 import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;

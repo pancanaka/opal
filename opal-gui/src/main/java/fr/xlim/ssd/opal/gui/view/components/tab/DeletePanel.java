@@ -1,3 +1,15 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
+ *           Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>       *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import java.awt.BorderLayout;
@@ -11,9 +23,9 @@ import javax.swing.JTextField;
 
 /**
  *
- * @author chanaa
- * @author razaina
- * @author Thibault
+ * @author Chanaa Anas
+ * @author Tiana Razafindralambo
+ * @author Thibault Desmoulins
  *
  * the DeletePanel class serves to instantiate the deletion tab
  */

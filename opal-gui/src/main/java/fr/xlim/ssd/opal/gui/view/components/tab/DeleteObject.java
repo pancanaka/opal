@@ -1,3 +1,14 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
+ *           Thibault Desmoulins <thibault.desmoulins@etu.unilim.fr>          *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
+
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.controller.AsciiToHexa;
@@ -7,8 +18,8 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author chanaa
- * @author Thibault
+ * @author Chanaa Anas
+ * @author Thibault Desmoulins
  */
 public class DeleteObject implements ActionListener {
 

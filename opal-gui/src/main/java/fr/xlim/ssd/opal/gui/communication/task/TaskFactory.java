@@ -1,14 +1,22 @@
+/******************************************************************************
+ *                             OPAL - GUI                                     *
+ ******************************************************************************
+ * Author : Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>        *
+ ******************************************************************************
+ * This file is part of the OPAL project.                                     *
+ ******************************************************************************
+ * Copyright : University of Limoges (Unilim), 2011                           *
+ ******************************************************************************/
 
 package fr.xlim.ssd.opal.gui.communication.task;
 import fr.xlim.ssd.opal.gui.App;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.TaskMonitor;
 import org.jdesktop.application.TaskService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 /**
  *
  * @author Tiana Razafindralambo
