@@ -22,16 +22,13 @@ public class SendAPDUPanel extends JPanel{
     public String title = "Send APDU";
     public JLabel lbl_cla,lbl_ins,lbl_p1,lbl_p2,lbl_lc,lbl_le,lbl_data;
     static public JTextField fld_cla,fld_ins,fld_p1,fld_p2,fld_lc,fld_le;
-    public JTextArea txt_area;
+    public static JTextArea txt_area;
+    public SendApduController sendApduController;
 
-     public static SendAPDUPanel SAP;
-    public static SendAPDUPanel getinstance(){
-        if(SAP == null) SAP = new SendAPDUPanel();
-        return SAP;
-    }
+    public SendAPDUPanel(SendApduController sac){
+            this.sendApduController = sac;
 
-    public SendAPDUPanel()
-    {
+    
        
         setLayout(new BorderLayout());
         JPanel jplPanel = new JPanel();
@@ -49,26 +46,26 @@ public class SendAPDUPanel extends JPanel{
         lbl_data = new JLabel("Data :");
 
         fld_cla  = new JTextField(2);
-        fld_cla.setDocument(SendApduController.getinstance().createDefaultModel());
+        fld_cla.setDocument(sendApduController.createDefaultModel());
         fld_ins = new JTextField(2);
-        fld_ins.setDocument(SendApduController.getinstance().createDefaultModel());
+        fld_ins.setDocument(sendApduController.createDefaultModel());
         fld_p1  = new JTextField(2);
        // fld_lc.setDocument(SendApduController.getinstance().createDefaultModel());
         fld_p2  = new JTextField(2);
-        fld_p1.setDocument(SendApduController.getinstance().createDefaultModel());
+        fld_p1.setDocument(sendApduController.createDefaultModel());
         fld_lc  = new JTextField(2);
-        fld_p2.setDocument(SendApduController.getinstance().createDefaultModel());
+        fld_p2.setDocument(sendApduController.createDefaultModel());
        // fld_lc.setText(""+SendApduController.nb_bytes);
         fld_lc.setEnabled(false);
         fld_le  = new JTextField(2);
-        fld_le.setDocument(SendApduController.getinstance().createDefaultModel());
+        fld_le.setDocument(sendApduController.createDefaultModel());
 
-        fld_cla.addKeyListener(SendApduController.getinstance());
-        fld_ins.addKeyListener(SendApduController.getinstance());
-        fld_lc.addKeyListener(SendApduController.getinstance());
-        fld_le.addKeyListener(SendApduController.getinstance());
-        fld_p1.addKeyListener(SendApduController.getinstance());
-        fld_p2.addKeyListener(SendApduController.getinstance());
+        fld_cla.addKeyListener(sendApduController);
+        fld_ins.addKeyListener(sendApduController);
+        fld_lc.addKeyListener(sendApduController);
+        fld_le.addKeyListener(sendApduController);
+        fld_p1.addKeyListener(sendApduController);
+        fld_p2.addKeyListener(sendApduController);
 
         jplPanel.add(lbl_cla);
         jplPanel.add(fld_cla);
@@ -85,9 +82,10 @@ public class SendAPDUPanel extends JPanel{
 
         TitledBorder tb = new TitledBorder("");
         txt_area = new JTextArea(20, 40);
+        //txt_area.setDocument(SendApduController.getinstance().createDefaultModel());
         txt_area.setBackground(Color.white);
         txt_area.setBorder(tb);
-        txt_area.addKeyListener(SendApduController.getinstance());
+        txt_area.addKeyListener(sac);
         JPanel jpdata = new JPanel(new BorderLayout());
         jpdata.add(lbl_data,BorderLayout.NORTH);
 
@@ -95,7 +93,7 @@ public class SendAPDUPanel extends JPanel{
         add(jpdata);
 
         JButton but_snd = new JButton("Send");
-        but_snd.addActionListener(new SendApduController());
+        but_snd.addActionListener(sendApduController);
         JPanel pnl_snd = new JPanel();
         pnl_snd.setLayout(new BorderLayout());
         pnl_snd.add(but_snd,BorderLayout.EAST);
@@ -110,10 +108,11 @@ public class SendAPDUPanel extends JPanel{
         }else{
             fld_lc.setText(String.valueOf(SendApduController.nb_bytes/2));
         }
-       // SendAPDUPanel.getinstance().fld_lc.repaint();
     }
+
     public static void clear(JTextField jt){
         jt.setText("");
+
     }
    
 }

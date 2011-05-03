@@ -85,6 +85,7 @@ public class CommunicationController {
                 , (byte) 0x00 // P2
                 , APPLET_ID   // DATA
         );
+        System.out.println(Conversion.arrayToHex(select.getBytes()));
         ResponseAPDU resp = send(select);  
     }
     public ResponseAPDU send(CommandAPDU command)

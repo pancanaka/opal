@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.gui.model.reader;
+    package fr.xlim.ssd.opal.gui.model.reader;
 
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
@@ -16,6 +16,11 @@ import javax.smartcardio.CardChannel;
  * @author Tiana Razafindralambo
  */
 public class CardReaderModel {
+     public static CardReaderModel crm;
+    public static CardReaderModel getinstance(){
+        if(crm == null) crm = new CardReaderModel();
+        return crm;
+    }
 
     /**
      * Default constructor.

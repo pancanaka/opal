@@ -1,9 +1,9 @@
 package fr.xlim.ssd.opal.gui.controller;
 
-import fr.xlim.ssd.opal.gui.communication.task.AppletInstallationTask;
 import fr.xlim.ssd.opal.gui.communication.task.AuthenticationTask;
 import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
 import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
+
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;

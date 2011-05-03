@@ -1,9 +1,10 @@
 package fr.xlim.ssd.opal.gui.controller;
 
+import fr.xlim.ssd.opal.gui.communication.task.CardSenderTask;
+import fr.xlim.ssd.opal.gui.controller.send.SendApduController;
 import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask; 
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView; 
-import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import org.slf4j.Logger;
 import org.jdesktop.application.Application;
@@ -27,9 +28,11 @@ public class MainController {
     private AppletController appletController;
     private DeleteController deleteController;
     private SelectController selectController;
+    public SendApduController sendApduController;
     private CommunicationController communication;
     private HomeView homeView;
     private CardReaderTask cardReaderTask;
+    //private CardSenderTask cardSenderTask;
     private ProfileController profileController;
     
 
@@ -49,11 +52,14 @@ public class MainController {
         this.application = application; 
         
         this.cardReaderModel = new CardReaderModel();
-
+        this.communication = new CommunicationController();
+        this.sendApduController = new SendApduController(cardReaderModel, communication);
         this.homeView = new HomeView(this.application, this);
         
         //this.communication = new CommunicationController(SecLevel.C_MAC);
-        this.communication = new CommunicationController();
+        
+
+        //this.com = new Communication();
 
         try
         {
@@ -69,9 +75,18 @@ public class MainController {
 
         this.deleteController = new DeleteController(this.homeView, this.cardReaderModel, this.communication);
 
+        this.selectController = new SelectController(this.homeView,this.cardReaderModel,this.communication);
+
         this.selectController = new SelectController(this.homeView, this.cardReaderModel, this.communication);
+
+       
+
+        //this.startTerminalTask();
+       // TestMyCard();
+
         
         this.startTerminalTask();  
+
     }
 
 
@@ -115,9 +130,7 @@ public class MainController {
      */
     public void startTerminalTask() {
         this.cardReaderTask = new CardReaderTask(this.application,  this.cardReaderModel);
-
         ApplicationContext context = this.application.getContext();
-
         TaskMonitor monitor = context.getTaskMonitor();
         TaskService service = context.getTaskService();
         service.execute(this.cardReaderTask);

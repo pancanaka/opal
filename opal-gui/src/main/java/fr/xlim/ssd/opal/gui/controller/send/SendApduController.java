@@ -1,10 +1,7 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package fr.xlim.ssd.opal.gui.controller.send;
-
+import fr.xlim.ssd.opal.gui.communication.task.CardSenderTask;
+import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.gui.view.components.tab.SendAPDUPanel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,24 +14,44 @@ import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
+import fr.xlim.ssd.opal.gui.controller.CommunicationController;
+import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author CHANAA Anas
  * @author EL KHALDI Omar
+ * this class controls actions on the sending Apdu Panel
+ * @see SendAPDUPanel
  */
 public class SendApduController implements KeyListener,ActionListener {
-    // array of authorized caracters
-   // final char exa [] = {'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
-    // singleton
-    public static SendApduController SAC;
-    public static SendApduController getinstance(){
-        if(SAC == null) SAC = new SendApduController();
-        return SAC;
+    private static final Logger logger = LoggerFactory.getLogger(SendApduController.class);
+    private CardReaderModel cardReaderModel;
+    private CommunicationController communication;
+    String apdu = null;
+    public static int nb_bytes = 0;
+
+    /**
+     * Constructor
+     * @param cardreadermodel
+     * @param communicationcontroller
+     */
+     
+    public SendApduController(CardReaderModel cardreadermodel , CommunicationController communicationcontroller) {
+        this.communication = communicationcontroller;
+        this.cardReaderModel = cardreadermodel;
+
     }
-    ///////////////////////////////////////mehdi////////////////////////////////////
+
+
     public Document createDefaultModel(){
         return new FileCaseDocument ();
     }
+
+    /**
+     * this class manage the kyes typed by the user
+     */
 
     static class FileCaseDocument extends PlainDocument{
         String text = null;
@@ -52,13 +69,13 @@ public class SendApduController implements KeyListener,ActionListener {
 
             text = str1+str+str2;
 
-            if (text.matches("([0-9]*)|([A-F]*)")){
+            if (text.matches("([0-9]*)([A-F]*)([0-9]*)([A-F]*)")){
                 super.insertString(offs, str, a);
             }
         }
     }
      
-    public static int nb_bytes = 0;
+    
 
     @Override
     public void keyTyped(KeyEvent e) {
@@ -73,6 +90,9 @@ public class SendApduController implements KeyListener,ActionListener {
 
 
     @Override
+    /**
+     *
+     */
     public void keyReleased(KeyEvent e) {
        if(e.getSource() instanceof JTextField){
         JTextField tf = (JTextField)e.getSource();
@@ -81,21 +101,6 @@ public class SendApduController implements KeyListener,ActionListener {
             tf.setText(null);
 
         }
-        // TEST OF THE EXADECIMAL VALUE
-        ////////////////////////////////////
-     /*     boolean t =false;
-            for (int i = 0; i < exa.length; i++) {
-                if(e.getKeyChar() == exa[i] ) t=true;
-
-            }
-            if(t==false){
-                
-                JOptionPane.showMessageDialog(null, "the caracters must be Exadecimal and Upper case", null,JOptionPane.ERROR_MESSAGE );
-                 SendAPDUPanel.clear(tf);
-            }*/
-        ////////////////////////////////////
-
-
         }else if(e.getSource() instanceof JTextArea){
             JTextArea ta = (JTextArea)e.getSource();
             nb_bytes = 0;
@@ -112,13 +117,41 @@ public class SendApduController implements KeyListener,ActionListener {
       
     }
     @Override
+    /**
+     *
+     * if the send button are pressed the actionperformed method verify that all the text feald
+     * are not empty after that the method execute the method sendApdu;
+     *
+     */
     public void actionPerformed(ActionEvent e) {
-        if(SendAPDUPanel.getinstance().fld_cla.getText().isEmpty()||SendAPDUPanel.getinstance().fld_ins.getText().isEmpty()||SendAPDUPanel.getinstance().fld_lc.getText().isEmpty()||SendAPDUPanel.getinstance().fld_p1.getText().isEmpty()||SendAPDUPanel.getinstance().fld_p2.getText().isEmpty()){
+        if(SendAPDUPanel.fld_cla.getText().isEmpty()||SendAPDUPanel.fld_ins.getText().isEmpty()||SendAPDUPanel.fld_lc.getText().isEmpty()||SendAPDUPanel.fld_p1.getText().isEmpty()||SendAPDUPanel.fld_p2.getText().isEmpty()){
             JOptionPane.showMessageDialog(null, "Some fields still empty", null,JOptionPane.ERROR_MESSAGE );
+        }else{
+            String lc = Integer.toHexString(Integer.parseInt(SendAPDUPanel.fld_lc.getText())).toUpperCase();
+            if(lc.length()<2){
+                lc = "0"+lc;
+            }
+            apdu = SendAPDUPanel.fld_cla.getText()+" "+SendAPDUPanel.fld_ins.getText()+" "+SendAPDUPanel.fld_p1.getText()+" "+SendAPDUPanel.fld_p2.getText()+" "+lc+" "+SendAPDUPanel.fld_le.getText()+" "+SendAPDUPanel.txt_area.getText();
+            byte[] Apdu = Conversion.hexToArray(apdu);
+            sendApdu(Apdu);
+
+
         }
 
     }
+    public String getapdu(){
+        return this.apdu;
+    }
+    /**
+     * this method intialize the sending task
+     * @param apdu
+     */
 
-    
+     public void sendApdu( byte [] apdu){
+        logger.info("Sending APDU");
+        CardSenderTask cst = new CardSenderTask(cardReaderModel, communication,  apdu);
+        TaskFactory tf = new TaskFactory().run(cst);
 
+
+    }
 }
