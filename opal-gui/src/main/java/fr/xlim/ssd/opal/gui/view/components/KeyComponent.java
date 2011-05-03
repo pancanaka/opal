@@ -1,6 +1,7 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
+import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.Box;
 import javax.swing.JComboBox;
@@ -18,18 +19,18 @@ public class KeyComponent {
     private short lineHeight  = 25;
     private short lineSpacing = 10;
 
-    JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
+    public JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
     public String type, keyVersion, keyId, key;
-    String[] tab = {"DES_ECB", "DES_CBC", "SCGemVisa", "SCGemVisa2", "AES"};
-    JComboBox cbImp = new JComboBox(tab);
+    KeyType[] tabType = KeyType.values();
+    JComboBox cbImp = new JComboBox(tabType);
 
 
     public KeyComponent() {}
 
-    public KeyModel convert2KeyModel()
-    {
+    public KeyModel convert2KeyModel() {
         return new KeyModel(this.type, this.keyVersion, this.keyId, this.key);
     }
+    
     public KeyComponent(String type, String keyVersion, String keyId, String key) {
         JkeyVersion.setText(keyVersion);
         JkeyId.setText(keyId);
@@ -42,13 +43,15 @@ public class KeyComponent {
         int index = getIndexComboBox(type);
         cbImp.setSelectedIndex(index);
         
-         this.type = this.getType();
+        this.type = this.getType();
     }
  
     public int getIndexComboBox(String type) {
-        int n = tab.length;
+        int n = tabType.length;
         for(int i=1 ; i<n ; i++) {
-            if(tab[i].equalsIgnoreCase(type)) {
+            String value = Integer.toHexString(tabType[i].getValue() & 0xFF).toUpperCase();
+            
+            if(value.compareTo(type) == 0) {
                 return i;
             }
         }
@@ -81,7 +84,26 @@ public class KeyComponent {
 
     // Getters
     public String getType() {
-        return tab[this.cbImp.getSelectedIndex()];
+        String value = String.valueOf(tabType[this.cbImp.getSelectedIndex()]);
+        
+        if(value.compareTo("DES_ECB") == 0) {
+            return "83";
+        }
+        else if(value.compareTo("DES_CBC") == 0) {
+            return "84";
+        }
+        else if(value.compareTo("AES_CBC") == 0) {
+            return "88";
+        }
+        else if(value.compareTo("SCGemVisa") == 0) {
+            return "0";
+        }
+        else if(value.compareTo("SCGemVisa2") == 0) {
+            return "1";
+        }
+        else {
+            return value;
+        }
     }
 
     public String getKeyVersion() {

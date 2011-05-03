@@ -99,8 +99,6 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 else {
                     v = String.valueOf(Integer.parseInt(Integer.toHexString(Integer.valueOf(k.version) & 0xFF).toUpperCase(), 16));
                 }
-
-                System.out.println(k.type);
                 
                 Keylist.add(new KeyComponent(k.type, v, k.keyID, k.key));
             }
@@ -317,6 +315,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
          int n = Keylist.size();
 
          for(int i=0 ; i<n ; i++) {
+             System.out.println(Keylist.get(i).getType());
              p.addKey(Keylist.get(i).getType(), Keylist.get(i).getKeyVersion(), Keylist.get(i).getKeyId(), Keylist.get(i).getKey());
          }
     }

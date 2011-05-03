@@ -532,7 +532,17 @@ public class CardConfigFactory {
                         keyAttributes.setNamedItem(keyVersionNumber);
 
                         Attr type = document.createAttribute("type");
-                        type.setValue(keys[i].getType().toString());
+                        if(keys[i] instanceof SCGemVisa2 || keys[i] instanceof SCGemVisa) {
+                            type.setValue(keys[i].getClass().getSimpleName());
+                        }
+                        else {
+                            if(keys[i].getType().toString().compareTo("AES_CBC") == 0) {
+                                type.setValue("AES");
+                            }
+                            else {
+                                type.setValue(keys[i].getType().toString());
+                            }
+                        }
                         keyAttributes.setNamedItem(type);
                     listedefaultKeys.appendChild(key);
                 }

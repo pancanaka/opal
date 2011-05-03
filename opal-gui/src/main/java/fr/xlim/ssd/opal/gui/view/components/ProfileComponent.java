@@ -3,6 +3,7 @@ package fr.xlim.ssd.opal.gui.view.components;
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.library.KeyType;
 import fr.xlim.ssd.opal.library.SCGPKey;
+import fr.xlim.ssd.opal.library.SCGemVisa;
 import fr.xlim.ssd.opal.library.SCGemVisa2;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
@@ -72,7 +73,6 @@ public class ProfileComponent implements Comparable {
 
         //convert this.keys into SCKey[]
         int keysLength = this.keys.size();
-        System.out.println("KEYS LENGHT " + keysLength);
         SCKey[] keys = new SCKey[keysLength];
         KeyModel currentKey = null;
 
@@ -82,21 +82,21 @@ public class ProfileComponent implements Comparable {
             String keyVersionNumber = currentKey.version;
             String keyDatas = currentKey.key;
 
-            if (keyType.equals("DES_ECB")) {
+            System.out.println(keyType);
+
+            if (keyType.equals("DES_ECB") || keyType.equals("83")) {
                 String keyId = currentKey.keyID;
                 keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
                         KeyType.DES_ECB, Conversion.hexToArray(keyDatas));
-            } else if (keyType.equals("DES_CBC")) {
+            } else if (keyType.equals("DES_CBC") || keyType.equals("84")) {
                 String keyId = currentKey.keyID;
                 keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
                         KeyType.DES_CBC, Conversion.hexToArray(keyDatas));
-            } else if (keyType.equals("SCGemVisa2")) {
+            } else if (keyType.equals("SCGemVisa2") || keyType.equals("1")) {
                 keys[i] = new SCGemVisa2((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
-            } else if (keyType.equals("SCGemVisa")) {
-                keys[i] = new SCGemVisa2((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
-            }
-
-            if (keyType.equals("AES")) {
+            } else if (keyType.equals("SCGemVisa") || keyType.equals("0")) {
+                keys[i] = new SCGemVisa((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
+            } else if (keyType.equals("AES") || keyType.equals("AES_CBC") || keyType.equals("88")) {
                 String keyId = currentKey.keyID;
                 keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
                         KeyType.AES_CBC, Conversion.hexToArray(keyDatas));
@@ -124,7 +124,6 @@ public class ProfileComponent implements Comparable {
         int atrLength = at.length;
         String[] atrs = new String[atrLength];
         for(int i = 0; i < atrLength; i++)
-            //atrs[i] = Integer.toHexString(at[i].getValue() & 0xFF).toUpperCase();
             atrs[i] = Conversion.arrayToHex(at[i].getValue());
         //-----------------------------------------------------------
 
@@ -148,7 +147,18 @@ public class ProfileComponent implements Comparable {
 
         for(int i = 0; i < keysLength; i++) {
             currentKey = sc[i];
-            String keyType = currentKey.getType().name();
+
+            String keyType = null;
+            if(currentKey instanceof SCGemVisa2) {
+                keyType = "1";
+            }
+            else if(currentKey instanceof SCGemVisa) {
+                keyType = "0";
+            }
+            else if(currentKey instanceof SCGPKey) {
+                keyType = Integer.toHexString(currentKey.getType().getValue() & 0xFF).toUpperCase();
+            }
+
             String keyVersionNumber = Integer.toHexString(currentKey.getSetVersion() & 0xFF).toUpperCase();
             String keyData = Conversion.arrayToHex(currentKey.getData());
             String keyID = Integer.toHexString(currentKey.getId() & 0xFF).toUpperCase();
@@ -195,5 +205,9 @@ public class ProfileComponent implements Comparable {
         }
 
         return res;
+    }
+
+    public KeyComponent getKey(int i) {
+        return Keylist.get(i);
     }
 }

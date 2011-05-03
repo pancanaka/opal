@@ -1,6 +1,9 @@
 package fr.xlim.ssd.opal.gui.model.reader;
  
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
+import fr.xlim.ssd.opal.library.SCGPKey;
+import fr.xlim.ssd.opal.library.SCGemVisa;
+import fr.xlim.ssd.opal.library.SCGemVisa2;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.params.ATR;
@@ -45,7 +48,17 @@ public class ProfileModel {
             profileComponent = new ProfileComponent(cardConfig.getName(), cardConfig.getDescription(), AID, SCPMode, cardConfig.getTransmissionProtocol(), ret, cardConfig.getImplementation());
 
             for(int j = 0; j < scKey.length; j++) {
-                String type = Integer.toHexString(scKey[j].getType().getValue() & 0xFF).toUpperCase();
+                String type = null;
+                if(scKey[j] instanceof SCGemVisa2) {
+                    type = "1";
+                }
+                else if(scKey[j] instanceof SCGemVisa) {
+                    type = "0";
+                }
+                else if(scKey[j] instanceof SCGPKey) {
+                    type = Integer.toHexString(scKey[j].getType().getValue() & 0xFF).toUpperCase();
+                }
+                
                 String version = String.valueOf(Integer.parseInt(Integer.toHexString(scKey[j].getSetVersion() & 0xFF).toUpperCase(), 16));
                 String id = Integer.toHexString(scKey[j].getId() & 0xFF).toUpperCase();
                 String key = Conversion.arrayToHex(scKey[j].getData());

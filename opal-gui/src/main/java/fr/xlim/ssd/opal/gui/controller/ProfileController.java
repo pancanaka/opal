@@ -2,9 +2,11 @@ package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
+import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -211,16 +213,15 @@ public class ProfileController {
         int n = keys.size();
 
         for(int i = 0; i < n; i++) {
-            checkKey(keys.get(i));
+            checkKey(keys.get(i), ++i);
         }
     }
 
-    private void checkKey(KeyModel key)
+    private void checkKey(KeyModel key, int index)
             throws ConfigFieldsException {
 
         Pattern p1 = Pattern.compile("[^0-9]+");
         Matcher m = p1.matcher(key.keyID);
-             //key.put("type", Keylist.get(i).getType());
 
         if(!m.find()) {
             String id = key.keyID;
@@ -234,38 +235,59 @@ public class ProfileController {
                         value = value.replaceAll(":", "");
                         value = value.replaceAll(" ", "");
 
-                        System.out.println(key.type);
-
                         if(value.length() % 2 == 0 &&  value.length() < 64) {
                             p1 = Pattern.compile("[^0-9A-F]+", Pattern.CASE_INSENSITIVE);
                             m = p1.matcher(value);
 
                             if(!m.find()) {
-                                //DES_ECB, DES_CBC, SCGemVisa, SCGemVisa2 et d’AES : vérifier la taille de la clé de chaque algo
+                                if(key.type.compareTo("83") == 0
+                                        || key.type.compareTo("84") == 0
+                                        || key.type.compareTo("0") == 0
+                                        || key.type.compareTo("1") == 0
+                                        || key.type.compareTo("88") == 0) {
+
+                                    if((key.type.compareTo("83") == 0
+                                            || key.type.compareTo("0") == 0
+                                            || key.type.compareTo("1") == 0)
+                                            && value.length() != 48) {
+                                        
+                                        throw new ConfigFieldsException("Key value at index " + index + " must contain 48 hex characters (192 bits).");
+                                    }
+
+                                    if((key.type.compareTo("84") == 0
+                                            || key.type.compareTo("88") == 0)
+                                            && value.length() != 32) {
+                                        
+                                        throw new ConfigFieldsException("Key value at index " + index + " must contain 32 hex characters (128 bits).");
+                                    }
+                                }
+                                else {
+                                    throw new ConfigFieldsException("Invalid key type at index " + index + ".");
+                                }
                             }
                             else {
-                                throw new ConfigFieldsException("Key values have to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
+                                throw new ConfigFieldsException("All key values have to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
                             }
                         }
                         else {
-                            throw new ConfigFieldsException("Key value is invalid (maximum length: 192 bytes - 24 characters).");
+                            throw new ConfigFieldsException("Key value at index " + index + " is invalid (maximum length: 192 bytes - 48 hex characters).");
                         }
 
                     }
                     else {
-                        throw new ConfigFieldsException("Key versions must be between 0 and 255.");
+                        throw new ConfigFieldsException("Key versions at index " + index + " must be between 0 and 255.");
                     }
                 }
                 else {
-                    throw new ConfigFieldsException("Key versions must be numeric.");
+                    throw new ConfigFieldsException("Key versions at index " + index + " must be numeric.");
                 }
             }
             else {
-                throw new ConfigFieldsException("Key IDs must be numeric.");
+                throw new ConfigFieldsException("All key IDs must be numeric.");
             }
         }
         else {
-            throw new ConfigFieldsException("Key IDs must be numeric.");
+            throw new ConfigFieldsException("All key IDs must be numeric.");
         }
     }
 
@@ -283,22 +305,4 @@ public class ProfileController {
             throw new ConfigFieldsException("Implementation can't be empty.\n");
         }
     }
-
-
-    /*public String[] getAtrs(int id) {
-        if(mode.compareTo("modify") == 0 || mode.compareTo("view") == 0) {
-            ATR[] atrs = profiles[id].getAtrs();
-            String[] ret = new String[atrs.length];
-
-            for(int i = 0; i < atrs.length; i++) {
-                ret[i] = Conversion.arrayToHex(atrs[i].getValue());
-            }
-
-            return ret;
-        }
-        else {
-            String[] ret = new String[1];
-            return ret;
-        }
-    }*/
 }
