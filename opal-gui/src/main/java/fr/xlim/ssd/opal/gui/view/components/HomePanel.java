@@ -23,23 +23,23 @@ public class HomePanel extends JPanel {
     private AppletPanel applet;
     private DeletePanel delete;
     private SelectPanel select;
+    private SendAPDUPanel send;
+
+
 
     public HomePanel(MainController controller) {
         authentication = new AuthenticationPanel(controller);
         applet         = new AppletPanel();
         delete         = new DeletePanel();
         select         = new SelectPanel();
-        SendAPDUPanel p5       = new SendAPDUPanel();
-        //DataExchangesVue dev = new DataExchangesVue();
-        //dev.setVisible(true);
+        send      = new SendAPDUPanel(controller.sendApduController);
         JTabbedPane myPanel    = new JTabbedPane();
 
         myPanel.addTab(authentication.title, authentication);
         myPanel.addTab(applet.title, applet);
         myPanel.addTab(delete.title, delete);
         myPanel.addTab(select.title, select);
-        myPanel.addTab(p5.title, p5);
-        //   myPanel.addTab(p6.title, p6);
+        myPanel.addTab(send.title, send);
 
         //scrollPane = new JScrollPane(myPanel);
         //myPanel.setSize(800,800);
@@ -52,5 +52,6 @@ public class HomePanel extends JPanel {
     public AppletPanel getAppletPanel(){ return applet;}
     public DeletePanel getDeletePanel(){ return delete;}
     public SelectPanel getSelectPanel(){ return select;}
+    public SendAPDUPanel getSendApduPanel(){ return send;}
 
 }
