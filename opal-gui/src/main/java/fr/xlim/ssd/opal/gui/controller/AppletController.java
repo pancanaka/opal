@@ -12,12 +12,12 @@ package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.communication.task.AppletInstallationTask;
 import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener; 
 import fr.xlim.ssd.opal.gui.view.HomeView;
-import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;  
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
+
 
 /**
  *
@@ -25,7 +25,8 @@ import org.slf4j.LoggerFactory;
  */
 public class AppletController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AppletController.class);
+    
+    private static final CustomLogger logger= new CustomLogger();
     private AppletPanel appletPanel;
     private CardReaderStateListener cardReaderStateListener;
     private CardReaderModel cardReaderModel;

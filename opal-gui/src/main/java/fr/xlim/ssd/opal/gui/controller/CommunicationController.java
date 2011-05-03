@@ -11,6 +11,7 @@
 package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel; 
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.securityDomain.event.SecurityDomainStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.securityDomain.event.SecurityDomainStateListener;
 import fr.xlim.ssd.opal.library.SecLevel;
@@ -22,16 +23,14 @@ import java.io.InputStream;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author razaina
  */
 public class CommunicationController {
-
-    private static final Logger logger = LoggerFactory.getLogger(CommunicationController.class);
+    
+    private static final CustomLogger logger= new CustomLogger();
     private CommunicationModel model;
     private SecurityDomain securityDomain;
     private SecurityDomainStateListener securityDomainStateListener;

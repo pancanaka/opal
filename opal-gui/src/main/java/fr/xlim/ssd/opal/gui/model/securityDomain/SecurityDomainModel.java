@@ -10,6 +10,7 @@
 
 package fr.xlim.ssd.opal.gui.model.securityDomain;
 
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.securityDomain.event.SecurityDomainStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.securityDomain.event.SecurityDomainStateListener;
 import fr.xlim.ssd.opal.library.SecLevel;
@@ -19,8 +20,6 @@ import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import java.util.logging.Level;
 import javax.smartcardio.CardChannel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -28,7 +27,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SecurityDomainModel {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityDomainModel.class);
+    private static final CustomLogger logger= new CustomLogger();
     private EventListenerList listeners = new EventListenerList();
     private SecurityDomain domain = null;
     private SecLevel secLevel = null;

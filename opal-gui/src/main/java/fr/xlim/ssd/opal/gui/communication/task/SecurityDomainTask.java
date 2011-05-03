@@ -10,11 +10,10 @@
 
 package fr.xlim.ssd.opal.gui.communication.task;
 
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.securityDomain.SecurityDomainModel;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SecurityDomainTask extends Task<Void, Void> {
 
-    private static final Logger logger = LoggerFactory.getLogger(SecurityDomainTask.class);
+    private static final CustomLogger logger= new CustomLogger();
     private SecurityDomainModel secModel;
     public SecurityDomainTask(Application application, SecurityDomainModel secModel)
     {

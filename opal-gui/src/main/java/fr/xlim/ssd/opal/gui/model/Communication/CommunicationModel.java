@@ -10,13 +10,13 @@
 
 package fr.xlim.ssd.opal.gui.model.Communication;
 
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.securityDomain.SecurityDomainModel;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.params.CardConfig; 
-import org.slf4j.Logger;
+
 import javax.smartcardio.CardChannel;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CommunicationModel {
 
-    private static final Logger logger = LoggerFactory.getLogger(CommunicationModel.class);
+    private static final CustomLogger logger= new CustomLogger();
     private SecurityDomainModel securityModel; 
     private SecLevel securityLevel;
 

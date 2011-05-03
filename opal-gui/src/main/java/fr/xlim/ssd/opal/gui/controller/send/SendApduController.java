@@ -26,9 +26,8 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.PlainDocument;
 import fr.xlim.ssd.opal.gui.controller.CommunicationController;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * @author CHANAA Anas
@@ -37,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @see SendAPDUPanel
  */
 public class SendApduController implements KeyListener,ActionListener {
-    private static final Logger logger = LoggerFactory.getLogger(SendApduController.class);
+    private static final CustomLogger logger= new CustomLogger();
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;
     String apdu = null;

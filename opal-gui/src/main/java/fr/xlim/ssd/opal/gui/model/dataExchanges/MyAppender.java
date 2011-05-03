@@ -9,20 +9,45 @@
  * Copyright : University of Limoges (Unilim), 2011                           *
  ******************************************************************************/
 
-/*
- * This is a customised observer interface used to update the DataExchangesVue class
- */
-
 package fr.xlim.ssd.opal.gui.model.dataExchanges;
 
+import ch.qos.logback.core.AppenderBase;
+import ch.qos.logback.classic.spi.ILoggingEvent;
+import javax.swing.SwingUtilities;
 
-public interface Observer {
 
-	public void updateALL(String change_text,String level);
-    public void updateAPDU(String change_text);
-    public void updateLog(String change_text);
-    public void clearALL(String change_text);
-    public void clearAPDU(String change_text);
-    public void clearLog(String change_text);
+public class MyAppender extends AppenderBase<ILoggingEvent>{
+
+    MyMessage current_msg;
+
+    @Override
+    public synchronized void doAppend(ILoggingEvent event) {
+
+        this.append(event);
+
+    }
+
+    @Override
+    public void append(ILoggingEvent event){
+
+        current_msg=new MyMessage(event.getLevel().toString(), event.getMessage());
+
+//            SwingUtilities.invokeLater(new Runnable(){
+  //          @Override
+    //        public void run() {
+       
+                DataExchangesModel dem=DataExchangesModel.getInstance();
+                dem.displayAllAPDUSendings(current_msg);
+      //      }
+        //});
+
+
+
+
+
+
+    }
+
+   
 
 }

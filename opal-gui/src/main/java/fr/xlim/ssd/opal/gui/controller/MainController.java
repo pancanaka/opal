@@ -13,15 +13,15 @@ package fr.xlim.ssd.opal.gui.controller;
 
 import fr.xlim.ssd.opal.gui.controller.send.SendApduController;
 import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask; 
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView; 
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
-import org.slf4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.TaskMonitor;
 import org.jdesktop.application.TaskService;
-import org.slf4j.LoggerFactory;
+
 
 /**
  * Application main controller.
@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class MainController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+    private static final CustomLogger logger= new CustomLogger();
     private Application application;
     private CardReaderModel cardReaderModel;
     private AuthenticationController authController;

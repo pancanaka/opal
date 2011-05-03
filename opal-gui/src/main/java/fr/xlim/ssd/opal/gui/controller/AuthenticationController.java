@@ -15,6 +15,7 @@ import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
 import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
 
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
@@ -29,8 +30,6 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -38,7 +37,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AuthenticationController {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationController.class);
+    private static final CustomLogger logger= new CustomLogger();
     private AuthenticationModel authModel;
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;

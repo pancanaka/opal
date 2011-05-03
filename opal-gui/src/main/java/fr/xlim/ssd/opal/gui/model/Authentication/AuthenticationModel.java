@@ -12,6 +12,7 @@ package fr.xlim.ssd.opal.gui.model.Authentication;
 
 import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.model.Communication.CommunicationModel;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
 import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
@@ -19,9 +20,7 @@ import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException; 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 
 /**
  * The model containing informations needed to authenticate the card
@@ -33,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AuthenticationModel {
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationModel.class);
+    private static final CustomLogger logger= new CustomLogger();
     private CardReaderModel cardReaderModel;
     private CommunicationModel communication;
     private CardConfig cardConfig;

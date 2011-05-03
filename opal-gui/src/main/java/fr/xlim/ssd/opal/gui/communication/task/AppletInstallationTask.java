@@ -12,16 +12,15 @@ package fr.xlim.ssd.opal.gui.communication.task;
 
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.controller.CommunicationController;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import org.jdesktop.application.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Tiana Razafindralambo
  */
 public class AppletInstallationTask extends Task<Void, Void> implements TaskInterface{
-    private static final Logger logger = LoggerFactory.getLogger(AppletInstallationTask.class);
+    private static final CustomLogger logger= new CustomLogger();
     private CommunicationController communication = null;
     byte[] PACKAGE_ID = null;
     byte[] APPLET_ID = null;

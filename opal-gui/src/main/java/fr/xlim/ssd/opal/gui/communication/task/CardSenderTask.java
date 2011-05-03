@@ -15,10 +15,9 @@ package fr.xlim.ssd.opal.gui.communication.task;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.controller.CommunicationController;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import javax.smartcardio.CommandAPDU;
 import org.jdesktop.application.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -29,8 +28,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CardSenderTask extends Task<Void,Void> implements TaskInterface {
 
-
-    private static final Logger logger = LoggerFactory.getLogger(CardSenderTask.class);
+    private static final CustomLogger logger= new CustomLogger();
     private CommunicationController communication = null;
     private byte[] Apdu = null;
     private CardReaderModel cardReaderModel;

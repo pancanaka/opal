@@ -12,12 +12,11 @@ package fr.xlim.ssd.opal.gui.communication.task;
 
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.controller.CommunicationController;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import org.jdesktop.application.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -25,7 +24,7 @@ import org.slf4j.LoggerFactory;
  */
 public class AuthenticationTask extends Task<Void, Void> implements TaskInterface{
 
-    private static final Logger logger = LoggerFactory.getLogger(AuthenticationTask.class);
+    private static final CustomLogger logger= new CustomLogger();
     private CardConfig cardConfig;
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;

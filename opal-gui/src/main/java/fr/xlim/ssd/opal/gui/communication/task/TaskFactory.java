@@ -10,20 +10,20 @@
 
 package fr.xlim.ssd.opal.gui.communication.task;
 import fr.xlim.ssd.opal.gui.App;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.Task;
 import org.jdesktop.application.TaskMonitor;
 import org.jdesktop.application.TaskService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
  * @author Tiana Razafindralambo
  */
 public class TaskFactory {
-    private static final Logger logger = LoggerFactory.getLogger(TaskFactory.class);
+    
 
+    private static final CustomLogger logger= new CustomLogger();
     public static ApplicationContext currentContext;
     public static TaskMonitor monitor = null;
     public static TaskService service = null; 

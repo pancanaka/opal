@@ -9,20 +9,36 @@
  * Copyright : University of Limoges (Unilim), 2011                           *
  ******************************************************************************/
 
-/*
- * This is a customised observer interface used to update the DataExchangesVue class
- */
-
 package fr.xlim.ssd.opal.gui.model.dataExchanges;
 
+import java.util.Date;
 
-public interface Observer {
 
-	public void updateALL(String change_text,String level);
-    public void updateAPDU(String change_text);
-    public void updateLog(String change_text);
-    public void clearALL(String change_text);
-    public void clearAPDU(String change_text);
-    public void clearLog(String change_text);
+public class MyMessage {
+
+    private String level;
+    private String msg_content;
+
+    public MyMessage(String level,String msg_content){
+
+        this.level=level;
+        this.msg_content=msg_content;
+
+    }
+
+    public String getLevel(){
+        return  this.level;
+    }
+
+    public String getMessage(){
+        return  this.msg_content;
+    }
+
+    @Override
+    public String toString(){
+        Date date=new Date();
+        if(date.getSeconds()>=0 && date.getSeconds()<9)   return (date.getHours()+":"+date.getMinutes()+":0"+date.getSeconds()+"  ["+this.level+"]  "+msg_content);
+        return (date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"  ["+this.level+"]  "+msg_content);
+    }
 
 }

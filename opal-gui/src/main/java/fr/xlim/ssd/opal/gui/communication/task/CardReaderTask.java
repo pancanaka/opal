@@ -12,6 +12,7 @@
 package fr.xlim.ssd.opal.gui.communication.task;
 
 import fr.xlim.ssd.opal.gui.App;
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderItem;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.tools.SmartCardListParser; 
@@ -19,8 +20,6 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.Task;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.*;
 import javax.smartcardio.ATR;
@@ -38,7 +37,7 @@ import java.util.List;
  * @author Tiana Razafindralambo
  */
 public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
-    private static final Logger logger = LoggerFactory.getLogger(CardReaderTask.class);
+    private static final CustomLogger logger= new CustomLogger();
 
     private static final int DEFAULT_REFRESH_INTERVAL  = 2000;
 
@@ -229,7 +228,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                     card = cardReader.connect("*");
                 } catch (CardException ce) {
                     this.cardReaderItemListTmp.add(item);
-                    logger.info("Error while connectiong to the card");
+                    logger.info("Error while connecting to the card");
                    // logger.debug("Error while connecting to the card", ce);
                     continue;
                 }

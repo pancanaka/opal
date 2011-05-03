@@ -10,11 +10,10 @@
 
 package fr.xlim.ssd.opal.gui.controller;
 
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel; 
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DeleteController {
 
-    private static final Logger logger = LoggerFactory.getLogger(DeleteController.class);
+    private static final CustomLogger logger= new CustomLogger();
     private DeletePanel deletePanel;
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;

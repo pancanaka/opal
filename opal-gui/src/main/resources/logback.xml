@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
+    <appender name="CUSTOMAPPENDER" class="fr.xlim.ssd.opal.gui.model.dataExchanges.MyAppender"/>
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="fr.xlim.ssd.opal.library.logging.filters.MarkerFilter">
             <marker>APDU</marker>
@@ -41,6 +42,7 @@
     </appender>
 
     <root level="DEBUG">
+        <appender-ref ref="CUSTOMAPPENDER"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="APDU_OUT"/>
         <appender-ref ref="APDU_IN"/>

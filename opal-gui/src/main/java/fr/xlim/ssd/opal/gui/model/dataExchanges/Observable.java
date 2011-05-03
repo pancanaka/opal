@@ -1,8 +1,8 @@
 /******************************************************************************
  *                             OPAL - GUI                                     *
  ******************************************************************************
- * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
- *           El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                    *
+ * Author : El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                     *
+ *          Chanaa Anas <anas.chanaa@etu.unilim.fr>                           *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
@@ -15,14 +15,10 @@
 
 package fr.xlim.ssd.opal.gui.model.dataExchanges;
 
-/**
- * @author Chanaa Anas
- * @author EL KHALDI Omar
- */
 public interface Observable {
 
     public void addObserver(Observer obver);
-    public void displayAllAPDUSendings();
+    public void displayAllAPDUSendings(MyMessage message);
     public void displayAllLogSendings();
     public void displayApduSending();
     public void displayLogSending();

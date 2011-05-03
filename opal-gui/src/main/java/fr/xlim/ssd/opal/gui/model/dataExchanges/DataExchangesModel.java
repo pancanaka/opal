@@ -1,8 +1,8 @@
 /******************************************************************************
  *                             OPAL - GUI                                     *
  ******************************************************************************
- * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
- *           El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                    *
+ * Author : El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                     *
+ *          Chanaa Anas <anas.chanaa@etu.unilim.fr>                           *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
@@ -25,6 +25,17 @@ import java.util.ArrayList;
  */
 public class DataExchangesModel implements Observable{
 
+    private static DataExchangesModel instance;
+
+    private DataExchangesModel(){}
+
+    public static DataExchangesModel getInstance(){
+
+        if(instance == null)    instance=new DataExchangesModel();
+        return instance;
+
+    }
+
     ArrayList<Observer> lst_obver=new ArrayList<Observer>();
 
     String txt_apdu;
@@ -40,15 +51,15 @@ public class DataExchangesModel implements Observable{
     }
 
     @Override
-    public void displayAllAPDUSendings(){
+    public void displayAllAPDUSendings(MyMessage message){
 
     	for(Observer obver: lst_obver){
 
-            txt_all="APDU-> Sending APDU Test\n";
-            obver.updateALL(txt_all);
+
+            txt_all=message.toString()+"\n";
+            obver.updateALL(txt_all,message.getLevel());
 
         }
-
 
     }
 
@@ -58,7 +69,7 @@ public class DataExchangesModel implements Observable{
 
 
             txt_all="Logging-> Logging Test\n";
-            obver.updateALL(txt_all);
+            obver.updateALL(txt_all,"");
 
         }
 

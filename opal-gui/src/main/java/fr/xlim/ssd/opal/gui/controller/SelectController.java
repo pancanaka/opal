@@ -10,11 +10,10 @@
 
 package fr.xlim.ssd.opal.gui.controller;
 
+import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.SelectPanel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  *
@@ -22,7 +21,7 @@ import org.slf4j.LoggerFactory;
  */
 public class SelectController {
 
-    private static final Logger logger = LoggerFactory.getLogger(SelectController.class);
+    private static final CustomLogger logger= new CustomLogger();
     private SelectPanel selectPanel;
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;
