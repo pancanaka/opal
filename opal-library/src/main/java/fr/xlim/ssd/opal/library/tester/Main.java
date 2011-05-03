@@ -149,7 +149,7 @@ public class Main {
 
         channel = null;
 
-        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
+        SecLevel secLevel = SecLevel.C_MAC;
 
         /// get the card config and card channel, detection of t=0 or t=1 is automatic
         CardConfig cardConfig = getCardChannel(1, "*");
@@ -198,7 +198,7 @@ public class Main {
                 Conversion.hexToArray("00"), null);
 
         // Selecting Applet
-        CommandAPDU select = new CommandAPDU((byte) 0x00 // CLA
+        /*CommandAPDU select = new CommandAPDU((byte) 0x00 // CLA
                 , (byte) 0xA4 // INS
                 , (byte) 0x04 // P1
                 , (byte) 0x00 // P2
@@ -239,7 +239,7 @@ public class Main {
 
         // Deleting package if existed
         logger.info("Deleting package");
-        securityDomain.deleteOnCardObj(PACKAGE_ID, false);
+        securityDomain.deleteOnCardObj(PACKAGE_ID, false);*/
     }
 
 }

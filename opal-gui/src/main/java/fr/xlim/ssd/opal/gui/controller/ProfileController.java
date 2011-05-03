@@ -22,38 +22,101 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
+ * The <code>ProfileController</code> class is the controlleur used for profile management.
+ * <p>It communicates with the <code>ProfileModel</code> to set/get all profiles information
+ * and to and call core functions</p>
+ * <p>It also contains all checks needed to verify that what the user sends to the app is legal or not</p>
  *
  * @author Yorick Lesecque
  * @author Thibault Desmoulins
  * @author Tiana Razafindralambo
+ *
+ * @see fr.xlim.ssd.opal.gui.model.reader.ProfileModel
+ * @see fr.xlim.ssd.opal.library.params.CardConfigNotFoundException
+ *
+ * @version 0.1
  */
-public class ProfileController {
-    private ProfileModel profileModel;
-    public static String mode = "modify";
 
+public class ProfileController {
+    /** Contains the model */
+    private ProfileModel profileModel;
+
+    /**
+     * Initialises a new {@code ProfileController} containing the model.
+     *
+     * @throws  CardConfigNotFoundException
+     *          If an error occured while reading the XML config file
+     */
     public ProfileController()
             throws CardConfigNotFoundException {
         profileModel = new ProfileModel();
     }
 
+    /**
+     * Used to get tu profile model.
+     *
+     * @return  A {@code ProfileModel}
+     */
     public ProfileModel getProfileModel() {
         return profileModel;
     }
 
+    /**
+     * Used to get all profiles loaded from the XML config file.
+     *
+     * @return  A String matrix that contains needed profile information
+     *          sorted by names in order to display them in the view.
+     *          It can be used this way: <br />
+     *          <ul>
+     *               <li>info[x][0] contains the name of the profile</li>
+     *               <li>info[x][1] contains the description of the profile</li>
+     *               <li>info[x][2] contains the default implementation of the profile</li>
+     *          </ul>
+     */
     public String[][] getAllProfiles() {
         return profileModel.getAllProfiles();
     }
 
+    /**
+     * Used to delete a profile from the XML config file
+     *
+     * @param   id is the id of the profile to delete
+     *          It's meant to correspond with the line clicked by the user on the display panel
+     *
+     * @return  A boolean
+     *          {@code True} for config found {@code False} if not
+     *
+     * @throws  CardConfigNotFoundException
+     *          If an error occured while reading the XML config file or if the profile was not found
+     */
     public boolean deleteProfile(int id)
             throws CardConfigNotFoundException {
+
         return profileModel.deleteProfile(id);
     }
 
+    /**
+     * Used to get a precise {@code ProfileComponent} from the model.
+     *
+     * @param   i is the id of the profile to delete
+     *
+     * @return  A {@code ProfileComponent}
+     *
+     * @see fr.xlim.ssd.opal.gui.view.components.ProfileComponent
+     */
     public ProfileComponent getProfile(int i) {
         return profileModel.getProfile(i);
     }
 
 
+    /**
+     * Used add a profile to the XML config file
+     *
+     * @param   p is the profile to add
+     *
+     * @throws  CardConfigNotFoundException If an error occured while reading the XML config file
+     *          ConfigFieldsException If the data entered by the user are incorrect
+     */
     public void addProfile(ProfileComponent p)
             throws CardConfigNotFoundException, ConfigFieldsException {
 
@@ -61,7 +124,14 @@ public class ProfileController {
         profileModel.addProfile(p.convertToCardConfig());
     }
 
-
+    /**
+     * Used to update the profile selected by the user.
+     *
+     * @param   p is the profile to update
+     *
+     * @throws  CardConfigNotFoundException If an error occured while reading the XML config file or if the profile was not found
+     *          ConfigFieldsException If the data entered by the user are incorrect
+     */
     public void updateProfile(ProfileComponent p)
             throws CardConfigNotFoundException, ConfigFieldsException {
 
@@ -85,7 +155,7 @@ public class ProfileController {
 
     private void checkName(String name)
             throws ConfigFieldsException {
-        
+
         if(name.length() >= 4 && name.length() <= 25) {
             Pattern p1 = Pattern.compile("[^0-9A-Z/_ .-]+", Pattern.CASE_INSENSITIVE);
             Matcher m = p1.matcher(name);
@@ -193,7 +263,7 @@ public class ProfileController {
                     && scp.compareToIgnoreCase(SCPMode.SCP_03_2D.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_03_25.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_10.toString()) != 0) {
-                
+
                 throw new ConfigFieldsException("The SCPMode is unknown.\n");
             }
         }
@@ -260,14 +330,14 @@ public class ProfileController {
                                             || key.type.compareTo("0") == 0
                                             || key.type.compareTo("1") == 0)
                                             && value.length() != 48) {
-                                        
+
                                         throw new ConfigFieldsException("Key value at index " + index + " must contain 48 hex characters (192 bits).");
                                     }
 
                                     if((key.type.compareTo("84") == 0
                                             || key.type.compareTo("88") == 0)
                                             && value.length() != 32) {
-                                        
+
                                         throw new ConfigFieldsException("Key value at index " + index + " must contain 32 hex characters (128 bits).");
                                     }
                                 }
