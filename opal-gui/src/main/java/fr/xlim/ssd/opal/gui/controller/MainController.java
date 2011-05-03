@@ -16,6 +16,7 @@ import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView; 
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+import javax.swing.JOptionPane;
 import org.slf4j.Logger;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ApplicationContext;
@@ -71,12 +72,10 @@ public class MainController {
 
         //this.com = new Communication();
 
-        try
-        {
+        try {
             this.profileController = new ProfileController();
-        }
-        catch (CardConfigNotFoundException ex) {
-           logger.error(ex.getMessage());
+        } catch (CardConfigNotFoundException ex) {
+           new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
         }
         
         this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
