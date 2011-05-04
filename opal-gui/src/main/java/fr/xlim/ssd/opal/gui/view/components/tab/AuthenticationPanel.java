@@ -40,7 +40,11 @@ import javax.swing.JOptionPane;
 
 
 /**
+<<<<<<< local
+ * @author Thibault
+=======
  * @author Thibault Desmoulins
+>>>>>>> other
  * @author Tiana Razafindralambo
  * @author Estelle Blandinieres
  */

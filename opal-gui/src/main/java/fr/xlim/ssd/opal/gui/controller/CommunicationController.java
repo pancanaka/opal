@@ -93,7 +93,7 @@ public class CommunicationController {
                 , (byte) 0x00 // P2
                 , APPLET_ID   // DATA
         );
-        System.out.println(Conversion.arrayToHex(select.getBytes()));
+        logger.info("Selecting Applet (AID = "+Conversion.arrayToHex(select.getBytes())+")");
         ResponseAPDU resp = send(select);  
     }
     public ResponseAPDU send(CommandAPDU command)
@@ -112,7 +112,7 @@ public class CommunicationController {
         }
         return null;
     }
-    public void deleteApplet(byte[] PACKAGE_ID , byte[] APPLET_ID)
+    public void deleteApplet(byte[] APPLET_ID)
     {
         // Deleting Applet  
         logger.info("Deleting applet");
@@ -121,7 +121,7 @@ public class CommunicationController {
             ResponseAPDU resp = securityDomain.deleteOnCardObj(APPLET_ID, false);
         }catch(CardException ex){ logger.error(ex.getMessage());}
     } 
-    public void deletePackage(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    public void deletePackage(byte[] PACKAGE_ID)
     {
         // Deleting package if existed
         logger.info("Deleting package");
@@ -132,10 +132,10 @@ public class CommunicationController {
     }
     public void fullDelete(byte[] PACKAGE_ID , byte[] APPLET_ID)
     { 
-        deleteApplet(PACKAGE_ID, APPLET_ID);
-        deletePackage(PACKAGE_ID, APPLET_ID);
+        deleteApplet(APPLET_ID);
+        deletePackage(PACKAGE_ID);
     }
-    private void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID, byte[] privileges)
+    private void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID, byte[] privileges, byte[] params)
     {
         try
          {
@@ -144,7 +144,7 @@ public class CommunicationController {
                         PACKAGE_ID,
                         APPLET_ID,
                         APPLET_ID,
-                        privileges, null);
+                        privileges, params);
          }catch(CardException ex)
          {
              logger.error(ex.getMessage());
@@ -160,16 +160,16 @@ public class CommunicationController {
         {
             logger.error(ex.getMessage());
             logger.info("Deleting previous applet install and package install");
-            deleteApplet(PACKAGE_ID, APPLET_ID);
-            deletePackage(PACKAGE_ID, APPLET_ID);
+            fullDelete(PACKAGE_ID, APPLET_ID); 
             install4load(PACKAGE_ID, APPLET_ID, securityDomainAID, params);
         }
     }
-    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params, byte[] privileges)
+     
+    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load , byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install)
     {
         if(this.canCommunicate())
         {
-             install4load(PACKAGE_ID, APPLET_ID, securityDomainAID, params);
+             install4load(PACKAGE_ID, APPLET_ID, securityDomainAID, params4Install4load);
 
              InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
              byte[] convertedBuffer = CapConverter.convert(is);
@@ -177,13 +177,13 @@ public class CommunicationController {
              try
              {
                 logger.info("* Loading file");
-                ResponseAPDU[] resp = securityDomain.load(convertedBuffer, (byte) 0x10);
+                ResponseAPDU[] resp = securityDomain.load(convertedBuffer, maxDataLength);
              }catch(CardException ex)
              {
                  logger.error(ex.getMessage());
              }
 
-             install4install(PACKAGE_ID, APPLET_ID, privileges);
+             install4install(PACKAGE_ID, APPLET_ID, privileges, paramsInstall4Install);
         }
     }
     public void authenticate(CardConfig _cardConfig)
@@ -209,8 +209,9 @@ public class CommunicationController {
                         logger.debug("External Authenticate APDU response : " + response);
 
                         model.getSecurityDomainModel().isAuthenticated(true); 
+                        logger.warn(Conversion.arrayToHex(cardConfig.getIssuerSecurityDomainAID())+"__");
                     }
-                    catch(CardException ex) { logger.error("_______" + ex.getMessage()); }
+                    catch(CardException ex) { logger.error(ex.getMessage()); }
                 }else logger.error("No security domain set yet.");
                 model.getSecurityDomainModel().removeSecurityDomainStateListener(this);
             }

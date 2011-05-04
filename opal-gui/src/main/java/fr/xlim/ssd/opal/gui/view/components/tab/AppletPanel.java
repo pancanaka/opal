@@ -264,8 +264,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         if(o instanceof JButton) {
             JButton b = (JButton) o;
 
-            if(b.equals(bFile)) {
-                System.out.println("FILE___");
+            if(b.equals(bFile)) { 
                 JFileChooser chooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("CAP Files", "cap");
                 //chooser.setAcceptAllFileFilterUsed(false);

@@ -24,9 +24,11 @@ public class SelectController {
     private static final CustomLogger logger= new CustomLogger();
     private SelectPanel selectPanel;
     private CardReaderModel cardReaderModel;
-    private CommunicationController communication;
+    private CommunicationController communication; 
     public SelectController(HomeView homeView, CardReaderModel cardRederModel, CommunicationController communication)
     {
+        this.selectPanel = homeView.getHomePanel().getSelectPanel();
+        this.selectPanel.setController(this);
         this.cardReaderModel = cardReaderModel;
         this.selectPanel = homeView.getHomePanel().getSelectPanel();
         this.communication = communication;

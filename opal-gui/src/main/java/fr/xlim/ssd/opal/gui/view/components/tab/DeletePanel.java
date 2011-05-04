@@ -12,8 +12,12 @@
 
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
+import fr.xlim.ssd.opal.gui.controller.DeleteController;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
@@ -29,10 +33,11 @@ import javax.swing.JTextField;
  *
  * the DeletePanel class serves to instantiate the deletion tab
  */
-public class DeletePanel extends JPanel{
+public class DeletePanel extends JPanel implements ActionListener{
 
     public String title = "Delete";
     public static JTextField AID;
+    private DeleteController controller;
     public JButton Delete ;
     /**
      * DeletePanel constructor
@@ -55,14 +60,29 @@ public class DeletePanel extends JPanel{
         boutton_panel.setLayout(new FlowLayout());
         add(boutton_panel,BorderLayout.SOUTH);
 
-        JButton Delete = new JButton("Delete");
+        Delete = new JButton("Delete");
         boutton_panel.add(Delete);
-        Delete.addActionListener(new DeleteObject());
-
-
-
+        Delete.addActionListener((ActionListener) this); 
+    }
+    public void setController(DeleteController controller)
+    {
+        this.controller = controller;
     }
     public static String gettext(){
         return AID.getText();
+    }
+    
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        Object o = e.getSource(); 
+
+        if(o instanceof JButton) {
+            JButton b = (JButton) o; 
+            if(b.equals(Delete))
+            {
+                byte[] APPLET_ID = Conversion.hexToArray(AID.getText());
+                controller.deleteApplet(APPLET_ID);
+            }
+        }
     }
 }

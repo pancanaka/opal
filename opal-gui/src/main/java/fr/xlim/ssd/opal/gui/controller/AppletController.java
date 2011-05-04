@@ -35,14 +35,15 @@ public class AppletController {
     public AppletController(HomeView homeView, CardReaderModel cardReaderModel, CommunicationController communication)
     {
         this.appletPanel = homeView.getHomePanel().getAppletPanel();
+        this.appletPanel.setController(this);
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
     }
-
-    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params, boolean capConverter, byte maxDataLength, byte[] privileges)
+                                
+    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install)
     {
-        logger.info("Installing Applet");
-        AppletInstallationTask appletInstallationTask = new AppletInstallationTask(PACKAGE_ID, APPLET_ID, ressource, securityDomainAID, params, privileges, communication);
+        logger.info("Installing Applet");                                                                   
+        AppletInstallationTask appletInstallationTask = new AppletInstallationTask(PACKAGE_ID, APPLET_ID, ressource, securityDomainAID, params4Install4load, maxDataLength, privileges, paramsInstall4Install, this.communication);
         TaskFactory taskFactory = TaskFactory.run(appletInstallationTask);
         //this.communication.installApplet(PACKAGE_ID, APPLET_ID, ressource);
     } 

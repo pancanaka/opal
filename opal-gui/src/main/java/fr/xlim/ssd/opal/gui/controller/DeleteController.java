@@ -28,18 +28,19 @@ public class DeleteController {
     public DeleteController(HomeView homeView, CardReaderModel cardReaderModel, CommunicationController communication)
     {
         this.deletePanel = homeView.getHomePanel().getDeletePanel();
+        this.deletePanel.setController(this);
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
     }
-    public void deleteApplet(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    public void deleteApplet(byte[] APPLET_ID)
     {
         logger.info("Deleting Applet");
-        this.communication.deleteApplet(PACKAGE_ID, APPLET_ID);
+        this.communication.deleteApplet(APPLET_ID);
     }
-    public void deletePackage(byte[] PACKAGE_ID, byte[] APPLET_ID)
+    public void deletePackage(byte[] PACKAGE_ID)
     {
         logger.info("Deleting package");
-        this.communication.deletePackage(PACKAGE_ID, APPLET_ID);
+        this.communication.deletePackage(PACKAGE_ID);
     }
     public void fullDelete(byte[] PACKAGE_ID , byte[] APPLET_ID)
     {

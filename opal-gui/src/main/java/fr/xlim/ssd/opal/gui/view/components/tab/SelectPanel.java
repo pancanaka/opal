@@ -12,6 +12,8 @@
 
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
+import fr.xlim.ssd.opal.gui.controller.SelectController;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -36,13 +38,17 @@ public class SelectPanel extends JPanel implements ActionListener{
     
     private JComboBox cbAID;
     private JButton jbSelect;
+    private SelectController controller;
 
     private short lineHeight = 20;
 
-    public SelectPanel() {
+    public SelectPanel() { 
         drawWindow();
     }
-
+    public void setController(SelectController controller)
+    {
+        this.controller = controller;
+    }
     public void drawWindow() {
 
         JPanel jplPanel = new JPanel();
@@ -60,7 +66,8 @@ public class SelectPanel extends JPanel implements ActionListener{
         jbSelect = new JButton("Select");
         verticalBox.add(createFormLine("", jbSelect));
         verticalBox.add(Box.createRigidArea(new Dimension(300, 10)));
-
+        jbSelect.addActionListener((ActionListener) this);
+        
         jplPanel.add(verticalBox);
     }
 
@@ -85,7 +92,16 @@ public class SelectPanel extends JPanel implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        
+        Object o = e.getSource(); 
+
+        if(o instanceof JButton) {
+            JButton b = (JButton) o;
+            if(b.equals(jbSelect))
+            {
+                byte[] APPLET_ID = Conversion.hexToArray(cbAID.getSelectedItem().toString());
+                controller.selectApplet(APPLET_ID);
+            }
+        }
     }
 }
 
