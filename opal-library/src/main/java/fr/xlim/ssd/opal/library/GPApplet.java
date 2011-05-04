@@ -109,6 +109,7 @@ public class GPApplet {
      * @see fr.xlim.ssd.opal.commands.Commands#setOffCardKeys(fr.xlim.ssd.opal.library.SCKey[])
      */
     public void setOffCardKeys(SCKey[] keys) {
+        System.out.println(keys.length+" setOffCardKeysGPApplet");
         this.cmds.setOffCardKeys(keys);
     }
 

@@ -184,6 +184,7 @@ public class Main {
         logger.info("Installing Applet");
         logger.info("* Install For Load");
         securityDomain.installForLoad(PACKAGE_ID, null, null);
+        
         //File file = new File("cap/HelloWorld-2_1_2.cap");
 
         InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
@@ -198,7 +199,7 @@ public class Main {
                 Conversion.hexToArray("00"), null);
 
         // Selecting Applet
-        /*CommandAPDU select = new CommandAPDU((byte) 0x00 // CLA
+        CommandAPDU select = new CommandAPDU((byte) 0x00 // CLA
                 , (byte) 0xA4 // INS
                 , (byte) 0x04 // P1
                 , (byte) 0x00 // P2
@@ -239,7 +240,7 @@ public class Main {
 
         // Deleting package if existed
         logger.info("Deleting package");
-        securityDomain.deleteOnCardObj(PACKAGE_ID, false);*/
+        securityDomain.deleteOnCardObj(PACKAGE_ID, false);
     }
 
 }
