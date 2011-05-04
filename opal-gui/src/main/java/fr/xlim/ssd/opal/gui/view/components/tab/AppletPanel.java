@@ -12,6 +12,7 @@
 
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
+import fr.xlim.ssd.opal.gui.controller.AppletController;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 
 import java.awt.Dimension;
@@ -41,6 +42,8 @@ import javax.swing.KeyStroke;
  */
 public class AppletPanel extends JPanel implements ActionListener, KeyListener{
 
+    private AppletController controller;
+    
     public String title = "Applet";
 
     private JLabel jlAppletFile;
@@ -226,6 +229,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         // Load applet
         ligne = Box.createHorizontalBox();
         jbLoad = new JButton("Load applet");
+        jbLoad.addActionListener((ActionListener) this);
         ligne.add(jbLoad);
         verticalBox.add(ligne);
 
@@ -247,6 +251,10 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         return label;
     }
 
+    public void setController(AppletController controller)
+    {
+        this.controller = controller;
+    }
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
@@ -257,6 +265,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
             JButton b = (JButton) o;
 
             if(b.equals(bFile)) {
+                System.out.println("FILE___");
                 JFileChooser chooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("CAP Files", "cap");
                 //chooser.setAcceptAllFileFilterUsed(false);
@@ -265,6 +274,30 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     tfAppletFile.setText(chooser.getSelectedFile().getAbsolutePath());
                 }
+            }else if(b.equals(jbLoad))
+            { 
+                byte[] PACKAGE_ID = (("".equals(tfPackageAID.getText())))? null : Conversion.hexToArray(tfPackageAID.getText()); 
+                byte[] APPLET_ID = (("".equals(tfAppletAID.getText())))? null : Conversion.hexToArray(tfAppletAID.getText()); 
+                String ressource = (tfAppletFile.getText().equals(""))?null:tfAppletFile.getText(); 
+                byte[] securityDomainAID = (("".equals(tfSDAID.getText())))? null : Conversion.hexToArray(tfSDAID.getText());
+                byte[] params4Install4load = (("".equals(tfParam.getText())))? null : Conversion.hexToArray(tfParam.getText());
+                String length = Integer.toHexString(Integer.parseInt(tfMaxDataLength.getText())).toUpperCase();
+                if(length.length()<2){
+                    length = "0"+length;
+                } 
+                byte maxDataLength = ("".equals(tfMaxDataLength.getText())) ? (byte)0xFF : (byte)(Conversion.hexToArray(length)[0]);
+                byte[] paramsInstall4Install = (("".equals(tfParam2.getText())))? null : Conversion.hexToArray(tfParam2.getText());
+                byte[] privileges = (("".equals(tfPrivileges.getText())))? Conversion.hexToArray("00") : Conversion.hexToArray(tfPrivileges.getText());
+                controller.installApplet(
+                                            PACKAGE_ID, 
+                                            APPLET_ID, 
+                                            ressource, 
+                                            securityDomainAID, 
+                                            params4Install4load,  
+                                            maxDataLength,
+                                            privileges,
+                                            paramsInstall4Install
+                                            );
             }
         } 
 
