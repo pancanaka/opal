@@ -11,6 +11,7 @@
 
 package fr.xlim.ssd.opal.gui.model.dataExchanges;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 
@@ -37,8 +38,19 @@ public class MyMessage {
     @Override
     public String toString(){
         Date date=new Date();
-        if(date.getSeconds()>=0 && date.getSeconds()<9)   return (date.getHours()+":"+date.getMinutes()+":0"+date.getSeconds()+"  ["+this.level+"]  "+msg_content);
-        return (date.getHours()+":"+date.getMinutes()+":"+date.getSeconds()+"  ["+this.level+"]  "+msg_content);
+        
+        
+        return (this.getCurrentTime()+"  ["+this.level+"]  "+msg_content);
+        
+    }
+
+    public String getCurrentTime(){
+
+        Date date=new Date();
+        SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
+        String strDate=sdf.format(date);
+        return  strDate;
+
     }
 
 }

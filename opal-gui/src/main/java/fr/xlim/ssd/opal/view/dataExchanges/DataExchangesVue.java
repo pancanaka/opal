@@ -35,6 +35,7 @@ import javax.swing.JTextPane;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.Document;
 import javax.swing.text.Style;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
@@ -60,7 +61,7 @@ public class DataExchangesVue extends JDialog implements ActionListener{
     public DataExchangesVue(){
 
         //Default DataExchanges Settings
-        this.setSize(450,500);
+        this.setSize(600,500);
         this.setTitle("Data Exchanges");
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -139,6 +140,11 @@ public class DataExchangesVue extends JDialog implements ActionListener{
                         else if(level.equals("INFO"))       doc.insertString(doc.getLength(), change_text , doc.getStyle("info"));
                         else if(level.equals("DEBUG"))      doc.insertString(doc.getLength(), change_text , doc.getStyle("debug"));
 
+                        //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
+                        Document d = txt_all.getDocument();
+                        txt_all.select(d.getLength(), d.getLength());
+
+
                     }
                     catch (BadLocationException ex) {
                         //don't forget to fill this!!!!!!!!!!!!!!!!!!!
@@ -148,10 +154,20 @@ public class DataExchangesVue extends JDialog implements ActionListener{
             @Override
             public void updateAPDU(String change_text){
                 txt_apdu.setText(txt_apdu.getText().concat(change_text));
+
+                //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
+                Document d = txt_apdu.getDocument();
+                txt_apdu.select(d.getLength(), d.getLength());
+                
             }
             @Override
             public void updateLog(String change_text){
                 txt_logging.setText(txt_logging.getText().concat(change_text));
+
+                //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
+                Document d = txt_apdu.getDocument();
+                txt_apdu.select(d.getLength(), d.getLength());
+
             }
             @Override
             public void clearALL(String change_text){

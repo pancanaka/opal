@@ -288,7 +288,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                 byte maxDataLength = ("".equals(tfMaxDataLength.getText())) ? (byte)0xFF : (byte)(Conversion.hexToArray(length)[0]);
                 byte[] paramsInstall4Install = (("".equals(tfParam2.getText())))? null : Conversion.hexToArray(tfParam2.getText());
                 byte[] privileges = (("".equals(tfPrivileges.getText())))? Conversion.hexToArray("00") : Conversion.hexToArray(tfPrivileges.getText());
-                controller.installApplet(
+/*                controller.installApplet(
                                             PACKAGE_ID, 
                                             APPLET_ID, 
                                             ressource, 
@@ -297,7 +297,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                                             maxDataLength,
                                             privileges,
                                             paramsInstall4Install
-                                            );
+                                            );*/
             }
         } 
 
