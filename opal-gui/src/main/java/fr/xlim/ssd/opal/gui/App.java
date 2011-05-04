@@ -16,7 +16,7 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import java.io.UnsupportedEncodingException;
 
-/**
+/*
  * Application life cycle management.
  *
  * @author David Pequegnot <david.pequegnot@etu.unilim.fr>
