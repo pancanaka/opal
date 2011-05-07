@@ -27,7 +27,6 @@ import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileView;
 import java.awt.event.ActionListener;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 
@@ -45,9 +44,7 @@ public class HomeView extends FrameView implements ActionListener {
     
     private CardReaderMonitorToolbar cardReaderMonitorToolbar;
 
-    private JScrollPane scrollPan;
-
-    private ShowProfileView showProfileView;
+    private AppJScrollPan scrollPan;
 
     private HomePanel homePanel;
     
@@ -69,10 +66,10 @@ public class HomeView extends FrameView implements ActionListener {
         drawComponents();
     }
 
-    public MainController getController()
-    {
+    public MainController getController() {
         return this.controller;
     }
+
     /**
      * Contains all instructions to draw components in the "Home view".
      */
@@ -121,33 +118,38 @@ public class HomeView extends FrameView implements ActionListener {
      */
     private void initializeToolbar() {
         this.cardReaderMonitorToolbar = new CardReaderMonitorToolbar(this.controller);
-
-        this.setToolBar(this.cardReaderMonitorToolbar);
     }
 
 
     public void showPanel(String type) { 
         if(type.equals("home")) {
-            if(!homePanelIsSet)
-            {
+            if(!homePanelIsSet) {
                 homePanelIsSet = true;
                 homePanel = new HomePanel(this.controller);
             }
-            scrollPan = new JScrollPane(homePanel);
+            scrollPan = new AppJScrollPan(homePanel);
         }
         else if(type.equals("show profiles")) {
-            scrollPan = new JScrollPane(new ShowProfileView(this));
+            scrollPan = new AppJScrollPan(new ShowProfileView(this));
         }
         else if(type.equals("add update")) {
-            scrollPan = new JScrollPane(new AddUpdateProfileView(this));
+            scrollPan = new AppJScrollPan(new AddUpdateProfileView(this));
         }
+
+        // Set te application toolbar on the vue
+        scrollPan.setColumnHeaderView(this.cardReaderMonitorToolbar);
+
         this.getFrame().setContentPane(scrollPan);
         this.getFrame().setVisible(true);
     }
 
     public void showPanel(JPanel pan) { 
-        scrollPan = new JScrollPane(pan);
+        scrollPan = new AppJScrollPan(pan);
         this.getFrame().setContentPane(scrollPan);
+
+        // Set te application toolbar on the vue
+        scrollPan.setColumnHeaderView(this.cardReaderMonitorToolbar);
+        
         this.getFrame().setVisible(true);
     }
 
@@ -176,8 +178,7 @@ public class HomeView extends FrameView implements ActionListener {
         }
     }
 
-    public HomePanel getHomePanel()
-    {
+    public HomePanel getHomePanel() {
         return homePanel;
     }
 }
