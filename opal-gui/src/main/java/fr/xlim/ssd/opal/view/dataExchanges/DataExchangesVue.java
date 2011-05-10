@@ -71,7 +71,7 @@ public class DataExchangesVue extends JDialog implements ActionListener{
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosed(WindowEvent e) {
-                App.nbDataExchangesVueOpened = 0;
+                App.dataExchangesVueOpened = false;
             }
         });
 

@@ -23,6 +23,14 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 /**
+ * The first panel displayed on the application. It shows these different panels :
+ * <ul>
+ *     <li>Authentication;</li>
+ *     <li>Applet;</li>
+ *     <li>Delete;</li>
+ *     <li>Select;</li>
+ *     <li>Send APDU;</li>
+ * </ul>
  *
  * @author Thibault Desmoulins
  * @author Tiana Razafindralambo
@@ -35,14 +43,20 @@ public class HomePanel extends JPanel {
     private SendAPDUPanel send;
 
 
-
+    /**
+     * Constructor
+     * Display the <code>JTabbedPane</code> which contains all the panels mentioned in the class description
+     *
+     * @param controller the main controller of the application
+     * @see fr.xlim.ssd.opal.gui.view.HomeView
+     */
     public HomePanel(MainController controller) {
-        authentication = new AuthenticationPanel(controller);
-        applet         = new AppletPanel();
-        delete         = new DeletePanel();
-        select         = new SelectPanel();
-        send      = new SendAPDUPanel(controller.sendApduController);
-        JTabbedPane myPanel    = new JTabbedPane();
+        authentication      = new AuthenticationPanel(controller);
+        applet              = new AppletPanel();
+        delete              = new DeletePanel();
+        select              = new SelectPanel();
+        send                = new SendAPDUPanel(controller.sendApduController);
+        JTabbedPane myPanel = new JTabbedPane();
 
         myPanel.addTab(authentication.title, authentication);
         myPanel.addTab(applet.title, applet);
@@ -57,10 +71,45 @@ public class HomePanel extends JPanel {
         frame.add(myPanel, BorderLayout.SOUTH);
         this.add(frame);
     }
-    public AuthenticationPanel getAuthenticationPanel(){ return authentication;}
-    public AppletPanel getAppletPanel(){ return applet;}
-    public DeletePanel getDeletePanel(){ return delete;}
-    public SelectPanel getSelectPanel(){ return select;}
-    public SendAPDUPanel getSendApduPanel(){ return send;}
+
+
+    /**
+     * @return the authentication panel, instance of the <code>AuthenticationPanel</code> class
+     */
+    public AuthenticationPanel getAuthenticationPanel(){
+        return authentication;
+    }
+
+
+    /**
+     * @return the applet panel, instance of the <code>AppletPanel</code> class
+     */
+    public AppletPanel getAppletPanel(){
+        return applet;
+    }
+
+
+    /**
+     * @return the delete panel, instance of the <code>DeletePanel</code> class
+     */
+    public DeletePanel getDeletePanel(){
+        return delete;
+    }
+
+
+    /**
+     * @return the select panel, instance of the <code>SelectPanel</code> class
+     */
+    public SelectPanel getSelectPanel(){
+        return select;
+    }
+
+
+    /**
+     * @return the send APDU panel, instance of the <code>SendAPDUPanel</code> class
+     */
+    public SendAPDUPanel getSendApduPanel(){
+        return send;
+    }
 
 }
