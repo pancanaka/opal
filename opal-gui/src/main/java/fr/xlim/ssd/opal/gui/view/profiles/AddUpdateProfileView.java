@@ -58,6 +58,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
     private JComboBox cbSCP = null, cbTP  = null, cbImp = null;
 
+    // Values that initialize the comboboxes
     String[] implementationValues = {"GP2xCommands", "GemXpresso211Commands"};
     String[] tabTP = {"T=0", "T=1", "*"};
     SCPMode[] tabSCP = SCPMode.values(); // All SCPMode values are in this enumeration
@@ -65,6 +66,11 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     private ArrayList<JTextField>   ATRlist = new ArrayList<JTextField>();
     private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
 
+
+    /**
+     * This constructor is called when we want to create a new profile.
+     * @param f the parent view
+     */
     public AddUpdateProfileView(HomeView f) {
         this.f = f;
         profileController = f.getController().getProfileController();
@@ -76,6 +82,12 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         drawWindow();
     }
 
+
+    /**
+     * This constructor is called when we want to update an existing profile.
+     * @param f the parent view
+     * @param profile the profile which already exist (all fields will be initialized with its values)
+     */
     public AddUpdateProfileView(HomeView f, ProfileComponent profile) {
         this.f = f;
         profileController = f.getController().getProfileController();
@@ -89,7 +101,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         txtDesc.setText(profile.getDescription());
         txtAID.setText(profile.getAID());
 
-        
+        // Initialize ATR
         String[] list = profile.getATR();
         if(list.length > 0) {
             ATRlist.clear();
@@ -98,6 +110,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
             }
         }
 
+        // Initialize Keys
         ArrayList<KeyModel> listK = profile.getKeys();
         if(listK.size() > 0) {
             Keylist.clear();
@@ -115,24 +128,38 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         }
 
         drawWindow();
-
+        
         cbSCP.setSelectedIndex( getIndexComboBox(cbSCP, "SCP_" + profile.getSCPmode()) );
         cbTP.setSelectedIndex ( getIndexComboBox(cbTP, profile.getTP()) );
         cbImp.setSelectedIndex( getIndexComboBox(cbImp, profile.getImplementation()) );
     }
 
+
+    /**
+     * This function is called in every constructor in order to perform
+     * instructions that are necessary for the proper functioning of the class
+     */
     public void initializeWindow() {
         // ATRlist must contain one JTextField at least
         ATRlist.add(new JTextField());
 
+        // Keylist must contain one KeyComponent at least
         Keylist.add(new KeyComponent());
 
+        // Events
         btAddATR.addActionListener(this);
         btAddField.addActionListener(this);
         btCancel.addActionListener(this);
         btAction.addActionListener(this);
     }
 
+
+    /**
+     * This generic function return the index of the string to find in the combobox
+     * @param cb the combobox
+     * @param toFind the string to find in the combobox
+     * @return 0 if the string is not found, otherwise its index in the combobox
+     */
     public int getIndexComboBox(JComboBox cb, String toFind) {
         int n = cb.getItemCount();
         for(int i=1 ; i<n ; i++) {
@@ -143,6 +170,14 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         return 0;
     }
 
+
+    /**
+     * This function draw the form on the window. It's often called because ATR
+     * fields and Keys can be added or removed at will
+     * 
+     * /!\ Important /!\ Notice that at the end of the function, the showPanel
+     * function of the parent view is called in order to refresh the panel.
+     */
     public void drawWindow() {
         this.removeAll();
 
@@ -209,6 +244,12 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     }
 
 
+    /**
+     * "Template" of ONE line of the form (with a label and a component)
+     * @param label the label of the line
+     * @param field the component of the line
+     * @return an horizontal box containing the label and the component
+     */
     public Box createFormLine(String label, Component field) {
         Box    ligne  = Box.createHorizontalBox();
         JLabel lbl    = new JLabel(label);
@@ -222,6 +263,14 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         return ligne;
     }
 
+
+    /**
+     * "Template" of ONE line of the form (with a label and two component)
+     * @param label the label of the line
+     * @param field the first component of the line
+     * @param field the second component of the line
+     * @return an horizontal box containing the label and the two fields
+     */
     public Box createFormLine(String label, Component field, Component field2) {
         Box    ligne  = Box.createHorizontalBox();
         JLabel lbl    = new JLabel(label);
@@ -236,6 +285,11 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         return ligne;
     }
 
+
+    /**
+     * Draws all keys of the <code>Keylist</code> on the box given in parameter
+     * @param v the box where the keys has to be drawn
+     */
     public void drawKeysLines(Box v) {
         int n      = Keylist.size();
         JPanel jpl = new JPanel();
@@ -267,6 +321,11 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         v.add(jpl);
     }
 
+
+    /**
+     * Draws all ATR lines of the <code>ATRlist</code> on the box given in parameter
+     * @param v the box where the keys has to be drawn
+     */
     public void drawATRLines(Box v) {
         int n = ATRlist.size();
         JPanel jpl = new JPanel();
@@ -310,6 +369,9 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     }
 
 
+    /**
+     * @return the ATR list
+     */
     private String[] getATR() {
          int n = ATRlist.size();
          String ATRs[] = new String[n];
@@ -318,7 +380,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
              ATRs[i] = ATRlist.get(i).getText();
          }
 
-    return ATRs;
+        return ATRs;
     }
 
     private void getKeys(ProfileComponent p) {
@@ -331,7 +393,9 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
     }
 
 
-
+    /**
+     * This function is called when an action is performed on a button in the form.
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
@@ -388,7 +452,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 }
             }
             else if(b.getText().equals("Current")) {
-                JOptionPane.showMessageDialog(null, "plop : "+b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(null, b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
             }
             else if(b.getText().equals("Remove")) {
                 // The index of the field we want to remove ("ATR" field)

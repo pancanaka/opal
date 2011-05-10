@@ -127,7 +127,7 @@ public class ProfileComponent implements Comparable {
 
 
     /**
-     * Override the compareTo function in order to compare the ProfileComponent
+     * Overrides the compareTo function in order to compare the ProfileComponent
      * given in parameter to this instance
      * @param o the <code>ProfileComponent</code> to compare to this class
      * @return -1 if this class is before the parameter, 1 if it is after, 0 if both are equals
@@ -140,7 +140,7 @@ public class ProfileComponent implements Comparable {
 
 
     /**
-     * Convert all fields of this class into a <code>CardConfig</code> object
+     * Converts all fields of this class into a <code>CardConfig</code> object
      * @return an instance of <code>CardConfig</code>
      * @see fr.xlim.ssd.opal.library.params.CardConfig
      */

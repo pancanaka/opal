@@ -66,7 +66,7 @@ public class KeyComponent {
     }
 
     /**
-     * Convert all fields of this class into a KeyModel object
+     * Converts all fields of this class into a KeyModel object
      * @return an instance of <code>KeyModel</code>
      * @see fr.xlim.ssd.opal.gui.model.Key.KeyModel
      */
@@ -76,7 +76,7 @@ public class KeyComponent {
 
 
     /**
-     * Return the index of the "type" combobox corresponding to the string given in parameter
+     * Returns the index of the "type" combobox corresponding to the string given in parameter
      * @param type the type of the key
      * @return the index of the combobox
      */
@@ -94,7 +94,7 @@ public class KeyComponent {
 
 
     /**
-     * Create the form in order to create or to update a key
+     * Creates the form in order to create or to update a key
      * @return a <code>Box</code> object containing the form to show
      */
     public Box createLineForm() {
