@@ -30,9 +30,10 @@ import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 
 /**
+ * This class controls actions on the sending Apdu Panel
+ * 
  * @author CHANAA Anas
  * @author EL KHALDI Omar
- * this class controls actions on the sending Apdu Panel
  * @see SendAPDUPanel
  */
 public class SendApduController implements KeyListener,ActionListener {

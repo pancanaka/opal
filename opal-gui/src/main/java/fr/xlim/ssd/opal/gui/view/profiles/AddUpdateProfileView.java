@@ -38,7 +38,10 @@ import javax.swing.border.TitledBorder;
  * @author Thibault Desmoulins
  */
 public class AddUpdateProfileView extends JPanel implements ActionListener {
+    // The parent view
     private HomeView f = null;
+
+    // The controller of this class
     private ProfileController profileController = null;
 
     private short lineHeight  = 25;
