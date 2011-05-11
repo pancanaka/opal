@@ -13,10 +13,14 @@ package fr.xlim.ssd.opal.gui.view.profiles;
 import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
+import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
+import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent;
+import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponent;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -43,6 +47,9 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
 
     // The controller of this class
     private ProfileController profileController = null;
+
+    private CardReaderModel cardReaderModel;
+    private ATR currentATR;
 
     private short lineHeight  = 25;
     private short lineSpacing = 10;
@@ -154,6 +161,21 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         btAddField.addActionListener(this);
         btCancel.addActionListener(this);
         btAction.addActionListener(this);
+
+        cardReaderModel = f.getController().getCardReaderModel();
+
+        currentATR = cardReaderModel.getSelectedCardATR();
+        
+        cardReaderModel.addCardReaderStateListener(new CardReaderStateListener() {
+
+            @Override
+            public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
+                if (cardReaderModel.hasSelectedCardReaderItem()) {
+                   currentATR = cardReaderModel.getSelectedCardATR();
+                }
+                cardReaderModel.removeCardReaderStateListener(this);
+            }
+        });
     }
 
 
@@ -455,7 +477,14 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 }
             }
             else if(b.getText().equals("Current")) {
-                JOptionPane.showMessageDialog(null, b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
+                //JOptionPane.showMessageDialog(null, b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
+
+                if(currentATR==null) {
+                    JOptionPane.showMessageDialog(null, "NULL ah ah ah", "Caution", JOptionPane.WARNING_MESSAGE);
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, currentATR.toString(), "Caution", JOptionPane.WARNING_MESSAGE);
+                }
             }
             else if(b.getText().equals("Remove")) {
                 // The index of the field we want to remove ("ATR" field)
