@@ -32,19 +32,9 @@ public class DeleteController {
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
     }
-    public void deleteApplet(byte[] APPLET_ID)
+    public void delete(byte[] AID, boolean cascade)
     {
         logger.info("Deleting Applet");
-        this.communication.deleteApplet(APPLET_ID);
-    }
-    public void deletePackage(byte[] PACKAGE_ID)
-    {
-        logger.info("Deleting package");
-        this.communication.deletePackage(PACKAGE_ID);
-    }
-    public void fullDelete(byte[] PACKAGE_ID , byte[] APPLET_ID)
-    {
-        logger.info("Deleting Applet and Package");
-        this.communication.fullDelete(PACKAGE_ID, APPLET_ID);
-    }
+        this.communication.delete(AID, cascade);
+    } 
 }

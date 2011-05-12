@@ -28,10 +28,12 @@ public class AppletInstallationTask extends Task<Void, Void> implements TaskInte
     byte[] params4Install4load = null;
     byte[] params4Install4Install = null;
     byte[] privileges = null;
+    byte[] MODULE_AID = null;
     byte maxDataLength;
+    boolean reorderCapFileComponents;
     String ressource = "";
     
-    public AppletInstallationTask(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install, CommunicationController communication)
+    public AppletInstallationTask(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install, CommunicationController communication, boolean reorderCapFileComponents)
     {
         super(App.instance);
         this.communication = communication;
@@ -43,12 +45,14 @@ public class AppletInstallationTask extends Task<Void, Void> implements TaskInte
         this.params4Install4Install = paramsInstall4Install;
         this.maxDataLength = maxDataLength;
         this.privileges = privileges;
+        this.reorderCapFileComponents = reorderCapFileComponents;
+        this.MODULE_AID = MODULE_AID;
     }
     @Override
     protected Void doInBackground(){
         logger.info("Applet installation task...");
         
-        this.communication.installApplet(this.PACKAGE_ID, this.APPLET_ID, this.ressource, this.securityDomainAID, this.params4Install4load, this.maxDataLength, this.privileges, this.params4Install4Install);
+        this.communication.installApplet(this.PACKAGE_ID, this.MODULE_AID, this.APPLET_ID, this.ressource, this.securityDomainAID, this.params4Install4load, this.maxDataLength, this.privileges, this.params4Install4Install, this.reorderCapFileComponents);
         return null;
     }
 

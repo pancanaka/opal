@@ -15,10 +15,13 @@ package fr.xlim.ssd.opal.gui.view.components.tab;
 import fr.xlim.ssd.opal.gui.controller.DeleteController;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
@@ -39,6 +42,8 @@ public class DeletePanel extends JPanel implements ActionListener{
     public static JTextField AID;
     private DeleteController controller;
     public JButton Delete ;
+    private Box ligne;
+    private JCheckBox cascade;
     /**
      * DeletePanel constructor
      */
@@ -54,6 +59,10 @@ public class DeletePanel extends JPanel implements ActionListener{
 
         AID = new JTextField(40);
         jplPanel.add(AID);
+         
+        cascade = new JCheckBox("Cascade", true); 
+        
+        jplPanel.add(cascade); 
       //  AID.addActionListener(new DeleteObject());
 
         JPanel boutton_panel = new JPanel();
@@ -80,8 +89,8 @@ public class DeletePanel extends JPanel implements ActionListener{
             JButton b = (JButton) o; 
             if(b.equals(Delete))
             {
-                byte[] APPLET_ID = Conversion.hexToArray(AID.getText());
-                controller.deleteApplet(APPLET_ID);
+                byte[] ObjectAID = Conversion.hexToArray(AID.getText());
+                controller.delete(ObjectAID, cascade.isSelected());
             }
         }
     }

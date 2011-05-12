@@ -111,38 +111,23 @@ public class CommunicationController {
             }catch(CardException ex){ logger.info(ex.getMessage());}
         }
         return null;
-    }
-    public void deleteApplet(byte[] APPLET_ID)
-    {
-        // Deleting Applet  
-        logger.info("Deleting applet");
+    } 
+    public void delete(byte[] AID,  boolean cascade)
+    { 
+        logger.info("Deleting object on card");
         try
         {
-            ResponseAPDU resp = securityDomain.deleteOnCardObj(APPLET_ID, false);
+            ResponseAPDU resp = securityDomain.deleteOnCardObj(AID, cascade);
         }catch(CardException ex){ logger.error(ex.getMessage());}
     } 
-    public void deletePackage(byte[] PACKAGE_ID)
-    {
-        // Deleting package if existed
-        logger.info("Deleting package");
-        try
-        {
-            ResponseAPDU resp = securityDomain.deleteOnCardObj(PACKAGE_ID, false);
-        }catch(CardException ex){ logger.error(ex.getMessage());}
-    }
-    public void fullDelete(byte[] PACKAGE_ID , byte[] APPLET_ID)
-    { 
-        deleteApplet(APPLET_ID);
-        deletePackage(PACKAGE_ID);
-    }
-    private void install4install(byte[] PACKAGE_ID, byte[] APPLET_ID, byte[] privileges, byte[] params)
+    private void install4install(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, byte[] privileges, byte[] params)
     {
         try
          {
             logger.info("* Install for install"); 
             ResponseAPDU resp = securityDomain.installForInstallAndMakeSelectable(
                         PACKAGE_ID,
-                        APPLET_ID,
+                        MODULE_AID,
                         APPLET_ID,
                         privileges, params);
          }catch(CardException ex)
@@ -160,30 +145,34 @@ public class CommunicationController {
         {
             logger.error(ex.getMessage());
             logger.info("Deleting previous applet install and package install");
-            fullDelete(PACKAGE_ID, APPLET_ID); 
+            delete(PACKAGE_ID, false);
+            delete(APPLET_ID, false);
             install4load(PACKAGE_ID, APPLET_ID, securityDomainAID, params);
         }
     }
      
-    public void installApplet(byte[] PACKAGE_ID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load , byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install)
+    public void installApplet(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load , byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install, boolean reorderCapFileComponents)
     {
         if(this.canCommunicate())
         {
              install4load(PACKAGE_ID, APPLET_ID, securityDomainAID, params4Install4load);
 
-             InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
-             byte[] convertedBuffer = CapConverter.convert(is);
+             if(reorderCapFileComponents)
+             {
+                 InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
+                 byte[] convertedBuffer = CapConverter.convert(is);
 
-             try
-             {
-                logger.info("* Loading file");
-                ResponseAPDU[] resp = securityDomain.load(convertedBuffer, maxDataLength);
-             }catch(CardException ex)
-             {
-                 logger.error(ex.getMessage());
+                 try
+                 {
+                    logger.info("* Loading file");
+                    ResponseAPDU[] resp = securityDomain.load(convertedBuffer, maxDataLength);
+                 }catch(CardException ex)
+                 {
+                     logger.error(ex.getMessage());
+                 }
              }
 
-             install4install(PACKAGE_ID, APPLET_ID, privileges, paramsInstall4Install);
+             install4install(PACKAGE_ID, MODULE_AID, APPLET_ID, privileges, paramsInstall4Install);
         }
     }
     public void authenticate(CardConfig _cardConfig)
