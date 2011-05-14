@@ -60,7 +60,7 @@ public class DeletePanel extends JPanel implements ActionListener{
         AID = new JTextField(40);
         jplPanel.add(AID);
          
-        cascade = new JCheckBox("Cascade", true); 
+        cascade = new JCheckBox("Cascade", false); 
         
         jplPanel.add(cascade); 
       //  AID.addActionListener(new DeleteObject());
