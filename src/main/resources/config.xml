@@ -471,5 +471,30 @@
                  keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
         </defaultKeys>
     </card>
+     <card name="UPTEQ_350_M_NFC" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Sample card provided in Gemalto Developer Suite Kit (NFC with Standardized SCWS) C_MAC minimum
+        http://developer.gemalto.com/uploads/media/Dev_Suite_Enterprise_kit_-_Sample_Card_Data_Sheet.pdf</description>
+        <listATR>
+            <ATR value="3B 9F 96 C0 0A 1F C6 80 31 E0 73 FE 21 1B 65 D0 00 61 00 00 81 0F A6"/>
+        </listATR>
+        <isdAID value="A0 00 00 00 18 43 4D 08 09 0A 0B 0C 00 00 00"/>
+        <scpMode value="01_05"/>
+        <transmissionProtocol value="T=0"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="1" keyId="1"
+                 keyDatas="31 56 BB 17 B4 EE 92 96 9B 5D 20 ED 57 24 94 64 31 56 BB 17 B4 EE 92 96"/>
+            <key type="DES_ECB" keyVersionNumber="1" keyId="2"
+                 keyDatas="E5 98 31 E0 66 54 B5 4B 12 0C E9 FF 33 C3 86 8E E5 98 31 E0 66 54 B5 4B"/>
+            <key type="DES_ECB" keyVersionNumber="1" keyId="3"
+                 keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20"/>
+
+            <key type="DES_CBC" keyVersionNumber="2" keyId="1"
+                 keyDatas="30 42 30 42 30 44 30 44 30 45 30 45 30 46 30 46"/>
+            <key type="DES_CBC" keyVersionNumber="2" keyId="2"
+                 keyDatas="01 23 45 67 89 AB CD EF 10 02 76 FE DC BA 01 23"/>
+            <key type="DES_CBC" keyVersionNumber="2" keyId="3"
+                 keyDatas="41 42 41 42 43 44 43 44 45 46 44 46 41 42 41 42"/>
+        </defaultKeys>
+    </card>
 
 </cardsconfig>
