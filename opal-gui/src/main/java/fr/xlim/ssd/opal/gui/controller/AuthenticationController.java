@@ -2,6 +2,7 @@
  *                             OPAL - GUI                                     *
  ******************************************************************************
  * Author : Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>        *
+ *          Estelle Blandinières  <estelle.blandinieres@etu.unilim.fr>        *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
@@ -32,8 +33,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- *
+ * Main controller for the authentication view
  * @author Tiana Razafindralambo
+ * @author Estelle Blandinières
  */
 public class AuthenticationController {
 
@@ -45,6 +47,16 @@ public class AuthenticationController {
     private AuthenticationPanel authenticationPanel;
     private boolean defaultCardConfigIsSet = false;
 
+    /**
+     * Default constructor
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param cardReaderModel
+     * @param communication
+     * @param profileController
+     * @param homeView 
+     */
     public AuthenticationController(CardReaderModel cardReaderModel, CommunicationController communication, ProfileController profileController, HomeView homeView) {
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
@@ -56,7 +68,12 @@ public class AuthenticationController {
             this.setDefaultCardConfig();
         }
     }
-
+    
+    /**
+     * Default card config setter
+     * 
+     * @author Tiana Razafindralambo
+     */
     private void setDefaultCardConfig() {
         this.cardReaderModel.addCardReaderStateListener(new CardReaderStateListener() {
 
@@ -82,46 +99,62 @@ public class AuthenticationController {
             }
         });
     }
-
+    
+    /**
+     * Launch the authentication task
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param cardConfig
+     * @param secLevel 
+     */
     public void authenticateCard(CardConfig cardConfig, SecLevel secLevel) {
         logger.info("Proceed to authentication");
         AuthenticationTask authenticationTask = new AuthenticationTask(cardConfig, this.cardReaderModel, this.communication, secLevel);
-        TaskFactory taskFactory = TaskFactory.run(authenticationTask);
-
-        //this.authModel.setCommunication(cardConfig);
-        /*final CardConfig _cf = cardConfig;
-
-        logger.info("Authenticating card...");
-        this.cardReaderModel.addCardReaderStateListener(new CardReaderStateListener() {
-        @Override
-        public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
-        if(cardReaderModel.hasSelectedCardReaderItem())
-        {
-        communication.authenticate(_cf);
-        communication.getModel().setSecurityDomain(_cf, cardReaderModel.getCardChannel());
-
-        }else logger.error("No card found.");
-        cardReaderModel.removeCardReaderStateListener(this);
-        }
-        });*/
+        TaskFactory taskFactory = TaskFactory.run(authenticationTask); 
     }
 
     /**
      *  Get all profiles
+     * 
+     * @author Tiana Razafindralambo
+     * 
      * @return all profiles loaded.
      */
     public String[][] getAllProfiles() {
         return this.authModel.getAllProfiles();
     }
 
+    /**
+     * Get all profile names
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @return all the profiles names
+     */
     public String[] getAllProfileNames() {
         return this.authModel.getAllProfileNames();
     }
 
+    /**
+     * Get the current default card profile name
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @return name of the current default card profile name
+     */
     public String getCurrentCardDefaultProfileName() {
         return this.authModel.getDefaultCardConfig().getName();
     }
-
+    
+    /**
+     * Get the profile by name
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param name
+     * @return <code>Object</code> ProfileComponent
+     */
     public ProfileComponent getProfileByName(String name) {
         ProfileComponent currProfile = this.authModel.getProfileByName(name);
 
@@ -138,10 +171,28 @@ public class AuthenticationController {
         return profile;
     }
 
+    /**
+     * Get the card config of a profile
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param profile
+     * @return <code>Object</code> CardConfig
+     */
     public CardConfig getCardConfigOf(ProfileComponent profile) {
         return profile.convertToCardConfig();
     }
 
+    /**
+     * Proceed to the card authentication
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param p profile
+     * @param securityLevel
+     * @throws CardConfigNotFoundException
+     * @throws ConfigFieldsException 
+     */
     public void authenticate(ProfileComponent p, String securityLevel)
             throws CardConfigNotFoundException, ConfigFieldsException {
         checkForm(p, securityLevel);
@@ -165,6 +216,14 @@ public class AuthenticationController {
         authenticateCard(cardConfig, secLevel);
     }
 
+    /**
+     * 
+     * @author Estelle Blandinières
+     * 
+     * @param p
+     * @param securityLevel
+     * @throws ConfigFieldsException 
+     */
     private void checkForm(ProfileComponent p, String securityLevel)
             throws ConfigFieldsException {
 
@@ -176,6 +235,12 @@ public class AuthenticationController {
         checkSecurityLevel(securityLevel);
     }
 
+    /**
+     * @author Estelle Blandinières
+     * 
+     * @param aid
+     * @throws ConfigFieldsException 
+     */
     private void checkAID(String aid) throws ConfigFieldsException {
         System.out.println(aid);
         if (aid.length() > 0) {
@@ -200,6 +265,13 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * 
+     * @author Estelle Blandinières
+     * 
+     * @param scp
+     * @throws ConfigFieldsException 
+     */
     private void checkSCP(String scp) throws ConfigFieldsException {
         System.out.println(scp);
         if(scp.length() > 0) {
@@ -232,6 +304,13 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * 
+     * @author Estelle Blandinières
+     * 
+     * @param tp
+     * @throws ConfigFieldsException 
+     */
     private void checkTP(String tp) throws ConfigFieldsException {
         System.out.println(tp);
         if(tp.length() > 0) {
@@ -245,6 +324,12 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * @author Estelle Blandinières
+     * 
+     * @param impl
+     * @throws ConfigFieldsException 
+     */
     private void checkImpl(String impl) throws ConfigFieldsException {
         System.out.println(impl);
         if(impl.length() > 0) {
@@ -259,6 +344,12 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * @author Estelle Blandinières
+     * 
+     * @param keys
+     * @throws ConfigFieldsException 
+     */
     private void checkKeys(ArrayList<KeyModel> keys) throws ConfigFieldsException {
         int n = keys.size();
 
@@ -267,6 +358,13 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * @author Estelle Blandinières
+     * 
+     * @param key
+     * @param index
+     * @throws ConfigFieldsException 
+     */
     private void checkKey(KeyModel key, int index) throws ConfigFieldsException {
         Pattern p1 = Pattern.compile("[^0-9]+");
         Matcher m = p1.matcher(key.keyID);
@@ -339,6 +437,12 @@ public class AuthenticationController {
         }
     }
 
+    /**
+     * @author Estelle Blandinières
+     * 
+     * @param sl
+     * @throws ConfigFieldsException 
+     */
     private void checkSecurityLevel (String sl) throws ConfigFieldsException {
         System.out.println(sl);
         if(sl.length() > 0) {
@@ -356,54 +460,4 @@ public class AuthenticationController {
             throw new ConfigFieldsException("Security level can't be empty.\n");
         }
     }
-
-    /*public void testAuthenticationProcessAndAppletInstallationThreadMode(final AppletController _appletController)
-    {
-    logger.info("Test Authentication Process launched");
-    /// applet ID of hello world CAP
-
-    this.cardReaderModel.addCardReaderStateListener( new CardReaderStateListener() {
-    @Override
-    public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
-    if(cardReaderModel.hasSelectedCardReaderItem())
-    {
-    logger.info("Card Name : " +  cardReaderModel.getSelectedCardName());
-    logger.info("Card ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
-
-    try
-    {
-    CardConfig cardConfig = null;
-    cardConfig = authModel.getCardConfigByATR(cardReaderModel.getSelectedCardATR());
-    authenticateCard(cardConfig);
-    //appletController.installApplet(PACKAGE_ID, APPLET_ID, ressource);
-    }
-    catch(CardConfigNotFoundException ex) { logger.error(ex.getMessage()); }
-    }else logger.info("No card found");
-    cardReaderModel.removeCardReaderStateListener(this);
-    }
-    });
-    }*/
-    /*public void testAuthenticationProcess()
-    {
-    logger.info("Test Authentication Process launched");
-    this.cardReaderModel.addCardReaderStateListener( new CardReaderStateListener() {
-    @Override
-    public void cardReaderStateChanged(CardReaderStateChangedEvent event) {
-    if(cardReaderModel.hasSelectedCardReaderItem())
-    {
-    logger.info("Card Name : " +  cardReaderModel.getSelectedCardName());
-    logger.info("Card ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
-
-    try
-    {
-    CardConfig cardConfig = null;
-    cardConfig = authModel.getCardConfigByATR(cardReaderModel.getSelectedCardATR());
-    authenticateCard(cardConfig);
-    }
-    catch(CardConfigNotFoundException ex) { logger.error(ex.getMessage()); }
-    }else logger.info("No card found");
-    cardReaderModel.removeCardReaderStateListener(this);
-    }
-    });
-    } */
 }

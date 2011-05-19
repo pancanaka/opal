@@ -2,6 +2,7 @@
  *                             OPAL - GUI                                     *
  ******************************************************************************
  * Author : Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>        *
+ *          Estelle Blandinières  <estelle.blandinieres@etu.unilim.fr>        *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
@@ -20,8 +21,9 @@ import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
 
 
 /**
- *
+ * Main controller for the applet installation view
  * @author Tiana Razafindralambo
+ * @author Estelle Blandinières
  */
 public class AppletController {
 
@@ -32,6 +34,15 @@ public class AppletController {
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;
     
+    /**
+     * Default constructor
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param homeView main view
+     * @param cardReaderModel
+     * @param communication controller that allows to communicate with the card
+     */
     public AppletController(HomeView homeView, CardReaderModel cardReaderModel, CommunicationController communication)
     {
         this.appletPanel = homeView.getHomePanel().getAppletPanel();
@@ -39,37 +50,27 @@ public class AppletController {
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
     }
-                                
+                    
+    /**
+     * Launch the applet installation task in a thread
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param PACKAGE_ID
+     * @param MODULE_AID
+     * @param APPLET_ID
+     * @param ressource
+     * @param securityDomainAID
+     * @param params4Install4load
+     * @param maxDataLength
+     * @param privileges
+     * @param paramsInstall4Install
+     * @param reorderCapFileComponents 
+     */
     public void installApplet(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install, boolean reorderCapFileComponents)
     {
         logger.info("Installing Applet");                                                                   
         AppletInstallationTask appletInstallationTask = new AppletInstallationTask(PACKAGE_ID, MODULE_AID, APPLET_ID, ressource, securityDomainAID, params4Install4load, maxDataLength, privileges, paramsInstall4Install, this.communication, reorderCapFileComponents);
-        TaskFactory taskFactory = TaskFactory.run(appletInstallationTask);
-        //this.communication.installApplet(PACKAGE_ID, APPLET_ID, ressource);
-    } 
-   /* public void testAppletInstallationProcess()
-    {
-        logger.info("Test Applet Installation Process launched");
-
-        /// applet ID of hello world CAP
-        final byte[] APPLET_ID = {
-            (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x62,
-            (byte) 0x03, (byte) 0x01, (byte) 0x0C, (byte) 0x01, (byte) 0x01
-        };
-
-        /// package ID of hello world CAP
-        final byte[] PACKAGE_ID = {
-            (byte) 0xA0, (byte) 0x00, (byte) 0x00,
-            (byte) 0x00, (byte) 0x62, (byte) 0x03,
-            (byte) 0x01, (byte) 0x0C, (byte) 0x01
-        };
-
-        final byte[] HELLO_WORLD = { // "HELLO"
-            (byte) 'H', (byte) 'E', (byte) 'L', (byte) 'L', (byte) 'O'
-        };
-        installApplet(PACKAGE_ID, APPLET_ID, "/cap/HelloWorld-2_1_2.cap");
-        selectApplet(APPLET_ID);
-        useApplet(HELLO_WORLD);
-        fullDelete(PACKAGE_ID, APPLET_ID); 
-    }*/
+        TaskFactory taskFactory = TaskFactory.run(appletInstallationTask); 
+    }  
 }

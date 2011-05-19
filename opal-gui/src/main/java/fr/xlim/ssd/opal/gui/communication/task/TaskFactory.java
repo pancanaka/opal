@@ -17,7 +17,8 @@ import org.jdesktop.application.TaskMonitor;
 import org.jdesktop.application.TaskService;
 
 /**
- *
+ * Allow to run a Task on the fly
+ * 
  * @author Tiana Razafindralambo
  */
 public class TaskFactory {
@@ -38,9 +39,5 @@ public class TaskFactory {
         
         TaskFactory.monitor.setForegroundTask(task); 
         return new TaskFactory();
-    }
-    public static void test()
-    {
-
-    }
+    } 
 }
