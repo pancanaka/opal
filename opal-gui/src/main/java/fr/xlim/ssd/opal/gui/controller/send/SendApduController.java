@@ -79,7 +79,7 @@ public class SendApduController implements KeyListener,ActionListener {
 
             text = str1+str+str2;
 
-            if (text.matches("([0-9]*)([A-F]*)([0-9]*)([A-F]*)")){
+            if (text.matches("(([0-9]*)([A-F]*)([0-9]*)([A-F]*))*")){
                 super.insertString(offs, str, a);
             }
         }

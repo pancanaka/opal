@@ -27,6 +27,7 @@ import javax.swing.border.TitledBorder;
  * @author Chanaa Anas
  * @author Tiana Razafindralambo
  * @author Thibault Desmoulins
+ * This class represents the GUI to sends APDU
  */
 public class SendAPDUPanel extends JPanel{
 
@@ -36,6 +37,11 @@ public class SendAPDUPanel extends JPanel{
     static public JTextField fld_cla,fld_ins,fld_p1,fld_p2,fld_lc,fld_le;
     public static JTextArea txt_area;
     public SendApduController sendApduController;
+
+    /**
+     * Send Apdu Panel Constructor
+     * @param sac
+     */
 
     public SendAPDUPanel(SendApduController sac){
             this.sendApduController = sac;
@@ -94,6 +100,7 @@ public class SendAPDUPanel extends JPanel{
 
         TitledBorder tb = new TitledBorder("");
         txt_area = new JTextArea(20, 40);
+        txt_area.setDocument(sendApduController.createDefaultModel());
         //txt_area.setDocument(SendApduController.getinstance().createDefaultModel());
         txt_area.setBackground(Color.white);
         txt_area.setBorder(tb);
@@ -114,6 +121,10 @@ public class SendAPDUPanel extends JPanel{
 
 
     }
+    /**
+     * the method settext counts the number of bytes input by the user
+     * @see SendApduController
+     */
     public static void settxt(){
         if (SendApduController.nb_bytes/2 < 10){
             fld_lc.setText(String.valueOf("0"+SendApduController.nb_bytes/2));
@@ -122,6 +133,11 @@ public class SendAPDUPanel extends JPanel{
         }
     }
 
+    /**
+     * This method deletes the characters entered by the user if it exceeds the number of characters allowed
+     * @param jt
+     * @see SendApduController
+     */
     public static void clear(JTextField jt){
         jt.setText("");
 

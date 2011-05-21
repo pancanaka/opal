@@ -1,7 +1,8 @@
 /******************************************************************************
  *                             OPAL - GUI                                     *
  ******************************************************************************
- * Author : Chanaa Anas <anas.chanaa@etu.unilim.fr>                           *
+ * Authors : Chanaa Anas <anas.chanaa@etu.unilim.fr>                          *
+ *           El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                    *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
@@ -20,9 +21,6 @@ import javax.smartcardio.CommandAPDU;
 import org.jdesktop.application.Task;
 
 /**
- *
- * @author chanaa
- *
  * Send an APDU Task
  * this class Send an APDU to a JavaCard and obtain the response from the javacard
  */
