@@ -2,6 +2,7 @@
  *                             OPAL - GUI                                     *
  ******************************************************************************
  * Author : Tiana Razafindralambo <aina.razafindralambo@etu.unilim.fr>        *
+ *          Estelle Blandinières  <estelle.blandinieres@etu.unilim.fr>        *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
@@ -16,8 +17,10 @@ import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
 
 /**
- *
+ * Main controller of the Delete (panel) view
+ * 
  * @author Tiana Razafindralambo
+ * @author Estelle Blandinières
  */
 public class DeleteController {
 
@@ -32,19 +35,18 @@ public class DeleteController {
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
     }
-    public void deleteApplet(byte[] APPLET_ID)
+    
+    /**
+     * Call the delete command
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param AID
+     * @param cascade 
+     */
+    public void delete(byte[] AID, boolean cascade)
     {
         logger.info("Deleting Applet");
-        this.communication.deleteApplet(APPLET_ID);
-    }
-    public void deletePackage(byte[] PACKAGE_ID)
-    {
-        logger.info("Deleting package");
-        this.communication.deletePackage(PACKAGE_ID);
-    }
-    public void fullDelete(byte[] PACKAGE_ID , byte[] APPLET_ID)
-    {
-        logger.info("Deleting Applet and Package");
-        this.communication.fullDelete(PACKAGE_ID, APPLET_ID);
-    }
+        this.communication.delete(AID, cascade);
+    } 
 }

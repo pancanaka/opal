@@ -179,7 +179,7 @@ public class Main {
         // external authenticate
         logger.info("External Authenticate");
         securityDomain.externalAuthenticate(secLevel);
-
+/*
         // install Applet
         logger.info("Installing Applet");
         logger.info("* Install For Load");
@@ -197,6 +197,7 @@ public class Main {
                 APPLET_ID,
                 APPLET_ID,
                 Conversion.hexToArray("00"), null);
+*/
 
         // Selecting Applet
         CommandAPDU select = new CommandAPDU((byte) 0x00 // CLA
@@ -205,6 +206,7 @@ public class Main {
                 , (byte) 0x00 // P2
                 , APPLET_ID   // DATA
         );
+         
         logger.info("Selecting Applet");
         ResponseAPDU resp = securityDomain.send(select);
         logger.debug("Select Hello World Applet "
@@ -224,7 +226,6 @@ public class Main {
         logger.debug("Say \"Hello\" "
                 + "(-> " + Conversion.arrayToHex(hello.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
-
         // Select the Card Manager
         logger.info("Select the Card Manager");
         securityDomain.select();
@@ -241,6 +242,7 @@ public class Main {
         // Deleting package if existed
         logger.info("Deleting package");
         securityDomain.deleteOnCardObj(PACKAGE_ID, false);
+
     }
 
 }

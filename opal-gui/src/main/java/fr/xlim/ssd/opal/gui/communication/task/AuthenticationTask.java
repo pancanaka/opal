@@ -19,7 +19,7 @@ import fr.xlim.ssd.opal.library.params.CardConfig;
 import org.jdesktop.application.Task;
 
 /**
- *
+ *  
  * @author Tiana Razafindralambo
  */
 public class AuthenticationTask extends Task<Void, Void> implements TaskInterface{
@@ -29,6 +29,14 @@ public class AuthenticationTask extends Task<Void, Void> implements TaskInterfac
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;
     private Task nextTask = null; 
+    
+    /**
+     * Default constructor
+     * @param cardConfig 
+     * @param cardReaderModel
+     * @param communication controller that allows to communicate with the card
+     * @param secLevel security level
+     */
     public AuthenticationTask(CardConfig cardConfig, CardReaderModel cardReaderModel, CommunicationController communication, SecLevel secLevel)
     {
         super(App.instance);
@@ -37,6 +45,11 @@ public class AuthenticationTask extends Task<Void, Void> implements TaskInterfac
         this.communication = communication;
         this.communication.setSecurityLevel(secLevel);
     }
+    
+    /**
+     * The <code>Task</code> operation
+     *  
+     */
     @Override
     protected Void doInBackground(){
        logger.info("Authenticating card...");
@@ -48,6 +61,11 @@ public class AuthenticationTask extends Task<Void, Void> implements TaskInterfac
        return null;
     } 
  
+    /**
+     * End of the authentication task
+     * If nextTask is set, it will be launched then
+     * @param nothing 
+     */
     @Override
     protected void succeeded(Void nothing)
     {

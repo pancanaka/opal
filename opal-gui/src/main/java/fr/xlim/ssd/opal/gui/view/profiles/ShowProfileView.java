@@ -33,63 +33,77 @@ import javax.swing.JTable;
  * @author Thibault Desmoulins
  */
 public class ShowProfileView extends JPanel implements ActionListener {
+    // The parent view
     private HomeView f = null;
 
+
+    // The table full of data to display
     private JTable tableau = null;
 
+
+    // All buttons of this view
     private JButton btModify    = new JButton("Modify");
     private JButton btDelete    = new JButton("Delete");
     private JButton btAdd       = new JButton("Add");
     private JButton btOK        = new JButton("OK");
 
+
+    // The controller of this class
     private ProfileController profileController;
 
+
+    /**
+     * Single constructor of the class which initializes and display data thanks
+     * to the controller contained in the parent view (<code>HomeView</code>).
+     *
+     * @param f the parent view
+     */
     public ShowProfileView(HomeView f) {
-        //try {
-            this.f = f;
-            // Data for the profile tab
-            String[] title = {"Profile name", "Description", "Implementation"};
-            profileController = f.getController().getProfileController();
-            /**/
-            /**/
-            Object[][] data = profileController.getAllProfiles();
-            tableau = new JTable(data, title) {
+        this.f = f;
+        
+        // Data for the profile tab
+        String[] title = {"Profile name", "Description", "Implementation"};
+        profileController = f.getController().getProfileController();
 
-                @Override
-                public boolean isCellEditable(int row, int column) {
-                    return false;
-                }
-            };
-            JScrollPane spTab = new JScrollPane(tableau); /**/
+        Object[][] data = profileController.getAllProfiles();
+        tableau = new JTable(data, title) {
+            /* This function prevents the cells edition */
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
+        JScrollPane spTab = new JScrollPane(tableau);
 
-            // Create left column and put the tab inside
-            Box left = Box.createVerticalBox();
-            left.add(spTab);
+        // Create left column and put the tab inside
+        Box left = Box.createVerticalBox();
+        left.add(spTab);
 
-            // Create right column and put buttons inside
-            Box right = Box.createVerticalBox();
-            right.add(btModify);
-            right.add(btDelete);
-            right.add(btAdd);
-            right.add(btOK);
+        // Create right column and put buttons inside
+        Box right = Box.createVerticalBox();
+        right.add(btModify);
+        right.add(btDelete);
+        right.add(btAdd);
+        right.add(btOK);
 
-            Box top = Box.createHorizontalBox();
-            top.add(left);
-            top.add(right);
+        Box top = Box.createHorizontalBox();
+        top.add(left);
+        top.add(right);
 
-            this.setLayout(new BorderLayout());
-            this.add(top, BorderLayout.CENTER);
+        this.setLayout(new BorderLayout());
+        this.add(top, BorderLayout.CENTER);
 
-            // Events
-            btModify.addActionListener(this);
-            btDelete.addActionListener(this);
-            btAdd.addActionListener(this);
-            btOK.addActionListener(this);
-        /*} catch (CardConfigNotFoundException ex) {
-            new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
-        }*/
+        // Events
+        btModify.addActionListener(this);
+        btDelete.addActionListener(this);
+        btAdd.addActionListener(this);
+        btOK.addActionListener(this);
     }
- 
+    
+
+    /**
+     * This function is called when an action is performed on a button in the form.
+     */
     @Override
     public void actionPerformed(ActionEvent ae) {
         Object o = ae.getSource();

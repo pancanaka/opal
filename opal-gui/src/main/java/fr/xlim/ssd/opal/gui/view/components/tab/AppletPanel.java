@@ -274,9 +274,10 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                     tfAppletFile.setText(chooser.getSelectedFile().getAbsolutePath());
                 }
             }else if(b.equals(jbLoad))
-            { 
+            {  
                 byte[] PACKAGE_ID = (("".equals(tfPackageAID.getText())))? null : Conversion.hexToArray(tfPackageAID.getText()); 
                 byte[] APPLET_ID = (("".equals(tfAppletAID.getText())))? null : Conversion.hexToArray(tfAppletAID.getText()); 
+                byte[] MODULE_AID = (("".equals(tfInstanceAID.getText())))? null : Conversion.hexToArray(tfInstanceAID.getText()); 
                 String ressource = (tfAppletFile.getText().equals(""))?null:tfAppletFile.getText(); 
                 byte[] securityDomainAID = (("".equals(tfSDAID.getText())))? null : Conversion.hexToArray(tfSDAID.getText());
                 byte[] params4Install4load = (("".equals(tfParam.getText())))? null : Conversion.hexToArray(tfParam.getText());
@@ -289,13 +290,15 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                 byte[] privileges = (("".equals(tfPrivileges.getText())))? Conversion.hexToArray("00") : Conversion.hexToArray(tfPrivileges.getText());
                 controller.installApplet(
                                             PACKAGE_ID, 
+                                            MODULE_AID,
                                             APPLET_ID, 
                                             ressource, 
                                             securityDomainAID, 
                                             params4Install4load,  
                                             maxDataLength,
                                             privileges,
-                                            paramsInstall4Install
+                                            paramsInstall4Install,
+                                            cbConversion.isSelected()
                                             );
             }
         } 

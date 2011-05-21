@@ -17,7 +17,10 @@ import fr.xlim.ssd.opal.gui.view.components.tab.SelectPanel;
 
 /**
  *
+ * Main controller of the select panel view
+ * 
  * @author Tiana Razafindralambo
+ * @author Estelle Blandinières
  */
 public class SelectController {
 
@@ -33,6 +36,14 @@ public class SelectController {
         this.selectPanel = homeView.getHomePanel().getSelectPanel();
         this.communication = communication;
     }
+    
+    /**
+     * Call the applet selection command
+     * 
+     * @author Tiana Razafindralambo
+     * 
+     * @param APPLET_ID 
+     */
     public void selectApplet(byte[] APPLET_ID)
     {
         logger.info("Selecting applet");

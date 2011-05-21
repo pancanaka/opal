@@ -19,41 +19,67 @@ import javax.swing.JTextField;
 
 
 /**
- * With this class a profile can use different keys
+ * With this class a profile can use different keys (useful for the "Add field" button in AddUpdateProfileView)
  *
  * @author Thibault Desmoulins
+ * @see fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileView
  */
 public class KeyComponent {
-
     private short lineHeight  = 25;
 
     public JTextField JkeyVersion = new JTextField(), JkeyId = new JTextField(), Jkey = new JTextField();
+
     public String type, keyVersion, keyId, key;
+
     KeyType[] tabType = KeyType.values();
+
     JComboBox cbImp = new JComboBox(tabType);
 
 
+    /**
+     * Constructor
+     */
     public KeyComponent() {}
-    
+
+
+    /**
+     * This constructor initializes fields with values ​​given in parameters
+     *
+     * @param type the type of the key
+     * @param keyVersion the version of the key
+     * @param keyId the ID of the key
+     * @param key the value of the key
+     */
     public KeyComponent(String type, String keyVersion, String keyId, String key) {
         JkeyVersion.setText(keyVersion);
         JkeyId.setText(keyId);
         Jkey.setText(key); 
        
         this.keyVersion = keyVersion;
-        this.keyId = keyId;
-        this.key = key;
+        this.keyId      = keyId;
+        this.key        = key;
 
-        int index = getIndexComboBox(type);
+        int index       = getIndexComboBox(type);
         cbImp.setSelectedIndex(index);
         
         this.type = this.getType();
     }
 
+    /**
+     * Converts all fields of this class into a KeyModel object
+     * @return an instance of <code>KeyModel</code>
+     * @see fr.xlim.ssd.opal.gui.model.Key.KeyModel
+     */
     public KeyModel convert2KeyModel() {
         return new KeyModel(this.type, this.keyVersion, this.keyId, this.key);
     }
- 
+
+
+    /**
+     * Returns the index of the "type" combobox corresponding to the string given in parameter
+     * @param type the type of the key
+     * @return the index of the combobox
+     */
     public int getIndexComboBox(String type) {
         int n = tabType.length;
         for(int i=1 ; i<n ; i++) {
@@ -67,6 +93,10 @@ public class KeyComponent {
     }
 
 
+    /**
+     * Creates the form in order to create or to update a key
+     * @return a <code>Box</code> object containing the form to show
+     */
     public Box createLineForm() {
         Box line1  = Box.createHorizontalBox();
         line1.setPreferredSize(new Dimension(500, lineHeight));
@@ -91,7 +121,9 @@ public class KeyComponent {
     }
 
 
-    // Getters
+    /**
+     * @return the type of the key
+     */
     public String getType() {
         String value = String.valueOf(tabType[this.cbImp.getSelectedIndex()]);
         
@@ -115,14 +147,23 @@ public class KeyComponent {
         }
     }
 
+    /**
+     * @return the key version
+     */
     public String getKeyVersion() {
         return this.JkeyVersion.getText();
     }
 
+    /**
+     * @return the key ID
+     */
     public String getKeyId() {
         return this.JkeyId.getText();
     }
 
+    /**
+     * @return the key value
+     */
     public String getKey() {
         return this.Jkey.getText();
     }

@@ -17,18 +17,31 @@ import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 
 /**
+ * The main panel of the gui, useful to bring up a scroll when
+ * some items do not appear in the window.
  *
  * @author Thibault Desmoulins
  */
 public class AppJScrollPan extends JScrollPane implements MouseWheelListener {
-    
+
+    /**
+     * Constructor.
+     *
+     * @param myTable the <code>JPanel</code> which has to be shown
+     */
     public AppJScrollPan(final JPanel myTable) {
         setViewportView(myTable);
-        setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
         myTable.addMouseWheelListener(this);
     }
 
 
+
+    /**
+     * This function override the function <code>mouseWheelMoved</code> which is in
+     * the <code>MouseWheelListener</code> interface in order to accelerate the scroll
+     *
+     * @param mwe the mouse wheel event
+     */
     @Override
     public void mouseWheelMoved(MouseWheelEvent mwe) {
         final JScrollBar scrollBar = getVerticalScrollBar();

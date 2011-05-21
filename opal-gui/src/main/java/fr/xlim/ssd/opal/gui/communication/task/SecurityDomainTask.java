@@ -23,19 +23,26 @@ public class SecurityDomainTask extends Task<Void, Void> {
 
     private static final CustomLogger logger= new CustomLogger();
     private SecurityDomainModel secModel;
+    
+    /**
+     * Default constructor
+     * @param application
+     * @param secModel 
+     */
     public SecurityDomainTask(Application application, SecurityDomainModel secModel)
     {
         super(application);
         this.secModel = secModel;
     }
     
-    @SuppressWarnings("unchecked")
+    /**
+     * The <code>Task</code> operation 
+     */
     @Override
     protected Void doInBackground(){ 
         message("Security domain task started");
         while(!isCancelled())
-        {
-            if(this.secModel.hasDomain()) logger.debug("_____SecModel has domain.");
+        { 
             try
             {
                 Thread.sleep(2000);

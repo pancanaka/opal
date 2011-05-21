@@ -22,7 +22,8 @@ import java.util.logging.Level;
 import javax.smartcardio.CardChannel;
 
 /**
- *
+ * Security domain Model
+ * 
  * @author Tiana Razafindralambo
  */
 public class SecurityDomainModel {
@@ -38,6 +39,14 @@ public class SecurityDomainModel {
     public boolean hasDomain(){ return (domain != null);}
     public void isAuthenticated(boolean bool){ this.authenticated = bool;}
     public boolean isAuthenticated(){ return this.authenticated;};
+    
+    /**
+     * Security domain setter
+     * update the security domain model 
+     * 
+     * @param cardConfig
+     * @param channel 
+     */
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     {
         logger.info("Setting security domain..."); 

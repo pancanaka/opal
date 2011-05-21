@@ -23,7 +23,7 @@ import java.io.UnsupportedEncodingException;
  */
 public class App extends SingleFrameApplication {
 
-    public static short nbDataExchangesVueOpened = 0;
+    public static boolean dataExchangesVueOpened = false;
     public static App instance = null;
 
     /**
@@ -47,8 +47,8 @@ public class App extends SingleFrameApplication {
      */
     public static void showDataExchangesVue() {
         // If there is no DataExchangesVue opened at this moment
-        if (App.nbDataExchangesVueOpened == 0) {
-            App.nbDataExchangesVueOpened++;
+        if (!App.dataExchangesVueOpened) {
+            App.dataExchangesVueOpened = true;
             new DataExchangesVue();
         }
     }

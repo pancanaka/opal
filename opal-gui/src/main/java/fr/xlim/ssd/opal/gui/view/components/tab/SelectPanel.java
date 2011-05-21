@@ -34,6 +34,7 @@ import javax.swing.JButton;
  */
 public class SelectPanel extends JPanel implements ActionListener{
 
+    // The title of the <code>JTabbedPane</code>
     public String title = "Select";
     
     private JComboBox cbAID;

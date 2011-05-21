@@ -54,8 +54,7 @@ public class HomeView extends FrameView implements ActionListener {
     /**
      * Constructor
      *
-     * @param application the <code>Application</code> instance which provides methods to manage the application life
-     *                    cycle
+     * @param application the <code>Application</code> instance which provides methods to manage the application life cycle
      * @param controller  the application main controller
      */
     public HomeView(Application application, MainController controller) {
@@ -66,12 +65,24 @@ public class HomeView extends FrameView implements ActionListener {
         drawComponents();
     }
 
+    /**
+     * Return the main controller of the application
+     * @return the controller
+     */
     public MainController getController() {
         return this.controller;
     }
 
     /**
-     * Contains all instructions to draw components in the "Home view".
+     * Return the main panel of the application
+     * @return the instance of HomePanel
+     */
+    public HomePanel getHomePanel() {
+        return homePanel;
+    }
+
+    /**
+     * Contains all instructions to draw components in the <code>HomeView</code>
      */
     public void drawComponents() {
         initializeMenu();
@@ -84,7 +95,7 @@ public class HomeView extends FrameView implements ActionListener {
     }
 
     /**
-     * Draw the menu on the window
+     * Draw the menu on the window and add listener on every item
      */
     private void initializeMenu() {
         // Menus
@@ -95,6 +106,7 @@ public class HomeView extends FrameView implements ActionListener {
         JMenuItem itemQuit          = new JMenuItem("Quit");
         JMenuItem itemMProfiles     = new JMenuItem("Manage profiles");
         JMenuItem itemDataExchanges = new JMenuItem("Open data exchanges");
+        JMenuItem itemAboutOpal     = new JMenuItem("Opal");
 
         menuBar.add(file);
             file.add(itemQuit);
@@ -102,6 +114,7 @@ public class HomeView extends FrameView implements ActionListener {
             options.add(itemMProfiles);
             options.add(itemDataExchanges);
         menuBar.add(about);
+            about.add(itemAboutOpal);
        
         this.setMenuBar(menuBar);
 
@@ -121,7 +134,11 @@ public class HomeView extends FrameView implements ActionListener {
     }
 
 
-    public void showPanel(String type) { 
+    /**
+     * Show the panel (in the <code>AppJScrollPan</code> class) depending on its type
+     * @param type the string corresponding of the view to be shown
+     */
+    public void showPanel(String type) {
         if(type.equals("home")) {
             if(!homePanelIsSet) {
                 homePanelIsSet = true;
@@ -143,6 +160,10 @@ public class HomeView extends FrameView implements ActionListener {
         this.getFrame().setVisible(true);
     }
 
+    /**
+     * Show the panel given to the function (in the <code>AppJScrollPan</code> class)
+     * @param pan the <code>JPanel</code> to be shown
+     */
     public void showPanel(JPanel pan) { 
         scrollPan = new AppJScrollPan(pan);
         this.getFrame().setContentPane(scrollPan);
@@ -154,6 +175,10 @@ public class HomeView extends FrameView implements ActionListener {
     }
 
 
+    /**
+     * Function called when an action is performed on the menu
+     * @param ae the action performed
+     */
     @Override
     public void actionPerformed(ActionEvent ae) {
         Object o = ae.getSource();
@@ -176,9 +201,5 @@ public class HomeView extends FrameView implements ActionListener {
                 App.showDataExchangesVue();
             }
         }
-    }
-
-    public HomePanel getHomePanel() {
-        return homePanel;
     }
 }

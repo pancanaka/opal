@@ -37,6 +37,18 @@ public class ProfileComponent implements Comparable {
     private ArrayList<KeyComponent> Keylist = new ArrayList<KeyComponent>();
     private ArrayList<KeyModel> keys = new ArrayList<KeyModel>();
 
+
+    /**
+     * This constructor initializes attributes with values ​​given in parameters
+     *
+     * @param name the name of the profile
+     * @param description a description of the profile
+     * @param AID the Issuer Security Domain AID of the profile
+     * @param SCPmode the SCP Mode of the profile
+     * @param TP the transmission protocol of the profile
+     * @param ATR the list of ATR of the profile
+     * @param implementation the value of the profile
+     */
     public ProfileComponent(String name, String description, String AID, String SCPmode, String TP, String[] ATR, String implementation) {
         this.name = name;
         this.description = description;
@@ -47,34 +59,91 @@ public class ProfileComponent implements Comparable {
         this.implementation = implementation;
     }
 
+    /**
+     * @return the name of the profile
+     */
     public String getName() { return this.name; }
+
+    /**
+     * @return the description of the profile
+     */
     public String getDescription() { return this.description; }
+
+    /**
+     * @return the Issuer Security Domain AID of the profile
+     */
     public String getAID() { return this.AID; }
+
+    /**
+     * @return the SCP Mode of the profile
+     */
     public String getSCPmode() { return this.SCPmode; }
+
+    /**
+     * @return the Transmission Protocol of the profile
+     */
     public String getTP() { return this.TP; }
+
+    /**
+     * @return the implementation of the profile
+     */
     public String getImplementation() { return this.implementation; }
+
+    /**
+     * @return a list of ATR
+     */
     public String[] getATR() { return this.ATR; }
+
+    /**
+     * @return an ArrayList of KeyComponent
+     */
     public ArrayList getKeylist() { return this.Keylist; }
 
+
+    /**
+     * Add a new key to the list (and its associated model)
+     * @param type the type of the key
+     * @param version the version of the key
+     * @param key the key value
+     */
     public void addKey(String type, String version, String id, String key) {
         Keylist.add(new KeyComponent(type, version, id, key));
         keys.add(new KeyModel(type, version, id, key));
     }
 
+    /**
+     * @return an ArrayList of KeyModel
+     */
     public ArrayList<KeyModel> getKeys() {
         return this.keys;
     }
 
+    /**
+     * @param keys ArrayList of KeyModel
+     */
     public void setKeys(ArrayList<KeyModel> keys) {
         this.keys = keys;
     }
 
+
+    /**
+     * Overrides the compareTo function in order to compare the ProfileComponent
+     * given in parameter to this instance
+     * @param o the <code>ProfileComponent</code> to compare to this class
+     * @return -1 if this class is before the parameter, 1 if it is after, 0 if both are equals
+     */
     @Override
     public int compareTo(Object o) {
         ProfileComponent p2 = (ProfileComponent) o;
         return this.name.compareToIgnoreCase(p2.getName());
     }
-    
+
+
+    /**
+     * Converts all fields of this class into a <code>CardConfig</code> object
+     * @return an instance of <code>CardConfig</code>
+     * @see fr.xlim.ssd.opal.library.params.CardConfig
+     */
     public CardConfig convertToCardConfig() {
         //convert this.ATR into ATR[]
         int atrLength = this.ATR.length;
@@ -130,6 +199,12 @@ public class ProfileComponent implements Comparable {
     }
 
 
+    /**
+     * Static function that convert a <code>CardConfig</code> object into a <code>ProfileComponent</code> object
+     * @param card the <code>CardConfig</code> object to convert
+     * @return an instance of <code>CardConfig</code>
+     * @see fr.xlim.ssd.opal.library.params.CardConfig
+     */
     public static ProfileComponent convertToProfileComponent(CardConfig card) {
         //convert ATR[] into String[]
         ATR[] at = card.getAtrs();
@@ -181,6 +256,13 @@ public class ProfileComponent implements Comparable {
     }
     
 
+    /**
+     * Function that return a SCPMode object corresponding to the string given in parameter.
+     * Notice that SCPMode is an enumeration!
+     * @param scp the SCP wanted
+     * @return the SCPMode corresponding to the scp given in parameter
+     * @see fr.xlim.ssd.opal.library.SCPMode
+     */
     public SCPMode getSCPMode(String scp) {
         SCPMode res = null;
 
@@ -219,6 +301,12 @@ public class ProfileComponent implements Comparable {
         return res;
     }
 
+
+    /**
+     * Function that return the KeyComponent corresponding to the index
+     * @param i the index of the KeyComponent in the ArrayList
+     * @return a KeyComponent object
+     */
     public KeyComponent getKey(int i) {
         return Keylist.get(i);
     }

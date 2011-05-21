@@ -23,7 +23,10 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
 
+
 /**
+ * View that display the form in order to send APDU
+ *
  * @author Chanaa Anas
  * @author Tiana Razafindralambo
  * @author Thibault Desmoulins
@@ -31,53 +34,54 @@ import javax.swing.border.TitledBorder;
  */
 public class SendAPDUPanel extends JPanel{
 
-
+    // The title of the <code>JTabbedPane</code>
     public String title = "Send APDU";
-    public JLabel lbl_cla,lbl_ins,lbl_p1,lbl_p2,lbl_lc,lbl_le,lbl_data;
+
     static public JTextField fld_cla,fld_ins,fld_p1,fld_p2,fld_lc,fld_le;
+
     public static JTextArea txt_area;
+
+    // The controller of this class
     public SendApduController sendApduController;
 
     /**
      * Send Apdu Panel Constructor
      * @param sac
+     * Constructor that display the form
+     * @param sac the controller of this view
+
      */
 
     public SendAPDUPanel(SendApduController sac){
-            this.sendApduController = sac;
-
-    
-       
+        this.sendApduController = sac;
         setLayout(new BorderLayout());
         JPanel jplPanel = new JPanel();
-
-
         add(jplPanel,BorderLayout.NORTH);
         jplPanel.setLayout(new FlowLayout());
-        lbl_cla  = new JLabel("CLA");
-        
-        lbl_ins  = new JLabel("INS");
-        lbl_p1   = new JLabel("P1");
-        lbl_p2   = new JLabel("P2");
-        lbl_lc   = new JLabel("LC");
-        lbl_le   = new JLabel("LE");
-        lbl_data = new JLabel("Data :");
+        JLabel lbl_cla  = new JLabel("CLA");
+        JLabel lbl_ins  = new JLabel("INS");
+        JLabel lbl_p1   = new JLabel("P1");
+        JLabel lbl_p2   = new JLabel("P2");
+        JLabel lbl_lc   = new JLabel("LC");
+        JLabel lbl_le   = new JLabel("LE");
+        JLabel lbl_data = new JLabel("Data :");
 
         fld_cla  = new JTextField(2);
         fld_cla.setDocument(sendApduController.createDefaultModel());
         fld_ins = new JTextField(2);
         fld_ins.setDocument(sendApduController.createDefaultModel());
         fld_p1  = new JTextField(2);
-       // fld_lc.setDocument(SendApduController.getinstance().createDefaultModel());
+        // fld_lc.setDocument(SendApduController.getinstance().createDefaultModel());
         fld_p2  = new JTextField(2);
         fld_p1.setDocument(sendApduController.createDefaultModel());
         fld_lc  = new JTextField(2);
         fld_p2.setDocument(sendApduController.createDefaultModel());
-       // fld_lc.setText(""+SendApduController.nb_bytes);
+        // fld_lc.setText(""+SendApduController.nb_bytes);
         fld_lc.setEnabled(false);
         fld_le  = new JTextField(2);
         fld_le.setDocument(sendApduController.createDefaultModel());
 
+        // Events
         fld_cla.addKeyListener(sendApduController);
         fld_ins.addKeyListener(sendApduController);
         fld_lc.addKeyListener(sendApduController);
@@ -105,42 +109,51 @@ public class SendAPDUPanel extends JPanel{
         txt_area.setBackground(Color.white);
         txt_area.setBorder(tb);
         txt_area.addKeyListener(sac);
+
         JPanel jpdata = new JPanel(new BorderLayout());
         jpdata.add(lbl_data,BorderLayout.NORTH);
-
         jpdata.add(txt_area,BorderLayout.CENTER);
         add(jpdata);
 
         JButton but_snd = new JButton("Send");
         but_snd.addActionListener(sendApduController);
+        
         JPanel pnl_snd = new JPanel();
         pnl_snd.setLayout(new BorderLayout());
         pnl_snd.add(but_snd,BorderLayout.EAST);
         add(pnl_snd,BorderLayout.SOUTH);
-
-
-
     }
+
+
+    
+
     /**
+
      * the method settext counts the number of bytes input by the user
      * @see SendApduController
+     * The text field LC is disabled and is filled automatically by the
+     * controller with this function
+
      */
     public static void settxt(){
         if (SendApduController.nb_bytes/2 < 10){
             fld_lc.setText(String.valueOf("0"+SendApduController.nb_bytes/2));
-        }else{
+        }
+        else{
             fld_lc.setText(String.valueOf(SendApduController.nb_bytes/2));
         }
     }
+
 
     /**
      * This method deletes the characters entered by the user if it exceeds the number of characters allowed
      * @param jt
      * @see SendApduController
+     * Clears the text field given in parameter
+     * @param jt the text field to clear
      */
     public static void clear(JTextField jt){
         jt.setText("");
-
     }
    
 }

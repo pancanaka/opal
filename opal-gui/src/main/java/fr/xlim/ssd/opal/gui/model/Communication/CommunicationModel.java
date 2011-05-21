@@ -19,7 +19,8 @@ import fr.xlim.ssd.opal.library.params.CardConfig;
 import javax.smartcardio.CardChannel;
 
 /**
- *
+ * Communication Model 
+ * 
  * @author Tiana Razafindralambo
  */
 public class CommunicationModel {
@@ -38,12 +39,24 @@ public class CommunicationModel {
     public SecurityDomain getSecurityDomain() { return this.securityModel.getDomain(); }
     public SecLevel getSecurityLevel(){ return this.securityLevel;}
     public SecurityDomainModel getSecurityDomainModel() { return this.securityModel;}
+    
+    /**
+     * Security domain setter
+     * affects the security domain model
+     * 
+     * @param cardConfig
+     * @param channel 
+     */
     public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
     { 
         //  select the security domain
         this.securityModel.setSecurityDomain(cardConfig, channel); 
     }
-
+    
+    /**
+     * Security level setter
+     * @param securityLevel 
+     */
     public void setSecurityLevel(SecLevel securityLevel)
     {
         this.securityLevel = securityLevel;
