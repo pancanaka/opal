@@ -54,7 +54,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     private AuthenticationController controller;
 
-    //private String[] configurations;
+    private JPanel jplPanel;
 
     private JButton jbLoadConf;
 
@@ -113,8 +113,10 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     private void drawWindow() {
         this.removeAll();
 
-        JPanel jplPanel = new JPanel();
+        jplPanel = new JPanel();
         add(jplPanel);
+
+        //jplPanel.repaint();
 
         Box verticalBox = Box.createVerticalBox();
         Box ligne = Box.createHorizontalBox();
@@ -311,13 +313,14 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                 ArrayList<KeyModel> keyModels = new ArrayList<KeyModel>();
                 for(KeyComponentApplet kc : Keylist) 
                     authentication.addKey(kc.type, kc.keyVersion, kc.keyId, kc.key);  
+
                 try {
                     controller.authenticate(authentication,
                             (String)cbSecurityLevel.getSelectedItem());
                 } catch (CardConfigNotFoundException ex) {
-                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
                 } catch (ConfigFieldsException ex) {
-                    new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }
