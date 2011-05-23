@@ -41,6 +41,8 @@ public class SendApduController implements KeyListener,ActionListener {
    // private CardReaderModel cardReaderModel;
     private CommunicationController communication;
     String apdu = null;
+    int taille_data_text = 0;
+    String data_text = null;
     public static int nb_bytes = 0;
 
     /**
@@ -117,6 +119,7 @@ public class SendApduController implements KeyListener,ActionListener {
             nb_bytes = 0;
             String text;
             text = ta.getText();
+            data_text = ta.getText();
             for(int i = 0 ; i<text.length();i++){
                 if(text.charAt(i) != ' '){
                     nb_bytes++;
@@ -143,6 +146,7 @@ public class SendApduController implements KeyListener,ActionListener {
                 lc = "0"+lc;
             }
             apdu = SendAPDUPanel.fld_cla.getText()+" "+SendAPDUPanel.fld_ins.getText()+" "+SendAPDUPanel.fld_p1.getText()+" "+SendAPDUPanel.fld_p2.getText()+" "+lc+" "+SendAPDUPanel.fld_le.getText()+" "+SendAPDUPanel.txt_area.getText();
+            try{
             byte[] Apdu = Conversion.hexToArray(apdu);
             boolean isAuthenticated = communication.isAuthenticated();
             if(isAuthenticated){
@@ -150,7 +154,21 @@ public class SendApduController implements KeyListener,ActionListener {
             }else{
                 logger.info("the card is not authenticated yet !");
             }
-
+            }catch(IllegalArgumentException ia){
+                logger.info("the Data field is not filled correctly !");
+            }
+        /*    taille_data_text = data_text.length();
+            if(taille_data_text % 2 != 0){
+                JOptionPane.showMessageDialog(null, "the Data field is not filled correctly !", null,JOptionPane.ERROR_MESSAGE );
+                logger.info("the Data field is not filled correctly !");
+            }
+            boolean isAuthenticated = communication.isAuthenticated();
+            if(isAuthenticated){
+                sendApdu(Apdu);
+            }else{
+                logger.info("the card is not authenticated yet !");
+            }
+*/
 
         }
 
