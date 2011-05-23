@@ -13,7 +13,9 @@
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.controller.AppletController;
+import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import java.awt.Component;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -29,8 +31,8 @@ import javax.swing.Box;
 import javax.swing.JCheckBox;
 import javax.swing.border.TitledBorder;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.filechooser.*;
-import javax.swing.KeyStroke;
 
 
 /**
@@ -50,31 +52,14 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
     private JTextField tfAppletFile;
     private JButton bFile;
 
-    private JLabel jlPackageAID;
     private JTextField tfPackageAID;
-
-    private JLabel jlSDAID;
     private JTextField tfSDAID;
-
-    private JLabel jlParam;
     private JTextField tfParam;
-
-    private JLabel jlConversion;
     private JCheckBox cbConversion;
-
-    private JLabel jlMaxDataLength;
     private JTextField tfMaxDataLength;
-
-    private JLabel jlAppletAID;
     private JTextField tfAppletAID;
-
-    private JLabel jlInstanceAID;
     private JTextField tfInstanceAID;
-
-    private JLabel jlParam2;
     private JTextField tfParam2;
-
-    private JLabel jlPrivileges;
     private JTextField tfPrivileges;
 
     private JButton jbLoad;
@@ -82,6 +67,55 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
     private short lineHeight  = 20;
 
     public AppletPanel() {
+
+        // Applet file
+        jlAppletFile = createLabel("Applet file", 170, lineHeight);
+        tfAppletFile = new JTextField();
+        bFile = new JButton("File");
+        bFile.addActionListener((ActionListener) this);
+
+        // Package AID
+        tfPackageAID = new JTextField();
+        tfPackageAID.addKeyListener(this);
+        
+        // Security domain AID
+        tfSDAID = new JTextField();
+        tfSDAID.addKeyListener(this);
+
+        // Parameters
+        tfParam = new JTextField();
+        tfParam.addKeyListener(this);
+     
+        // Reorder cap file components
+        cbConversion = new JCheckBox("Reorder cap file components", true);
+
+        // Max Data Length
+        tfMaxDataLength = new JTextField("255");
+
+        // Applet AID
+        tfAppletAID = new JTextField();
+        tfAppletAID.addKeyListener(this);
+        
+        // Instance AID
+        tfInstanceAID = new JTextField();
+        tfInstanceAID.addKeyListener(this);
+        
+        // Parameters
+        tfParam2 = new JTextField();
+        tfParam2.addKeyListener(this);
+        
+        //Privileges
+        tfPrivileges = new JTextField("00");
+        tfPrivileges.addKeyListener(this);
+
+        // Load applet
+        jbLoad = new JButton("Load applet");
+        jbLoad.addActionListener(this);
+        drawWindow();
+        
+    }
+
+    private void drawWindow() {
         JPanel jplPanel = new JPanel();
         add(jplPanel);
 
@@ -90,11 +124,6 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         ligne.setPreferredSize(new Dimension(500, 20));
 
         // Applet file
-        jlAppletFile = createLabel("Applet file", 170, lineHeight);
-        tfAppletFile = new JTextField();
-        bFile = new JButton("File");
-        bFile.addActionListener((ActionListener) this);
-
         ligne.add(jlAppletFile);
         ligne.add(tfAppletFile);
         ligne.add(bFile);
@@ -112,62 +141,32 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         Box verticalBoxInstForLoad = Box.createVerticalBox();
 
         // Package AID
-        ligne = Box.createHorizontalBox();
-        jlPackageAID = createLabel("Package AID", 160, lineHeight);
-        tfPackageAID = new JTextField();
-        tfPackageAID.addKeyListener(this);
-        ligne.add(jlPackageAID);
-        ligne.add(tfPackageAID);
-        verticalBoxInstForLoad.add(ligne);
-
+        verticalBoxInstForLoad.add(createFormLine("Package AID", tfPackageAID));
         verticalBoxInstForLoad.add(Box.createRigidArea(new Dimension(480, 10)));
 
         // Security domain AID
-        ligne = Box.createHorizontalBox();
-        jlSDAID = createLabel("Security domain AID", 160, lineHeight);
-        tfSDAID = new JTextField();
-        tfSDAID.addKeyListener(this);
-        ligne.add(jlSDAID);
-        ligne.add(tfSDAID);
-        verticalBoxInstForLoad.add(ligne);
-
+        verticalBoxInstForLoad.add(createFormLine("Security domain AID", tfSDAID));
         verticalBoxInstForLoad.add(Box.createRigidArea(new Dimension(480, 10)));
 
         // Parameters
-        ligne = Box.createHorizontalBox();
-        jlParam = createLabel("Parameters", 160, lineHeight);
-        tfParam = new JTextField();
-        tfParam.addKeyListener(this);
-        ligne.add(jlParam);
-        ligne.add(tfParam);
-        verticalBoxInstForLoad.add(ligne);
-
+        verticalBoxInstForLoad.add(createFormLine("Parameters", tfParam));
         jplInstForLoad.add(verticalBoxInstForLoad);
 
         // Load panel
         JPanel jplLoad = new JPanel();
         jplLoad.setPreferredSize(new Dimension(500, 90));
-        TitledBorder tbLoad = new TitledBorder("Install for load");
+        TitledBorder tbLoad = new TitledBorder("Load");
         jplLoad.setBorder(tbLoad);
         verticalBox.add(jplLoad);
 
         Box verticalBoxLoad = Box.createVerticalBox();
 
         // Reorder cap file components
-        ligne = Box.createHorizontalBox();
-        cbConversion = new JCheckBox("Reorder cap file components", true);
-        ligne.add(cbConversion);
-        verticalBoxLoad.add(ligne);
-
+        verticalBoxLoad.add(createFormLine("", cbConversion));
         verticalBoxLoad.add(Box.createRigidArea(new Dimension(480, 10)));
 
         // Max Data Length
-        ligne = Box.createHorizontalBox();
-        jlMaxDataLength = createLabel("Maximum data length", 160, lineHeight);
-        tfMaxDataLength = new JTextField("255");
-        ligne.add(jlMaxDataLength);
-        ligne.add(tfMaxDataLength);
-        verticalBoxLoad.add(ligne);
+        verticalBoxLoad.add(createFormLine("Max Data Length", tfMaxDataLength));
 
         jplLoad.add(verticalBoxLoad);
 
@@ -181,55 +180,25 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         Box verticalBoxInstForInst = Box.createVerticalBox();
 
         // Applet AID
-        ligne = Box.createHorizontalBox();
-        jlAppletAID = createLabel("Applet AID", 160, lineHeight);
-        tfAppletAID = new JTextField();
-        tfAppletAID.addKeyListener(this);
-        ligne.add(jlAppletAID);
-        ligne.add(tfAppletAID);
-        verticalBoxInstForInst.add(ligne);
-
+        verticalBoxInstForInst.add(createFormLine("Applet AID", tfAppletAID));
         verticalBoxInstForInst.add(Box.createRigidArea(new Dimension(480, 10)));
 
         // Instance AID
-        ligne = Box.createHorizontalBox();
-        jlInstanceAID = createLabel("Instance AID", 160, lineHeight);
-        tfInstanceAID = new JTextField();
-        tfInstanceAID.addKeyListener(this);
-        ligne.add(jlInstanceAID);
-        ligne.add(tfInstanceAID);
-        verticalBoxInstForInst.add(ligne);
-
+        verticalBoxInstForInst.add(createFormLine("Instance AID", tfInstanceAID));
         verticalBoxInstForInst.add(Box.createRigidArea(new Dimension(480, 10)));
 
         // Parameters
-        ligne = Box.createHorizontalBox();
-        jlParam2 = createLabel("Parameters", 160, lineHeight);
-        tfParam2 = new JTextField();
-        tfParam2.addKeyListener(this);
-        ligne.add(jlParam2);
-        ligne.add(tfParam2);
-        verticalBoxInstForInst.add(ligne);
-
+        verticalBoxInstForInst.add(createFormLine("Parameters", tfParam2));
         verticalBoxInstForInst.add(Box.createRigidArea(new Dimension(480, 10)));
 
         //Privileges
-        ligne = Box.createHorizontalBox();
-        jlPrivileges = createLabel("Privileges", 160, lineHeight);
-        tfPrivileges = new JTextField("00");
-        tfPrivileges.addKeyListener(this);
-        ligne.add(jlPrivileges);
-        ligne.add(tfPrivileges);
-        verticalBoxInstForInst.add(ligne);
+        verticalBoxInstForInst.add(createFormLine("Privileges", tfPrivileges));
 
         jplInstForInst.add(verticalBoxInstForInst);
-
         verticalBox.add(Box.createRigidArea(new Dimension(480, 10)));
 
         // Load applet
         ligne = Box.createHorizontalBox();
-        jbLoad = new JButton("Load applet");
-        jbLoad.addActionListener((ActionListener) this);
         ligne.add(jbLoad);
         verticalBox.add(ligne);
 
@@ -246,9 +215,20 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
     private JLabel createLabel(String name, int width, int height) {
         JLabel label = new JLabel(name);
         label.setPreferredSize(new Dimension(width,height));
-        //label.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        //label.addMouseListener((MouseListener) this);
         return label;
+    }
+
+    public Box createFormLine(String label, Component field) {
+        Box    ligne  = Box.createHorizontalBox();
+        JLabel lbl    = new JLabel(label);
+
+        lbl.setPreferredSize(new Dimension(150,lineHeight));
+        ligne.setPreferredSize(new Dimension(480, lineHeight));
+
+        ligne.add(lbl);
+        ligne.add(field);
+
+        return ligne;
     }
 
     public void setController(AppletController controller)
@@ -258,9 +238,6 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
-
-        KeyStroke hexa;
-
         if(o instanceof JButton) {
             JButton b = (JButton) o;
 
@@ -273,33 +250,26 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                 if(returnVal == JFileChooser.APPROVE_OPTION) {
                     tfAppletFile.setText(chooser.getSelectedFile().getAbsolutePath());
                 }
-            }else if(b.equals(jbLoad))
-            {  
-                byte[] PACKAGE_ID = (("".equals(tfPackageAID.getText())))? null : Conversion.hexToArray(tfPackageAID.getText()); 
-                byte[] APPLET_ID = (("".equals(tfAppletAID.getText())))? null : Conversion.hexToArray(tfAppletAID.getText()); 
-                byte[] MODULE_AID = (("".equals(tfInstanceAID.getText())))? null : Conversion.hexToArray(tfInstanceAID.getText()); 
-                String ressource = (tfAppletFile.getText().equals(""))?null:tfAppletFile.getText(); 
-                byte[] securityDomainAID = (("".equals(tfSDAID.getText())))? null : Conversion.hexToArray(tfSDAID.getText());
-                byte[] params4Install4load = (("".equals(tfParam.getText())))? null : Conversion.hexToArray(tfParam.getText());
-                String length = Integer.toHexString(Integer.parseInt(tfMaxDataLength.getText())).toUpperCase();
-                if(length.length()<2){
-                    length = "0"+length;
-                } 
-                byte maxDataLength = ("".equals(tfMaxDataLength.getText())) ? (byte)0xFF : (byte)(Conversion.hexToArray(length)[0]);
-                byte[] paramsInstall4Install = (("".equals(tfParam2.getText())))? null : Conversion.hexToArray(tfParam2.getText());
-                byte[] privileges = (("".equals(tfPrivileges.getText())))? Conversion.hexToArray("00") : Conversion.hexToArray(tfPrivileges.getText());
-                controller.installApplet(
-                                            PACKAGE_ID, 
-                                            MODULE_AID,
-                                            APPLET_ID, 
-                                            ressource, 
-                                            securityDomainAID, 
-                                            params4Install4load,  
-                                            maxDataLength,
-                                            privileges,
-                                            paramsInstall4Install,
-                                            cbConversion.isSelected()
-                                            );
+            }else if(b.equals(jbLoad)) {
+                if (controller.isAuthenticated()) {
+                    try {
+                        controller.checkForm(
+                                tfPackageAID.getText(),
+                                tfInstanceAID.getText(),
+                                tfAppletAID.getText(),
+                                tfAppletFile.getText(),
+                                tfSDAID.getText(),
+                                tfParam.getText(),
+                                tfMaxDataLength.getText(),
+                                tfPrivileges.getText(),
+                                tfParam2.getText(),
+                                cbConversion.isSelected());
+                    } catch (ConfigFieldsException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "You have to be authenticated.", "Caution", JOptionPane.WARNING_MESSAGE);
+                }
             }
         } 
 

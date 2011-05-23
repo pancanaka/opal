@@ -242,7 +242,6 @@ public class AuthenticationController {
      * @throws ConfigFieldsException 
      */
     private void checkAID(String aid) throws ConfigFieldsException {
-        System.out.println(aid);
         if (aid.length() > 0) {
             aid = aid.replaceAll(":", "");
             aid = aid.replaceAll(" ", "");

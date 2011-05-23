@@ -53,6 +53,8 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
         this.cardReaderModel = this.mainController.getCardReaderModel();
         this.cardReaderModel.addCardReaderStateListener(this);
 
+        this.setEnabled(false);
+
         this.drawComponents();
     }
 
