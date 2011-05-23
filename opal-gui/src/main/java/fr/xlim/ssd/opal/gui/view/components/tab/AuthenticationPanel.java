@@ -250,8 +250,8 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                     System.out.println("No configuration found.");
                 } else {
                     // name of the default configuration
-                   //String defaultConfig = controller.getCurrentCardDefaultProfileName();
-                   String defaultConfig = "";
+                   String defaultConfig = controller.getCurrentCardDefaultProfileName();
+                   //String defaultConfig = "";
 
                     int indexDefaultConfig = 0;
 
