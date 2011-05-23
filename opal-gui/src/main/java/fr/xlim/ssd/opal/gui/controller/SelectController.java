@@ -96,4 +96,8 @@ public class SelectController {
             throw new ConfigFieldsException("Issuer Security DomainObject AID can't be empty.\n");
         }
     }
+
+    public boolean isAuthenticated () {
+        return communication.isAuthenticated();
+    }
 }

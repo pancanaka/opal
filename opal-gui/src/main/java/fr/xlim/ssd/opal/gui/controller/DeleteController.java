@@ -97,4 +97,8 @@ public class DeleteController {
             throw new ConfigFieldsException("Object AID can't be empty.\n");
         }
     }
+
+    public boolean isAuthenticated () {
+        return communication.isAuthenticated();
+    }
 }

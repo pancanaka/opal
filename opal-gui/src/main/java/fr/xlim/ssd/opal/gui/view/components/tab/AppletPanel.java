@@ -251,21 +251,24 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                     tfAppletFile.setText(chooser.getSelectedFile().getAbsolutePath());
                 }
             }else if(b.equals(jbLoad)) {
-                try {
-                    controller.checkForm(       
-                                                tfPackageAID.getText(),
-                                                tfInstanceAID.getText(),
-                                                tfAppletAID.getText(),
-                                                tfAppletFile.getText(),
-                                                tfSDAID.getText(),
-                                                tfParam.getText(),
-                                                tfMaxDataLength.getText(),
-                                                tfPrivileges.getText(),
-                                                tfParam2.getText(),
-                                                cbConversion.isSelected()
-                                                );
-                } catch (ConfigFieldsException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                if (controller.isAuthenticated()) {
+                    try {
+                        controller.checkForm(
+                                tfPackageAID.getText(),
+                                tfInstanceAID.getText(),
+                                tfAppletAID.getText(),
+                                tfAppletFile.getText(),
+                                tfSDAID.getText(),
+                                tfParam.getText(),
+                                tfMaxDataLength.getText(),
+                                tfPrivileges.getText(),
+                                tfParam2.getText(),
+                                cbConversion.isSelected());
+                    } catch (ConfigFieldsException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(null, "You have to be authenticated.", "Caution", JOptionPane.WARNING_MESSAGE);
                 }
             }
         } 

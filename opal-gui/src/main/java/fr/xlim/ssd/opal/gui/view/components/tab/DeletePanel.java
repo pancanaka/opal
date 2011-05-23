@@ -123,25 +123,29 @@ public class DeletePanel extends JPanel implements ActionListener, KeyListener{
         if(o instanceof JButton) {
             JButton b = (JButton) o;
             if (b.equals(jbDelete)) {
-                try {
-                    boolean trouve = false;
-                    String aid = (String)cbAID.getSelectedItem();
-                    aid = (aid == null) ? "" : aid;
-                    
-                    controller.checkForm(aid, cascade.isSelected());
+                if (controller.isAuthenticated()) {
+                    try {
+                        boolean trouve = false;
+                        String aid = (String)cbAID.getSelectedItem();
+                        aid = (aid == null) ? "" : aid;
 
-                    // if the aid is not in the comboBox yet, we add it to it
-                    for (int i=0; i<cbAID.getItemCount() && !trouve; i++) {
-                        if (aid.compareTo((String)cbAID.getItemAt(i))==0) {
-                            trouve = true;
+                        controller.checkForm(aid, cascade.isSelected());
+
+                        // if the aid is not in the comboBox yet, we add it to it
+                        for (int i=0; i<cbAID.getItemCount() && !trouve; i++) {
+                            if (aid.compareTo((String)cbAID.getItemAt(i))==0) {
+                                trouve = true;
+                            }
                         }
+                        if (!trouve) {
+                            cbAID.addItem(cbAID.getSelectedItem());
+                        }
+                    } catch (ConfigFieldsException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(),
+                                "Caution", JOptionPane.WARNING_MESSAGE);
                     }
-                    if (!trouve) {
-                        cbAID.addItem(cbAID.getSelectedItem());
-                    }
-                } catch (ConfigFieldsException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(),
-                            "Caution", JOptionPane.WARNING_MESSAGE);
+                } else {
+                     JOptionPane.showMessageDialog(null, "You have to be authenticated.", "Caution", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }

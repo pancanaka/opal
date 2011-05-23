@@ -298,4 +298,8 @@ public class AppletController {
             }
         }
     }
+
+    public boolean isAuthenticated () {
+        return communication.isAuthenticated();
+    }
 }
