@@ -124,6 +124,7 @@ public class HomeView extends FrameView implements ActionListener {
         itemQuit.addActionListener(this);
         itemMProfiles.addActionListener(this);
         itemDataExchanges.addActionListener(this);
+        itemAboutOpal.addActionListener(this);
     }
 
     /**
@@ -199,6 +200,14 @@ public class HomeView extends FrameView implements ActionListener {
             }
             else if(name.equals("Open data exchanges")) {
                 App.showDataExchangesVue();
+            }
+            else if(name.equals("Opal")) {
+                String message = ""
+                        + "OPAL is a Java 6 library that implements Global Platform 2.x \n"
+                        + "specification. It is able to upload and manage applet life cycle \n"
+                        + "on Java Card. It is also able to manage different implementations \n"
+                        + "of the specification via a pluggable interface.";
+                new JOptionPane().showMessageDialog(null, message, "About opal", JOptionPane.OK_OPTION);
             }
         }
     }
