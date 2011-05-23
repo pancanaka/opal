@@ -22,6 +22,7 @@ import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
@@ -477,13 +478,14 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
                 }
             }
             else if(b.getText().equals("Current")) {
-                //JOptionPane.showMessageDialog(null, b.getName(), "Caution", JOptionPane.WARNING_MESSAGE);
+                int i = Integer.parseInt(b.getName());
 
                 if(currentATR==null) {
-                    JOptionPane.showMessageDialog(null, "NULL ah ah ah", "Caution", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "There is no current ATR to display", "Caution", JOptionPane.WARNING_MESSAGE);
                 }
                 else {
-                    JOptionPane.showMessageDialog(null, currentATR.toString(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    String atr = Conversion.arrayToHex(currentATR.getValue());
+                    ATRlist.get(i).setText(atr);
                 }
             }
             else if(b.getText().equals("Remove")) {
