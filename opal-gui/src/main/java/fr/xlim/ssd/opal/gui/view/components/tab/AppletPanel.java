@@ -199,8 +199,6 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
 
         // Load applet
         ligne = Box.createHorizontalBox();
-        jbLoad.addActionListener((ActionListener) this);
-        jbLoad.addActionListener((ActionListener) this);
         ligne.add(jbLoad);
         verticalBox.add(ligne);
 
@@ -240,7 +238,6 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
-
         if(o instanceof JButton) {
             JButton b = (JButton) o;
 

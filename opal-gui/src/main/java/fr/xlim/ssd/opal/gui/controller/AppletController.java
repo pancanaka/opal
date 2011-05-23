@@ -19,6 +19,7 @@ import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -97,7 +98,7 @@ public class AppletController {
              String maxDataLength, String privileges, String paramsInstall4Install,
              boolean reorderCapFileComponents) throws ConfigFieldsException  {
 
-         //checkRessource(ressource);
+         checkRessource(ressource);
          checkPackageAID(packageAID);
          checkSecurityDomain(securityDomainAID);
          checkParam(params4Install4load);
@@ -119,7 +120,7 @@ public class AppletController {
          if (length.length() < 2) {
              length = "0" + length;
          }
-         byte maxLength = ("".equals(maxDataLength)) ? (byte) 0xFF : (byte) (Conversion.hexToArray(length)[0]);
+         byte maxLength = (byte)(Conversion.hexToArray(length)[0]);
          byte[] parInstall4Install = (("".equals(paramsInstall4Install))) ? null : Conversion.hexToArray(paramsInstall4Install);
          byte[] privilege = Conversion.hexToArray(privileges);
 
@@ -144,7 +145,7 @@ public class AppletController {
                 }
             } else {
                 throw new ConfigFieldsException("Package AID is "
-                        + "invalid.It must contain between 10 and 32 characters.\n");
+                        + "invalid. It must contain between 10 and 32 characters.\n");
             }
         } else {
             throw new ConfigFieldsException("Package AID can't be empty.\n");
@@ -190,7 +191,7 @@ public class AppletController {
                 }
             } else {
                 throw new ConfigFieldsException("Applet AID is "
-                        + "invalid.It must contain between 10 and 32 characters.\n");
+                        + "invalid. It must contain between 10 and 32 characters.\n");
             }
         } else {
             throw new ConfigFieldsException("Applet AID can't be empty.\n");
@@ -199,12 +200,17 @@ public class AppletController {
 
     private void checkRessource(String ressource) throws ConfigFieldsException {
         if (ressource.length() > 0) {
-            Pattern p1 = Pattern.compile("*", Pattern.CASE_INSENSITIVE);
+            Pattern p1 = Pattern.compile(".*\\.cap", Pattern.CASE_INSENSITIVE);
             Matcher m = p1.matcher(ressource);
 
-            if (m.find()) {
-                throw new ConfigFieldsException("The Applet file has to be a "
-                        + "cap file.");
+            if (!m.matches()) {
+                throw new ConfigFieldsException("The Applet File has to be a "
+                        + "cap file.\n");
+            }
+
+            File file = new File(ressource);
+            if (!file.exists()) {
+                throw new ConfigFieldsException("Applet File doesn't exist.\n");
             }
         } else {
             throw new ConfigFieldsException("Applet File can't be empty.\n");
@@ -227,7 +233,7 @@ public class AppletController {
                 }
             } else {
                 throw new ConfigFieldsException("Security Domain AID is "
-                        + "invalid.It must contain between 10 and 32 characters.\n");
+                        + "invalid. It must contain between 10 and 32 characters.\n");
             }
         }
     }
@@ -260,7 +266,16 @@ public class AppletController {
     }
 
     private void checkMaxDataLength(String maxDataLength) throws ConfigFieldsException {
-        throw new UnsupportedOperationException("Not yet implemented");
+        if (maxDataLength.length() != 0) {
+            
+            if ((Integer.parseInt(maxDataLength))<0 || (Integer.parseInt(maxDataLength)>255)) {
+                throw new ConfigFieldsException("Max Data Length is "
+                            + "invalid.It must be between 0 and 255.\n");
+            }
+        } else {
+            throw new ConfigFieldsException("Max Data Length can't be null. "
+                        +"\n");
+        }
     }
 
     private void checkPrivileges(String privilege) throws ConfigFieldsException {
@@ -279,7 +294,7 @@ public class AppletController {
                 }
             } else {
                 throw new ConfigFieldsException("Privileges is "
-                        + "invalid.It must contain between 2 and 32 characters.\n");
+                        + "invalid. It must contain between 2 and 32 characters.\n");
             }
         }
     }
