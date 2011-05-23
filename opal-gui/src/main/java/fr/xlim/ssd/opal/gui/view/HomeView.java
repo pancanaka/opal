@@ -89,9 +89,10 @@ public class HomeView extends FrameView implements ActionListener {
 
         initializeToolbar();
 
-        this.getFrame().setSize(500, 500);
-
         showPanel("home");
+
+        this.getFrame().setSize(500, 500);
+        this.getFrame().setLocationRelativeTo(null);
     }
 
     /**
@@ -143,7 +144,7 @@ public class HomeView extends FrameView implements ActionListener {
         if(type.equals("home")) {
             if(!homePanelIsSet) {
                 homePanelIsSet = true;
-                homePanel = new HomePanel(this.controller);
+                homePanel = new HomePanel(this.controller, this);
             }
             scrollPan = new AppJScrollPan(homePanel);
         }

@@ -66,7 +66,7 @@ public class DataExchangesVue extends JDialog implements ActionListener{
         this.setLayout(new BorderLayout());
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
         this.setVisible(true);
-
+        
         // When this window is closed, the App class must be informed
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -195,7 +195,7 @@ public class DataExchangesVue extends JDialog implements ActionListener{
         this.add(jtp_main,BorderLayout.CENTER);
         btm_pnl.add(BtnClear,BorderLayout.EAST);
         this.add(btm_pnl,BorderLayout.SOUTH);
-
+        this.setVisible(true);
     }
 
 

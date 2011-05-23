@@ -16,6 +16,8 @@ import fr.xlim.ssd.opal.gui.controller.AuthenticationController;
 import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
+import fr.xlim.ssd.opal.gui.view.HomeView;
+import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.view.components.KeyComponentApplet;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
@@ -49,6 +51,10 @@ import javax.swing.JOptionPane;
  * @author Estelle Blandinieres
  */
 public class AuthenticationPanel extends JPanel implements ActionListener{
+    // The parent view
+    private HomeView f = null;
+
+    private HomePanel p = null;
 
     public String title = "Authentication";
 
@@ -90,7 +96,10 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     private String description;
     private String [] ATR;
     //String name, String description, String AID, String SCPmode, String TP, String[] ATR, String implementation
-    public AuthenticationPanel(MainController mainController) {
+    public AuthenticationPanel(MainController mainController, HomeView f, HomePanel p) {
+        this.f = f;
+        this.p = p;
+
         jbLoadConf = new JButton("Load Configuration");
         jbLoadConf.addActionListener(this);
         tfISDAID = new JTextField();
@@ -101,7 +110,6 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         cbImplementation = new JComboBox(Implementation);
         jbAuthenticate = new JButton("Authenticate");
         jbAuthenticate.addActionListener(this);
-
 
         drawWindow();
     }
@@ -155,6 +163,11 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
         jplPanel.add(verticalBox);
 
+        /*
+         * To fix a problem due to Windows and Mac we have to refresh the content pane
+         * calling setContentPane of the main frame
+         */
+        this.f.showPanel(p);
     }
 
     /**

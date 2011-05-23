@@ -12,6 +12,7 @@
 package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
+import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
 import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
@@ -48,10 +49,11 @@ public class HomePanel extends JPanel {
      * Display the <code>JTabbedPane</code> which contains all the panels mentioned in the class description
      *
      * @param controller the main controller of the application
+     * @param f the main view of the application
      * @see fr.xlim.ssd.opal.gui.view.HomeView
      */
-    public HomePanel(MainController controller) {
-        authentication      = new AuthenticationPanel(controller);
+    public HomePanel(MainController controller, HomeView f) {
+        authentication      = new AuthenticationPanel(controller, f, this);
         applet              = new AppletPanel();
         delete              = new DeletePanel();
         select              = new SelectPanel();
