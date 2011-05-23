@@ -29,7 +29,7 @@ public class CardSenderTask extends Task<Void,Void> implements TaskInterface {
     private static final CustomLogger logger= new CustomLogger();
     private CommunicationController communication = null;
     private byte[] Apdu = null;
-    private CardReaderModel cardReaderModel;
+ //   private CardReaderModel cardReaderModel;
     
   
    
@@ -40,9 +40,9 @@ public class CardSenderTask extends Task<Void,Void> implements TaskInterface {
  * @param to_send
  */
 
-    public CardSenderTask(CardReaderModel crm ,CommunicationController communicationController  , byte [] apdu) {
+    public CardSenderTask(CommunicationController communicationController  , byte [] apdu) {
         super(App.instance);
-       this.cardReaderModel = crm;
+     //  this.cardReaderModel = crm;
         communication = communicationController;
         Apdu = apdu;
         

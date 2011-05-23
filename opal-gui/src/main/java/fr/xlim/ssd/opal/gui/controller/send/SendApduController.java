@@ -38,7 +38,7 @@ import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
  */
 public class SendApduController implements KeyListener,ActionListener {
     private static final CustomLogger logger= new CustomLogger();
-    private CardReaderModel cardReaderModel;
+   // private CardReaderModel cardReaderModel;
     private CommunicationController communication;
     String apdu = null;
     public static int nb_bytes = 0;
@@ -51,7 +51,7 @@ public class SendApduController implements KeyListener,ActionListener {
      
     public SendApduController(CardReaderModel cardreadermodel , CommunicationController communicationcontroller) {
         this.communication = communicationcontroller;
-        this.cardReaderModel = cardreadermodel;
+        //this.cardReaderModel = cardreadermodel;
 
     }
 
@@ -144,7 +144,12 @@ public class SendApduController implements KeyListener,ActionListener {
             }
             apdu = SendAPDUPanel.fld_cla.getText()+" "+SendAPDUPanel.fld_ins.getText()+" "+SendAPDUPanel.fld_p1.getText()+" "+SendAPDUPanel.fld_p2.getText()+" "+lc+" "+SendAPDUPanel.fld_le.getText()+" "+SendAPDUPanel.txt_area.getText();
             byte[] Apdu = Conversion.hexToArray(apdu);
-            sendApdu(Apdu);
+            boolean isAuthenticated = communication.isAuthenticated();
+            if(isAuthenticated){
+                sendApdu(Apdu);
+            }else{
+                logger.info("the card is not authenticated yet !");
+            }
 
 
         }
@@ -160,7 +165,7 @@ public class SendApduController implements KeyListener,ActionListener {
 
      public void sendApdu( byte [] apdu){
         logger.info("Sending APDU");
-        CardSenderTask cst = new CardSenderTask(cardReaderModel, communication,  apdu);
+        CardSenderTask cst = new CardSenderTask(communication,  apdu);
         TaskFactory tf = new TaskFactory().run(cst);
 
 

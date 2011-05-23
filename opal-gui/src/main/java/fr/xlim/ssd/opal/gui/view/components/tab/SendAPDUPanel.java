@@ -133,7 +133,6 @@ public class SendAPDUPanel extends JPanel{
      * @see SendApduController
      * The text field LC is disabled and is filled automatically by the
      * controller with this function
-
      */
     public static void settxt(){
         if (SendApduController.nb_bytes/2 < 10){
