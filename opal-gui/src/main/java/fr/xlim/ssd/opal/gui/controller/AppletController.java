@@ -97,7 +97,7 @@ public class AppletController {
              String maxDataLength, String privileges, String paramsInstall4Install,
              boolean reorderCapFileComponents) throws ConfigFieldsException  {
 
-         checkRessource(ressource);
+         //checkRessource(ressource);
          checkPackageAID(packageAID);
          checkSecurityDomain(securityDomainAID);
          checkParam(params4Install4load);
@@ -199,7 +199,7 @@ public class AppletController {
 
     private void checkRessource(String ressource) throws ConfigFieldsException {
         if (ressource.length() > 0) {
-            Pattern p1 = Pattern.compile(".*", Pattern.CASE_INSENSITIVE);
+            Pattern p1 = Pattern.compile("*", Pattern.CASE_INSENSITIVE);
             Matcher m = p1.matcher(ressource);
 
             if (m.find()) {
