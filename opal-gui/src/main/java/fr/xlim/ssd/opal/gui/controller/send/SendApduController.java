@@ -147,28 +147,16 @@ public class SendApduController implements KeyListener,ActionListener {
             }
             apdu = SendAPDUPanel.fld_cla.getText()+" "+SendAPDUPanel.fld_ins.getText()+" "+SendAPDUPanel.fld_p1.getText()+" "+SendAPDUPanel.fld_p2.getText()+" "+lc+" "+SendAPDUPanel.fld_le.getText()+" "+SendAPDUPanel.txt_area.getText();
             try{
-            byte[] Apdu = Conversion.hexToArray(apdu);
-            boolean isAuthenticated = communication.isAuthenticated();
-            if(isAuthenticated){
-                sendApdu(Apdu);
-            }else{
-                logger.info("the card is not authenticated yet !");
-            }
+                byte[] Apdu = Conversion.hexToArray(apdu);
+                boolean isAuthenticated = communication.isAuthenticated();
+                if(isAuthenticated){
+                    sendApdu(Apdu);
+                }else{
+                    logger.error("the card is not authenticated yet !");
+                }
             }catch(IllegalArgumentException ia){
-                logger.info("the Data field is not filled correctly !");
+                logger.error("the Data field is not filled correctly !");
             }
-        /*    taille_data_text = data_text.length();
-            if(taille_data_text % 2 != 0){
-                JOptionPane.showMessageDialog(null, "the Data field is not filled correctly !", null,JOptionPane.ERROR_MESSAGE );
-                logger.info("the Data field is not filled correctly !");
-            }
-            boolean isAuthenticated = communication.isAuthenticated();
-            if(isAuthenticated){
-                sendApdu(Apdu);
-            }else{
-                logger.info("the card is not authenticated yet !");
-            }
-*/
 
         }
 
