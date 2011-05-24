@@ -163,9 +163,10 @@ public class CommunicationController {
             try
             {
                 ResponseAPDU resp =  securityDomain.send(command);
+
                 logger.debug("Response to command "
-                     + "(-> " + Conversion.arrayToHex(resp.getBytes()) + ") "
-                     + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
+                     + "(-> "+Conversion.arrayToHex(command.getBytes())+" "+Conversion.arrayToHex(resp.getBytes()) + ") "
+                     + "\n (<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
                 return resp;
             }catch(CardException ex){ logger.info(ex.getMessage());}
         }

@@ -2,7 +2,6 @@
  *                             OPAL - GUI                                     *
  ******************************************************************************
  * Author : El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                     *
- *          Chanaa Anas <anas.chanaa@etu.unilim.fr>                           *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
@@ -18,11 +17,9 @@ package fr.xlim.ssd.opal.gui.model.dataExchanges;
 
 public interface Observer {
 
-	public void updateALL(String change_text,String level);
-    public void updateAPDU(String change_text);
-    public void updateLog(String change_text);
-    public void clearALL(String change_text);
-    public void clearAPDU(String change_text);
-    public void clearLog(String change_text);
+    public void updateALL(String change_text,String level);
+    public void updateAPDU(String head, String req, String params,String le,String data, String response, String res,  String level);
+    public void updateLog(String change_text, String level);
+    
 
 }

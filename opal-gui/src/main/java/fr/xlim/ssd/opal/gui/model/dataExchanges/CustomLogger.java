@@ -2,13 +2,16 @@
  *                             OPAL - GUI                                     *
  ******************************************************************************
  * Author : El Khaldi Omar <omar.el-khaldi@etu.unilim.fr>                     *
- *          Chanaa Anas <anas.chanaa@etu.unilim.fr>                           *
  ******************************************************************************
  * This file is part of the OPAL project.                                     *
  ******************************************************************************
  * Copyright : University of Limoges (Unilim), 2011                           *
  ******************************************************************************/
 
+
+/*
+ * This class contains the logger that will be used in this project
+ */
 package fr.xlim.ssd.opal.gui.model.dataExchanges;
 
 import ch.qos.logback.classic.Level;
@@ -24,6 +27,8 @@ public class CustomLogger implements ILoggingEvent{
       String mymessage;
       MyAppender appender;
 
+
+    //Constructor of the Logger
     public CustomLogger(){
 
        this.mylevel=Level.ERROR;
@@ -33,6 +38,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Links a logger to an info Level
     public void info(String message){
 
         mylevel=Level.INFO;
@@ -41,6 +47,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Links a logger to a warning Level
     public void warn(String message){
 
         mylevel = Level.WARN;
@@ -49,6 +56,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Links a logger to a warning Level + display an exception if it exists
     public void warn(String message,Exception ie){
 
         mylevel = Level.WARN;
@@ -58,6 +66,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Links a logger to an error Level
     public void error(String message){
 
         mylevel = Level.ERROR;
@@ -66,6 +75,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Links a logger to an error Level
     public void error(String message,Exception ie){
 
         mylevel = Level.ERROR;
@@ -75,6 +85,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Links a logger to a debug Level
     public void debug(String message){
 
         mylevel = Level.DEBUG;
@@ -83,6 +94,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Links a logger to a debug Level
     public void debug(String message,Exception ie){
 
         mylevel = Level.DEBUG;
@@ -92,6 +104,7 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //displays a logger and link it to a Level added in the first parameter
     public void log(Level lvl,String message){
 
         this.mylevel=lvl;
@@ -100,70 +113,88 @@ public class CustomLogger implements ILoggingEvent{
 
     }
 
+    //Gets only the level of a logger
+    @Override
+    public Level getLevel() {
+        return this.mylevel;
+    }
+
+    //Setting the level of a logger
+    public void setLevel(Level level){
+        mylevel=level;
+    }
+
+    //gets only the message of a logger
+    @Override
+    public String getMessage() {
+        return this.mymessage;
+    }
+
+    //Implemented methods that aren't used yet in this project
+
+    @Override
     public String getThreadName() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public Level getLevel() {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        return this.mylevel;
-    }
-
-    public String getMessage() {
-        //throw new UnsupportedOperationException("Not supported yet.");
-        return this.mymessage;
-    }
-
+    @Override
     public Object[] getArgumentArray() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public String getFormattedMessage() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public String getLoggerName() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public LoggerContextVO getLoggerContextVO() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public IThrowableProxy getThrowableProxy() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public StackTraceElement[] getCallerData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public boolean hasCallerData() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Marker getMarker() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Map<String, String> getMDCPropertyMap() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public Map<String, String> getMdc() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public long getTimeStamp() {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    @Override
     public void prepareForDeferredProcessing() {
         throw new UnsupportedOperationException("Not supported yet.");
-    }
-
-    public void setLevel(Level level){
-        mylevel=level;
     }
 
 }

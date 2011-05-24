@@ -1,4 +1,3 @@
-
 /******************************************************************************
  *                             OPAL - GUI                                     *
  ******************************************************************************
@@ -13,7 +12,7 @@
 
 
 /*
- * This class is used to display The Loggers for the Project in this Vue.
+ * This class is used to display The Loggers for the Project in this View.
  */
 
 
@@ -44,20 +43,22 @@ import javax.swing.text.StyledDocument;
 public class DataExchangesVue extends JDialog implements ActionListener{
 
 
-    //DataExchangesView Attributes//////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Attributes
     JTabbedPane jtp_main;//Contains the "ALL", "APDU" and the "Logging" JTextPanes
     ALL txt_all;
     APDU txt_apdu;
     Logging txt_logging;
     JPanel btm_pnl;//This Panel is in the bottom of the JDialog
-    JButton BtnClear;
+    JButton BtnClear;//This button clears the JTextPane selected
     DataExchangesModel mdl_dte;
-    StyledDocument doc;
-    Style def;
-    Style regular;
-    Style rouge;
 
-    //DataExchanges Vue Constructor//////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Styles for the JTextPanes
+    StyledDocument doc_all;
+    StyledDocument doc_log;
+    StyledDocument doc_apdu;
+    
+
+    //DataExchanges Vue Constructor
     public DataExchangesVue(){
 
         //Default DataExchanges Settings
@@ -77,11 +78,11 @@ public class DataExchangesVue extends JDialog implements ActionListener{
 
         //Instanciating the JTextPanes of this View, and setting their background in white color
         txt_all=new ALL();
-        txt_all.setBackground(Color.BLACK);
+        txt_all.setBackground(Color.WHITE);
         txt_apdu=new APDU();
-        txt_apdu.setBackground(Color.BLACK);
+        txt_apdu.setBackground(Color.WHITE);
         txt_logging=new Logging();
-        txt_logging.setBackground(Color.BLACK);
+        txt_logging.setBackground(Color.WHITE);
 
 
         //Defining styles used by each Logging Level:///////////////////////////////////////////
@@ -90,110 +91,187 @@ public class DataExchangesVue extends JDialog implements ActionListener{
         //  3-Info    (Blue, Bold, Italic)
         //  4-Debug   (Green, Bold)
 
-        //Styles for the "ALL" JTextPane
-        doc = txt_all.getStyledDocument();
+        //  5-Defining another style used only by the LE for the APDU Sendings
+
+        //Styles for the JTextPanes
+        doc_all = txt_all.getStyledDocument();
+        doc_log = txt_logging.getStyledDocument();
+        doc_apdu = txt_apdu.getStyledDocument();
+
         Style stl_dflt = StyleContext.getDefaultStyleContext().getStyle(StyleContext.DEFAULT_STYLE);
-            //*Default style
-            Style rgl_stl = doc.addStyle("regular", stl_dflt);
+            //*Regular style
+            Style rgl_stl1 = doc_all.addStyle("regular", stl_dflt);
+            Style rgl_stl2 = doc_log.addStyle("regular", stl_dflt);
+            Style rgl_stl3 = doc_apdu.addStyle("regular", stl_dflt);
             //*Underlined style
-            Style under= doc.addStyle("underline", rgl_stl);
-            StyleConstants.setUnderline(under, true);
+            Style under1= doc_all.addStyle("underline", rgl_stl1);
+            Style under2= doc_log.addStyle("underline", rgl_stl2);
+            Style under3= doc_apdu.addStyle("underline", rgl_stl3);
+            StyleConstants.setUnderline(under1, true);
+            StyleConstants.setUnderline(under2, true);
+            StyleConstants.setUnderline(under3, true);
             //*Bold style
-            Style bold= doc.addStyle("bold", rgl_stl);
-            StyleConstants.setBold(bold, true);
+            Style bold1= doc_all.addStyle("bold", rgl_stl1);
+            Style bold2= doc_log.addStyle("bold", rgl_stl2);
+            Style bold3= doc_apdu.addStyle("bold", rgl_stl3);
+            StyleConstants.setBold(bold1, true);
+            StyleConstants.setBold(bold2, true);
+            StyleConstants.setBold(bold3, true);
             //*Italic style
-            Style italic= doc.addStyle("italic", rgl_stl);
-            StyleConstants.setItalic(italic, true);
+            Style italic1= doc_all.addStyle("italic", rgl_stl1);
+            Style italic2= doc_log.addStyle("italic", rgl_stl2);
+            Style italic3= doc_apdu.addStyle("italic", rgl_stl3);
+            StyleConstants.setItalic(italic1, true);
+            StyleConstants.setItalic(italic2, true);
+            StyleConstants.setItalic(italic3, true);
 
             //1-Error Level style
-            Style error=doc.addStyle("error", bold);
-            StyleConstants.setForeground(error, Color.red);
+            Style error1=doc_all.addStyle("error", bold1);
+            Style error2=doc_log.addStyle("error", bold2);
+            Style error3=doc_apdu.addStyle("error", bold3);
+            StyleConstants.setForeground(error1, Color.red);
+            StyleConstants.setForeground(error2, Color.red);
+            StyleConstants.setForeground(error3, Color.red);
             //2-Warning Level  style
-            Style warning=doc.addStyle("warning", bold);
-            StyleConstants.setForeground(warning, Color.orange);
+            Style warning1=doc_all.addStyle("warning", bold1);
+            Style warning2=doc_log.addStyle("warning", bold2);
+            Style warning3=doc_apdu.addStyle("warning", bold3);
+            StyleConstants.setForeground(warning1, Color.orange);
+            StyleConstants.setForeground(warning2, Color.orange);
+            StyleConstants.setForeground(warning3, Color.orange);
             //3-Info Level style
-            Style sev1=doc.addStyle("info", bold);
+            Style sev1=doc_all.addStyle("info", bold1);
+            Style sev2=doc_log.addStyle("info", bold2);
+            Style sev3=doc_apdu.addStyle("info", bold3);
             StyleConstants.setItalic(sev1, true);
-            Style info=doc.addStyle("info", sev1);
-            StyleConstants.setForeground(info, Color.blue);
+            StyleConstants.setItalic(sev2, true);
+            StyleConstants.setItalic(sev3, true);
+            Style info1=doc_all.addStyle("info", sev1);
+            Style info2=doc_log.addStyle("info", sev2);
+            Style info3=doc_apdu.addStyle("info", sev3);
+            StyleConstants.setForeground(info1, Color.blue);
+            StyleConstants.setForeground(info2, Color.blue);
+            StyleConstants.setForeground(info3, Color.blue);
             //4-Debug Level style
-            Style debug=doc.addStyle("debug", bold);
-            StyleConstants.setForeground(debug, Color.green);
-            
+            Style debug1=doc_all.addStyle("debug", bold1);
+            Style debug2=doc_log.addStyle("debug", bold2);
+            Style debug3=doc_apdu.addStyle("debug", bold3);
+            StyleConstants.setForeground(debug1, Color.green);
+            StyleConstants.setForeground(debug2, Color.green);
+            StyleConstants.setForeground(debug3, Color.green);
+
+            //LE style
+            Style le_style=doc_apdu.addStyle("le_style", bold3);
+            StyleConstants.setForeground(le_style, Color.MAGENTA);
+
 
         //Instanciating the Components of the JDialog
         jtp_main=new JTabbedPane();
         btm_pnl=new JPanel(new BorderLayout());
         BtnClear=new JButton("Clear");
 
-        //This is the instance of the Singleton DataExchangesModel
+        //This is the instance of the DataExchangesModel Singleton
         mdl_dte=DataExchangesModel.getInstance();
 
+        //Adding an observer to the DataExchangesModel
         mdl_dte.addObserver(new Observer(){
             @Override
+
+            //Update the ALL JTextPane
             public void updateALL(String change_text, String level){
 
                     try {
-                        
-                        if(level.equals("ERROR"))           doc.insertString(doc.getLength(), change_text, doc.getStyle("error"));
-                        else if(level.equals("WARNING"))    doc.insertString(doc.getLength(), change_text, doc.getStyle("warning"));
-                        else if(level.equals("INFO"))       doc.insertString(doc.getLength(), change_text , doc.getStyle("info"));
-                        else if(level.equals("DEBUG"))      doc.insertString(doc.getLength(), change_text , doc.getStyle("debug"));
+
+                        //Display a log for each level
+                        if(level.equals("ERROR"))           doc_all.insertString(doc_all.getLength(), change_text, doc_all.getStyle("error"));
+                        else if(level.equals("WARNING"))    doc_all.insertString(doc_all.getLength(), change_text, doc_all.getStyle("warning"));
+                        else if(level.equals("INFO"))       doc_all.insertString(doc_all.getLength(), change_text , doc_all.getStyle("info"));
+                        else if(level.equals("DEBUG"))       doc_all.insertString(doc_all.getLength(), change_text , doc_all.getStyle("debug"));
 
                         //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
-                        Document d = txt_all.getDocument();
-                        txt_all.select(d.getLength(), d.getLength());
+                        
+                            Document d = txt_all.getDocument();
+                            txt_all.select(d.getLength(), d.getLength());
+                       
+                    }
+                    catch (BadLocationException ex) {
+                        System.out.println(ex.getMessage());
+                    }
+                
+            }
 
+
+            @Override
+            public void updateAPDU(String head, String req, String params,String le,String data, String response, String res,  String level){
+
+                try {
+
+                            //Title
+                            doc_apdu.insertString(doc_apdu.getLength(), head, doc_apdu.getStyle("bold"));
+                            //Request
+                            doc_apdu.insertString(doc_apdu.getLength(), req, doc_apdu.getStyle("regular"));
+                            //Parameters
+                            doc_apdu.insertString(doc_apdu.getLength(), params, doc_apdu.getStyle("info"));
+                            //LE
+                            doc_apdu.insertString(doc_apdu.getLength(), le, doc_apdu.getStyle("le_style"));
+                            //Data
+                            doc_apdu.insertString(doc_apdu.getLength(), data, doc_apdu.getStyle("warning"));
+                            //Response
+                            doc_apdu.insertString(doc_apdu.getLength(), response, doc_apdu.getStyle("regular"));
+                            //Response status
+                            if(level.equals("ERROR"))   doc_apdu.insertString(doc_apdu.getLength(), res, doc_apdu.getStyle("error"));
+                            else doc_apdu.insertString(doc_apdu.getLength(), res, doc_apdu.getStyle("debug"));
+                       
+                            //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
+
+                            Document d = txt_apdu.getDocument();
+                            txt_apdu.select(d.getLength(), d.getLength());
 
                     }
                     catch (BadLocationException ex) {
-                        //don't forget to fill this!!!!!!!!!!!!!!!!!!!
+                        System.out.println(ex.getMessage());
                     }
                 
-            }
-            @Override
-            public void updateAPDU(String change_text){
-                txt_apdu.setText(txt_apdu.getText().concat(change_text));
-
-                //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
-                Document d = txt_apdu.getDocument();
-                txt_apdu.select(d.getLength(), d.getLength());
                 
             }
-            @Override
-            public void updateLog(String change_text){
-                txt_logging.setText(txt_logging.getText().concat(change_text));
 
-                //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
-                Document d = txt_apdu.getDocument();
-                txt_apdu.select(d.getLength(), d.getLength());
+
+
+            @Override
+            public void updateLog(String change_text, String level){
+
+                try {
+
+                        //Display a log for each level
+                        if(level.equals("ERROR"))           doc_log.insertString(doc_log.getLength(), change_text, doc_log.getStyle("error"));
+                        else if(level.equals("WARNING"))    doc_log.insertString(doc_log.getLength(), change_text, doc_log.getStyle("warning"));
+                        else if(level.equals("INFO"))       doc_log.insertString(doc_log.getLength(), change_text , doc_log.getStyle("info"));
+
+                        //The lines of code below autoscrolls "jtp_main" to the bottom of the JTextPane
+
+                            Document doc = txt_logging.getDocument();
+                            txt_logging.select(doc.getLength(), doc.getLength());
+
+                    }
+                    catch (BadLocationException ex) {
+                        System.out.println(ex.getMessage());
+                    }
 
             }
-            @Override
-            public void clearALL(String change_text){
-                txt_all.setText(change_text);
-            }
-            @Override
-            public void clearAPDU(String change_text){
-                txt_apdu.setText(change_text);
-            }
-            @Override
-            public void clearLog(String change_text){
-                txt_logging.setText(change_text);
-            }
+           
         });
 
-        //Adding listener to the Test Button!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        BtnClear.addActionListener(this);
+        
 
         //Adding JTextPanes to the JTabbedPane
-        jtp_main.add("ALL",txt_all.scr_all);
         jtp_main.add("APDU",txt_apdu.scr_apdu);
+        jtp_main.add("ALL",txt_all.scr_all);
         jtp_main.add("Logging",txt_logging.scr_log);
 
         //Adding Components to the JDialog
         this.add(jtp_main,BorderLayout.CENTER);
         btm_pnl.add(BtnClear,BorderLayout.EAST);
+        BtnClear.addActionListener(this);
         this.add(btm_pnl,BorderLayout.SOUTH);
         this.setVisible(true);
     }
@@ -203,20 +281,25 @@ public class DataExchangesVue extends JDialog implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent ae){
 
-        JButton btn_ae=(JButton)ae.getSource();
-        if(btn_ae.equals(BtnClear)){
-            
-            if(jtp_main.getSelectedIndex() == 0) mdl_dte.clearAll();
-            if(jtp_main.getSelectedIndex() == 1) mdl_dte.clearAPDU();
-            if(jtp_main.getSelectedIndex() == 2) mdl_dte.clearLogging();
+        Object o=ae.getSource();
+        if(o instanceof JButton){
 
+            if(o.equals(BtnClear)){
+
+                if(jtp_main.getSelectedIndex() == 1) txt_all.setText("");//Clears the ALL JTextPane
+                if(jtp_main.getSelectedIndex() == 0) txt_apdu.setText("");//Clears the APDU JTextPane
+                if(jtp_main.getSelectedIndex() == 2) txt_logging.setText("");//Clears the Logging JTextPane
+
+            }
+            
         }
 
     }
 
 
-    //this JTextPane is used to displays all of the APDU commands and Logs
+    //this JTextPane is used to displays all of the Logs
     class ALL extends JTextPane{
+
 
         JScrollPane scr_all;
 
@@ -230,6 +313,9 @@ public class DataExchangesVue extends JDialog implements ActionListener{
      
         }
 
+       
+
+
     }
 
     //This JTextPane is used only to display the APDU commands
@@ -239,7 +325,7 @@ public class DataExchangesVue extends JDialog implements ActionListener{
 
         public APDU(){
 
-            //Settings of the JTextPane
+            
             this.setEditable(false);//The text is used only for displays, so there's ne need to write on it
 
             //Instanciating the components of this JTextPane
@@ -251,14 +337,14 @@ public class DataExchangesVue extends JDialog implements ActionListener{
     }
 
 
-    //This JTextPane is used only to display the Logs
+    //This JTextPane is used display Logs which level is INFO, WARN ou ERROR
     class Logging extends JTextPane{
 
         JScrollPane scr_log;
 
         public Logging(){
 
-            //Settings of the JTextPane
+            
             this.setEditable(false);//The text is used only for displays, so there's ne need to write on it
 
             //Instanciating the components of this JTextPane
