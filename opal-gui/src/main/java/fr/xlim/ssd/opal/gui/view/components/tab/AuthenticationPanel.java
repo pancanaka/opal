@@ -314,26 +314,29 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
                         drawWindow();
                     }
                 }
-            } else if (b.equals(jbAuthenticate)){
+            } else if (b.equals(jbAuthenticate)) {
                 // ProfileComponent created with user's choices 
-                System.out.println(Keylist.size());
-               
-                ProfileComponent authentication = new ProfileComponent(name,
-                        description, tfISDAID.getText(),  (String)cbSCPMode.getSelectedItem(),
-                        (String)cbTransProto.getSelectedItem(), ATR,
-                        "fr.xlim.ssd.opal.library.commands." + (String)cbImplementation.getSelectedItem()); 
-                
-                ArrayList<KeyModel> keyModels = new ArrayList<KeyModel>();
-                for(KeyComponentApplet kc : Keylist) 
-                    authentication.addKey(kc.type, kc.keyVersion, kc.keyId, kc.key);  
+                if (tfISDAID.getText().compareTo("") == 0) {
+                    JOptionPane.showMessageDialog(null, "You have to load a configuration.", "Caution", JOptionPane.WARNING_MESSAGE);
+                } else {
+                    ProfileComponent authentication = new ProfileComponent(name,
+                            description, tfISDAID.getText(), (String) cbSCPMode.getSelectedItem(),
+                            (String) cbTransProto.getSelectedItem(), ATR,
+                            "fr.xlim.ssd.opal.library.commands." + (String) cbImplementation.getSelectedItem());
 
-                try {
-                    controller.authenticate(authentication,
-                            (String)cbSecurityLevel.getSelectedItem());
-                } catch (CardConfigNotFoundException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
-                } catch (ConfigFieldsException ex) {
-                    JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    ArrayList<KeyModel> keyModels = new ArrayList<KeyModel>();
+                    for (KeyComponentApplet kc : Keylist) {
+                        authentication.addKey(kc.type, kc.keyVersion, kc.keyId, kc.key);
+                    }
+
+                    try {
+                        controller.authenticate(authentication,
+                                (String) cbSecurityLevel.getSelectedItem());
+                    } catch (CardConfigNotFoundException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    } catch (ConfigFieldsException ex) {
+                        JOptionPane.showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
+                    }
                 }
             }
         }
