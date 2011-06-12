@@ -9,7 +9,7 @@
     <packaging>jar</packaging>
     <version>0.1</version>
     <name>opal</name>
-    <url>http://secinfo.msi.unilim.fr/softwares/opal-library/</url>
+    <url>http://secinfo.msi.unilim.fr/</url>
 
     <dependencies>
         <dependency>
@@ -76,9 +76,6 @@
                     <artifactId>maven-assembly-plugin</artifactId>
                     <configuration>
                         <archive>
-                            <!--<manifest>
-                                <mainClass>fr.xlim.ssd.opal.library.tester.Main</mainClass>
-                            </manifest>-->
                             <manifestEntries>
                                 <url>${project.url}</url>
                             </manifestEntries>
@@ -97,12 +94,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.7</version>
-            </plugin>
-            <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>cobertura-maven-plugin</artifactId>
-                <version>2.4</version>
+                <version>2.5</version>
             </plugin>
         </plugins>
     </reporting>
@@ -189,7 +181,7 @@
             </roles>
             <timezone>1</timezone>
         </contributor>
-	<contributor>
+        <contributor>
             <name>Thibault Tigeon</name>
             <email>thibault.tigeon@atosorigin.com</email>
             <organization>Atos Origin</organization>
@@ -198,7 +190,7 @@
                 <role>Card tester</role>
             </roles>
 
-	    <timezone>1</timezone>
+            <timezone>1</timezone>
         </contributor>
     </contributors>
 
@@ -220,25 +212,12 @@
     </organization>
 
     <issueManagement>
-        <system>INRIA GForge Tracker</system>
-        <url>https://gforge.inria.fr/tracker/?group_id=1631</url>
+        <system>Bitbucket OPAL Issue Tracker</system>
+        <url>https://bitbucket.org/ssd/opal-library/issues</url>
     </issueManagement>
 
-    <mailingLists>
-        <mailingList>
-            <name>OPAL Commits Archives</name>
-            <subscribe>opal-commits-subscribe@lists.gforge.inria.fr</subscribe>
-            <unsubscribe>opal-commits-unsuscribe@lists.gforge.inria.fr</unsubscribe>
-            <post>opal-commits@lists.gforge.inria.fr</post>
-            <archive>http://lists.gforge.inria.fr/pipermail/opal-commits/</archive>
-        </mailingList>
-    </mailingLists>
-
     <scm>
-        <connection>scm:svn:https://scm.gforge.inria.fr/svn/opal</connection>
-        <developerConnection>scm:svn:https://scm.gforge.inria.fr/svn/opal</developerConnection>
-        <tag>trunk</tag>
-        <url>https://gforge.inria.fr/scm/viewvc.php/?root=opal</url>
+        <connection>ssh://hg@bitbucket.org/ssd/opal-library</connection>
     </scm>
 
 </project>

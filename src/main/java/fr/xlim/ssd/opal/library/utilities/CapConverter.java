@@ -119,7 +119,7 @@ public class CapConverter {
                 buffer.put(components[i]);
             }
 
-            // TODO: [#11558] Missing component export during CAP conversion
+            // TODO: [#6] Missing component export during CAP conversion
             /*
             else {
                 throw new IllegalArgumentException("error in CAP file: not all components have been loaded (" + i + ")");
