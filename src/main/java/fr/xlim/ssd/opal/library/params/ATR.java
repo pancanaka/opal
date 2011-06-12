@@ -1,12 +1,10 @@
 package fr.xlim.ssd.opal.library.params;
 
-import sun.font.TrueTypeFont;
-
-import java.lang.reflect.Array;
 import java.util.Arrays;
 
 /**
  * Contains information about an card ATR
+ *
  * @author Guillaume Bouffard
  */
 public class ATR {
@@ -16,9 +14,10 @@ public class ATR {
 
     /**
      * The card ATR class constructor
+     *
      * @param atr ATR value
      */
-    public ATR (byte[] atr){
+    public ATR(byte[] atr) {
         this.setValue(atr);
     }
 
@@ -36,7 +35,7 @@ public class ATR {
      *
      * @param newATR The new ATR value
      */
-    public void setValue (byte[] newATR) {
+    public void setValue(byte[] newATR) {
         //TODO: check ATR size
         this.value = newATR;
     }
@@ -47,7 +46,7 @@ public class ATR {
     @Override
     public boolean equals(Object obj) {
 
-        if (this == obj ) return true;
+        if (this == obj) return true;
 
         if (!(obj instanceof ATR)) return false;
 
