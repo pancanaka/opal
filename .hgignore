@@ -1,0 +1,8 @@
+# Do not track files under the target repository
+target
+
+# Do not track IDE-specific files
+^.*\.iml$
+^.*\.ipr$
+^.*\.iws$
+^nbactions.xml$
