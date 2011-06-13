@@ -32,6 +32,7 @@ import java.util.logging.Level;
  *
  * @author Damien Arcuset, Eric Linke
  * @author Guillaume Bouffard
+ * @author David Pequegnot
  */
 public class GP2xCommands extends AbstractCommands implements Commands {
 
@@ -2053,7 +2054,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new CardException("Error in DELETE OBJECT : " + Integer.toHexString(resp.getSW()));
         }
 
-        this.compudeAndVerifyRMac(resp.getBytes());
+        this.computeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)&&(this.scp == SCPMode.SCP_03_65)){
                 byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
@@ -2284,7 +2285,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new CardException("Error in INSTALL FOR LOAD : " + Integer.toHexString(resp.getSW()));
         }
 
-        this.compudeAndVerifyRMac(resp.getBytes());
+        this.computeAndVerifyRMac(resp.getBytes());
 
         if (this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC){
                 byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
@@ -2485,7 +2486,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
                 throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
-            this.compudeAndVerifyRMac(resp.getBytes());
+            this.computeAndVerifyRMac(resp.getBytes());
             if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)&&(this.scp == SCPMode.SCP_03_65)){
                 byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
             }
@@ -2683,7 +2684,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR INSTALL AND MAKE SELECTABLE : " + Integer.toHexString(resp.getSW()));
         }
-        this.compudeAndVerifyRMac(resp.getBytes());
+        this.computeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)&&(this.scp == SCPMode.SCP_03_65)){
                 byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
@@ -2924,7 +2925,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      *
      * @response Response Message receved by the off card entity
      */
-    protected void compudeAndVerifyRMac(byte[] response) throws CardException{
+    protected void computeAndVerifyRMac(byte[] response) throws CardException{
         if (this.scp == SCPMode.SCP_03_65
                 || this.scp == SCPMode.SCP_03_6D
                 || this.scp == SCPMode.SCP_03_25){

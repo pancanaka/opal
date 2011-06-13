@@ -27,7 +27,10 @@ public class Conversion {
                 sb.append(0);
             }
             sb.append(bs);
-            sb.append(" ");
+
+            if (i < data.length -1) {
+                sb.append(" ");
+            }
         }
         return sb.toString();
     }
@@ -47,7 +50,12 @@ public class Conversion {
         boolean valid = p.matcher(s).matches();
 
         if (!valid) {
-            throw new IllegalArgumentException("not a valid string representation of a byte array");
+            p = Pattern.compile("[^A-F0-9]+", Pattern.CASE_INSENSITIVE);
+            valid = p.matcher(s).matches();
+
+            if (!valid) {
+                throw new IllegalArgumentException("not a valid string representation of a byte array");
+            }
         }
 
         String hex = s.replaceAll(" ", "");
