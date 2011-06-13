@@ -28,7 +28,7 @@ public class Conversion {
             }
             sb.append(bs);
 
-            if (i < data.length -1) {
+            if (i < data.length - 1) {
                 sb.append(" ");
             }
         }

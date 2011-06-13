@@ -9,7 +9,7 @@ import java.util.List;
 
 /**
  * Filter based on markers name.
- *
+ * <p/>
  * Unlike the default <code>MarkerFilter</code> supplied by the <i>logback</i> logging framework,
  * a <code>null</code> marker is considered as a mismatch.
  *
@@ -21,13 +21,13 @@ public class MarkerFilter extends Filter<ILoggingEvent> {
     private ArrayList<String> markers = new ArrayList<String>();
 
     private FilterReply onMismatch = FilterReply.NEUTRAL;
-    private FilterReply onMatch    = FilterReply.NEUTRAL;
+    private FilterReply onMatch = FilterReply.NEUTRAL;
 
     /**
      * Filters the event.
-     *
+     * <p/>
      * A <code>null</code> marker implies a mismatch. If the marker name belongs to the marker list, it matches.
-     * 
+     *
      * @param event the logging event
      * @return the reply corresponding to the event and the filter action
      */
@@ -37,7 +37,7 @@ public class MarkerFilter extends Filter<ILoggingEvent> {
             return this.onMismatch;
         }
 
-        for (String marker: markers) {
+        for (String marker : markers) {
             if (event.getMarker().contains(marker)) {
                 return this.onMatch;
             }
@@ -48,7 +48,7 @@ public class MarkerFilter extends Filter<ILoggingEvent> {
     /**
      * Add a marker in the list.
      *
-     * @param marker
+     * @param marker the marker
      */
     public void addMarker(String marker) {
         this.markers.add(marker);
@@ -65,7 +65,7 @@ public class MarkerFilter extends Filter<ILoggingEvent> {
 
     /**
      * Defines the "on match" reply (<code>FilterReply.NEUTRAL</code> by default).
-     * 
+     *
      * @param onMatch the "on match" reply
      */
     public void setOnMatch(FilterReply onMatch) {

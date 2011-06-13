@@ -5,7 +5,7 @@ import org.slf4j.MarkerFactory;
 
 /**
  * Log types
- *
+ * <p/>
  * A log type is a <i>marker</i> which indicates the type of log. It can be used to differentiate logs
  * and allow filtering.
  *
@@ -15,7 +15,7 @@ import org.slf4j.MarkerFactory;
 public enum LogType {
     // Command title
     COMMAND_TYPE,
-    
+
     // Global APDU command log.
     APDU,
 
@@ -52,7 +52,7 @@ public enum LogType {
 
     /**
      * Link a <code>Marker</code> name to an enumerate value
-     *
+     * <p/>
      * The <code>Marker</code> will be the <code>java.lang.String</code> representation of the enumerate value.
      */
     private LogType() {

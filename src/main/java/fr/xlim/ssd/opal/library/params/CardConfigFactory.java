@@ -17,8 +17,6 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.text.DecimalFormat;
 
 /**
  * Delivers card configuration CardConfig
@@ -118,7 +116,7 @@ public class CardConfigFactory {
 
         String name = null;
         String description = null;
-        ATR[] atrs = null ;
+        ATR[] atrs = null;
         byte[] isd = null;
         SCPMode scpMode = null;
         String tp = null;
@@ -418,7 +416,7 @@ public class CardConfigFactory {
                 }
             }
 
-           document.normalize();
+            document.normalize();
 
             if (!t) {
                 throw new CardConfigNotFoundException("Card \"" + name + "\" not found");
@@ -427,10 +425,10 @@ public class CardConfigFactory {
                     //write the content into xml file
                     Transformer transformer = TransformerFactory.newInstance().newTransformer();
                     transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-                    StreamResult result =  new StreamResult(f);
+                    StreamResult result = new StreamResult(f);
                     DOMSource source = new DOMSource(document);
                     transformer.transform(source, result);
-                } catch (TransformerException e){
+                } catch (TransformerException e) {
                     throw new CardConfigNotFoundException("Cannot transform the config file: " + e.getMessage());
                 }
             }
@@ -457,88 +455,86 @@ public class CardConfigFactory {
             Node cardsconfig = document.getFirstChild();
             Node newCard = document.createElement("card");
             NamedNodeMap newCardAttributes = newCard.getAttributes();
-                Attr defaultImpl = document.createAttribute("defaultImpl");
-                defaultImpl.setValue("fr.xlim.ssd.opal.library.commands." + card.getImplementation());
-                newCardAttributes.setNamedItem(defaultImpl);
+            Attr defaultImpl = document.createAttribute("defaultImpl");
+            defaultImpl.setValue("fr.xlim.ssd.opal.library.commands." + card.getImplementation());
+            newCardAttributes.setNamedItem(defaultImpl);
 
-                Attr name = document.createAttribute("name");
-                name.setValue(card.getName());
-                newCardAttributes.setNamedItem(name);
+            Attr name = document.createAttribute("name");
+            name.setValue(card.getName());
+            newCardAttributes.setNamedItem(name);
             cardsconfig.appendChild(newCard);
 
-                Node description = document.createElement("description");
-                description.setTextContent(card.getDescription());
-                newCard.appendChild(description);
+            Node description = document.createElement("description");
+            description.setTextContent(card.getDescription());
+            newCard.appendChild(description);
 
 
-                ATR[] atrs = card.getAtrs();
-                Node listeATR = document.createElement("listeATR");
-                newCard.appendChild(listeATR);
-                for(int i = 0; i < atrs.length; i++) {
-                    Node ATR = document.createElement("ATR");
-                    NamedNodeMap ATRAttributes = ATR.getAttributes();
-                        Attr valueATR = document.createAttribute("value");
-                        valueATR.setValue(Conversion.arrayToHex(atrs[i].getValue()));
-                        ATRAttributes.setNamedItem(valueATR);
-                    listeATR.appendChild(ATR);
+            ATR[] atrs = card.getAtrs();
+            Node listeATR = document.createElement("listeATR");
+            newCard.appendChild(listeATR);
+            for (int i = 0; i < atrs.length; i++) {
+                Node ATR = document.createElement("ATR");
+                NamedNodeMap ATRAttributes = ATR.getAttributes();
+                Attr valueATR = document.createAttribute("value");
+                valueATR.setValue(Conversion.arrayToHex(atrs[i].getValue()));
+                ATRAttributes.setNamedItem(valueATR);
+                listeATR.appendChild(ATR);
+            }
+
+
+            Node isdAID = document.createElement("isdAID");
+            NamedNodeMap isdAIDAttributes = isdAID.getAttributes();
+            Attr valueidsAID = document.createAttribute("value");
+            valueidsAID.setValue(Conversion.arrayToHex(card.getIssuerSecurityDomainAID()));
+            isdAIDAttributes.setNamedItem(valueidsAID);
+            newCard.appendChild(isdAID);
+
+            Node scpMode = document.createElement("scpMode");
+            NamedNodeMap scpModeAttributes = scpMode.getAttributes();
+            Attr valuescpMode = document.createAttribute("value");
+            valuescpMode.setValue(card.getScpMode().toString().replace("SCP_", ""));
+            scpModeAttributes.setNamedItem(valuescpMode);
+            newCard.appendChild(scpMode);
+
+            Node transmissionProtocol = document.createElement("transmissionProtocol");
+            NamedNodeMap tPAttributes = transmissionProtocol.getAttributes();
+            Attr valuesTP = document.createAttribute("value");
+            valuesTP.setValue(card.getTransmissionProtocol());
+            tPAttributes.setNamedItem(valuesTP);
+            newCard.appendChild(transmissionProtocol);
+
+
+            SCKey[] keys = card.getSCKeys();
+            Node listedefaultKeys = document.createElement("defaultKeys");
+            newCard.appendChild(listedefaultKeys);
+            for (int i = 0; i < keys.length; i++) {
+                Node key = document.createElement("key");
+                NamedNodeMap keyAttributes = key.getAttributes();
+                Attr keyDatas = document.createAttribute("keyDatas");
+                keyDatas.setValue(Conversion.arrayToHex(keys[i].getData()));
+                keyAttributes.setNamedItem(keyDatas);
+
+                Attr id = document.createAttribute("keyId");
+                id.setValue(Integer.toHexString(keys[i].getId() & 0xFF).toUpperCase());
+                keyAttributes.setNamedItem(id);
+
+                Attr keyVersionNumber = document.createAttribute("keyVersionNumber");
+                keyVersionNumber.setValue(String.valueOf(Integer.parseInt(Integer.toHexString(keys[i].getSetVersion() & 0xFF).toUpperCase(), 16)));
+                keyAttributes.setNamedItem(keyVersionNumber);
+
+                Attr type = document.createAttribute("type");
+                if (keys[i] instanceof SCGemVisa2 || keys[i] instanceof SCGemVisa) {
+                    type.setValue(keys[i].getClass().getSimpleName());
+                } else {
+                    if (keys[i].getType().toString().compareTo("AES_CBC") == 0) {
+                        type.setValue("AES");
+                    } else {
+                        type.setValue(keys[i].getType().toString());
+                    }
                 }
-
-
-                Node isdAID = document.createElement("isdAID");
-                NamedNodeMap isdAIDAttributes = isdAID.getAttributes();
-                    Attr valueidsAID = document.createAttribute("value");
-                    valueidsAID.setValue(Conversion.arrayToHex(card.getIssuerSecurityDomainAID()));
-                    isdAIDAttributes.setNamedItem(valueidsAID);
-                newCard.appendChild(isdAID);
-
-                Node scpMode = document.createElement("scpMode");
-                NamedNodeMap scpModeAttributes = scpMode.getAttributes();
-                    Attr valuescpMode = document.createAttribute("value");
-                    valuescpMode.setValue(card.getScpMode().toString().replace("SCP_", ""));
-                    scpModeAttributes.setNamedItem(valuescpMode);
-                newCard.appendChild(scpMode);
-
-                Node transmissionProtocol = document.createElement("transmissionProtocol");
-                NamedNodeMap tPAttributes = transmissionProtocol.getAttributes();
-                    Attr valuesTP = document.createAttribute("value");
-                    valuesTP.setValue(card.getTransmissionProtocol());
-                    tPAttributes.setNamedItem(valuesTP);
-                newCard.appendChild(transmissionProtocol);
-
-
-                SCKey[] keys = card.getSCKeys();
-                Node listedefaultKeys = document.createElement("defaultKeys");
-                newCard.appendChild(listedefaultKeys);
-                for(int i = 0; i < keys.length; i++) {
-                    Node key = document.createElement("key");
-                    NamedNodeMap keyAttributes = key.getAttributes();
-                        Attr keyDatas = document.createAttribute("keyDatas");
-                        keyDatas.setValue(Conversion.arrayToHex(keys[i].getData()));
-                        keyAttributes.setNamedItem(keyDatas);
-
-                        Attr id = document.createAttribute("keyId");
-                        id.setValue(Integer.toHexString(keys[i].getId() & 0xFF).toUpperCase());
-                        keyAttributes.setNamedItem(id);
-
-                        Attr keyVersionNumber = document.createAttribute("keyVersionNumber");
-                        keyVersionNumber.setValue(String.valueOf(Integer.parseInt(Integer.toHexString(keys[i].getSetVersion() & 0xFF).toUpperCase(), 16)));
-                        keyAttributes.setNamedItem(keyVersionNumber);
-
-                        Attr type = document.createAttribute("type");
-                        if(keys[i] instanceof SCGemVisa2 || keys[i] instanceof SCGemVisa) {
-                            type.setValue(keys[i].getClass().getSimpleName());
-                        }
-                        else {
-                            if(keys[i].getType().toString().compareTo("AES_CBC") == 0) {
-                                type.setValue("AES");
-                            }
-                            else {
-                                type.setValue(keys[i].getType().toString());
-                            }
-                        }
-                        keyAttributes.setNamedItem(type);
-                    listedefaultKeys.appendChild(key);
-                }
+                keyAttributes.setNamedItem(type);
+                listedefaultKeys.appendChild(key);
+            }
 
 
             document.normalize();
@@ -550,11 +546,11 @@ public class CardConfigFactory {
                 transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "3");
                 transformer.setOutputProperty(OutputKeys.INDENT, "yes");
 
-                StreamResult result =  new StreamResult(f);
+                StreamResult result = new StreamResult(f);
                 DOMSource source = new DOMSource(document);
                 transformer.transform(source, result);
 
-            } catch (TransformerException e){
+            } catch (TransformerException e) {
                 throw new CardConfigNotFoundException("Cannot transform the config file: " + e.getMessage());
             }
 
