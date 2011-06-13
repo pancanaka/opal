@@ -111,34 +111,34 @@ public enum SCPMode {
      * TODO: implemented, Not tested
      */
     SCP_03_65,
-    
+
     /*
-     *
-     * TODO: implemented, Not tested
-     */
+    *
+    * TODO: implemented, Not tested
+    */
     SCP_03_6D,
-    
+
     /*
-     *
-     * TODO: implemented, Not tested
-     */
+    *
+    * TODO: implemented, Not tested
+    */
     SCP_03_05,
-    
+
     /*
-     *
-     * TODO: implemented, Not tested
-     */
+    *
+    * TODO: implemented, Not tested
+    */
     SCP_03_0D,
-    
+
     /*
-     *
-     * TODO: implemented, Not tested
-     */
+    *
+    * TODO: implemented, Not tested
+    */
     SCP_03_2D,
-    
+
     /*
-     *
-     * TODO: implemented, Not tested
-     */
+    *
+    * TODO: implemented, Not tested
+    */
     SCP_03_25;
 }

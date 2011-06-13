@@ -1,8 +1,8 @@
 package fr.xlim.ssd.opal.library.utilities;
 
-import static org.junit.Assert.*;
-
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class ConversionTest {
 

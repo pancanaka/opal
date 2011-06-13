@@ -1,5 +1,12 @@
 package fr.xlim.ssd.opal.library.params;
 
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
+import org.junit.BeforeClass;
+import org.junit.Test;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -7,14 +14,8 @@ import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
 
-import fr.xlim.ssd.opal.library.utilities.Conversion;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class CardConfigFactoryTest {
 
@@ -34,7 +35,7 @@ public class CardConfigFactoryTest {
         List<Element> cards = root.getChildren("card");
         assertTrue(cards.size() > 0);
 
-        for(Element card : cards) {
+        for (Element card : cards) {
             cardNames.add(card.getAttributeValue("name"));
         }
     }

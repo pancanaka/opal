@@ -40,14 +40,14 @@ public class CardConfig {
     /**
      * Constructor for CardConfig object
      *
-     * @param name          the card configuration name
-     * @param description   the card configuration description
-     * @param atrs          the card ATR linked to this configuration
-     * @param isd           the issuer security domain AID
-     * @param scp           the SCP mode
-     * @param tp            the transmission protocol
-     * @param keys          the credential keys
-     * @param impl          the class name of the implementation
+     * @param name        the card configuration name
+     * @param description the card configuration description
+     * @param atrs        the card ATR linked to this configuration
+     * @param isd         the issuer security domain AID
+     * @param scp         the SCP mode
+     * @param tp          the transmission protocol
+     * @param keys        the credential keys
+     * @param impl        the class name of the implementation
      */
     public CardConfig(String name,
                       String description,
