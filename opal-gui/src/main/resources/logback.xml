@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="CUSTOMAPPENDER" class="fr.xlim.ssd.opal.gui.model.dataExchanges.MyAppender"/>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="fr.xlim.ssd.opal.library.logging.filters.MarkerFilter">
+            <marker>APDU</marker>
+            <OnMismatch>ACCEPT</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+        <filter class="fr.xlim.ssd.opal.library.logging.filters.MarkerFilter">
+            <marker>APDU</marker>
+            <OnMismatch>ACCEPT</OnMismatch>
+            <OnMatch>DENY</OnMatch>
+        </filter>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} %-5p %-25([%M]) %-30.30(%c{25}:%-4line) - %m%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="APDU_OUT" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="fr.xlim.ssd.opal.library.logging.filters.MarkerFilter">
+            <marker>APDU_GP_OUT</marker>
+            <marker>APDU_APPLICATION_OUT</marker>>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>ACCEPT</OnMatch>
+        </filter>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} %-5p %-25([%M]) %-30.30(%c{25}:%-4line) - (-> %m\)%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="APDU_IN" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="fr.xlim.ssd.opal.library.logging.filters.MarkerFilter">
+            <marker>APDU_GP_IN</marker>
+            <marker>APDU_APPLICATION_IN</marker>>
+            <OnMismatch>DENY</OnMismatch>
+            <OnMatch>ACCEPT</OnMatch>
+        </filter>
+        <encoder>
+            <pattern>%date{HH:mm:ss.SSS} %-5p %-25([%M]) %-30.30(%c{25}:%-4line) - (&lt;- %m\)%n</pattern>
+        </encoder>
+    </appender>
+
+    <root level="DEBUG">
+        <appender-ref ref="CUSTOMAPPENDER"/>
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="APDU_OUT"/>
+        <appender-ref ref="APDU_IN"/>
+    </root>
+</configuration>

@@ -1,0 +1,274 @@
+# test install and use Hello Word Applet operation
+# card is Infineon JTOP V2 16k
+# security level is NO_SECURITY_LEVEL
+#
+
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00
+# ==> Init ICV end
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 19 84 08 A0 00 00 00 03 00 00 00 A5 0D 9F 6E 06 40 91 32 34 05 01 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 13 47 11 0D EC C0 CC F0
+00 00 63 57 27 01 3A 21 2E EA FF 01 C6 4F D6 35 5C C6 DF 4A 0E 63 A6 F8 95 12 F4 83 90 00
+# SCPMode is SCP_01_05
+# * Key Diversification Data is 00 00 63 57 27 01 3A 21 2E EA
+# * Host Challenge is 13 47 11 0D EC C0 CC F0
+# * Card Challenge is C6 4F D6 35 5C C6 DF 4A
+# * Card Crypto Resp is 0E 63 A6 F8 95 12 F4 83
+# ==> Calculate Derivation Data
+# * Derivation Data is 5C C6 DF 4A 13 47 11 0D C6 4F D6 35 EC C0 CC F0
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * SCP_Mode is SCP_01_05
+# * sessEnc = 49 A0 5D D6 F5 F7 88 24 00 A0 DA BA 2F EA 4C 74 49 A0 5D D6 F5 F7 88 24
+# * sessMac = 49 A0 5D D6 F5 F7 88 24 00 A0 DA BA 2F EA 4C 74 49 A0 5D D6 F5 F7 88 24
+# * sessKek = 49 A0 5D D6 F5 F7 88 24 00 A0 DA BA 2F EA 4C 74 49 A0 5D D6 F5 F7 88 24
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00
+# * SCP 01 protocol used
+# * Data to encrypt: 13 47 11 0D EC C0 CC F0 C6 4F D6 35 5C C6 DF 4A 80 00 00 00 00 00 00 00
+# * Calculated Card Crypto: 0E 63 A6 F8 95 12 F4 83
+# * Calculated Host Crypto: DC F4 1F 98 76 AD 25 B6
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isNO_SECURITY_LEVEL
+# * Data uses to calculate mac value is84 82 00 00 10 DC F4 1F 98 76 AD 25 B6
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 82 00 00 10 DC F4 1F 98 76 AD 25 B6 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 00 00 00 00 00 00 00 00
+# * Calculated cryptogram is 63 74 8D B2 EA 99 4A B9
+# * New ICV is 63 74 8D B2 EA 99 4A B9
+# ==> Generate Mac End
+# * mac value obtains63 74 8D B2 EA 99 4A B9
+# EXTERNAL AUTHENTICATE command
+84 82 00 00 10 DC F4 1F 98 76 AD 25 B6 63 74 8D B2 EA 99 4A B9
+90 00
+# => External Authenticate end
+# => Install for load begin
+# + Package AID to install is A0 00 00 00 62 03 01 0C 01
+# + Security Domain AID is A0 00 00 00 03 00 00 00
+# + There is not parameter
+# + SecLevel is NO_SECURITY_LEVEL
+# * Parameters Length is 0 (0x0)
+# * Parameters Length Encoded is 00
+# * Install For Load Command is 80 E6 02 00 16 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00
+# INSTALL FOR LOAD command
+80 E6 02 00 16 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00
+00 90 00
+# => Install For Load Command End
+# => Load Command Begin
+# + Cap File size to load is 409
+# + Max Data Length is 16(0x10)
+# + SecLevel is NO_SECURITY_LEVEL
+# * Cap File Remain Length is 409
+# * ber is C4 82 01 99
+# * number of block is 26
+# * Load Command is 80 E8 00 00 10 C4 82 01 99 01 00 13 DE CA FF ED 01 02 04 00 01
+# LOAD command
+80 E8 00 00 10 C4 82 01 99 01 00 13 DE CA FF ED 01 02 04 00 01
+00 90 00
+# * Load Command is 80 E8 00 01 10 09 A0 00 00 00 62 03 01 0C 01 02 00 1F 00 13 00
+# LOAD command
+80 E8 00 01 10 09 A0 00 00 00 62 03 01 0C 01 02 00 1F 00 13 00
+00 90 00
+# * Load Command is 80 E8 00 02 10 1F 00 0E 00 0B 00 36 00 0C 00 65 00 0A 00 13 00
+# LOAD command
+80 E8 00 02 10 1F 00 0E 00 0B 00 36 00 0C 00 65 00 0A 00 13 00
+00 90 00
+# * Load Command is 80 E8 00 03 10 00 00 6C 00 00 00 00 00 00 01 01 00 04 00 0B 01
+# LOAD command
+80 E8 00 03 10 00 00 6C 00 00 00 00 00 00 01 01 00 04 00 0B 01
+00 90 00
+# * Load Command is 80 E8 00 04 10 00 01 07 A0 00 00 00 62 01 01 03 00 0E 01 0A A0
+# LOAD command
+80 E8 00 04 10 00 01 07 A0 00 00 00 62 01 01 03 00 0E 01 0A A0
+00 90 00
+# * Load Command is 80 E8 00 05 10 00 00 00 62 03 01 0C 01 01 00 14 06 00 0C 00 80
+# LOAD command
+80 E8 00 05 10 00 00 00 62 03 01 0C 01 01 00 14 06 00 0C 00 80
+00 90 00
+# * Load Command is 80 E8 00 06 10 03 01 00 01 07 01 00 00 00 1D 07 00 65 00 02 10
+# LOAD command
+80 E8 00 06 10 03 01 00 01 07 01 00 00 00 1D 07 00 65 00 02 10
+00 90 00
+# * Load Command is 80 E8 00 07 10 18 8C 00 01 18 11 01 00 90 0B 87 00 18 8B 00 02
+# LOAD command
+80 E8 00 07 10 18 8C 00 01 18 11 01 00 90 0B 87 00 18 8B 00 02
+00 90 00
+# * Load Command is 80 E8 00 08 10 7A 01 30 8F 00 03 8C 00 04 7A 05 23 19 8B 00 05
+# LOAD command
+80 E8 00 08 10 7A 01 30 8F 00 03 8C 00 04 7A 05 23 19 8B 00 05
+00 90 00
+# * Load Command is 80 E8 00 09 10 2D 19 8B 00 06 32 03 29 04 70 19 1A 08 AD 00 16
+# LOAD command
+80 E8 00 09 10 2D 19 8B 00 06 32 03 29 04 70 19 1A 08 AD 00 16
+00 90 00
+# * Load Command is 80 E8 00 0A 10 04 1F 8D 00 0B 3B 16 04 1F 41 29 04 19 08 8B 00
+# LOAD command
+80 E8 00 0A 10 04 1F 8D 00 0B 3B 16 04 1F 41 29 04 19 08 8B 00
+00 90 00
+# * Load Command is 80 E8 00 0B 10 0C 32 1F 64 E8 19 8B 00 07 3B 19 16 04 08 41 8B
+# LOAD command
+80 E8 00 0B 10 0C 32 1F 64 E8 19 8B 00 07 3B 19 16 04 08 41 8B
+00 90 00
+# * Load Command is 80 E8 00 0C 10 00 08 19 03 08 8B 00 09 19 AD 00 03 16 04 8B 00
+# LOAD command
+80 E8 00 0C 10 00 08 19 03 08 8B 00 09 19 AD 00 03 16 04 8B 00
+00 90 00
+# * Load Command is 80 E8 00 0D 10 0A 7A 08 00 0A 00 00 00 00 00 00 00 00 00 00 05
+# LOAD command
+80 E8 00 0D 10 0A 7A 08 00 0A 00 00 00 00 00 00 00 00 00 00 05
+00 90 00
+# * Load Command is 80 E8 00 0E 10 00 36 00 0D 02 00 00 00 06 80 03 00 03 80 03 01
+# LOAD command
+80 E8 00 0E 10 00 36 00 0D 02 00 00 00 06 80 03 00 03 80 03 01
+00 90 00
+# * Load Command is 80 E8 00 0F 10 01 00 00 00 06 00 00 01 03 80 0A 01 03 80 0A 06
+# LOAD command
+80 E8 00 0F 10 01 00 00 00 06 00 00 01 03 80 0A 01 03 80 0A 06
+00 90 00
+# * Load Command is 80 E8 00 10 10 03 80 0A 07 03 80 0A 09 03 80 0A 04 03 80 0A 05
+# LOAD command
+80 E8 00 10 10 03 80 0A 07 03 80 0A 09 03 80 0A 04 03 80 0A 05
+00 90 00
+# * Load Command is 80 E8 00 11 10 06 80 10 02 03 80 0A 03 09 00 13 00 03 0E 23 2C
+# LOAD command
+80 E8 00 11 10 06 80 10 02 03 80 0A 03 09 00 13 00 03 0E 23 2C
+00 90 00
+# * Load Command is 80 E8 00 12 10 00 0C 05 0C 06 03 07 05 10 0C 08 09 06 09 0B 00
+# LOAD command
+80 E8 00 12 10 00 0C 05 0C 06 03 07 05 10 0C 08 09 06 09 0B 00
+00 90 00
+# * Load Command is 80 E8 00 13 10 6C 01 00 01 00 00 00 00 01 00 03 00 02 00 00 00
+# LOAD command
+80 E8 00 13 10 6C 01 00 01 00 00 00 00 01 00 03 00 02 00 00 00
+00 90 00
+# * Load Command is 80 E8 00 14 10 00 1C 00 84 00 01 00 1E 00 11 00 00 00 00 01 09
+# LOAD command
+80 E8 00 14 10 00 1C 00 84 00 01 00 1E 00 11 00 00 00 00 01 09
+00 90 00
+# * Load Command is 80 E8 00 15 10 00 14 00 30 00 07 00 00 00 00 07 01 00 1D 00 33
+# LOAD command
+80 E8 00 15 10 00 14 00 30 00 07 00 00 00 00 07 01 00 1D 00 33
+00 90 00
+# * Load Command is 80 E8 00 16 10 00 46 00 00 00 00 00 0D 00 1C 00 1E 00 1E FF FF
+# LOAD command
+80 E8 00 16 10 00 46 00 00 00 00 00 0D 00 1C 00 1E 00 1E FF FF
+00 90 00
+# * Load Command is 80 E8 00 17 10 00 1E 00 1C 00 20 00 20 00 22 00 24 00 27 00 2A
+# LOAD command
+80 E8 00 17 10 00 1E 00 1C 00 20 00 20 00 22 00 24 00 27 00 2A
+00 90 00
+# * Load Command is 80 E8 00 18 10 00 2E 01 B0 01 10 01 40 02 41 03 44 10 04 B4 41
+# LOAD command
+80 E8 00 18 10 00 2E 01 B0 01 10 01 40 02 41 03 44 10 04 B4 41
+00 90 00
+# * Load Command is 80 E8 80 19 0D 06 B4 B4 44 02 44 04 B4 31 06 68 00 A1
+# LOAD command
+80 E8 80 19 0D 06 B4 B4 44 02 44 04 B4 31 06 68 00 A1
+00 90 00
+# => Load Command End
+# => Install For Install And Make Selectable Begin
+# + Load File AID is A0 00 00 00 62 03 01 0C 01
+# + Module AID is A0 00 00 00 62 03 01 0C 01 01
+# + Application AID is A0 00 00 00 62 03 01 0C 01 01
+# + Privileges AID is 00
+# + There is not parameters
+# * New parameters are C9 00
+# * Parameters Length is 2
+# * Parameters Length Encoded is 02
+# * Install For Install Command is 80 E6 0C 00 26 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00
+# INSTALL FOR INSTALL AND MAKE SELECTABLE
+80 E6 0C 00 26 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00
+00 90 00
+# => Install For Install And Make Selectable End
+# Select Hello World Applet
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01 90 00
+# Say "Hello"
+00 00 00 00 05 48 45 4C 4C 4F
+00 00 00 00 05 48 45 4C 4C 4F 90 00
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 19 84 08 A0 00 00 00 03 00 00 00 A5 0D 9F 6E 06 40 91 32 34 05 01 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 72 EA 4A 8B 68 B5 C8 81
+00 00 63 57 27 01 3A 21 2E EA FF 01 0F E6 73 94 4C EB 74 13 07 7E 44 7F 11 85 34 90 90 00
+# SCPMode is SCP_01_05
+# * Key Diversification Data is 00 00 63 57 27 01 3A 21 2E EA
+# * Host Challenge is 72 EA 4A 8B 68 B5 C8 81
+# * Card Challenge is 0F E6 73 94 4C EB 74 13
+# * Card Crypto Resp is 07 7E 44 7F 11 85 34 90
+# ==> Calculate Derivation Data
+# * Derivation Data is 4C EB 74 13 72 EA 4A 8B 0F E6 73 94 68 B5 C8 81
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47
+# * SCP_Mode is SCP_01_05
+# * sessEnc = 4C 09 54 38 A0 F7 A1 9C 16 B2 E2 8D 0C C4 E7 DD 4C 09 54 38 A0 F7 A1 9C
+# * sessMac = 4C 09 54 38 A0 F7 A1 9C 16 B2 E2 8D 0C C4 E7 DD 4C 09 54 38 A0 F7 A1 9C
+# * sessKek = 4C 09 54 38 A0 F7 A1 9C 16 B2 E2 8D 0C C4 E7 DD 4C 09 54 38 A0 F7 A1 9C
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00
+# * SCP 01 protocol used
+# * Data to encrypt: 72 EA 4A 8B 68 B5 C8 81 0F E6 73 94 4C EB 74 13 80 00 00 00 00 00 00 00
+# * Calculated Card Crypto: 07 7E 44 7F 11 85 34 90
+# * Calculated Host Crypto: 55 F1 D0 28 F9 21 0F F4
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isNO_SECURITY_LEVEL
+# * Data uses to calculate mac value is84 82 00 00 10 55 F1 D0 28 F9 21 0F F4
+# ==> Generate Mac
+# - Data needs padding!
+# * data with padding: 84 82 00 00 10 55 F1 D0 28 F9 21 0F F4 80 00 00
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 00 00 00 00 00 00 00 00
+# * Calculated cryptogram is BC 74 EA 2D B4 63 BE B3
+# * New ICV is BC 74 EA 2D B4 63 BE B3
+# ==> Generate Mac End
+# * mac value obtainsBC 74 EA 2D B4 63 BE B3
+# EXTERNAL AUTHENTICATE command
+84 82 00 00 10 55 F1 D0 28 F9 21 0F F4 BC 74 EA 2D B4 63 BE B3
+90 00
+# => External Authenticate end
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01 01
+# + Cascade mode ? false
+# + Security mode is NO_SECURITY_LEVEL
+# * Delete Command is 80 E4 00 00 0C 4F 0A A0 00 00 00 62 03 01 0C 01 01
+# DELETE OBJECT command
+80 E4 00 00 0C 4F 0A A0 00 00 00 62 03 01 0C 01 01
+00 90 00
+# => Delete On Card Object End
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01
+# + Cascade mode ? false
+# + Security mode is NO_SECURITY_LEVEL
+# * Delete Command is 80 E4 00 00 0B 4F 09 A0 00 00 00 62 03 01 0C 01
+# DELETE OBJECT command
+80 E4 00 00 0B 4F 09 A0 00 00 00 62 03 01 0C 01
+00 90 00
+# => Delete On Card Object End
