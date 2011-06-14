@@ -18,3 +18,5 @@
 \.class$
 ^opal-.+/target
 
+# Netbeans specific files
+\.nbactions.xml$
