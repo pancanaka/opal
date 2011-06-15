@@ -170,6 +170,19 @@ public class Main {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        try {
+           logger.info("Delete Hello World applet if it is installed");
+           a.deleteOnCardObj(APPLET_AID, false);
+        } catch (Exception e) {
+           // Applet did not installed on the card
+        }
+
+        try {
+           logger.info("Delete Hello World package if it is installed");
+           a.deleteOnCardObj(PAKAGE_AID, false);
+        } catch (Exception e) {
+           // Package did not installed on the card
+        }
 
         // initialize update
         logger.info("Initialize Update");
@@ -184,7 +197,6 @@ public class Main {
         logger.info("Installing Applet");
         logger.info("* Install For Load");
         securityDomain.installForLoad(PACKAGE_ID, null, null);
-        //File file = new File("cap/HelloWorld-2_1_2.cap");
 
         InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
         byte[] convertedBuffer = CapConverter.convert(is);
