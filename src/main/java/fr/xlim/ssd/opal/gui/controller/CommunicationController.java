@@ -20,6 +20,7 @@ import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import java.io.FileInputStream;
 import java.io.InputStream;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
@@ -267,7 +268,14 @@ public class CommunicationController {
 
              if(reorderCapFileComponents)
              {
-                 InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream(ressource);
+                 InputStream is = null;
+                 
+                 try{
+                     is = new FileInputStream(ressource);
+                 }catch(Exception ex)
+                 {
+                     System.out.println(ex);
+                 }
                  byte[] convertedBuffer = CapConverter.convert(is);
 
                  try
