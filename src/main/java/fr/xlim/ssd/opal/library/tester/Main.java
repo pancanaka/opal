@@ -172,14 +172,14 @@ public class Main {
 
         try {
            logger.info("Delete Hello World applet if it is installed");
-           a.deleteOnCardObj(APPLET_AID, false);
+           securityDomain.deleteOnCardObj(Main.APPLET_ID, false);
         } catch (Exception e) {
            // Applet did not installed on the card
         }
 
         try {
            logger.info("Delete Hello World package if it is installed");
-           a.deleteOnCardObj(PAKAGE_AID, false);
+           securityDomain.deleteOnCardObj(PACKAGE_ID, false);
         } catch (Exception e) {
            // Package did not installed on the card
         }
