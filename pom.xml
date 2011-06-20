@@ -135,7 +135,7 @@
     </issueManagement>
 
     <scm>
-        <connection>svm:hg:ssh://hg@bitbucket.org/ssd/opal-library</connection>
+        <connection>scm:hg:http://bitbucket.org/ssd/opal-library/</connection>
     </scm>
 
 </project>
