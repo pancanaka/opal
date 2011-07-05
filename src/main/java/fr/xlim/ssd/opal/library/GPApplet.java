@@ -135,6 +135,7 @@ public class GPApplet {
     }
 
 
+
     /**
      * Select GP Applet and check card response (Used for SCPMode that implement implecit
      * initiation mode
@@ -152,7 +153,7 @@ public class GPApplet {
     }
 
      */
-
+     
 
     /**
      *
@@ -208,7 +209,7 @@ public class GPApplet {
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.Commands#InitParamForImplicitInitiationMode(byte[])
      */
-    public void InitParamForImplicitInitiationMode(SCPMode desiredScp, byte keyId) throws CardException {
-        this.cmds.InitParamForImplicitInitiationMode(this.aid, desiredScp, keyId);
+    public void InitParamForImplicitInitiationMode(SCPMode desiredScp,byte keyId)throws CardException{
+        this.cmds.InitParamForImplicitInitiationMode(this.aid,desiredScp,keyId);
     }
 }

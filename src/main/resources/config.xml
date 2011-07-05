@@ -471,10 +471,9 @@
                  keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"/>
         </defaultKeys>
     </card>
-    <card name="UPTEQ_350_M_NFC" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+     <card name="UPTEQ_350_M_NFC" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
         <description>Sample card provided in Gemalto Developer Suite Kit (NFC with Standardized SCWS) C_MAC minimum
-            http://developer.gemalto.com/uploads/media/Dev_Suite_Enterprise_kit_-_Sample_Card_Data_Sheet.pdf
-        </description>
+        http://developer.gemalto.com/uploads/media/Dev_Suite_Enterprise_kit_-_Sample_Card_Data_Sheet.pdf</description>
         <listATR>
             <ATR value="3B 9F 96 C0 0A 1F C6 80 31 E0 73 FE 21 1B 65 D0 00 61 00 00 81 0F A6"/>
         </listATR>

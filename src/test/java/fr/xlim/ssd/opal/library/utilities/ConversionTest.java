@@ -1,8 +1,8 @@
 package fr.xlim.ssd.opal.library.utilities;
 
-import org.junit.Test;
+import static org.junit.Assert.*;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
 
 public class ConversionTest {
 
@@ -10,7 +10,7 @@ public class ConversionTest {
     public void testArrayToHex() {
         byte[] tab = new byte[]{(byte) 0xAB, 0x07, 0x13, 0x56};
         String res = Conversion.arrayToHex(tab);
-        assertEquals("AB 07 13 56", res);
+        assertEquals("AB 07 13 56 ", res);
     }
 
     @Test

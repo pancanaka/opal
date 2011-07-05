@@ -104,32 +104,33 @@ public interface Commands {
     /**
      * Select the Applet matching with And security canal protocol mode parameter
      *
-     * @param aid     wished Applet AID
+     * @param aid wished Applet AID
      * @param SCPMode wished the security canal protocol Mode
      * @return Select APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
-    ResponseAPDU select(byte[] aid, SCPMode desiredScp) throws CardException;
+    ResponseAPDU select(byte[] aid,SCPMode desiredScp) throws CardException;
 
     /**
+     *
      * @return
      * @throws CardException
      */
 
-    ResponseAPDU getData() throws CardException;
+    ResponseAPDU getData () throws CardException;
+
 
 
     /**
      * initilizate parameters (Sequence counter,Session key, Mac Key,Encription key,ICV)
      * for Implicit Initiation Mode (SCP_02_0A,SCP_02_0B)
-     *
-     * @param aid     wished Applet AID
+     * @param aid wished Applet AID
      * @param SCPMode wished the security canal protocol Mode
-     * @param keyId   Key ID to use to do the authenticate step
+     * @param keyId Key ID to use to do the authenticate step
      * @throws CardException
      */
 
-    void InitParamForImplicitInitiationMode(byte[] aid, SCPMode desiredScp, byte keyId) throws CardException;
+    void InitParamForImplicitInitiationMode (byte[] aid,SCPMode desiredScp,byte keyId) throws CardException;
 
     /**
      * Initialize Update command
@@ -250,11 +251,19 @@ public interface Commands {
     /**
      * The END R-MAC SESSION command is used to terminate the additional response security that was initiated by the preceding BEGIN R-MAC SESSION.
      * The Secure Channel session returns to its original security settings. The END R-MAC SESSION command may be issued to the card at any time during an R-MAC session.
-     *
+     * 
      * @return APDU Response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
     ResponseAPDU endRMacSession() throws CardException;
-
-
+    
+    
+    /**
+     * Send APDU command to to the smart card device and retrive response
+     * @param APDUCommand
+     * @return APDU Response
+     * @throws CardException CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
+     */
+    ResponseAPDU sendCommand(byte[] APDUCommand) throws CardException;
+   
 }
