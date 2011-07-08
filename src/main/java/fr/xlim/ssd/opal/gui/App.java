@@ -11,7 +11,7 @@
 package fr.xlim.ssd.opal.gui;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
-import fr.xlim.ssd.opal.view.dataExchanges.DataExchangesVue;
+import fr.xlim.ssd.opal.gui.view.components.communication.DataExchangesVue;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import java.io.UnsupportedEncodingException;
@@ -19,12 +19,16 @@ import java.io.UnsupportedEncodingException;
 /*
  * Application life cycle management.
  *
- * @author David Pequegnot <david.pequegnot@etu.unilim.fr>
+ * @author David Pequegnot
  */
 public class App extends SingleFrameApplication {
 
     public static boolean dataExchangesVueOpened = false;
+
+    // TODO: removing this variable
     public static App instance = null;
+
+    private MainController mainController;
 
     /**
      * At startup create and show the main frame of the application.
@@ -77,5 +81,4 @@ public class App extends SingleFrameApplication {
     public static void main(String[] args) throws UnsupportedEncodingException {
         Application.launch(App.class, args);
     }
-    private MainController mainController;
 }

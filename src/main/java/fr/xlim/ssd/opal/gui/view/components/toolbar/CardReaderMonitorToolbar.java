@@ -8,7 +8,7 @@
  * Copyright : University of Limoges (Unilim), 2011                           *
  ******************************************************************************/
 
-package fr.xlim.ssd.opal.gui.view.components;
+package fr.xlim.ssd.opal.gui.view.components.toolbar;
 
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.controller.MainController;

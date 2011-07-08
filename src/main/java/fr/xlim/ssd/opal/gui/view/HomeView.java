@@ -21,7 +21,8 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
+import fr.xlim.ssd.opal.gui.view.components.menubar.AppMenuBar;
+import fr.xlim.ssd.opal.gui.view.components.toolbar.CardReaderMonitorToolbar;
 import fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileView;
 import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileView;
 import java.awt.event.ActionListener;
@@ -100,7 +101,7 @@ public class HomeView extends FrameView implements ActionListener {
      */
     private void initializeMenu() {
         // Menus
-        JMenuBar  menuBar           = new JMenuBar();
+        /*JMenuBar  menuBar           = new JMenuBar();
         JMenu     file              = new JMenu("File");
         JMenu     options           = new JMenu("Options");
         JMenu     about             = new JMenu("About");
@@ -125,7 +126,8 @@ public class HomeView extends FrameView implements ActionListener {
         itemQuit.addActionListener(this);
         itemMProfiles.addActionListener(this);
         itemDataExchanges.addActionListener(this);
-        itemAboutOpal.addActionListener(this);
+        itemAboutOpal.addActionListener(this);*/
+        setMenuBar(new AppMenuBar());
     }
 
     /**

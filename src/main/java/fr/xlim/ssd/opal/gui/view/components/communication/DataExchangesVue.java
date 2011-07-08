@@ -16,7 +16,7 @@
  */
 
 
-package fr.xlim.ssd.opal.view.dataExchanges;
+package fr.xlim.ssd.opal.gui.view.components.communication;
 
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.DataExchangesModel;

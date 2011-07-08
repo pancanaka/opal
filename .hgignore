@@ -16,7 +16,7 @@
 
 # Java specific
 \.class$
-^opal-.+/target
+target\/
 
 # Netbeans specific files
 \.nbactions.xml$
