@@ -12,24 +12,25 @@
 package fr.xlim.ssd.opal.gui.view;
 
 import fr.xlim.ssd.opal.gui.App;
+import fr.xlim.ssd.opal.gui.view.components.custom.AIDJTextField;
 import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
+
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
+import javax.swing.*;
 
 import fr.xlim.ssd.opal.gui.view.components.menubar.AppMenuBar;
 import fr.xlim.ssd.opal.gui.view.components.toolbar.CardReaderMonitorToolbar;
-import fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileView;
-import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileView;
+
 import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
+import org.noos.xing.mydoggy.ContentManager;
+import org.noos.xing.mydoggy.ToolWindow;
+import org.noos.xing.mydoggy.ToolWindowAnchor;
+import org.noos.xing.mydoggy.ToolWindowManager;
+import org.noos.xing.mydoggy.plaf.MyDoggyToolWindowManager;
 
 /**
  * Graphical user interface home view.
@@ -41,8 +42,10 @@ import org.jdesktop.application.FrameView;
  */
 public class HomeView extends FrameView implements ActionListener {
 
-    private MainController           controller;
-    
+    private MainController controller;
+    private JPanel mainPanel;
+    private ToolWindowManager mainToolWindowManager;
+
     private CardReaderMonitorToolbar cardReaderMonitorToolbar;
 
     private AppJScrollPan scrollPan;
@@ -50,7 +53,7 @@ public class HomeView extends FrameView implements ActionListener {
     private HomePanel homePanel;
     
     private boolean homePanelIsSet = false;
-    
+
 
     /**
      * Constructor
@@ -86,55 +89,32 @@ public class HomeView extends FrameView implements ActionListener {
      * Contains all instructions to draw components in the <code>HomeView</code>
      */
     public void drawComponents() {
-        initializeMenu();
+        this.setMenuBar(new AppMenuBar());
+        this.setToolBar(new CardReaderMonitorToolbar(this.controller));
 
-        initializeToolbar();
-
-        showPanel("home");
-
-        this.getFrame().setSize(500, 500);
-        this.getFrame().setLocationRelativeTo(null);
+        this.drawTabs();
+        this.drawLogging();
     }
 
-    /**
-     * Draw the menu on the window and add listener on every item
-     */
-    private void initializeMenu() {
-        // Menus
-        /*JMenuBar  menuBar           = new JMenuBar();
-        JMenu     file              = new JMenu("File");
-        JMenu     options           = new JMenu("Options");
-        JMenu     about             = new JMenu("About");
-        JMenuItem itemQuit          = new JMenuItem("Quit");
-        JMenuItem itemMProfiles     = new JMenuItem("Manage profiles");
-        JMenuItem itemDataExchanges = new JMenuItem("Open data exchanges");
-        JMenuItem itemAboutOpal     = new JMenuItem("Opal");
+    private void drawTabs() {
+        MyDoggyToolWindowManager tabsMyDoggyToolWindowManager = new MyDoggyToolWindowManager();
+        this.mainToolWindowManager = tabsMyDoggyToolWindowManager;
+        ContentManager tabsContentManager = this.mainToolWindowManager.getContentManager();
 
-        menuBar.add(file);
-            file.add(itemQuit);
-        menuBar.add(options);
-            options.add(itemMProfiles);
-            options.add(itemDataExchanges);
-        menuBar.add(about);
-            about.add(itemAboutOpal);
-       
-        this.setMenuBar(menuBar);
+        tabsContentManager.addContent("Authentication", "Authentication", null, new AIDJTextField(11, AIDJTextField.HEXADECIMAL_MODE), "Authentication");
+        tabsContentManager.addContent("Load Applet", "Load Applet", null, new JButton("Load Applet"), "Load Applet");
+        tabsContentManager.addContent("Select", "Select", null, new JButton("Select"), "Select");
+        tabsContentManager.addContent("Delete", "Delete", null, new JButton("Delete"), "Delete");
+        tabsContentManager.addContent("Send APDU Command", "Send APDU Command", null, new JButton("Send APDU Command"), "Send APDU Command");
 
-        // Events
-        itemQuit.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, KeyEvent.CTRL_DOWN_MASK));
-        itemMProfiles.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_M, KeyEvent.CTRL_DOWN_MASK));
-        itemQuit.addActionListener(this);
-        itemMProfiles.addActionListener(this);
-        itemDataExchanges.addActionListener(this);
-        itemAboutOpal.addActionListener(this);*/
-        setMenuBar(new AppMenuBar());
+        this.setComponent(tabsMyDoggyToolWindowManager);
     }
 
-    /**
-     * Initialize the application toolbar.
-     */
-    private void initializeToolbar() {
-        this.cardReaderMonitorToolbar = new CardReaderMonitorToolbar(this.controller);
+    private void drawLogging() {
+        this.mainToolWindowManager.registerToolWindow("Logging", "Logging", null, new JButton("Logging"), ToolWindowAnchor.BOTTOM);
+
+        for (ToolWindow window : this.mainToolWindowManager.getToolWindows())
+            window.setAvailable(true);
     }
 
 
@@ -143,7 +123,7 @@ public class HomeView extends FrameView implements ActionListener {
      * @param type the string corresponding of the view to be shown
      */
     public void showPanel(String type) {
-        if(type.equals("home")) {
+        /*if(type.equals("home")) {
             if(!homePanelIsSet) {
                 homePanelIsSet = true;
                 homePanel = new HomePanel(this.controller, this);
@@ -158,10 +138,10 @@ public class HomeView extends FrameView implements ActionListener {
         }
 
         // Set te application toolbar on the vue
-        scrollPan.setColumnHeaderView(this.cardReaderMonitorToolbar);
+        //scrollPan.setColumnHeaderView(this.cardReaderMonitorToolbar);
 
         this.getFrame().setContentPane(scrollPan);
-        this.getFrame().setVisible(true);
+        this.getFrame().setVisible(true);*/
     }
 
     /**
@@ -169,13 +149,13 @@ public class HomeView extends FrameView implements ActionListener {
      * @param pan the <code>JPanel</code> to be shown
      */
     public void showPanel(JPanel pan) { 
-        scrollPan = new AppJScrollPan(pan);
+        /*scrollPan = new AppJScrollPan(pan);
         this.getFrame().setContentPane(scrollPan);
 
         // Set te application toolbar on the vue
         scrollPan.setColumnHeaderView(this.cardReaderMonitorToolbar);
         
-        this.getFrame().setVisible(true);
+        this.getFrame().setVisible(true);*/
     }
 
 
@@ -191,26 +171,11 @@ public class HomeView extends FrameView implements ActionListener {
             JMenuItem menu = (JMenuItem) o;
             String name    = menu.getText();
 
-            /* If we click on the Quit menu */
-            if(name.equals("Quit")) {
-                int option = JOptionPane.showConfirmDialog(null, "Do you really want to quit ?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
-                    System.exit(0);
-                }
-            }
-            else if(name.equals("Manage profiles")) {
+            if(name.equals("Manage profiles")) {
                 showPanel("show profiles");
             }
             else if(name.equals("Open data exchanges")) {
                 App.showDataExchangesVue();
-            }
-            else if(name.equals("Opal")) {
-                String message = ""
-                        + "OPAL is a Java 6 library that implements Global Platform 2.x \n"
-                        + "specification. It is able to upload and manage applet life cycle \n"
-                        + "on Java Card. It is also able to manage different implementations \n"
-                        + "of the specification via a pluggable interface.";
-                new JOptionPane().showMessageDialog(null, message, "About opal", JOptionPane.OK_OPTION);
             }
         }
     }

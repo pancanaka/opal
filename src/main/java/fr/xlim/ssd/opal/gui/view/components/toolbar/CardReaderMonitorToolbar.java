@@ -65,12 +65,14 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
         setName("cardReaderToolbar");
 
         setBorderPainted(true);
+        this.setLayout(new BoxLayout(this, BoxLayout.LINE_AXIS));
 
         this.cardReaderInformationLabel = new JLabel("Terminal :");
         this.cardReaderInformationLabel.setName("cardReaderInformationLabel");
 
         this.cardReaderComboBox = new JComboBox();
         this.cardReaderComboBox.setEditable(false);
+        this.cardReaderComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, this.cardReaderComboBox.getPreferredSize().height));
 
         add(this.cardReaderInformationLabel);
         add(Box.createRigidArea(new Dimension(5,5)));
