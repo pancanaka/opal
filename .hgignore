@@ -1,8 +1,22 @@
-# Do not track files under the target repository
-target
+# Temporary file
+\.orig$
+\.orig\..*$
+\.chg\..*$
+\.rej$
+\.conflict\~$
+\~$
+\.back$
+\.backup$
 
-# Do not track IDE-specific files
-^.*\.iml$
-^.*\.ipr$
-^.*\.iws$
-^nbactions.xml$
+# Intellij idea specific files
+\.iml$
+\.ipr$
+\.iws$
+^opal-.+/\.idea
+
+# Java specific
+\.class$
+target\/
+
+# Netbeans specific files
+\.nbactions.xml$
