@@ -30,7 +30,7 @@ public class KeyPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setName(KeyPanel.PANEL + Integer.toString(this.componentCounter + 1));
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        panel.add(new KeyComponent());
+        panel.add(new KeyComponentPanel());
         this.addRemoveButton(panel);
 
         this.add(panel, this.componentCounter);
@@ -112,9 +112,9 @@ public class KeyPanel extends JPanel {
         JPanel panel = new JPanel();
         panel.setName(KeyPanel.PANEL + Integer.toString(this.componentCounter));
         panel.setLayout(new BoxLayout(panel, BoxLayout.LINE_AXIS));
-        KeyComponent keyComponent = new KeyComponent();
+        KeyComponentPanel keyComponent = new KeyComponentPanel();
         keyComponent.setName(KeyPanel.KEY_COMPONENT + Integer.toString(1));
-        panel.add(new KeyComponent());
+        panel.add(new KeyComponentPanel());
 
         this.add(panel);
 

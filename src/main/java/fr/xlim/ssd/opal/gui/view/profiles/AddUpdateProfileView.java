@@ -154,7 +154,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         // ATRlist must contain one JTextField at least
         ATRlist.add(new JTextField());
 
-        // Keylist must contain one KeyComponent at least
+        // Keylist must contain one KeyComponentPanel at least
         Keylist.add(new KeyComponent());
 
         // Events
@@ -325,7 +325,7 @@ public class AddUpdateProfileView extends JPanel implements ActionListener {
         vJPL.add(Box.createRigidArea(new Dimension(300, 5)));
 
         for(int i=0 ; i<n ; i++) {
-            // Call function createLineForm in KeyComponent class
+            // Call function createLineForm in KeyComponentPanel class
             Box b = Keylist.get(i).createLineForm();
             vJPL.add(b);
 

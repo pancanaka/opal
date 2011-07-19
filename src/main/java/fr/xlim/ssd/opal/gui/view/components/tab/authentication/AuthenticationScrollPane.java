@@ -15,12 +15,29 @@ import java.awt.*;
 import java.io.IOException;
 
 /**
+ * Authentication view in a scrollable panel.
+ *
+ * This is an authentication view which contains all necessary inputs to perform
+ * an authentication with the OPAL library.
+ *
  * @author David Pequegnot
  */
 public class AuthenticationScrollPane extends AbstractScrollPane {
+    /**
+     * SCP modes as <code>Strings</code>.
+     */
     private static String[] SCP_MODES;
+    /**
+     * Security levels as <code>Strings</code>.
+     */
     private static String[] SECURITY_LEVELS;
+    /**
+     * Transmission protocols as <code>Strings</code>.
+     */
     private static String[] TRANSMISSION_PROTOCOLS = {"T=0", "T=1", "*"};
+    /**
+     * Command implementations as <code>Strings</code>.
+     */
     private static String[] IMPLEMENTATIONS = {"GP2xCommands", "GemXpresso211Commands"};
     static {
         SCPMode [] scpModes = SCPMode.values();
@@ -64,8 +81,12 @@ public class AuthenticationScrollPane extends AbstractScrollPane {
     private JComboBox implementationComboBox;
 
     private JButton authenticationButton;
-    private JButton testButton;
 
+    /**
+     * Default constructor.
+     *
+     * @param mainController application main controller
+     */
     public AuthenticationScrollPane(MainController mainController) {
         super();
         this.mainController = mainController;
@@ -73,16 +94,19 @@ public class AuthenticationScrollPane extends AbstractScrollPane {
         this.drawComponents();
     }
 
-    @Action(block = Task.BlockingScope.APPLICATION)
-    public Task doAuthentication() {
-        return new MyTask(Application.getInstance(fr.xlim.ssd.opal.gui.App.class));
+    /**
+     * Launch the authentication process.
+     *
+     * The controller will be called to verify and validate inputs before launching
+     * the <code>Task</code> corresponding to the authentication process.
+     */
+    @Action
+    public void doAuthentication() {
     }
 
-    @Action(block = Task.BlockingScope.COMPONENT)
-    public Task doTest() {
-        return new MyTask(Application.getInstance(fr.xlim.ssd.opal.gui.App.class));
-    }
-
+    /**
+     * Initialize <code>AuthenticationScrollPane</code> components and properties.
+     */
     private void drawComponents() {
         this.mainPanel = new JPanel();
         this.mainPanel.setLayout(new GridBagLayout());
@@ -202,27 +226,29 @@ public class AuthenticationScrollPane extends AbstractScrollPane {
         ((GridBagLayout) this.mainPanel.getLayout()).setConstraints(this.implementationComboBox, mainConstraints);
         this.mainPanel.add(this.implementationComboBox);
 
+        this.authenticationButton = new JButton();
+        this.authenticationButton.setName("authenticationButton");
+        mainConstraints.gridx = 1;
+        mainConstraints.gridy = 7;
+        mainConstraints.weightx = 0.0;
+        mainConstraints.anchor = GridBagConstraints.BASELINE_TRAILING;
+        ((GridBagLayout) this.mainPanel.getLayout()).setConstraints(this.authenticationButton, mainConstraints);
+        this.mainPanel.add(this.authenticationButton);
+
         this.layoutPanel = new JPanel();
         this.layoutPanel.setLayout(new BorderLayout());
         this.layoutPanel.add(this.mainPanel, BorderLayout.NORTH);
-
-        JPanel authenticationButtonPanel = new JPanel();
-        authenticationButtonPanel.setLayout(new BoxLayout(authenticationButtonPanel, BoxLayout.LINE_AXIS));
-        authenticationButtonPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-        authenticationButtonPanel.add(Box.createHorizontalGlue());
-        this.authenticationButton = new JButton();
-        this.authenticationButton.setName("authenticationButton");
-        authenticationButtonPanel.add(this.authenticationButton);
-        this.testButton = new JButton();
-        this.testButton.setName("testButton");
-        authenticationButtonPanel.add(this.testButton);
-
-        this.layoutPanel.add(authenticationButtonPanel, BorderLayout.SOUTH);
 
         this.setViewportView(this.layoutPanel);
         this.refreshResources();
     }
 
+    /**
+     * Refresh <code>AuthenticationScrollPane</code> resources.
+     *
+     * All properties from resource bundles can be refreshed using this method.
+     * It is a convenient method for translate purposes.
+     */
     private void refreshResources() {
         ResourceMap resourceMap = Application
                 .getInstance(fr.xlim.ssd.opal.gui.App.class)
@@ -236,6 +262,5 @@ public class AuthenticationScrollPane extends AbstractScrollPane {
                 .getContext()
                 .getActionMap(AuthenticationScrollPane.class, this);
         this.authenticationButton.setAction(actionMap.get("doAuthentication"));
-        this.testButton.setAction(actionMap.get("doTest"));
     }
 }

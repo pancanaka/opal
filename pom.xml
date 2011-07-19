@@ -59,16 +59,6 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.6.1</version>
         </dependency>
-        <!--<dependency>
-            <groupId>net.sourceforge.mydoggy</groupId>
-            <artifactId>mydoggy-api</artifactId>
-            <version>1.4.2</version>
-        </dependency>
-        <dependency>
-            <groupId>net.sourceforge.mydoggy</groupId>
-            <artifactId>mydoggy-res</artifactId>
-            <version>1.4.2</version>
-        </dependency>-->
         <dependency>
             <groupId>org.noos.xing</groupId>
             <artifactId>mydoggy-api</artifactId>

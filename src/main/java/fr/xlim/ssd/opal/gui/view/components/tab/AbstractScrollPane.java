@@ -23,6 +23,11 @@ public abstract class AbstractScrollPane extends JScrollPane implements MouseWhe
         this.addMouseWheelListener(this);
     }
 
+    /**
+     * Override the <code>mouseWheelMoved</code> method to make the scrolling movement faster.
+     *
+     * @param event the mouse wheel moved event
+     */
     @Override
     public void mouseWheelMoved(MouseWheelEvent event) {
         final JScrollBar scrollBar = getVerticalScrollBar();

@@ -1,7 +1,7 @@
 package fr.xlim.ssd.opal.gui.view.components.custom.keys;
 
+import fr.xlim.ssd.opal.gui.view.components.KeyType;
 import fr.xlim.ssd.opal.gui.view.components.custom.HexadecimalJTextField;
-import fr.xlim.ssd.opal.library.KeyType;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 
@@ -11,13 +11,13 @@ import java.awt.*;
 /**
  * @author David Pequegnot
  */
-public class KeyComponent extends JPanel {
+public class KeyComponentPanel extends JPanel {
     private static String [] KEY_TYPES;
     static {
-        KeyType [] keyTypes = KeyType.values();
-        KeyComponent.KEY_TYPES = new String[keyTypes.length];
+        KeyType[] keyTypes = KeyType.values();
+        KeyComponentPanel.KEY_TYPES = new String[keyTypes.length];
         for (int idx = 0; idx < keyTypes.length; idx++) {
-            KeyComponent.KEY_TYPES[idx] = keyTypes[idx].name();
+            KeyComponentPanel.KEY_TYPES[idx] = keyTypes[idx].name();
         }
     }
 
@@ -36,7 +36,7 @@ public class KeyComponent extends JPanel {
     private JButton addKeyButton;
     private JButton removeKeyButton;
 
-    public KeyComponent() {
+    public KeyComponentPanel() {
         super();
 
         this.drawComponents();
@@ -55,7 +55,7 @@ public class KeyComponent extends JPanel {
         constraints.anchor = GridBagConstraints.BASELINE_TRAILING;
         ((GridBagLayout) this.getLayout()).setConstraints(this.keyTypeLabel, constraints);
         this.add(this.keyTypeLabel);
-        this.keyTypeComboBox = new JComboBox(KeyComponent.KEY_TYPES);
+        this.keyTypeComboBox = new JComboBox(KeyComponentPanel.KEY_TYPES);
         this.keyTypeComboBox.setName("keyTypeComboBox");
         constraints.gridx = 1;
         constraints.gridy = 0;
@@ -118,7 +118,7 @@ public class KeyComponent extends JPanel {
         ResourceMap resourceMap = Application
                 .getInstance(fr.xlim.ssd.opal.gui.App.class)
                 .getContext()
-                .getResourceMap(KeyComponent.class);
+                .getResourceMap(KeyComponentPanel.class);
 
         resourceMap.injectComponents(this);
     }

@@ -95,7 +95,7 @@ public class ProfileComponent implements Comparable {
     public String[] getATR() { return this.ATR; }
 
     /**
-     * @return an ArrayList of KeyComponent
+     * @return an ArrayList of KeyComponentPanel
      */
     public ArrayList getKeylist() { return this.Keylist; }
 
@@ -225,7 +225,7 @@ public class ProfileComponent implements Comparable {
         //---------------------------------------------------------------------------------------------------------
 
 
-        //convert SCKey[] into ArrayList<KeyComponent/KeyModel>
+        //convert SCKey[] into ArrayList<KeyComponentPanel/KeyModel>
         SCKey[] sc = card.getSCKeys();
         int keysLength = sc.length;
         ArrayList<KeyComponent> kc = new ArrayList<KeyComponent>();
@@ -303,9 +303,9 @@ public class ProfileComponent implements Comparable {
 
 
     /**
-     * Function that return the KeyComponent corresponding to the index
-     * @param i the index of the KeyComponent in the ArrayList
-     * @return a KeyComponent object
+     * Function that return the KeyComponentPanel corresponding to the index
+     * @param i the index of the KeyComponentPanel in the ArrayList
+     * @return a KeyComponentPanel object
      */
     public KeyComponent getKey(int i) {
         return Keylist.get(i);
