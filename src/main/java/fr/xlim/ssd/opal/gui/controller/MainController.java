@@ -78,7 +78,7 @@ public class MainController {
            new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
         }
         
-        this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
+        /*this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
 
         this.appletController = new AppletController(this.homeView, this.cardReaderModel, this.communication);
 
@@ -86,7 +86,7 @@ public class MainController {
 
         this.selectController = new SelectController(this.homeView,this.cardReaderModel,this.communication);
 
-        this.selectController = new SelectController(this.homeView, this.cardReaderModel, this.communication);
+        this.selectController = new SelectController(this.homeView, this.cardReaderModel, this.communication);*/
 
        
 

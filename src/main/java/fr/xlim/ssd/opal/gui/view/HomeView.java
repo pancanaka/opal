@@ -12,7 +12,6 @@
 package fr.xlim.ssd.opal.gui.view;
 
 import fr.xlim.ssd.opal.gui.App;
-import fr.xlim.ssd.opal.gui.view.components.custom.AIDJTextField;
 import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
 
@@ -20,6 +19,7 @@ import java.awt.event.ActionEvent;
 import javax.swing.*;
 
 import fr.xlim.ssd.opal.gui.view.components.menubar.AppMenuBar;
+import fr.xlim.ssd.opal.gui.view.components.tab.authentication.AuthenticationScrollPane;
 import fr.xlim.ssd.opal.gui.view.components.toolbar.CardReaderMonitorToolbar;
 
 import java.awt.event.ActionListener;
@@ -101,7 +101,7 @@ public class HomeView extends FrameView implements ActionListener {
         this.mainToolWindowManager = tabsMyDoggyToolWindowManager;
         ContentManager tabsContentManager = this.mainToolWindowManager.getContentManager();
 
-        tabsContentManager.addContent("Authentication", "Authentication", null, new AIDJTextField(11, AIDJTextField.HEXADECIMAL_MODE), "Authentication");
+        tabsContentManager.addContent("Authentication", "Authentication", null, new AuthenticationScrollPane(this.controller), "Authentication");
         tabsContentManager.addContent("Load Applet", "Load Applet", null, new JButton("Load Applet"), "Load Applet");
         tabsContentManager.addContent("Select", "Select", null, new JButton("Select"), "Select");
         tabsContentManager.addContent("Delete", "Delete", null, new JButton("Delete"), "Delete");

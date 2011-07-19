@@ -5,6 +5,7 @@ import org.jdesktop.application.Action;
 
 import javax.swing.*;
 import javax.swing.text.Document;
+import java.awt.*;
 import java.awt.event.*;
 
 /**
@@ -23,7 +24,7 @@ import java.awt.event.*;
  * </ul>
  * @author David Pequegnotd
  */
-public class AIDJTextField extends JTextField {
+public class HexadecimalJTextField extends JTextField {
     /**
      * ASCII mode.
      */
@@ -50,8 +51,8 @@ public class AIDJTextField extends JTextField {
      * The text field length will be set to <code>Short.MAX_VALUE</code>
      * and the initial edition mode <code>HEXADECIMAL_MODE</code>.
      */
-    public AIDJTextField() {
-        this(AIDJTextField.HEXADECIMAL_MODE);
+    public HexadecimalJTextField() {
+        this(HexadecimalJTextField.HEXADECIMAL_MODE);
     }
 
     /**
@@ -70,7 +71,7 @@ public class AIDJTextField extends JTextField {
      *                    <code>HEXADECIMAL_MODE</code>).
      * @throws IllegalArgumentException if the edition mode is not supported (wrong integer)
      */
-    public AIDJTextField(int editionMode) throws IllegalArgumentException {
+    public HexadecimalJTextField(int editionMode) throws IllegalArgumentException {
         super();
 
         if (!checkEditionMode(editionMode)) {
@@ -99,7 +100,7 @@ public class AIDJTextField extends JTextField {
      *                    <code>HEXADECIMAL_MODE</code>).
      * @throws IllegalArgumentException if the edition mode is not supported (wrong integer)
      */
-    public AIDJTextField(int length, int editionMode) throws IllegalArgumentException {
+    public HexadecimalJTextField(int length, int editionMode) throws IllegalArgumentException {
         super();
 
         if (!checkEditionMode(editionMode)) {
@@ -122,7 +123,7 @@ public class AIDJTextField extends JTextField {
      * @return the AID as an hexadecimal value
      */
     public String getAID() {
-        if (this.currentEditionMode == AIDJTextField.HEXADECIMAL_MODE)
+        if (this.currentEditionMode == HexadecimalJTextField.HEXADECIMAL_MODE)
             return this.getText().trim();
         else
             return this.convertAsciiToHexadecimal();
@@ -136,8 +137,8 @@ public class AIDJTextField extends JTextField {
     @Action
     public void switchToHexadecimalEdition() {
         String value = this.convertAsciiToHexadecimal();
-        this.currentEditionMode = AIDJTextField.HEXADECIMAL_MODE;
-        this.setDocument();
+        this.currentEditionMode = HexadecimalJTextField.HEXADECIMAL_MODE;
+        this.setDocumentAndBackgroundColor();
         this.setText(value);
     }
 
@@ -149,13 +150,13 @@ public class AIDJTextField extends JTextField {
     @Action
     public void switchToAsciiEdition() {
         String value = this.convertHexadecimalToAscii();
-        this.currentEditionMode = AIDJTextField.ASCII_MODE;
-        this.setDocument();
+        this.currentEditionMode = HexadecimalJTextField.ASCII_MODE;
+        this.setDocumentAndBackgroundColor();
         this.setText(value);
     }
 
     /**
-     * Contain all instructions to draw component of the <code>AIDJTextField</code>.
+     * Contain all instructions to draw component of the <code>HexadecimalJTextField</code>.
      */
     private void initComponent() {
         this.hexadecimalMenuItem.setName("hexadecimalMenuItem");
@@ -172,9 +173,9 @@ public class AIDJTextField extends JTextField {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (e.getModifiers() == KeyEvent.ALT_MASK && Character.toLowerCase(e.getKeyChar()) == 'a' && currentEditionMode == AIDJTextField.HEXADECIMAL_MODE) {
+                if (e.getModifiers() == KeyEvent.ALT_MASK && Character.toLowerCase(e.getKeyChar()) == 'a' && currentEditionMode == HexadecimalJTextField.HEXADECIMAL_MODE) {
                     switchToAsciiEdition();
-                } else if (e.getModifiers() == KeyEvent.ALT_MASK && Character.toLowerCase(e.getKeyChar()) == 'h' && currentEditionMode == AIDJTextField.ASCII_MODE) {
+                } else if (e.getModifiers() == KeyEvent.ALT_MASK && Character.toLowerCase(e.getKeyChar()) == 'h' && currentEditionMode == HexadecimalJTextField.ASCII_MODE) {
                     switchToHexadecimalEdition();
                 }
             }
@@ -202,9 +203,9 @@ public class AIDJTextField extends JTextField {
             private void showPopupMenu(MouseEvent e) {
                 conversionMenu.removeAll();
 
-                if (currentEditionMode == AIDJTextField.HEXADECIMAL_MODE) {
+                if (currentEditionMode == HexadecimalJTextField.HEXADECIMAL_MODE) {
                     conversionMenu.add(asciiMenuItem);
-                } else if (currentEditionMode == AIDJTextField.ASCII_MODE) {
+                } else if (currentEditionMode == HexadecimalJTextField.ASCII_MODE) {
                     conversionMenu.add(hexadecimalMenuItem);
                 } else {
                     throw new IllegalArgumentException("Wrong edition mode value.");
@@ -214,7 +215,7 @@ public class AIDJTextField extends JTextField {
             }
         });
 
-        this.setDocument();
+        this.setDocumentAndBackgroundColor();
 
         this.refreshResources();
     }
@@ -229,7 +230,7 @@ public class AIDJTextField extends JTextField {
         ActionMap actionMap = Application
                 .getInstance(fr.xlim.ssd.opal.gui.App.class)
                 .getContext()
-                .getActionMap(AIDJTextField.class, this);
+                .getActionMap(HexadecimalJTextField.class, this);
         this.hexadecimalMenuItem.setAction(actionMap.get("switchToHexadecimalEdition"));
         this.asciiMenuItem.setAction(actionMap.get("switchToAsciiEdition"));
     }
@@ -241,7 +242,7 @@ public class AIDJTextField extends JTextField {
      * @return <code>true</code> if the integer is an edition mode, else it returns <code>false</code>
      */
     private boolean checkEditionMode(int editionMode) {
-        if (editionMode != AIDJTextField.ASCII_MODE && editionMode != AIDJTextField.HEXADECIMAL_MODE) {
+        if (editionMode != HexadecimalJTextField.ASCII_MODE && editionMode != HexadecimalJTextField.HEXADECIMAL_MODE) {
             return false;
         }
         return true;
@@ -253,11 +254,13 @@ public class AIDJTextField extends JTextField {
      * There are two documents types: one just limits the number of characters and
      * the second one is specific to hexadecimal mode.
      */
-    private void setDocument() {
-        if (this.currentEditionMode == AIDJTextField.ASCII_MODE) {
+    private void setDocumentAndBackgroundColor() {
+        if (this.currentEditionMode == HexadecimalJTextField.ASCII_MODE) {
             this.setDocument(this.asciiDocument);
-        } else if (this.currentEditionMode == AIDJTextField.HEXADECIMAL_MODE) {
+            this.setBackground(new Color(152, 251, 152));
+        } else if (this.currentEditionMode == HexadecimalJTextField.HEXADECIMAL_MODE) {
             this.setDocument(this.hexadecimalDocument);
+            this.setBackground(Color.WHITE);
         }
     }
 
