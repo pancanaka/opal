@@ -33,9 +33,6 @@ public class KeyComponentPanel extends JPanel {
     private JLabel keyValueLabel;
     private HexadecimalJTextField keyValueTextField;
 
-    private JButton addKeyButton;
-    private JButton removeKeyButton;
-
     public KeyComponentPanel() {
         super();
 
