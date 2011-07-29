@@ -1,0 +1,283 @@
+# test install and use Hello Word Applet operation
+# card is a SAMSUNG_NFC_SGH-X700N
+# security level is NO_SECURITY_LEVEL
+#
+
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00 
+# ==> Init ICV end
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 10 84 08 A0 00 00 00 03 00 00 00 A5 04 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00 
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 8B 76 07 DA 9D 13 5C C0
+00 00 70 51 00 34 37 91 12 93 FF 02 04 06 35 D6 99 A8 A3 9B F9 B9 46 FF BE 45 DB 72 90 00
+# SCPMode is SCP_02_15
+# * Key Diversification Data is 00 00 70 51 00 34 37 91 12 93 
+# * Sequence Counter is 04 06 
+# * Host Challenge is 8B 76 07 DA 9D 13 5C C0 
+# * Card Challenge is 35 D6 99 A8 A3 9B 
+# * Card Crypto Resp is F9 B9 46 FF BE 45 DB 72 
+# ==> Calculate Derivation Data
+# * Derivation Data is 00 00 04 06 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * SCP_Mode is SCP_02_15
+# *** Initialize IV : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# * sessEnc = 91 9B 64 EA C6 47 61 E4 DD 7A D5 68 DF 4F FD B9 91 9B 64 EA C6 47 61 E4 
+# * sessMac = 0C 77 18 DA 78 53 A5 8B 47 90 20 1B F0 AF C9 68 0C 77 18 DA 78 53 A5 8B 
+# * sessRMac = A3 D1 46 6D 19 47 CF 5B 04 9E 0F 12 31 7B 73 91 A3 D1 46 6D 19 47 CF 5B 
+# * sessKek = A3 D1 46 6D 19 47 CF 5B 04 9E 0F 12 31 7B 73 91 A3 D1 46 6D 19 47 CF 5B 
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00 
+# * SCP 02 protocol used
+# * Data to encrypt: 8B 76 07 DA 9D 13 5C C0 04 06 35 D6 99 A8 A3 9B 80 00 00 00 00 00 00 00 
+# * Calculated Card Crypto: F9 B9 46 FF BE 45 DB 72 
+# * Calculated Host Crypto: 55 E4 04 BF ED D0 0C 5A 
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# External Authenticate
+# => External Authenticate begin
+# * Sec Mode isNO_SECURITY_LEVEL
+# * Data uses to calculate mac value is84 82 00 00 10 55 E4 04 BF ED D0 0C 5A 
+# ==> Generate Mac
+# generateMac with data: 84 82 00 00 10 55 E4 04 BF ED D0 0C 5A 
+# - Data needs PADDING!
+# * data with PADDING: 84 82 00 00 10 55 E4 04 BF ED D0 0C 5A 80 00 00 
+# SCP: SCP_02_15
+# * SCP 02 Protocol (SCP_02_15) used
+# * IV is 00 00 00 00 00 00 00 00 
+# * Calculated cryptogram is D6 66 AC 98 93 5D 17 C5 
+# ==> Generate Mac End
+# * mac value obtainsD6 66 AC 98 93 5D 17 C5 
+# EXTERNAL AUTHENTICATE command
+84 82 00 00 10 55 E4 04 BF ED D0 0C 5A D6 66 AC 98 93 5D 17 C5
+90 00
+# => External Authenticate end
+# => Install for load begin
+# + Package AID to install is A0 00 00 00 62 03 01 0C 01 
+# + Security Domain AID is A0 00 00 00 03 00 00 00 
+# + There is not parameter
+# + SecLevel is NO_SECURITY_LEVEL
+# * Parameters Length is 0 (0x0)
+# * Parameters Length Encoded is 00 
+# * Install For Load Command is 80 E6 02 00 16 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 
+# INSTALL FOR LOAD command
+80 E6 02 00 16 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00
+00 90 00
+# DEBUG => Install For Load Command End
+# DEBUG => Load Command Begin
+# DEBUG + Cap File size to load is 409
+# DEBUG + Max Data Length is 16(0x10)
+# DEBUG + SecLevel is NO_SECURITY_LEVEL
+# DEBUG * Cap File Remain Length is 409
+# DEBUG * ber is C4 82 01 99 
+# DEBUG * number of block is 26
+# DEBUG * Load Command is 80 E8 00 00 10 C4 82 01 99 01 00 13 DE CA FF ED 01 02 04 00 01 
+# DEBUG LOAD command
+80 E8 00 00 10 C4 82 01 99 01 00 13 DE CA FF ED 01 02 04 00 01
+00 90 00
+# DEBUG * Load Command is 80 E8 00 01 10 09 A0 00 00 00 62 03 01 0C 01 02 00 1F 00 13 00 
+# DEBUG LOAD command
+80 E8 00 01 10 09 A0 00 00 00 62 03 01 0C 01 02 00 1F 00 13 00
+00 90 00
+# DEBUG * Load Command is 80 E8 00 02 10 1F 00 0E 00 0B 00 36 00 0C 00 65 00 0A 00 13 00 
+# DEBUG LOAD command
+80 E8 00 02 10 1F 00 0E 00 0B 00 36 00 0C 00 65 00 0A 00 13 00
+00 90 00
+# DEBUG * Load Command is 80 E8 00 03 10 00 00 6C 00 00 00 00 00 00 01 01 00 04 00 0B 01 
+# DEBUG LOAD command
+80 E8 00 03 10 00 00 6C 00 00 00 00 00 00 01 01 00 04 00 0B 01
+00 90 00
+# DEBUG * Load Command is 80 E8 00 04 10 00 01 07 A0 00 00 00 62 01 01 03 00 0E 01 0A A0 
+# DEBUG LOAD command
+80 E8 00 04 10 00 01 07 A0 00 00 00 62 01 01 03 00 0E 01 0A A0
+00 90 00
+# DEBUG * Load Command is 80 E8 00 05 10 00 00 00 62 03 01 0C 01 01 00 14 06 00 0C 00 80 
+# DEBUG LOAD command
+80 E8 00 05 10 00 00 00 62 03 01 0C 01 01 00 14 06 00 0C 00 80
+00 90 00
+# DEBUG * Load Command is 80 E8 00 06 10 03 01 00 01 07 01 00 00 00 1D 07 00 65 00 02 10 
+# DEBUG LOAD command
+80 E8 00 06 10 03 01 00 01 07 01 00 00 00 1D 07 00 65 00 02 10
+00 90 00
+# DEBUG * Load Command is 80 E8 00 07 10 18 8C 00 01 18 11 01 00 90 0B 87 00 18 8B 00 02 
+# DEBUG LOAD command
+80 E8 00 07 10 18 8C 00 01 18 11 01 00 90 0B 87 00 18 8B 00 02
+00 90 00
+# DEBUG * Load Command is 80 E8 00 08 10 7A 01 30 8F 00 03 8C 00 04 7A 05 23 19 8B 00 05 
+# DEBUG LOAD command
+80 E8 00 08 10 7A 01 30 8F 00 03 8C 00 04 7A 05 23 19 8B 00 05
+00 90 00
+# DEBUG * Load Command is 80 E8 00 09 10 2D 19 8B 00 06 32 03 29 04 70 19 1A 08 AD 00 16 
+# DEBUG LOAD command
+80 E8 00 09 10 2D 19 8B 00 06 32 03 29 04 70 19 1A 08 AD 00 16
+00 90 00
+# DEBUG * Load Command is 80 E8 00 0A 10 04 1F 8D 00 0B 3B 16 04 1F 41 29 04 19 08 8B 00 
+# DEBUG LOAD command
+80 E8 00 0A 10 04 1F 8D 00 0B 3B 16 04 1F 41 29 04 19 08 8B 00
+00 90 00
+# DEBUG * Load Command is 80 E8 00 0B 10 0C 32 1F 64 E8 19 8B 00 07 3B 19 16 04 08 41 8B 
+# DEBUG LOAD command
+80 E8 00 0B 10 0C 32 1F 64 E8 19 8B 00 07 3B 19 16 04 08 41 8B
+00 90 00
+# DEBUG * Load Command is 80 E8 00 0C 10 00 08 19 03 08 8B 00 09 19 AD 00 03 16 04 8B 00 
+# DEBUG LOAD command
+80 E8 00 0C 10 00 08 19 03 08 8B 00 09 19 AD 00 03 16 04 8B 00
+00 90 00
+# DEBUG * Load Command is 80 E8 00 0D 10 0A 7A 08 00 0A 00 00 00 00 00 00 00 00 00 00 05 
+# DEBUG LOAD command
+80 E8 00 0D 10 0A 7A 08 00 0A 00 00 00 00 00 00 00 00 00 00 05
+00 90 00
+# DEBUG * Load Command is 80 E8 00 0E 10 00 36 00 0D 02 00 00 00 06 80 03 00 03 80 03 01 
+# DEBUG LOAD command
+80 E8 00 0E 10 00 36 00 0D 02 00 00 00 06 80 03 00 03 80 03 01
+00 90 00
+# DEBUG * Load Command is 80 E8 00 0F 10 01 00 00 00 06 00 00 01 03 80 0A 01 03 80 0A 06 
+# DEBUG LOAD command
+80 E8 00 0F 10 01 00 00 00 06 00 00 01 03 80 0A 01 03 80 0A 06
+00 90 00
+# DEBUG * Load Command is 80 E8 00 10 10 03 80 0A 07 03 80 0A 09 03 80 0A 04 03 80 0A 05 
+# DEBUG LOAD command
+80 E8 00 10 10 03 80 0A 07 03 80 0A 09 03 80 0A 04 03 80 0A 05
+00 90 00
+# DEBUG * Load Command is 80 E8 00 11 10 06 80 10 02 03 80 0A 03 09 00 13 00 03 0E 23 2C 
+# DEBUG LOAD command
+80 E8 00 11 10 06 80 10 02 03 80 0A 03 09 00 13 00 03 0E 23 2C
+00 90 00
+# DEBUG * Load Command is 80 E8 00 12 10 00 0C 05 0C 06 03 07 05 10 0C 08 09 06 09 0B 00 
+# DEBUG LOAD command
+80 E8 00 12 10 00 0C 05 0C 06 03 07 05 10 0C 08 09 06 09 0B 00
+00 90 00
+# DEBUG * Load Command is 80 E8 00 13 10 6C 01 00 01 00 00 00 00 01 00 03 00 02 00 00 00 
+# DEBUG LOAD command
+80 E8 00 13 10 6C 01 00 01 00 00 00 00 01 00 03 00 02 00 00 00
+00 90 00
+# DEBUG * Load Command is 80 E8 00 14 10 00 1C 00 84 00 01 00 1E 00 11 00 00 00 00 01 09 
+# DEBUG LOAD command
+80 E8 00 14 10 00 1C 00 84 00 01 00 1E 00 11 00 00 00 00 01 09
+00 90 00
+# DEBUG * Load Command is 80 E8 00 15 10 00 14 00 30 00 07 00 00 00 00 07 01 00 1D 00 33 
+# DEBUG LOAD command
+80 E8 00 15 10 00 14 00 30 00 07 00 00 00 00 07 01 00 1D 00 33
+00 90 00
+# DEBUG * Load Command is 80 E8 00 16 10 00 46 00 00 00 00 00 0D 00 1C 00 1E 00 1E FF FF 
+# DEBUG LOAD command
+80 E8 00 16 10 00 46 00 00 00 00 00 0D 00 1C 00 1E 00 1E FF FF
+00 90 00
+# DEBUG * Load Command is 80 E8 00 17 10 00 1E 00 1C 00 20 00 20 00 22 00 24 00 27 00 2A 
+# DEBUG LOAD command
+80 E8 00 17 10 00 1E 00 1C 00 20 00 20 00 22 00 24 00 27 00 2A
+00 90 00
+# DEBUG * Load Command is 80 E8 00 18 10 00 2E 01 B0 01 10 01 40 02 41 03 44 10 04 B4 41 
+# DEBUG LOAD command
+80 E8 00 18 10 00 2E 01 B0 01 10 01 40 02 41 03 44 10 04 B4 41
+00 90 00
+# DEBUG * Load Command is 80 E8 80 19 0D 06 B4 B4 44 02 44 04 B4 31 06 68 00 A1 
+# DEBUG LOAD command
+80 E8 80 19 0D 06 B4 B4 44 02 44 04 B4 31 06 68 00 A1
+00 90 00
+# DEBUG => Load Command End
+# DEBUG => Install For Install And Make Selectable Begin
+# DEBUG + Load File AID is A0 00 00 00 62 03 01 0C 01 
+# DEBUG + Module AID is A0 00 00 00 62 03 01 0C 01 01 
+# DEBUG + Application AID is A0 00 00 00 62 03 01 0C 01 01 
+# DEBUG + Privileges AID is 00 
+# DEBUG + There is not parameters
+# DEBUG * New parameters are C9 00 
+# DEBUG * Parameters Length is 2
+# DEBUG * Parameters Length Encoded is 02 
+# DEBUG * Install For Install Command is 80 E6 0C 00 26 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 
+# DEBUG INSTALL FOR INSTALL AND MAKE SELECTABLE
+80 E6 0C 00 26 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00
+90 00
+# DEBUG => Install For Install And Make Selectable End
+# DEBUG Select Hello World Applet
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01 90 00
+# DEBUG Say "Hello"
+00 00 00 00 05 48 45 4C 4C 4F
+00 00 00 00 05 48 45 4C 4C 4F 90 00
+# DEBUG SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 10 84 08 A0 00 00 00 03 00 00 00 A5 04 9F 65 01 FF 90 00
+# DEBUG => Initialize Update
+# DEBUG ==> Init ICV begin
+# DEBUG * New ICV is 00 00 00 00 00 00 00 00 
+# DEBUG ==> Init ICV end
+# DEBUG INIT UPDATE command
+80 50 00 00 08 C0 02 B5 9C E8 30 49 48
+00 00 70 51 00 34 37 91 12 93 FF 02 04 07 14 BE D0 81 1D 0B 50 6F 07 BA 7C 3A 5C 33 90 00
+# DEBUG SCPMode is SCP_02_15
+# DEBUG * Key Diversification Data is 00 00 70 51 00 34 37 91 12 93 
+# DEBUG * Sequence Counter is 04 07 
+# DEBUG * Host Challenge is C0 02 B5 9C E8 30 49 48 
+# DEBUG * Card Challenge is 14 BE D0 81 1D 0B 
+# DEBUG * Card Crypto Resp is 50 6F 07 BA 7C 3A 5C 33 
+# DEBUG ==> Calculate Derivation Data
+# DEBUG * Derivation Data is 00 00 04 07 00 00 00 00 00 00 00 00 00 00 00 00 
+# DEBUG ==> Calculate Derivation Data End
+# DEBUG ==> Generate Session Keys
+# DEBUG * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# DEBUG * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# DEBUG * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# DEBUG * SCP_Mode is SCP_02_15
+# DEBUG *** Initialize IV : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# DEBUG * sessEnc = 20 52 4A 28 19 C1 50 E5 35 A0 25 23 9C A6 21 FA 20 52 4A 28 19 C1 50 E5 
+# DEBUG * sessMac = C8 80 7E 55 FC 47 E6 C8 95 81 02 1A F6 EC 70 13 C8 80 7E 55 FC 47 E6 C8 
+# DEBUG * sessRMac = FB 99 9D E3 17 61 AC D2 E2 0A 28 4A 6C 96 29 DB FB 99 9D E3 17 61 AC D2 
+# DEBUG * sessKek = FB 99 9D E3 17 61 AC D2 E2 0A 28 4A 6C 96 29 DB FB 99 9D E3 17 61 AC D2 
+# DEBUG ==> Generate Session Keys Data End
+# DEBUG ==> Calculate Cryptograms
+# DEBUG * IV is 00 00 00 00 00 00 00 00 
+# DEBUG * SCP 02 protocol used
+# DEBUG * Data to encrypt: C0 02 B5 9C E8 30 49 48 04 07 14 BE D0 81 1D 0B 80 00 00 00 00 00 00 00 
+# DEBUG * Calculated Card Crypto: 50 6F 07 BA 7C 3A 5C 33 
+# DEBUG * Calculated Host Crypto: 00 2E D0 87 55 40 B1 14 
+# DEBUG ==> Calculate Cryptograms End
+# DEBUG Session State is now SESSION_INIT
+# DEBUG => Initialize Update end
+# DEBUG => External Authenticate begin
+# DEBUG * Sec Mode isNO_SECURITY_LEVEL
+# DEBUG * Data uses to calculate mac value is84 82 00 00 10 00 2E D0 87 55 40 B1 14 
+# DEBUG ==> Generate Mac
+# DEBUG generateMac with data: 84 82 00 00 10 00 2E D0 87 55 40 B1 14 
+# DEBUG - Data needs PADDING!
+# DEBUG * data with PADDING: 84 82 00 00 10 00 2E D0 87 55 40 B1 14 80 00 00 
+# DEBUG SCP: SCP_02_15
+# DEBUG * SCP 02 Protocol (SCP_02_15) used
+# DEBUG * IV is 00 00 00 00 00 00 00 00 
+# DEBUG * Calculated cryptogram is C3 52 8A EB 8A 73 DD 36 
+# DEBUG ==> Generate Mac End
+# DEBUG * mac value obtainsC3 52 8A EB 8A 73 DD 36 
+# DEBUG EXTERNAL AUTHENTICATE command
+84 82 00 00 10 00 2E D0 87 55 40 B1 14 C3 52 8A EB 8A 73 DD 36
+90 00
+# DEBUG => External Authenticate end
+# DEBUG => Delete On Card Object begin
+# DEBUG + AID to delete is A0 00 00 00 62 03 01 0C 01 01 
+# DEBUG + Cascade mode ? false
+# DEBUG + Security mode is NO_SECURITY_LEVEL
+# DEBUG * Delete Command is 80 E4 00 00 0C 4F 0A A0 00 00 00 62 03 01 0C 01 01 
+# DEBUG DELETE OBJECT command
+80 E4 00 00 0C 4F 0A A0 00 00 00 62 03 01 0C 01 01
+00 90 00
+# DEBUG => Delete On Card Object End
+# DEBUG => Delete On Card Object begin
+# DEBUG + AID to delete is A0 00 00 00 62 03 01 0C 01 
+# DEBUG + Cascade mode ? false
+# DEBUG + Security mode is NO_SECURITY_LEVEL
+# DEBUG * Delete Command is 80 E4 00 00 0B 4F 09 A0 00 00 00 62 03 01 0C 01 
+# DEBUG DELETE OBJECT command
+80 E4 00 00 0B 4F 09 A0 00 00 00 62 03 01 0C 01
+00 90 00
+# DEBUG => Delete On Card Object End

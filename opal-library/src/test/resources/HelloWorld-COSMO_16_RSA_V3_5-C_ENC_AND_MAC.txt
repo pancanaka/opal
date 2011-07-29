@@ -1,0 +1,1556 @@
+# test install and use Hello Word Applet operation
+# card is COSMO 16 RSA V3.5
+# security level is C_ENC_AND_MAC
+#
+
+# ==> card matching is COSMO_16_RSA_V3.5
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 3D 84 08 A0 00 00 00 03 00 00 00 A5 31 9F 6E 2A 41 80 96 16 11 41 41 59 00 80 51 11 00 00 00 43 00 00 19 12 51 11 19 13 51 11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00 
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 CA C8 13 B6 3A 5A 80 8F
+00 00 51 11 00 00 00 43 00 00 FF 01 EF 9B 69 E0 05 91 16 92 35 16 8B 85 BF 3D 75 EF 90 00
+# SCPMode is SCP_01_05
+# * Key Diversification Data is 00 00 51 11 00 00 00 43 00 00 
+# * Host Challenge is CA C8 13 B6 3A 5A 80 8F 
+# * Card Challenge is EF 9B 69 E0 05 91 16 92 
+# * Card Crypto Resp is 35 16 8B 85 BF 3D 75 EF 
+# ==> Calculate Derivation Data
+# * Derivation Data is 05 91 16 92 CA C8 13 B6 EF 9B 69 E0 3A 5A 80 8F 
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * SCP_Mode is SCP_01_05
+# * sessEnc = CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * sessMac = CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * sessKek = CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00 
+# * SCP 01 protocol used
+# * Data to encrypt: CA C8 13 B6 3A 5A 80 8F EF 9B 69 E0 05 91 16 92 80 00 00 00 00 00 00 00 
+# * Calculated Card Crypto: 35 16 8B 85 BF 3D 75 EF 
+# * Calculated Host Crypto: FF 66 A5 D2 75 3F 8F F8 
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isC_ENC_AND_MAC
+# * Data uses to calculate mac value is84 82 03 00 10 FF 66 A5 D2 75 3F 8F F8 
+# ==> Generate Mac
+# generateMac with data: 84 82 03 00 10 FF 66 A5 D2 75 3F 8F F8 
+# - Data needs PADDING!
+# * data with PADDING: 84 82 03 00 10 FF 66 A5 D2 75 3F 8F F8 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 00 00 00 00 00 00 00 00 
+# * Calculated cryptogram is EA 0E E3 36 09 4C 29 B5 
+# * New ICV is EA 0E E3 36 09 4C 29 B5 
+# ==> Generate Mac End
+# * mac value obtainsEA 0E E3 36 09 4C 29 B5 
+# EXTERNAL AUTHENTICATE command
+84 82 03 00 10 FF 66 A5 D2 75 3F 8F F8 EA 0E E3 36 09 4C 29 B5
+90 00
+# => External Authenticate end
+# => Install for load begin
+# + Package AID to install is A0 00 00 00 62 03 01 0C 01 
+# + Security Domain AID is A0 00 00 00 03 00 00 00 
+# + There is not parameter
+# + SecLevel is C_ENC_AND_MAC
+# * Parameters Length is 0 (0x0)
+# * Parameters Length Encoded is 00 
+# * Install For Load Command is 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 80 00 00 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is EA 0E E3 36 09 4C 29 B5 
+# * Calculated cryptogram is 5C A5 17 64 6C 34 C0 DD 
+# * New ICV is 5C A5 17 64 6C 34 C0 DD 
+# ==> Generate Mac End
+# * Install For Load Command whith CMAC is 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 5C A5 17 64 6C 34 C0 DD 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E6 02 00 1E 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 5C A5 17 64 6C 34 C0 DD 
+# - We need a PADDING (1 bytes) 
+# - New data to encrypt is 16 09 A0 00 00 00 62 03 01 0C 01 08 A0 00 00 00 03 00 00 00 00 00 00 80 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E6 02 00 20 C7 55 37 55 08 65 B5 A5 12 5F 06 69 84 B9 1E 41 78 31 D3 27 2B DE 5F 61 5C A5 17 64 6C 34 C0 DD 
+# ==> Encrypt Command End
+# * Encrypted Install For Load Command is 84 E6 02 00 20 C7 55 37 55 08 65 B5 A5 12 5F 06 69 84 B9 1E 41 78 31 D3 27 2B DE 5F 61 5C A5 17 64 6C 34 C0 DD 
+# INSTALL FOR LOAD command
+84 E6 02 00 20 C7 55 37 55 08 65 B5 A5 12 5F 06 69 84 B9 1E 41 78 31 D3 27 2B DE 5F 61 5C A5 17 64 6C 34 C0 DD
+00 90 00
+# => Install For Load Command End
+# => Load Command Begin
+# + Cap File size to load is 409
+# + Max Data Length is 16(0x10)
+# + SecLevel is C_ENC_AND_MAC
+# * SecLevel != NO_SECURITY_LEVEL => new dataBlockSize is 8
+# * Cap File Remain Length is 409
+# * ber is C4 82 01 99 
+# * number of block is 52
+# * Load Command is 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 00 10 C4 82 01 99 01 00 13 DE 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 5C A5 17 64 6C 34 C0 DD 
+# * Calculated cryptogram is E5 6C EE CB 74 62 72 48 
+# * New ICV is E5 6C EE CB 74 62 72 48 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 00 10 C4 82 01 99 01 00 13 DE E5 6C EE CB 74 62 72 48 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 00 10 C4 82 01 99 01 00 13 DE E5 6C EE CB 74 62 72 48 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 C4 82 01 99 01 00 13 DE 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 00 18 70 1F 0E A8 D2 A6 19 23 6F 3F 5C 64 8B 72 7C FD E5 6C EE CB 74 62 72 48 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 00 18 70 1F 0E A8 D2 A6 19 23 6F 3F 5C 64 8B 72 7C FD E5 6C EE CB 74 62 72 48 
+# LOAD command
+84 E8 00 00 18 70 1F 0E A8 D2 A6 19 23 6F 3F 5C 64 8B 72 7C FD E5 6C EE CB 74 62 72 48
+90 00
+# * Load Command is 84 E8 00 01 10 CA FF ED 01 02 04 00 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 01 10 CA FF ED 01 02 04 00 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 01 10 CA FF ED 01 02 04 00 01 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is E5 6C EE CB 74 62 72 48 
+# * Calculated cryptogram is CE 00 5C 80 5B 0A 35 7D 
+# * New ICV is CE 00 5C 80 5B 0A 35 7D 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 01 10 CA FF ED 01 02 04 00 01 CE 00 5C 80 5B 0A 35 7D 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 01 10 CA FF ED 01 02 04 00 01 CE 00 5C 80 5B 0A 35 7D 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 CA FF ED 01 02 04 00 01 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 01 18 63 27 BC 0D B8 A3 D2 A1 4B 2F 1E CC 1B 1C C1 35 CE 00 5C 80 5B 0A 35 7D 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 01 18 63 27 BC 0D B8 A3 D2 A1 4B 2F 1E CC 1B 1C C1 35 CE 00 5C 80 5B 0A 35 7D 
+# LOAD command
+84 E8 00 01 18 63 27 BC 0D B8 A3 D2 A1 4B 2F 1E CC 1B 1C C1 35 CE 00 5C 80 5B 0A 35 7D
+90 00
+# * Load Command is 84 E8 00 02 10 09 A0 00 00 00 62 03 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 02 10 09 A0 00 00 00 62 03 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 02 10 09 A0 00 00 00 62 03 01 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is CE 00 5C 80 5B 0A 35 7D 
+# * Calculated cryptogram is 8E AB 21 7D 3F A9 4A 2E 
+# * New ICV is 8E AB 21 7D 3F A9 4A 2E 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 02 10 09 A0 00 00 00 62 03 01 8E AB 21 7D 3F A9 4A 2E 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 02 10 09 A0 00 00 00 62 03 01 8E AB 21 7D 3F A9 4A 2E 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 09 A0 00 00 00 62 03 01 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 02 18 B6 7A 6E E5 C4 13 4F EC 1A A9 0E 9C 48 AD 7F 5D 8E AB 21 7D 3F A9 4A 2E 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 02 18 B6 7A 6E E5 C4 13 4F EC 1A A9 0E 9C 48 AD 7F 5D 8E AB 21 7D 3F A9 4A 2E 
+# LOAD command
+84 E8 00 02 18 B6 7A 6E E5 C4 13 4F EC 1A A9 0E 9C 48 AD 7F 5D 8E AB 21 7D 3F A9 4A 2E
+90 00
+# * Load Command is 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 8E AB 21 7D 3F A9 4A 2E 
+# * Calculated cryptogram is 1A 46 32 78 32 E2 2E 13 
+# * New ICV is 1A 46 32 78 32 E2 2E 13 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 1A 46 32 78 32 E2 2E 13 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 03 10 0C 01 02 00 1F 00 13 00 1A 46 32 78 32 E2 2E 13 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 0C 01 02 00 1F 00 13 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 03 18 29 38 6C 51 B8 7C C3 45 4B 9B AE AC FE 6A 42 71 1A 46 32 78 32 E2 2E 13 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 03 18 29 38 6C 51 B8 7C C3 45 4B 9B AE AC FE 6A 42 71 1A 46 32 78 32 E2 2E 13 
+# LOAD command
+84 E8 00 03 18 29 38 6C 51 B8 7C C3 45 4B 9B AE AC FE 6A 42 71 1A 46 32 78 32 E2 2E 13
+90 00
+# * Load Command is 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 1A 46 32 78 32 E2 2E 13 
+# * Calculated cryptogram is EE 2A AD 7F B5 A3 34 64 
+# * New ICV is EE 2A AD 7F B5 A3 34 64 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 EE 2A AD 7F B5 A3 34 64 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 04 10 1F 00 0E 00 0B 00 36 00 EE 2A AD 7F B5 A3 34 64 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 1F 00 0E 00 0B 00 36 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 04 18 AD E5 D1 49 DD 53 49 38 8F 4A 70 A5 5C 7C A1 B0 EE 2A AD 7F B5 A3 34 64 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 04 18 AD E5 D1 49 DD 53 49 38 8F 4A 70 A5 5C 7C A1 B0 EE 2A AD 7F B5 A3 34 64 
+# LOAD command
+84 E8 00 04 18 AD E5 D1 49 DD 53 49 38 8F 4A 70 A5 5C 7C A1 B0 EE 2A AD 7F B5 A3 34 64
+90 00
+# * Load Command is 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is EE 2A AD 7F B5 A3 34 64 
+# * Calculated cryptogram is 9E 4A FA A7 B3 E4 F3 5A 
+# * New ICV is 9E 4A FA A7 B3 E4 F3 5A 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 9E 4A FA A7 B3 E4 F3 5A 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 05 10 0C 00 65 00 0A 00 13 00 9E 4A FA A7 B3 E4 F3 5A 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 0C 00 65 00 0A 00 13 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 05 18 90 FB 14 83 AE 8C 01 0F F2 16 24 F5 35 A7 17 33 9E 4A FA A7 B3 E4 F3 5A 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 05 18 90 FB 14 83 AE 8C 01 0F F2 16 24 F5 35 A7 17 33 9E 4A FA A7 B3 E4 F3 5A 
+# LOAD command
+84 E8 00 05 18 90 FB 14 83 AE 8C 01 0F F2 16 24 F5 35 A7 17 33 9E 4A FA A7 B3 E4 F3 5A
+90 00
+# * Load Command is 84 E8 00 06 10 00 00 6C 00 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 06 10 00 00 6C 00 00 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 06 10 00 00 6C 00 00 00 00 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 9E 4A FA A7 B3 E4 F3 5A 
+# * Calculated cryptogram is 7F 01 04 04 DA CD 35 E5 
+# * New ICV is 7F 01 04 04 DA CD 35 E5 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 06 10 00 00 6C 00 00 00 00 00 7F 01 04 04 DA CD 35 E5 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 06 10 00 00 6C 00 00 00 00 00 7F 01 04 04 DA CD 35 E5 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 00 6C 00 00 00 00 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 06 18 5A 08 13 2F E6 C4 69 D5 3A F6 99 95 A7 02 1E 26 7F 01 04 04 DA CD 35 E5 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 06 18 5A 08 13 2F E6 C4 69 D5 3A F6 99 95 A7 02 1E 26 7F 01 04 04 DA CD 35 E5 
+# LOAD command
+84 E8 00 06 18 5A 08 13 2F E6 C4 69 D5 3A F6 99 95 A7 02 1E 26 7F 01 04 04 DA CD 35 E5
+90 00
+# * Load Command is 84 E8 00 07 10 00 01 01 00 04 00 0B 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 07 10 00 01 01 00 04 00 0B 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 07 10 00 01 01 00 04 00 0B 01 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 7F 01 04 04 DA CD 35 E5 
+# * Calculated cryptogram is 41 70 00 A2 48 63 95 29 
+# * New ICV is 41 70 00 A2 48 63 95 29 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 07 10 00 01 01 00 04 00 0B 01 41 70 00 A2 48 63 95 29 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 07 10 00 01 01 00 04 00 0B 01 41 70 00 A2 48 63 95 29 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 01 01 00 04 00 0B 01 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 07 18 46 0F 48 2D F5 6F 32 A4 8F 4A D8 EA E2 3D 43 B3 41 70 00 A2 48 63 95 29 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 07 18 46 0F 48 2D F5 6F 32 A4 8F 4A D8 EA E2 3D 43 B3 41 70 00 A2 48 63 95 29 
+# LOAD command
+84 E8 00 07 18 46 0F 48 2D F5 6F 32 A4 8F 4A D8 EA E2 3D 43 B3 41 70 00 A2 48 63 95 29
+90 00
+# * Load Command is 84 E8 00 08 10 00 01 07 A0 00 00 00 62 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 08 10 00 01 07 A0 00 00 00 62 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 08 10 00 01 07 A0 00 00 00 62 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 41 70 00 A2 48 63 95 29 
+# * Calculated cryptogram is 1F 45 15 3C 85 BD 76 B4 
+# * New ICV is 1F 45 15 3C 85 BD 76 B4 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 08 10 00 01 07 A0 00 00 00 62 1F 45 15 3C 85 BD 76 B4 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 08 10 00 01 07 A0 00 00 00 62 1F 45 15 3C 85 BD 76 B4 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 01 07 A0 00 00 00 62 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 08 18 82 79 53 F0 E0 39 5E 20 59 56 3B 42 12 7F FA 96 1F 45 15 3C 85 BD 76 B4 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 08 18 82 79 53 F0 E0 39 5E 20 59 56 3B 42 12 7F FA 96 1F 45 15 3C 85 BD 76 B4 
+# LOAD command
+84 E8 00 08 18 82 79 53 F0 E0 39 5E 20 59 56 3B 42 12 7F FA 96 1F 45 15 3C 85 BD 76 B4
+90 00
+# * Load Command is 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 1F 45 15 3C 85 BD 76 B4 
+# * Calculated cryptogram is 37 DE BE BC DD E1 1B 5C 
+# * New ICV is 37 DE BE BC DD E1 1B 5C 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 37 DE BE BC DD E1 1B 5C 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 09 10 01 01 03 00 0E 01 0A A0 37 DE BE BC DD E1 1B 5C 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 01 01 03 00 0E 01 0A A0 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 09 18 31 F9 E0 7B FC 08 88 B8 AA 74 EA 17 E7 E9 D8 00 37 DE BE BC DD E1 1B 5C 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 09 18 31 F9 E0 7B FC 08 88 B8 AA 74 EA 17 E7 E9 D8 00 37 DE BE BC DD E1 1B 5C 
+# LOAD command
+84 E8 00 09 18 31 F9 E0 7B FC 08 88 B8 AA 74 EA 17 E7 E9 D8 00 37 DE BE BC DD E1 1B 5C
+90 00
+# * Load Command is 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 37 DE BE BC DD E1 1B 5C 
+# * Calculated cryptogram is 6C BF CD AE 8B 85 44 89 
+# * New ICV is 6C BF CD AE 8B 85 44 89 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 6C BF CD AE 8B 85 44 89 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 0A 10 00 00 00 62 03 01 0C 01 6C BF CD AE 8B 85 44 89 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 00 00 62 03 01 0C 01 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 0A 18 42 A5 5D 87 1A C2 C7 AF 97 F6 FE 50 47 AE 35 BD 6C BF CD AE 8B 85 44 89 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 0A 18 42 A5 5D 87 1A C2 C7 AF 97 F6 FE 50 47 AE 35 BD 6C BF CD AE 8B 85 44 89 
+# LOAD command
+84 E8 00 0A 18 42 A5 5D 87 1A C2 C7 AF 97 F6 FE 50 47 AE 35 BD 6C BF CD AE 8B 85 44 89
+90 00
+# * Load Command is 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 6C BF CD AE 8B 85 44 89 
+# * Calculated cryptogram is 28 5F DF 1F CE 06 43 24 
+# * New ICV is 28 5F DF 1F CE 06 43 24 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 28 5F DF 1F CE 06 43 24 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 0B 10 01 00 14 06 00 0C 00 80 28 5F DF 1F CE 06 43 24 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 01 00 14 06 00 0C 00 80 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 0B 18 93 88 C7 F3 67 BF FA 80 A4 54 C3 B9 BD 75 76 3A 28 5F DF 1F CE 06 43 24 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 0B 18 93 88 C7 F3 67 BF FA 80 A4 54 C3 B9 BD 75 76 3A 28 5F DF 1F CE 06 43 24 
+# LOAD command
+84 E8 00 0B 18 93 88 C7 F3 67 BF FA 80 A4 54 C3 B9 BD 75 76 3A 28 5F DF 1F CE 06 43 24
+90 00
+# * Load Command is 84 E8 00 0C 10 03 01 00 01 07 01 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0C 10 03 01 00 01 07 01 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0C 10 03 01 00 01 07 01 00 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 28 5F DF 1F CE 06 43 24 
+# * Calculated cryptogram is 44 FD 06 88 65 35 FF 79 
+# * New ICV is 44 FD 06 88 65 35 FF 79 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0C 10 03 01 00 01 07 01 00 00 44 FD 06 88 65 35 FF 79 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 0C 10 03 01 00 01 07 01 00 00 44 FD 06 88 65 35 FF 79 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 03 01 00 01 07 01 00 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 0C 18 57 F2 80 10 61 0D 9A 9C 41 71 71 7F C2 9B DA AC 44 FD 06 88 65 35 FF 79 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 0C 18 57 F2 80 10 61 0D 9A 9C 41 71 71 7F C2 9B DA AC 44 FD 06 88 65 35 FF 79 
+# LOAD command
+84 E8 00 0C 18 57 F2 80 10 61 0D 9A 9C 41 71 71 7F C2 9B DA AC 44 FD 06 88 65 35 FF 79
+90 00
+# * Load Command is 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 44 FD 06 88 65 35 FF 79 
+# * Calculated cryptogram is 95 49 E3 78 CB 22 DB DC 
+# * New ICV is 95 49 E3 78 CB 22 DB DC 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 95 49 E3 78 CB 22 DB DC 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 0D 10 00 1D 07 00 65 00 02 10 95 49 E3 78 CB 22 DB DC 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 1D 07 00 65 00 02 10 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 0D 18 8D CA D4 7C A1 B9 B6 C1 4B 3A 60 78 EA C8 66 F7 95 49 E3 78 CB 22 DB DC 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 0D 18 8D CA D4 7C A1 B9 B6 C1 4B 3A 60 78 EA C8 66 F7 95 49 E3 78 CB 22 DB DC 
+# LOAD command
+84 E8 00 0D 18 8D CA D4 7C A1 B9 B6 C1 4B 3A 60 78 EA C8 66 F7 95 49 E3 78 CB 22 DB DC
+90 00
+# * Load Command is 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 95 49 E3 78 CB 22 DB DC 
+# * Calculated cryptogram is 13 F0 99 43 24 AE EC 91 
+# * New ICV is 13 F0 99 43 24 AE EC 91 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 13 F0 99 43 24 AE EC 91 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 0E 10 18 8C 00 01 18 11 01 00 13 F0 99 43 24 AE EC 91 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 18 8C 00 01 18 11 01 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 0E 18 72 C2 07 65 66 9B AB B0 E8 54 8B D7 B3 A5 7A 13 13 F0 99 43 24 AE EC 91 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 0E 18 72 C2 07 65 66 9B AB B0 E8 54 8B D7 B3 A5 7A 13 13 F0 99 43 24 AE EC 91 
+# LOAD command
+84 E8 00 0E 18 72 C2 07 65 66 9B AB B0 E8 54 8B D7 B3 A5 7A 13 13 F0 99 43 24 AE EC 91
+90 00
+# * Load Command is 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 13 F0 99 43 24 AE EC 91 
+# * Calculated cryptogram is AD 8A 09 D3 B1 96 B4 79 
+# * New ICV is AD 8A 09 D3 B1 96 B4 79 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 AD 8A 09 D3 B1 96 B4 79 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 0F 10 90 0B 87 00 18 8B 00 02 AD 8A 09 D3 B1 96 B4 79 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 90 0B 87 00 18 8B 00 02 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 0F 18 1D 02 94 6F 83 4E 09 C2 7C 89 BB C8 A1 52 93 E4 AD 8A 09 D3 B1 96 B4 79 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 0F 18 1D 02 94 6F 83 4E 09 C2 7C 89 BB C8 A1 52 93 E4 AD 8A 09 D3 B1 96 B4 79 
+# LOAD command
+84 E8 00 0F 18 1D 02 94 6F 83 4E 09 C2 7C 89 BB C8 A1 52 93 E4 AD 8A 09 D3 B1 96 B4 79
+90 00
+# * Load Command is 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is AD 8A 09 D3 B1 96 B4 79 
+# * Calculated cryptogram is C1 5B 40 54 7B 3A 30 5F 
+# * New ICV is C1 5B 40 54 7B 3A 30 5F 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 C1 5B 40 54 7B 3A 30 5F 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 10 10 7A 01 30 8F 00 03 8C 00 C1 5B 40 54 7B 3A 30 5F 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 7A 01 30 8F 00 03 8C 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 10 18 74 37 A4 C1 E5 2B B9 08 49 B5 EB 6D 8B 6B B6 D4 C1 5B 40 54 7B 3A 30 5F 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 10 18 74 37 A4 C1 E5 2B B9 08 49 B5 EB 6D 8B 6B B6 D4 C1 5B 40 54 7B 3A 30 5F 
+# LOAD command
+84 E8 00 10 18 74 37 A4 C1 E5 2B B9 08 49 B5 EB 6D 8B 6B B6 D4 C1 5B 40 54 7B 3A 30 5F
+90 00
+# * Load Command is 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is C1 5B 40 54 7B 3A 30 5F 
+# * Calculated cryptogram is 81 5A 1C 96 4D 35 8A E2 
+# * New ICV is 81 5A 1C 96 4D 35 8A E2 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 81 5A 1C 96 4D 35 8A E2 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 11 10 04 7A 05 23 19 8B 00 05 81 5A 1C 96 4D 35 8A E2 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 04 7A 05 23 19 8B 00 05 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 11 18 F6 C0 2A 08 6F 1E C2 5B 5A 29 61 B2 4B BF 97 D7 81 5A 1C 96 4D 35 8A E2 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 11 18 F6 C0 2A 08 6F 1E C2 5B 5A 29 61 B2 4B BF 97 D7 81 5A 1C 96 4D 35 8A E2 
+# LOAD command
+84 E8 00 11 18 F6 C0 2A 08 6F 1E C2 5B 5A 29 61 B2 4B BF 97 D7 81 5A 1C 96 4D 35 8A E2
+90 00
+# * Load Command is 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 81 5A 1C 96 4D 35 8A E2 
+# * Calculated cryptogram is 5F 04 23 E5 DE 87 F9 47 
+# * New ICV is 5F 04 23 E5 DE 87 F9 47 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 5F 04 23 E5 DE 87 F9 47 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 12 10 2D 19 8B 00 06 32 03 29 5F 04 23 E5 DE 87 F9 47 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 2D 19 8B 00 06 32 03 29 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 12 18 5C 3E E9 76 8A 42 92 D9 80 C1 80 56 24 70 33 E7 5F 04 23 E5 DE 87 F9 47 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 12 18 5C 3E E9 76 8A 42 92 D9 80 C1 80 56 24 70 33 E7 5F 04 23 E5 DE 87 F9 47 
+# LOAD command
+84 E8 00 12 18 5C 3E E9 76 8A 42 92 D9 80 C1 80 56 24 70 33 E7 5F 04 23 E5 DE 87 F9 47
+90 00
+# * Load Command is 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 5F 04 23 E5 DE 87 F9 47 
+# * Calculated cryptogram is E8 97 D2 0A 8B 73 75 43 
+# * New ICV is E8 97 D2 0A 8B 73 75 43 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 E8 97 D2 0A 8B 73 75 43 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 13 10 04 70 19 1A 08 AD 00 16 E8 97 D2 0A 8B 73 75 43 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 04 70 19 1A 08 AD 00 16 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 13 18 E3 97 DB B3 23 B7 6E 14 1B 7A FF F3 87 D7 8A 55 E8 97 D2 0A 8B 73 75 43 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 13 18 E3 97 DB B3 23 B7 6E 14 1B 7A FF F3 87 D7 8A 55 E8 97 D2 0A 8B 73 75 43 
+# LOAD command
+84 E8 00 13 18 E3 97 DB B3 23 B7 6E 14 1B 7A FF F3 87 D7 8A 55 E8 97 D2 0A 8B 73 75 43
+90 00
+# * Load Command is 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is E8 97 D2 0A 8B 73 75 43 
+# * Calculated cryptogram is 15 3C CA 85 A4 25 12 09 
+# * New ICV is 15 3C CA 85 A4 25 12 09 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 15 3C CA 85 A4 25 12 09 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 14 10 04 1F 8D 00 0B 3B 16 04 15 3C CA 85 A4 25 12 09 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 04 1F 8D 00 0B 3B 16 04 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 14 18 A5 FD F0 12 64 9D D5 62 73 F4 A7 07 A1 A3 99 1A 15 3C CA 85 A4 25 12 09 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 14 18 A5 FD F0 12 64 9D D5 62 73 F4 A7 07 A1 A3 99 1A 15 3C CA 85 A4 25 12 09 
+# LOAD command
+84 E8 00 14 18 A5 FD F0 12 64 9D D5 62 73 F4 A7 07 A1 A3 99 1A 15 3C CA 85 A4 25 12 09
+90 00
+# * Load Command is 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 15 3C CA 85 A4 25 12 09 
+# * Calculated cryptogram is 37 47 CE 1D BF 24 5C EC 
+# * New ICV is 37 47 CE 1D BF 24 5C EC 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 37 47 CE 1D BF 24 5C EC 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 15 10 1F 41 29 04 19 08 8B 00 37 47 CE 1D BF 24 5C EC 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 1F 41 29 04 19 08 8B 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 15 18 1D 26 35 30 33 6A F9 91 B9 E9 11 A6 DB 9D 0E 56 37 47 CE 1D BF 24 5C EC 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 15 18 1D 26 35 30 33 6A F9 91 B9 E9 11 A6 DB 9D 0E 56 37 47 CE 1D BF 24 5C EC 
+# LOAD command
+84 E8 00 15 18 1D 26 35 30 33 6A F9 91 B9 E9 11 A6 DB 9D 0E 56 37 47 CE 1D BF 24 5C EC
+90 00
+# * Load Command is 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 37 47 CE 1D BF 24 5C EC 
+# * Calculated cryptogram is 46 E4 DF C8 5F 38 BB 26 
+# * New ICV is 46 E4 DF C8 5F 38 BB 26 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 46 E4 DF C8 5F 38 BB 26 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 16 10 0C 32 1F 64 E8 19 8B 00 46 E4 DF C8 5F 38 BB 26 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 0C 32 1F 64 E8 19 8B 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 16 18 F3 A3 F7 1C A6 FC 86 68 8C 1E 24 E7 1B 7F 20 17 46 E4 DF C8 5F 38 BB 26 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 16 18 F3 A3 F7 1C A6 FC 86 68 8C 1E 24 E7 1B 7F 20 17 46 E4 DF C8 5F 38 BB 26 
+# LOAD command
+84 E8 00 16 18 F3 A3 F7 1C A6 FC 86 68 8C 1E 24 E7 1B 7F 20 17 46 E4 DF C8 5F 38 BB 26
+90 00
+# * Load Command is 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 46 E4 DF C8 5F 38 BB 26 
+# * Calculated cryptogram is 29 1C 5A 03 5C 26 A2 75 
+# * New ICV is 29 1C 5A 03 5C 26 A2 75 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 29 1C 5A 03 5C 26 A2 75 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 17 10 07 3B 19 16 04 08 41 8B 29 1C 5A 03 5C 26 A2 75 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 07 3B 19 16 04 08 41 8B 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 17 18 DC 3E 45 3B C8 2E 8A B3 8C 63 49 52 61 EC A0 3B 29 1C 5A 03 5C 26 A2 75 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 17 18 DC 3E 45 3B C8 2E 8A B3 8C 63 49 52 61 EC A0 3B 29 1C 5A 03 5C 26 A2 75 
+# LOAD command
+84 E8 00 17 18 DC 3E 45 3B C8 2E 8A B3 8C 63 49 52 61 EC A0 3B 29 1C 5A 03 5C 26 A2 75
+90 00
+# * Load Command is 84 E8 00 18 10 00 08 19 03 08 8B 00 09 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 18 10 00 08 19 03 08 8B 00 09 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 18 10 00 08 19 03 08 8B 00 09 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 29 1C 5A 03 5C 26 A2 75 
+# * Calculated cryptogram is 1B 09 A3 77 A3 AE 70 02 
+# * New ICV is 1B 09 A3 77 A3 AE 70 02 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 18 10 00 08 19 03 08 8B 00 09 1B 09 A3 77 A3 AE 70 02 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 18 10 00 08 19 03 08 8B 00 09 1B 09 A3 77 A3 AE 70 02 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 08 19 03 08 8B 00 09 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 18 18 C1 17 15 1F 3B 17 DA 77 A2 4B AD 9D 6D 81 77 13 1B 09 A3 77 A3 AE 70 02 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 18 18 C1 17 15 1F 3B 17 DA 77 A2 4B AD 9D 6D 81 77 13 1B 09 A3 77 A3 AE 70 02 
+# LOAD command
+84 E8 00 18 18 C1 17 15 1F 3B 17 DA 77 A2 4B AD 9D 6D 81 77 13 1B 09 A3 77 A3 AE 70 02
+90 00
+# * Load Command is 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 1B 09 A3 77 A3 AE 70 02 
+# * Calculated cryptogram is 0B 98 21 F5 DF 08 AD B4 
+# * New ICV is 0B 98 21 F5 DF 08 AD B4 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 0B 98 21 F5 DF 08 AD B4 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 19 10 19 AD 00 03 16 04 8B 00 0B 98 21 F5 DF 08 AD B4 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 19 AD 00 03 16 04 8B 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 19 18 ED 72 60 84 E0 49 54 16 31 E4 AC C2 AF DB FA D3 0B 98 21 F5 DF 08 AD B4 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 19 18 ED 72 60 84 E0 49 54 16 31 E4 AC C2 AF DB FA D3 0B 98 21 F5 DF 08 AD B4 
+# LOAD command
+84 E8 00 19 18 ED 72 60 84 E0 49 54 16 31 E4 AC C2 AF DB FA D3 0B 98 21 F5 DF 08 AD B4
+90 00
+# * Load Command is 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 0B 98 21 F5 DF 08 AD B4 
+# * Calculated cryptogram is DD 36 55 98 9E 04 C3 A7 
+# * New ICV is DD 36 55 98 9E 04 C3 A7 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 DD 36 55 98 9E 04 C3 A7 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 1A 10 0A 7A 08 00 0A 00 00 00 DD 36 55 98 9E 04 C3 A7 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 0A 7A 08 00 0A 00 00 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 1A 18 72 11 6E 3D 41 1F 09 40 A3 CD FC 42 CD 35 51 93 DD 36 55 98 9E 04 C3 A7 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 1A 18 72 11 6E 3D 41 1F 09 40 A3 CD FC 42 CD 35 51 93 DD 36 55 98 9E 04 C3 A7 
+# LOAD command
+84 E8 00 1A 18 72 11 6E 3D 41 1F 09 40 A3 CD FC 42 CD 35 51 93 DD 36 55 98 9E 04 C3 A7
+90 00
+# * Load Command is 84 E8 00 1B 10 00 00 00 00 00 00 00 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1B 10 00 00 00 00 00 00 00 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1B 10 00 00 00 00 00 00 00 05 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is DD 36 55 98 9E 04 C3 A7 
+# * Calculated cryptogram is 3D A4 6F B9 37 F8 95 10 
+# * New ICV is 3D A4 6F B9 37 F8 95 10 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1B 10 00 00 00 00 00 00 00 05 3D A4 6F B9 37 F8 95 10 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 1B 10 00 00 00 00 00 00 00 05 3D A4 6F B9 37 F8 95 10 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 00 00 00 00 00 00 05 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 1B 18 08 7E F4 F5 3A C2 6D D8 40 F7 8F D3 2E 32 C7 21 3D A4 6F B9 37 F8 95 10 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 1B 18 08 7E F4 F5 3A C2 6D D8 40 F7 8F D3 2E 32 C7 21 3D A4 6F B9 37 F8 95 10 
+# LOAD command
+84 E8 00 1B 18 08 7E F4 F5 3A C2 6D D8 40 F7 8F D3 2E 32 C7 21 3D A4 6F B9 37 F8 95 10
+90 00
+# * Load Command is 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 3D A4 6F B9 37 F8 95 10 
+# * Calculated cryptogram is 55 B5 BB 43 1B EB 4E B3 
+# * New ICV is 55 B5 BB 43 1B EB 4E B3 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 55 B5 BB 43 1B EB 4E B3 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 1C 10 00 36 00 0D 02 00 00 00 55 B5 BB 43 1B EB 4E B3 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 36 00 0D 02 00 00 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 1C 18 F7 7D EC B9 89 DD 51 01 FC 8C 64 06 F1 E2 3F A2 55 B5 BB 43 1B EB 4E B3 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 1C 18 F7 7D EC B9 89 DD 51 01 FC 8C 64 06 F1 E2 3F A2 55 B5 BB 43 1B EB 4E B3 
+# LOAD command
+84 E8 00 1C 18 F7 7D EC B9 89 DD 51 01 FC 8C 64 06 F1 E2 3F A2 55 B5 BB 43 1B EB 4E B3
+90 00
+# * Load Command is 84 E8 00 1D 10 06 80 03 00 03 80 03 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1D 10 06 80 03 00 03 80 03 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1D 10 06 80 03 00 03 80 03 01 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 55 B5 BB 43 1B EB 4E B3 
+# * Calculated cryptogram is 55 0F 60 B6 78 6D 91 22 
+# * New ICV is 55 0F 60 B6 78 6D 91 22 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1D 10 06 80 03 00 03 80 03 01 55 0F 60 B6 78 6D 91 22 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 1D 10 06 80 03 00 03 80 03 01 55 0F 60 B6 78 6D 91 22 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 06 80 03 00 03 80 03 01 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 1D 18 A5 CA 93 1C DE 15 D9 0A 23 EC F0 C2 A2 2C F9 A6 55 0F 60 B6 78 6D 91 22 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 1D 18 A5 CA 93 1C DE 15 D9 0A 23 EC F0 C2 A2 2C F9 A6 55 0F 60 B6 78 6D 91 22 
+# LOAD command
+84 E8 00 1D 18 A5 CA 93 1C DE 15 D9 0A 23 EC F0 C2 A2 2C F9 A6 55 0F 60 B6 78 6D 91 22
+90 00
+# * Load Command is 84 E8 00 1E 10 01 00 00 00 06 00 00 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1E 10 01 00 00 00 06 00 00 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1E 10 01 00 00 00 06 00 00 01 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 55 0F 60 B6 78 6D 91 22 
+# * Calculated cryptogram is 5B C7 73 E2 21 C2 13 04 
+# * New ICV is 5B C7 73 E2 21 C2 13 04 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1E 10 01 00 00 00 06 00 00 01 5B C7 73 E2 21 C2 13 04 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 1E 10 01 00 00 00 06 00 00 01 5B C7 73 E2 21 C2 13 04 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 01 00 00 00 06 00 00 01 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 1E 18 13 28 F8 E4 79 10 B9 80 3F 43 AA E5 E6 4A 8F 21 5B C7 73 E2 21 C2 13 04 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 1E 18 13 28 F8 E4 79 10 B9 80 3F 43 AA E5 E6 4A 8F 21 5B C7 73 E2 21 C2 13 04 
+# LOAD command
+84 E8 00 1E 18 13 28 F8 E4 79 10 B9 80 3F 43 AA E5 E6 4A 8F 21 5B C7 73 E2 21 C2 13 04
+90 00
+# * Load Command is 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 5B C7 73 E2 21 C2 13 04 
+# * Calculated cryptogram is F9 D9 62 86 37 4B D8 8C 
+# * New ICV is F9 D9 62 86 37 4B D8 8C 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 F9 D9 62 86 37 4B D8 8C 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 1F 10 03 80 0A 01 03 80 0A 06 F9 D9 62 86 37 4B D8 8C 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 03 80 0A 01 03 80 0A 06 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 1F 18 FE 3F 92 F2 75 A3 38 DD F1 50 DB 68 EE 64 B3 9B F9 D9 62 86 37 4B D8 8C 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 1F 18 FE 3F 92 F2 75 A3 38 DD F1 50 DB 68 EE 64 B3 9B F9 D9 62 86 37 4B D8 8C 
+# LOAD command
+84 E8 00 1F 18 FE 3F 92 F2 75 A3 38 DD F1 50 DB 68 EE 64 B3 9B F9 D9 62 86 37 4B D8 8C
+90 00
+# * Load Command is 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is F9 D9 62 86 37 4B D8 8C 
+# * Calculated cryptogram is A0 16 31 65 E6 7F C8 3D 
+# * New ICV is A0 16 31 65 E6 7F C8 3D 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 A0 16 31 65 E6 7F C8 3D 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 20 10 03 80 0A 07 03 80 0A 09 A0 16 31 65 E6 7F C8 3D 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 03 80 0A 07 03 80 0A 09 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 20 18 F1 AA 2C 36 E0 06 80 33 A1 57 AC 0F B3 88 B9 B8 A0 16 31 65 E6 7F C8 3D 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 20 18 F1 AA 2C 36 E0 06 80 33 A1 57 AC 0F B3 88 B9 B8 A0 16 31 65 E6 7F C8 3D 
+# LOAD command
+84 E8 00 20 18 F1 AA 2C 36 E0 06 80 33 A1 57 AC 0F B3 88 B9 B8 A0 16 31 65 E6 7F C8 3D
+90 00
+# * Load Command is 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is A0 16 31 65 E6 7F C8 3D 
+# * Calculated cryptogram is CA FF BB C6 60 15 86 F8 
+# * New ICV is CA FF BB C6 60 15 86 F8 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 CA FF BB C6 60 15 86 F8 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 21 10 03 80 0A 04 03 80 0A 05 CA FF BB C6 60 15 86 F8 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 03 80 0A 04 03 80 0A 05 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 21 18 7C 45 DC 09 DD C0 9C E2 77 17 D4 A6 ED B4 78 C8 CA FF BB C6 60 15 86 F8 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 21 18 7C 45 DC 09 DD C0 9C E2 77 17 D4 A6 ED B4 78 C8 CA FF BB C6 60 15 86 F8 
+# LOAD command
+84 E8 00 21 18 7C 45 DC 09 DD C0 9C E2 77 17 D4 A6 ED B4 78 C8 CA FF BB C6 60 15 86 F8
+90 00
+# * Load Command is 84 E8 00 22 10 06 80 10 02 03 80 0A 03 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 22 10 06 80 10 02 03 80 0A 03 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 22 10 06 80 10 02 03 80 0A 03 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is CA FF BB C6 60 15 86 F8 
+# * Calculated cryptogram is 20 0E 8F 99 C1 87 9D 5C 
+# * New ICV is 20 0E 8F 99 C1 87 9D 5C 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 22 10 06 80 10 02 03 80 0A 03 20 0E 8F 99 C1 87 9D 5C 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 22 10 06 80 10 02 03 80 0A 03 20 0E 8F 99 C1 87 9D 5C 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 06 80 10 02 03 80 0A 03 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 22 18 01 D9 82 56 2C 62 41 98 8D E2 25 6B F4 82 C5 45 20 0E 8F 99 C1 87 9D 5C 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 22 18 01 D9 82 56 2C 62 41 98 8D E2 25 6B F4 82 C5 45 20 0E 8F 99 C1 87 9D 5C 
+# LOAD command
+84 E8 00 22 18 01 D9 82 56 2C 62 41 98 8D E2 25 6B F4 82 C5 45 20 0E 8F 99 C1 87 9D 5C
+90 00
+# * Load Command is 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 23 10 09 00 13 00 03 0E 23 2C 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 20 0E 8F 99 C1 87 9D 5C 
+# * Calculated cryptogram is A8 4C C3 83 DC A0 C9 0A 
+# * New ICV is A8 4C C3 83 DC A0 C9 0A 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 23 10 09 00 13 00 03 0E 23 2C A8 4C C3 83 DC A0 C9 0A 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 23 10 09 00 13 00 03 0E 23 2C A8 4C C3 83 DC A0 C9 0A 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 09 00 13 00 03 0E 23 2C 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 23 18 D7 CD 1C 15 CD C6 61 08 F7 E3 85 4A 3A B2 1E E2 A8 4C C3 83 DC A0 C9 0A 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 23 18 D7 CD 1C 15 CD C6 61 08 F7 E3 85 4A 3A B2 1E E2 A8 4C C3 83 DC A0 C9 0A 
+# LOAD command
+84 E8 00 23 18 D7 CD 1C 15 CD C6 61 08 F7 E3 85 4A 3A B2 1E E2 A8 4C C3 83 DC A0 C9 0A
+90 00
+# * Load Command is 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is A8 4C C3 83 DC A0 C9 0A 
+# * Calculated cryptogram is CB 77 0A E1 F2 58 7F 69 
+# * New ICV is CB 77 0A E1 F2 58 7F 69 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 CB 77 0A E1 F2 58 7F 69 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 24 10 00 0C 05 0C 06 03 07 05 CB 77 0A E1 F2 58 7F 69 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 0C 05 0C 06 03 07 05 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 24 18 75 81 66 C7 BD E2 FE EB CD 45 1D 90 6A 2A A2 84 CB 77 0A E1 F2 58 7F 69 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 24 18 75 81 66 C7 BD E2 FE EB CD 45 1D 90 6A 2A A2 84 CB 77 0A E1 F2 58 7F 69 
+# LOAD command
+84 E8 00 24 18 75 81 66 C7 BD E2 FE EB CD 45 1D 90 6A 2A A2 84 CB 77 0A E1 F2 58 7F 69
+90 00
+# * Load Command is 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is CB 77 0A E1 F2 58 7F 69 
+# * Calculated cryptogram is 2F 9F AD 55 4F FF CB 9B 
+# * New ICV is 2F 9F AD 55 4F FF CB 9B 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 2F 9F AD 55 4F FF CB 9B 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 25 10 10 0C 08 09 06 09 0B 00 2F 9F AD 55 4F FF CB 9B 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 10 0C 08 09 06 09 0B 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 25 18 E0 19 F0 F1 8A F3 1C E5 EE EB BB F2 D4 59 9E 4D 2F 9F AD 55 4F FF CB 9B 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 25 18 E0 19 F0 F1 8A F3 1C E5 EE EB BB F2 D4 59 9E 4D 2F 9F AD 55 4F FF CB 9B 
+# LOAD command
+84 E8 00 25 18 E0 19 F0 F1 8A F3 1C E5 EE EB BB F2 D4 59 9E 4D 2F 9F AD 55 4F FF CB 9B
+90 00
+# * Load Command is 84 E8 00 26 10 6C 01 00 01 00 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 26 10 6C 01 00 01 00 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 26 10 6C 01 00 01 00 00 00 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 2F 9F AD 55 4F FF CB 9B 
+# * Calculated cryptogram is EA 1C 24 3A 79 92 CE 19 
+# * New ICV is EA 1C 24 3A 79 92 CE 19 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 26 10 6C 01 00 01 00 00 00 00 EA 1C 24 3A 79 92 CE 19 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 26 10 6C 01 00 01 00 00 00 00 EA 1C 24 3A 79 92 CE 19 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 6C 01 00 01 00 00 00 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 26 18 38 D1 56 96 86 3B 46 73 58 47 DE E1 2F 7F 15 8B EA 1C 24 3A 79 92 CE 19 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 26 18 38 D1 56 96 86 3B 46 73 58 47 DE E1 2F 7F 15 8B EA 1C 24 3A 79 92 CE 19 
+# LOAD command
+84 E8 00 26 18 38 D1 56 96 86 3B 46 73 58 47 DE E1 2F 7F 15 8B EA 1C 24 3A 79 92 CE 19
+90 00
+# * Load Command is 84 E8 00 27 10 01 00 03 00 02 00 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 27 10 01 00 03 00 02 00 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 27 10 01 00 03 00 02 00 00 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is EA 1C 24 3A 79 92 CE 19 
+# * Calculated cryptogram is A2 F9 FD B1 13 4C FA C7 
+# * New ICV is A2 F9 FD B1 13 4C FA C7 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 27 10 01 00 03 00 02 00 00 00 A2 F9 FD B1 13 4C FA C7 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 27 10 01 00 03 00 02 00 00 00 A2 F9 FD B1 13 4C FA C7 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 01 00 03 00 02 00 00 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 27 18 7B 9A F5 B2 61 C5 9C 0B 9D 36 57 EB 8D 76 A6 AB A2 F9 FD B1 13 4C FA C7 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 27 18 7B 9A F5 B2 61 C5 9C 0B 9D 36 57 EB 8D 76 A6 AB A2 F9 FD B1 13 4C FA C7 
+# LOAD command
+84 E8 00 27 18 7B 9A F5 B2 61 C5 9C 0B 9D 36 57 EB 8D 76 A6 AB A2 F9 FD B1 13 4C FA C7
+90 00
+# * Load Command is 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 28 10 00 1C 00 84 00 01 00 1E 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is A2 F9 FD B1 13 4C FA C7 
+# * Calculated cryptogram is C8 8C 64 C2 E5 62 D6 18 
+# * New ICV is C8 8C 64 C2 E5 62 D6 18 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 28 10 00 1C 00 84 00 01 00 1E C8 8C 64 C2 E5 62 D6 18 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 28 10 00 1C 00 84 00 01 00 1E C8 8C 64 C2 E5 62 D6 18 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 1C 00 84 00 01 00 1E 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 28 18 E0 2A 37 B9 1C A0 00 DF AB 86 06 C9 34 BB 3B B6 C8 8C 64 C2 E5 62 D6 18 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 28 18 E0 2A 37 B9 1C A0 00 DF AB 86 06 C9 34 BB 3B B6 C8 8C 64 C2 E5 62 D6 18 
+# LOAD command
+84 E8 00 28 18 E0 2A 37 B9 1C A0 00 DF AB 86 06 C9 34 BB 3B B6 C8 8C 64 C2 E5 62 D6 18
+90 00
+# * Load Command is 84 E8 00 29 10 00 11 00 00 00 00 01 09 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 29 10 00 11 00 00 00 00 01 09 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 29 10 00 11 00 00 00 00 01 09 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is C8 8C 64 C2 E5 62 D6 18 
+# * Calculated cryptogram is EF B3 D4 8A 37 AE AE 4D 
+# * New ICV is EF B3 D4 8A 37 AE AE 4D 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 29 10 00 11 00 00 00 00 01 09 EF B3 D4 8A 37 AE AE 4D 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 29 10 00 11 00 00 00 00 01 09 EF B3 D4 8A 37 AE AE 4D 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 11 00 00 00 00 01 09 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 29 18 82 C5 45 C5 4A 3B E2 CA 5E 6F 7C 01 4B A7 56 13 EF B3 D4 8A 37 AE AE 4D 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 29 18 82 C5 45 C5 4A 3B E2 CA 5E 6F 7C 01 4B A7 56 13 EF B3 D4 8A 37 AE AE 4D 
+# LOAD command
+84 E8 00 29 18 82 C5 45 C5 4A 3B E2 CA 5E 6F 7C 01 4B A7 56 13 EF B3 D4 8A 37 AE AE 4D
+90 00
+# * Load Command is 84 E8 00 2A 10 00 14 00 30 00 07 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2A 10 00 14 00 30 00 07 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2A 10 00 14 00 30 00 07 00 00 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is EF B3 D4 8A 37 AE AE 4D 
+# * Calculated cryptogram is E4 DE 39 0C 96 4E A0 4B 
+# * New ICV is E4 DE 39 0C 96 4E A0 4B 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2A 10 00 14 00 30 00 07 00 00 E4 DE 39 0C 96 4E A0 4B 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 2A 10 00 14 00 30 00 07 00 00 E4 DE 39 0C 96 4E A0 4B 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 14 00 30 00 07 00 00 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 2A 18 FB BA D4 9E D7 1A FC DF E4 7B DE AF 67 9B DB 91 E4 DE 39 0C 96 4E A0 4B 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 2A 18 FB BA D4 9E D7 1A FC DF E4 7B DE AF 67 9B DB 91 E4 DE 39 0C 96 4E A0 4B 
+# LOAD command
+84 E8 00 2A 18 FB BA D4 9E D7 1A FC DF E4 7B DE AF 67 9B DB 91 E4 DE 39 0C 96 4E A0 4B
+90 00
+# * Load Command is 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is E4 DE 39 0C 96 4E A0 4B 
+# * Calculated cryptogram is 43 AF 61 03 AE C4 B0 71 
+# * New ICV is 43 AF 61 03 AE C4 B0 71 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 43 AF 61 03 AE C4 B0 71 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 2B 10 00 00 07 01 00 1D 00 33 43 AF 61 03 AE C4 B0 71 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 00 07 01 00 1D 00 33 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 2B 18 B2 F7 7E E6 46 5F 3E 93 C6 C2 D1 33 A0 53 0B 68 43 AF 61 03 AE C4 B0 71 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 2B 18 B2 F7 7E E6 46 5F 3E 93 C6 C2 D1 33 A0 53 0B 68 43 AF 61 03 AE C4 B0 71 
+# LOAD command
+84 E8 00 2B 18 B2 F7 7E E6 46 5F 3E 93 C6 C2 D1 33 A0 53 0B 68 43 AF 61 03 AE C4 B0 71
+90 00
+# * Load Command is 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 43 AF 61 03 AE C4 B0 71 
+# * Calculated cryptogram is 60 E9 D0 46 3D B5 98 FE 
+# * New ICV is 60 E9 D0 46 3D B5 98 FE 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 60 E9 D0 46 3D B5 98 FE 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 2C 10 00 46 00 00 00 00 00 0D 60 E9 D0 46 3D B5 98 FE 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 46 00 00 00 00 00 0D 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 2C 18 92 6E BD EB 04 44 BE 1F 5F 6B CA 4D AB 66 88 B0 60 E9 D0 46 3D B5 98 FE 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 2C 18 92 6E BD EB 04 44 BE 1F 5F 6B CA 4D AB 66 88 B0 60 E9 D0 46 3D B5 98 FE 
+# LOAD command
+84 E8 00 2C 18 92 6E BD EB 04 44 BE 1F 5F 6B CA 4D AB 66 88 B0 60 E9 D0 46 3D B5 98 FE
+90 00
+# * Load Command is 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 60 E9 D0 46 3D B5 98 FE 
+# * Calculated cryptogram is 8C D6 5C E2 2F 1A EC 65 
+# * New ICV is 8C D6 5C E2 2F 1A EC 65 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 8C D6 5C E2 2F 1A EC 65 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 2D 10 00 1C 00 1E 00 1E FF FF 8C D6 5C E2 2F 1A EC 65 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 1C 00 1E 00 1E FF FF 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 2D 18 3D 32 A9 2B 40 5A 30 41 47 9A FC FA 37 F5 4E 55 8C D6 5C E2 2F 1A EC 65 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 2D 18 3D 32 A9 2B 40 5A 30 41 47 9A FC FA 37 F5 4E 55 8C D6 5C E2 2F 1A EC 65 
+# LOAD command
+84 E8 00 2D 18 3D 32 A9 2B 40 5A 30 41 47 9A FC FA 37 F5 4E 55 8C D6 5C E2 2F 1A EC 65
+90 00
+# * Load Command is 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 8C D6 5C E2 2F 1A EC 65 
+# * Calculated cryptogram is 83 DF FF FA 5D 5F 63 87 
+# * New ICV is 83 DF FF FA 5D 5F 63 87 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 83 DF FF FA 5D 5F 63 87 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 2E 10 00 1E 00 1C 00 20 00 20 83 DF FF FA 5D 5F 63 87 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 1E 00 1C 00 20 00 20 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 2E 18 F4 D0 03 63 12 30 4B B3 5E AC 5C AA 69 68 74 3A 83 DF FF FA 5D 5F 63 87 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 2E 18 F4 D0 03 63 12 30 4B B3 5E AC 5C AA 69 68 74 3A 83 DF FF FA 5D 5F 63 87 
+# LOAD command
+84 E8 00 2E 18 F4 D0 03 63 12 30 4B B3 5E AC 5C AA 69 68 74 3A 83 DF FF FA 5D 5F 63 87
+90 00
+# * Load Command is 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 2F 10 00 22 00 24 00 27 00 2A 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 83 DF FF FA 5D 5F 63 87 
+# * Calculated cryptogram is B9 85 6F 61 D9 53 85 E0 
+# * New ICV is B9 85 6F 61 D9 53 85 E0 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 2F 10 00 22 00 24 00 27 00 2A B9 85 6F 61 D9 53 85 E0 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 2F 10 00 22 00 24 00 27 00 2A B9 85 6F 61 D9 53 85 E0 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 22 00 24 00 27 00 2A 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 2F 18 C8 2E 2C 35 82 E2 76 1C C5 21 9A 2A 7C 00 FE F6 B9 85 6F 61 D9 53 85 E0 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 2F 18 C8 2E 2C 35 82 E2 76 1C C5 21 9A 2A 7C 00 FE F6 B9 85 6F 61 D9 53 85 E0 
+# LOAD command
+84 E8 00 2F 18 C8 2E 2C 35 82 E2 76 1C C5 21 9A 2A 7C 00 FE F6 B9 85 6F 61 D9 53 85 E0
+90 00
+# * Load Command is 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is B9 85 6F 61 D9 53 85 E0 
+# * Calculated cryptogram is 21 65 91 BD 3D 64 CF EA 
+# * New ICV is 21 65 91 BD 3D 64 CF EA 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 21 65 91 BD 3D 64 CF EA 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 30 10 00 2E 01 B0 01 10 01 40 21 65 91 BD 3D 64 CF EA 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 00 2E 01 B0 01 10 01 40 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 30 18 24 DA 40 97 26 E8 80 5E FA 21 91 B5 CD F5 7F F2 21 65 91 BD 3D 64 CF EA 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 30 18 24 DA 40 97 26 E8 80 5E FA 21 91 B5 CD F5 7F F2 21 65 91 BD 3D 64 CF EA 
+# LOAD command
+84 E8 00 30 18 24 DA 40 97 26 E8 80 5E FA 21 91 B5 CD F5 7F F2 21 65 91 BD 3D 64 CF EA
+90 00
+# * Load Command is 84 E8 00 31 10 02 41 03 44 10 04 B4 41 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 31 10 02 41 03 44 10 04 B4 41 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 31 10 02 41 03 44 10 04 B4 41 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 21 65 91 BD 3D 64 CF EA 
+# * Calculated cryptogram is A6 13 1D 15 F9 82 F8 A4 
+# * New ICV is A6 13 1D 15 F9 82 F8 A4 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 31 10 02 41 03 44 10 04 B4 41 A6 13 1D 15 F9 82 F8 A4 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 31 10 02 41 03 44 10 04 B4 41 A6 13 1D 15 F9 82 F8 A4 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 02 41 03 44 10 04 B4 41 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 31 18 00 60 50 7E 0C EA BF 5A 1A 0B 18 F7 71 F5 22 CD A6 13 1D 15 F9 82 F8 A4 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 31 18 00 60 50 7E 0C EA BF 5A 1A 0B 18 F7 71 F5 22 CD A6 13 1D 15 F9 82 F8 A4 
+# LOAD command
+84 E8 00 31 18 00 60 50 7E 0C EA BF 5A 1A 0B 18 F7 71 F5 22 CD A6 13 1D 15 F9 82 F8 A4
+90 00
+# * Load Command is 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is A6 13 1D 15 F9 82 F8 A4 
+# * Calculated cryptogram is C8 98 4B D8 63 61 7C 07 
+# * New ICV is C8 98 4B D8 63 61 7C 07 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 C8 98 4B D8 63 61 7C 07 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 00 32 10 06 B4 B4 44 02 44 04 B4 C8 98 4B D8 63 61 7C 07 
+# - We need a PADDING (7 bytes) 
+# - New data to encrypt is 08 06 B4 B4 44 02 44 04 B4 80 00 00 00 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 00 32 18 21 E6 83 03 62 32 46 28 40 3D 18 5C CC D1 91 33 C8 98 4B D8 63 61 7C 07 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 00 32 18 21 E6 83 03 62 32 46 28 40 3D 18 5C CC D1 91 33 C8 98 4B D8 63 61 7C 07 
+# LOAD command
+84 E8 00 32 18 21 E6 83 03 62 32 46 28 40 3D 18 5C CC D1 91 33 C8 98 4B D8 63 61 7C 07
+90 00
+# * Load Command is 84 E8 80 33 0D 31 06 68 00 A1 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E8 80 33 0D 31 06 68 00 A1 
+# - Data needs PADDING!
+# * data with PADDING: 84 E8 80 33 0D 31 06 68 00 A1 80 00 00 00 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is C8 98 4B D8 63 61 7C 07 
+# * Calculated cryptogram is BD 27 7E FA 53 D6 66 48 
+# * New ICV is BD 27 7E FA 53 D6 66 48 
+# ==> Generate Mac End
+# * Load Command whith CMAC is 84 E8 80 33 0D 31 06 68 00 A1 BD 27 7E FA 53 D6 66 48 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E8 80 33 0D 31 06 68 00 A1 BD 27 7E FA 53 D6 66 48 
+# - We need a PADDING (2 bytes) 
+# - New data to encrypt is 05 31 06 68 00 A1 80 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E8 80 33 10 DC 67 46 9B 72 3A D1 64 BD 27 7E FA 53 D6 66 48 
+# ==> Encrypt Command End
+# * Encrypted Load Command is 84 E8 80 33 10 DC 67 46 9B 72 3A D1 64 BD 27 7E FA 53 D6 66 48 
+# LOAD command
+84 E8 80 33 10 DC 67 46 9B 72 3A D1 64 BD 27 7E FA 53 D6 66 48
+00 90 00
+# => Load Command End
+# => Install For Install And Make Selectable Begin
+# + Load File AID is A0 00 00 00 62 03 01 0C 01 
+# + Module AID is A0 00 00 00 62 03 01 0C 01 01 
+# + Application AID is A0 00 00 00 62 03 01 0C 01 01 
+# + Privileges AID is 00 
+# + There is not parameters
+# * New parameters are C9 00 
+# * Parameters Length is 2
+# * Parameters Length Encoded is 02 
+# * Install For Install Command is 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 
+# - Data needs PADDING!
+# * data with PADDING: 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 80 00 00 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is BD 27 7E FA 53 D6 66 48 
+# * Calculated cryptogram is 0F 5D 23 D2 A1 48 C5 D3 
+# * New ICV is 0F 5D 23 D2 A1 48 C5 D3 
+# ==> Generate Mac End
+# * Install For Install Command whith mac is 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 0F 5D 23 D2 A1 48 C5 D3 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E6 0C 00 2E 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 0F 5D 23 D2 A1 48 C5 D3 
+# - We need a PADDING (1 bytes) 
+# - New data to encrypt is 26 09 A0 00 00 00 62 03 01 0C 01 0A A0 00 00 00 62 03 01 0C 01 01 0A A0 00 00 00 62 03 01 0C 01 01 01 00 02 C9 00 00 80 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is CF 2C 34 A5 CD 2C 61 54 70 BE 9B AC 77 B5 D2 49 CF 2C 34 A5 CD 2C 61 54 
+# * Encrypted data is 84 E6 0C 00 30 88 05 A9 B4 22 3C D7 02 C9 30 53 EA DD 53 79 87 8A EE 1A BF A2 D3 AB 42 1C E0 D1 1F DE B4 35 9B 39 8A 0C 44 F4 92 D2 47 0F 5D 23 D2 A1 48 C5 D3 
+# ==> Encrypt Command End
+# * Encrypted Install For Install Command is 84 E6 0C 00 30 88 05 A9 B4 22 3C D7 02 C9 30 53 EA DD 53 79 87 8A EE 1A BF A2 D3 AB 42 1C E0 D1 1F DE B4 35 9B 39 8A 0C 44 F4 92 D2 47 0F 5D 23 D2 A1 48 C5 D3 
+# INSTALL FOR INSTALL AND MAKE SELECTABLE
+84 E6 0C 00 30 88 05 A9 B4 22 3C D7 02 C9 30 53 EA DD 53 79 87 8A EE 1A BF A2 D3 AB 42 1C E0 D1 1F DE B4 35 9B 39 8A 0C 44 F4 92 D2 47 0F 5D 23 D2 A1 48 C5 D3
+00 90 00
+# => Install For Install And Make Selectable End
+# Select Hello World Applet
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01
+00 A4 04 00 0A A0 00 00 00 62 03 01 0C 01 01 90 00
+# Say "Hello"
+00 00 00 00 05 48 45 4C 4C 4F
+00 00 00 00 05 48 45 4C 4C 4F 90 00
+# SELECT Command
+00 A4 04 00 08 A0 00 00 00 03 00 00 00
+6F 3D 84 08 A0 00 00 00 03 00 00 00 A5 31 9F 6E 2A 41 80 96 16 11 41 41 59 00 80 51 11 00 00 00 43 00 00 19 12 51 11 19 13 51 11 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 9F 65 01 FF 90 00
+# => Initialize Update
+# ==> Init ICV begin
+# * New ICV is 00 00 00 00 00 00 00 00 
+# ==> Init ICV end
+# INIT UPDATE command
+80 50 00 00 08 8D 4C 0D E4 EE 31 7A CA
+00 00 51 11 00 00 00 43 00 00 FF 01 F3 DC 8C 92 B1 5D 66 BA 02 CE D7 3E 69 9A 90 E5 90 00
+# SCPMode is SCP_01_05
+# * Key Diversification Data is 00 00 51 11 00 00 00 43 00 00 
+# * Host Challenge is 8D 4C 0D E4 EE 31 7A CA 
+# * Card Challenge is F3 DC 8C 92 B1 5D 66 BA 
+# * Card Crypto Resp is 02 CE D7 3E 69 9A 90 E5 
+# ==> Calculate Derivation Data
+# * Derivation Data is B1 5D 66 BA 8D 4C 0D E4 F3 DC 8C 92 EE 31 7A CA 
+# ==> Calculate Derivation Data End
+# ==> Generate Session Keys
+# * staticKenc: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKmac: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * staticKkek: 40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47 
+# * SCP_Mode is SCP_01_05
+# * sessEnc = 0C 35 DE 23 49 B7 0D 7B 9E 8A 47 D4 50 92 8A EC 0C 35 DE 23 49 B7 0D 7B 
+# * sessMac = 0C 35 DE 23 49 B7 0D 7B 9E 8A 47 D4 50 92 8A EC 0C 35 DE 23 49 B7 0D 7B 
+# * sessKek = 0C 35 DE 23 49 B7 0D 7B 9E 8A 47 D4 50 92 8A EC 0C 35 DE 23 49 B7 0D 7B 
+# ==> Generate Session Keys Data End
+# ==> Calculate Cryptograms
+# * IV is 00 00 00 00 00 00 00 00 
+# * SCP 01 protocol used
+# * Data to encrypt: 8D 4C 0D E4 EE 31 7A CA F3 DC 8C 92 B1 5D 66 BA 80 00 00 00 00 00 00 00 
+# * Calculated Card Crypto: 02 CE D7 3E 69 9A 90 E5 
+# * Calculated Host Crypto: B4 C3 E4 A5 0B 99 FE 8E 
+# ==> Calculate Cryptograms End
+# Session State is now SESSION_INIT
+# => Initialize Update end
+# => External Authenticate begin
+# * Sec Mode isC_ENC_AND_MAC
+# * Data uses to calculate mac value is84 82 03 00 10 B4 C3 E4 A5 0B 99 FE 8E 
+# ==> Generate Mac
+# generateMac with data: 84 82 03 00 10 B4 C3 E4 A5 0B 99 FE 8E 
+# - Data needs PADDING!
+# * data with PADDING: 84 82 03 00 10 B4 C3 E4 A5 0B 99 FE 8E 80 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is 00 00 00 00 00 00 00 00 
+# * Calculated cryptogram is A1 08 B7 4D 5B 92 F7 BA 
+# * New ICV is A1 08 B7 4D 5B 92 F7 BA 
+# ==> Generate Mac End
+# * mac value obtainsA1 08 B7 4D 5B 92 F7 BA 
+# EXTERNAL AUTHENTICATE command
+84 82 03 00 10 B4 C3 E4 A5 0B 99 FE 8E A1 08 B7 4D 5B 92 F7 BA
+90 00
+# => External Authenticate end
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01 01 
+# + Cascade mode ? false
+# + Security mode is C_ENC_AND_MAC
+# * Delete Command is 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 
+# - Data needs PADDING!
+# * data with PADDING: 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 80 00 00 00 00 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is A1 08 B7 4D 5B 92 F7 BA 
+# * Calculated cryptogram is F8 66 B5 6F 9E 14 CF C2 
+# * New ICV is F8 66 B5 6F 9E 14 CF C2 
+# ==> Generate Mac End
+# * delete Command which CMac is 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 F8 66 B5 6F 9E 14 CF C2 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E4 00 00 14 4F 0A A0 00 00 00 62 03 01 0C 01 01 F8 66 B5 6F 9E 14 CF C2 
+# - We need a PADDING (3 bytes) 
+# - New data to encrypt is 0C 4F 0A A0 00 00 00 62 03 01 0C 01 01 80 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is 0C 35 DE 23 49 B7 0D 7B 9E 8A 47 D4 50 92 8A EC 0C 35 DE 23 49 B7 0D 7B 
+# * Encrypted data is 84 E4 00 00 18 CC 07 13 A5 66 8D 60 B6 F1 1D 3D A8 4E AD 66 B1 F8 66 B5 6F 9E 14 CF C2 
+# ==> Encrypt Command End
+# * Encrypted delete Command is 84 E4 00 00 18 CC 07 13 A5 66 8D 60 B6 F1 1D 3D A8 4E AD 66 B1 F8 66 B5 6F 9E 14 CF C2 
+# DELETE OBJECT command
+84 E4 00 00 18 CC 07 13 A5 66 8D 60 B6 F1 1D 3D A8 4E AD 66 B1 F8 66 B5 6F 9E 14 CF C2
+00 90 00
+# => Delete On Card Object End
+# => Delete On Card Object begin
+# + AID to delete is A0 00 00 00 62 03 01 0C 01 
+# + Cascade mode ? false
+# + Security mode is C_ENC_AND_MAC
+# * Delete Command is 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 00 00 00 00 00 00 00 00 
+# ==> Generate Mac
+# generateMac with data: 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 
+# * data with PADDING: 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 80 00 00 00 00 00 00 00 
+# SCP: SCP_01_05
+# * SCP 01 Protocol (SCP_01_05) used
+# * IV is F8 66 B5 6F 9E 14 CF C2 
+# * Calculated cryptogram is DE BD AC 80 D3 DB 66 94 
+# * New ICV is DE BD AC 80 D3 DB 66 94 
+# ==> Generate Mac End
+# * delete Command which CMac is 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 DE BD AC 80 D3 DB 66 94 
+# ==> Encrypt Command Begin
+# * Command to encrypt is 84 E4 00 00 13 4F 09 A0 00 00 00 62 03 01 0C 01 DE BD AC 80 D3 DB 66 94 
+# - We need a PADDING (4 bytes) 
+# - New data to encrypt is 0B 4F 09 A0 00 00 00 62 03 01 0C 01 80 00 00 00 
+# * SCP 01 Protocol used
+# * IV is 00 00 00 00 00 00 00 00 
+# * sessEnc key is 0C 35 DE 23 49 B7 0D 7B 9E 8A 47 D4 50 92 8A EC 0C 35 DE 23 49 B7 0D 7B 
+# * Encrypted data is 84 E4 00 00 18 66 6F 8C F8 4D 50 6C 4B F9 82 85 F0 24 5E FB DF DE BD AC 80 D3 DB 66 94 
+# ==> Encrypt Command End
+# * Encrypted delete Command is 84 E4 00 00 18 66 6F 8C F8 4D 50 6C 4B F9 82 85 F0 24 5E FB DF DE BD AC 80 D3 DB 66 94 
+# DELETE OBJECT command
+84 E4 00 00 18 66 6F 8C F8 4D 50 6C 4B F9 82 85 F0 24 5E FB DF DE BD AC 80 D3 DB 66 94
+00 90 00
+# => Delete On Card Object End

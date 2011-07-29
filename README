@@ -1,0 +1,14 @@
+OPAL LIBRARY
+
+OPAL implements several authentication, encryption and transfer protocols for
+smart card. This tool has been developped by the SSD Research Team (XLIM Labs,
+University of Limoges, France).
+
+For more information, please see the documentation at:
+https://bitbucket.org/ssd/opal-library/wiki/Home
+
+LICENCE
+
+This library is under CeCILL v2 license (this is a French Free Software
+license, compatible with the GNU GPLv2). More information can be found here:
+http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt
