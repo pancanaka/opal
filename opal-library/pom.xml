@@ -11,6 +11,14 @@
     <name>opal-library</name>
     <url>https://bitbucket.org/ssd/opal-library</url>
 
+   <parent>
+    <groupId>fr.xlim.ssd</groupId>
+    <artifactId>opal</artifactId>
+    <version>0.1</version>
+    </parent>
+
+
+
     <dependencies>
         <dependency>
             <groupId>ch.qos.logback</groupId>
