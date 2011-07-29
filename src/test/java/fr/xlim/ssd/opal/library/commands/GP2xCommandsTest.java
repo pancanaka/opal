@@ -3,6 +3,7 @@ package fr.xlim.ssd.opal.library.commands;
 import fr.xlim.ssd.opal.library.*;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -839,6 +840,7 @@ public class GP2xCommandsTest {
         commands.installForLoad(packageAid, securityDomainAid, params);
     }
 
+    @Ignore
     @Test
     public void testInstallForLoadWithParamSuperior128() throws CardException {
         Commands commands = createCommands("/051-GP2xCommands-install-for-load-good.txt");

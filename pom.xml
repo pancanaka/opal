@@ -8,8 +8,8 @@
     <artifactId>opal-library</artifactId>
     <packaging>jar</packaging>
     <version>0.1</version>
-    <name>opal</name>
-    <url>http://secinfo.msi.unilim.fr/softwares/opal-library/</url>
+    <name>opal-library</name>
+    <url>https://bitbucket.org/ssd/opal-library</url>
 
     <dependencies>
         <dependency>
