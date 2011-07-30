@@ -5,15 +5,16 @@
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.xlim.ssd</groupId>
-    <artifactId>opal</artifactId>
-    <packaging>pom</packaging>
+    <artifactId>jessie-tls-psk</artifactId>
+    <packaging>jar</packaging>
     <version>0.1</version>
-    <name>opal</name>
+    <name>jessie-tls-psk</name>
+    <url>https://bitbucket.org/ssd/opal-library</url>
 
-    <modules>
-        <module>jessie-tls-psk</module>
-        <module>opal-library</module>
-        <module>opal-gui</module>
-    </modules>
+    <parent>
+        <groupId>fr.xlim.ssd</groupId>
+        <artifactId>opal</artifactId>
+        <version>0.1</version>
+    </parent>
 
 </project>
