@@ -9,7 +9,7 @@
  ******************************************************************************/
 
 /*
- * This is a customised observer interface used to update the DataExchangesVue class
+ * This is a customised observer interface used to update the DataExchangesView class
  */
 
 package fr.xlim.ssd.opal.gui.model.dataExchanges;

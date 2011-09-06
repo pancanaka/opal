@@ -11,7 +11,7 @@
 package fr.xlim.ssd.opal.gui;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
-import fr.xlim.ssd.opal.gui.view.dataExchanges.DataExchangesVue;
+import fr.xlim.ssd.opal.gui.view.dataExchanges.DataExchangesView;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -48,10 +48,10 @@ public class App extends SingleFrameApplication {
      * Open the Data Exchanges window (only if it is not already opened)
      */
     public static void showDataExchangesVue() {
-        // If there is no DataExchangesVue opened at this moment
+        // If there is no DataExchangesView opened at this moment
         if (!App.dataExchangesVueOpened) {
             App.dataExchangesVueOpened = true;
-            new DataExchangesVue();
+            new DataExchangesView();
         }
     }
 
