@@ -31,7 +31,7 @@ public class SelectController {
     private SelectPanel selectPanel;
     private CardReaderModel cardReaderModel;
     private CommunicationController communication; 
-    public SelectController(HomeView homeView, CardReaderModel cardRederModel, CommunicationController communication)
+    public SelectController(HomeView homeView, CardReaderModel cardReaderModel, CommunicationController communication)
     {
         this.selectPanel = homeView.getHomePanel().getSelectPanel();
         this.selectPanel.setController(this);
