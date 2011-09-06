@@ -31,7 +31,6 @@ public class SecurityDomainModel {
     private static final CustomLogger logger= new CustomLogger();
     private EventListenerList listeners = new EventListenerList();
     private SecurityDomain domain = null;
-    private SecLevel secLevel = null;
     private boolean authenticated = false;
     public SecurityDomainModel(){}
 
