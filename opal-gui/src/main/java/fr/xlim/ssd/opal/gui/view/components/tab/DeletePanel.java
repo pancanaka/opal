@@ -13,7 +13,6 @@ package fr.xlim.ssd.opal.gui.view.components.tab;
 
 import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.gui.controller.DeleteController;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

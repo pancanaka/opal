@@ -40,7 +40,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyleContext;
 import javax.swing.text.StyledDocument;
 
-public class DataExchangesVue extends JDialog implements ActionListener{
+public class DataExchangesVue extends JDialog implements ActionListener {
 
 
     //Attributes

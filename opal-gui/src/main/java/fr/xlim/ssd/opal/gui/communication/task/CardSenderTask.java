@@ -11,9 +11,6 @@
 
 package fr.xlim.ssd.opal.gui.communication.task;
 
-
-
-import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.controller.CommunicationController;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;

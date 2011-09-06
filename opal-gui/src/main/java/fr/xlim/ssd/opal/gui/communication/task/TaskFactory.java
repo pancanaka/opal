@@ -9,6 +9,7 @@
  ******************************************************************************/
 
 package fr.xlim.ssd.opal.gui.communication.task;
+
 import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import org.jdesktop.application.ApplicationContext;

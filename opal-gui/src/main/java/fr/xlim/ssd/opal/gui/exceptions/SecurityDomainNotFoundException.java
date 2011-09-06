@@ -16,7 +16,7 @@ package fr.xlim.ssd.opal.gui.exceptions;
  */
 public class SecurityDomainNotFoundException extends Exception {
 
-    public SecurityDomainNotFoundException(){};
-    @Override
-    public String getMessage(){ return "Security domain isn't yet set.";}
-} 
+    public SecurityDomainNotFoundException(String message){
+        super(message);
+    }
+}
