@@ -11,8 +11,7 @@
 
 package fr.xlim.ssd.opal.gui.controller;
 
-import fr.xlim.ssd.opal.gui.controller.send.SendApduController;
-import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask; 
+import fr.xlim.ssd.opal.gui.communication.task.CardReaderTask;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
 import fr.xlim.ssd.opal.gui.view.HomeView; 

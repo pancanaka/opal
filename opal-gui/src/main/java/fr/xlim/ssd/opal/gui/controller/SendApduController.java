@@ -9,7 +9,7 @@
  * Copyright : University of Limoges (Unilim), 2011                           *
  ******************************************************************************/
 
-package fr.xlim.ssd.opal.gui.controller.send;
+package fr.xlim.ssd.opal.gui.controller;
 import fr.xlim.ssd.opal.gui.communication.task.CardSenderTask;
 import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
 import fr.xlim.ssd.opal.library.utilities.Conversion;

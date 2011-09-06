@@ -12,7 +12,8 @@
 
 package fr.xlim.ssd.opal.gui.view.components.tab;
 
-import fr.xlim.ssd.opal.gui.controller.send.SendApduController;
+import fr.xlim.ssd.opal.gui.controller.SendApduController;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -147,7 +148,7 @@ public class SendAPDUPanel extends JPanel{
     /**
      * This method deletes the characters entered by the user if it exceeds the number of characters allowed
      * @param jt
-     * @see SendApduController
+     * @see fr.xlim.ssd.opal.gui.controller.SendApduController
      * Clears the text field given in parameter
      * @param jt the text field to clear
      */
