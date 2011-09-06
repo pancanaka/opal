@@ -27,7 +27,9 @@ import javax.smartcardio.CardChannel;
  * @author Tiana Razafindralambo
  */
 public class CardReaderModel {
-     public static CardReaderModel crm;
+
+    private static CardReaderModel crm;
+
     public static CardReaderModel getinstance(){
         if(crm == null) crm = new CardReaderModel();
         return crm;
