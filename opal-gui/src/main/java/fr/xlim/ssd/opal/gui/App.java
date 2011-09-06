@@ -11,7 +11,7 @@
 package fr.xlim.ssd.opal.gui;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
-import fr.xlim.ssd.opal.view.dataExchanges.DataExchangesVue;
+import fr.xlim.ssd.opal.gui.view.dataExchanges.DataExchangesVue;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 import java.io.UnsupportedEncodingException;

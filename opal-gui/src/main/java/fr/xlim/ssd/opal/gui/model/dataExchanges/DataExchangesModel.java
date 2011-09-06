@@ -18,7 +18,7 @@ import java.util.ArrayList;
  *  
  */
 
-public class DataExchangesModel implements Observable{
+public class DataExchangesModel implements Observable {
 
     private static DataExchangesModel instance;
     ResponseAPDUState state = new ResponseAPDUState();

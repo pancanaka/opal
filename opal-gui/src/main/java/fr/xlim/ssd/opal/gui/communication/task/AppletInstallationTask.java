@@ -48,7 +48,10 @@ public class AppletInstallationTask extends Task<Void, Void> implements TaskInte
      * @param communication controller that allows to communicate with the card
      * @param reorderCapFileComponents boolean that allows to reorder cap file components
      */
-    public AppletInstallationTask(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install, CommunicationController communication, boolean reorderCapFileComponents)
+    public AppletInstallationTask(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, String ressource,
+                                  byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength,
+                                  byte[] privileges, byte[] paramsInstall4Install, CommunicationController communication,
+                                  boolean reorderCapFileComponents)
     {
         super(App.instance);
         this.communication = communication;
@@ -71,7 +74,9 @@ public class AppletInstallationTask extends Task<Void, Void> implements TaskInte
     protected Void doInBackground(){
         logger.info("Applet installation task...");
         
-        this.communication.installApplet(this.PACKAGE_ID, this.MODULE_AID, this.APPLET_ID, this.ressource, this.securityDomainAID, this.params4Install4load, this.maxDataLength, this.privileges, this.params4Install4Install, this.reorderCapFileComponents);
+        this.communication.installApplet(this.PACKAGE_ID, this.MODULE_AID, this.APPLET_ID, this.ressource,
+                this.securityDomainAID, this.params4Install4load, this.maxDataLength, this.privileges,
+                this.params4Install4Install, this.reorderCapFileComponents);
         return null;
     }
 
