@@ -23,9 +23,9 @@ import org.slf4j.Marker;
 
 public class CustomLogger implements ILoggingEvent{
 
-      Level mylevel;
-      String mymessage;
-      MyAppender appender;
+    private Level mylevel;
+    private String mymessage;
+    private MyAppender appender;
 
 
     //Constructor of the Logger
