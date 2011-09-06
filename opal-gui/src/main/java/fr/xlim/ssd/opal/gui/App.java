@@ -14,7 +14,6 @@ import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.view.dataExchanges.DataExchangesVue;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
-import java.io.UnsupportedEncodingException;
 
 /*
  * Application life cycle management.
@@ -24,7 +23,10 @@ import java.io.UnsupportedEncodingException;
 public class App extends SingleFrameApplication {
 
     public static boolean dataExchangesVueOpened = false;
+
     public static App instance = null;
+
+    private MainController mainController;
 
     /**
      * At startup create and show the main frame of the application.
@@ -59,7 +61,6 @@ public class App extends SingleFrameApplication {
     @Override
     protected void shutdown() {
         this.mainController.stopTerminalTask();
-
         super.shutdown();
     }
 
@@ -74,8 +75,7 @@ public class App extends SingleFrameApplication {
     /**
      * Main method launching the application.
      */
-    public static void main(String[] args) throws UnsupportedEncodingException {
+    public static void main(String[] args) {
         Application.launch(App.class, args);
     }
-    private MainController mainController;
 }
