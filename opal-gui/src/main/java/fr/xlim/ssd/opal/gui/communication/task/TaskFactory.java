@@ -19,26 +19,29 @@ import org.jdesktop.application.TaskService;
 
 /**
  * Allow to run a Task on the fly
- * 
+ *
  * @author Tiana Razafindralambo
  */
 public class TaskFactory {
-    
 
-    private static final CustomLogger logger= new CustomLogger();
+
+    private static final CustomLogger logger = new CustomLogger();
     public static ApplicationContext currentContext;
     public static TaskMonitor monitor = null;
-    public static TaskService service = null; 
+    public static TaskService service = null;
 
-    public TaskFactory(){};
-    public static TaskFactory run(Task task)
-    {
+    public TaskFactory() {
+    }
+
+    ;
+
+    public static TaskFactory run(Task task) {
         TaskFactory.currentContext = App.instance.getContext();
         TaskFactory.monitor = TaskFactory.currentContext.getTaskMonitor();
         TaskFactory.service = TaskFactory.currentContext.getTaskService();
         TaskFactory.service.execute(task);
-        
-        TaskFactory.monitor.setForegroundTask(task); 
+
+        TaskFactory.monitor.setForegroundTask(task);
         return new TaskFactory();
-    } 
+    }
 }

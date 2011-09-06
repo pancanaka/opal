@@ -15,14 +15,8 @@ package fr.xlim.ssd.opal.gui.controller;
  * @author Yorick Lesecque <yorick.lesecque@gmail.com>
  */
 public class ConfigFieldsException extends Exception {
-    private String message = " ";
 
     ConfigFieldsException(String message) {
-        this.message += message;
-    }
-
-    @Override
-    public String getMessage() {
-        return this.message;
+        super(message);
     }
 }
