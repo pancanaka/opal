@@ -35,7 +35,9 @@ import java.util.Collections;
  * @author Tiana Razafindralambo
  */
 public class ProfileModel {
+
     ArrayList<ProfileComponent> profiles = new ArrayList<ProfileComponent>();
+
     private CardConfig profiles_cf[];
 
     public ProfileModel()
@@ -169,18 +171,6 @@ public class ProfileModel {
         }
         
         return res;
-    }
-
-    public String getName() {
-        return getName();
-    }
-
-    public String getDescription() {
-        return getDescription();
-    }
-
-    public String getImplementation() {
-        return getImplementation();
     }
 
     public boolean deleteProfile(int id)
