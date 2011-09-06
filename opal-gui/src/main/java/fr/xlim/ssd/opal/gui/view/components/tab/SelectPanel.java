@@ -34,7 +34,6 @@ import javax.swing.JOptionPane;
 
 
 /**
- *
  * @author Estelle Blandinieres
  * @author Thibault Desmoulins
  * @author Tiana Razafindralambo
@@ -43,7 +42,7 @@ public class SelectPanel extends JPanel implements ActionListener, KeyListener {
 
     // The title of the <code>JTabbedPane</code>
     public String title = "Select";
-    
+
     private JComboBox cbAID;
     private JButton jbSelect;
     private SelectController controller;
@@ -65,6 +64,7 @@ public class SelectPanel extends JPanel implements ActionListener, KeyListener {
 
     /**
      * Set the controller
+     *
      * @param controller, new controller
      */
     public void setController(SelectController controller) {
@@ -73,8 +73,8 @@ public class SelectPanel extends JPanel implements ActionListener, KeyListener {
 
     /**
      * Draw the elements of the panel
-     * @author Estelle Blandinieres
      *
+     * @author Estelle Blandinieres
      */
     private void drawWindow() {
 
@@ -82,28 +82,29 @@ public class SelectPanel extends JPanel implements ActionListener, KeyListener {
 
         JPanel jplPanel = new JPanel();
         JPanel jplButton = new JPanel();
-        
+
         add(jplPanel, BorderLayout.NORTH);
         add(jplButton, BorderLayout.SOUTH);
 
         jplPanel.setLayout(new FlowLayout());
         jplButton.setLayout(new FlowLayout());
-        
+
         jplPanel.add(createFormLine("Object AID", cbAID));
         jplButton.add(jbSelect);
     }
 
     /**
      * Create a box
+     *
      * @param label
      * @param field
      * @return a box with the label and the field
      */
     public Box createFormLine(String label, Component field) {
-        Box    ligne  = Box.createHorizontalBox();
-        JLabel lbl    = new JLabel(label);
+        Box ligne = Box.createHorizontalBox();
+        JLabel lbl = new JLabel(label);
 
-        lbl.setPreferredSize(new Dimension(100,lineHeight));
+        lbl.setPreferredSize(new Dimension(100, lineHeight));
         ligne.setPreferredSize(new Dimension(500, lineHeight));
 
         ligne.add(lbl);
@@ -114,11 +115,11 @@ public class SelectPanel extends JPanel implements ActionListener, KeyListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        Object o = e.getSource(); 
+        Object o = e.getSource();
 
-        if(o instanceof JButton) {
+        if (o instanceof JButton) {
             JButton b = (JButton) o;
-            if(b.equals(jbSelect)) {
+            if (b.equals(jbSelect)) {
                 if (controller.isAuthenticated()) {
                     try {
                         boolean trouve = false;
@@ -161,20 +162,18 @@ public class SelectPanel extends JPanel implements ActionListener, KeyListener {
             if (o instanceof JComboBox) {
                 JComboBox field = (JComboBox) o;
                 if (field.equals(cbAID)) {
-                    String aid = (String)cbAID.getSelectedItem();
+                    String aid = (String) cbAID.getSelectedItem();
                     System.out.println(aid);
                     cbAID.setSelectedItem(Conversion.arrayToHex(aid.getBytes()));
                 }
             }
-        // if the user press CTRL+N, the text is converted into ASCII
+            // if the user press CTRL+N, the text is converted into ASCII
         } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N) {
             if (o instanceof JComboBox) {
-                if (o instanceof JComboBox) {
-                    JComboBox field = (JComboBox) o;
-                    if (field.equals(cbAID)) {
-                        String aid = (String) cbAID.getSelectedItem();
-                        cbAID.setSelectedItem(byteToString(Conversion.hexToArray(aid)));
-                    }
+                JComboBox field = (JComboBox) o;
+                if (field.equals(cbAID)) {
+                    String aid = (String) cbAID.getSelectedItem();
+                    cbAID.setSelectedItem(byteToString(Conversion.hexToArray(aid)));
                 }
             }
         }
@@ -185,7 +184,7 @@ public class SelectPanel extends JPanel implements ActionListener, KeyListener {
         //throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    private String byteToString (byte [] data) {
+    private String byteToString(byte[] data) {
         String ascii = "";
         for (int i = 0; i < data.length; i++) {
             ascii += (char) data[i];
