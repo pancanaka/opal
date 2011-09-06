@@ -36,8 +36,6 @@ public class CommunicationController {
     private static final CustomLogger logger= new CustomLogger();
     private CommunicationModel model;
     private SecurityDomain securityDomain;
-    private SecurityDomainStateListener securityDomainStateListener;
-    private SecurityDomainStateListener securityDomainStageChangedEvent;
 
     /**
      * Default contstructor
