@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.CardException;
+import javax.smartcardio.ResponseAPDU;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -133,20 +134,18 @@ public class RAMOverHTTP {
             logger.debug("message " + i + "\n" + message);
             HttpPostResponse httpResponse = new HttpPostResponse(message.getBytes());
             nextURI = httpResponse.getNextURI();
-            //ResponseAPDU response = securityDomain.sendCommand(httpResponse.getCommandAPDU());
+            ResponseAPDU response = securityDomain.sendCommand(httpResponse.getCommandAPDU());
             //logger.info(Conversion.arrayToHex(response.getData()));
             if (nextURI == null) {
                 moreCommand = false;
                 logger.debug("No more URI");
+            } else {
+                HttpPostRequest httpPostRequest = new HttpPostRequest(nextURI, administratioHost, agentId, response);
+                out.write(httpPostRequest.getContent());
             }
-//            else
-//            {
-//                HttpPostRequest httpPostRequest = new HttpPostRequest( nextURI, administratioHost, agentId, response);
-//                out.write(httpPostRequest.getContent());
-//            }
-//            if (response.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
-//                throw new CardException("Error  : " + Integer.toHexString(response.getSW()));
-//            }
+            if (response.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
+                throw new CardException("Error  : " + Integer.toHexString(response.getSW()));
+            }
             i++;
         }
         logger.debug("Closing Socket");
