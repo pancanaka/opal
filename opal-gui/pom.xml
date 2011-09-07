@@ -2,17 +2,19 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
     <groupId>fr.xlim.ssd</groupId>
     <artifactId>opal-gui</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>opal-gui</name>
+    <url>https://bitbucket.org/ssd/opal/</url>
 
     <parent>
-    <groupId>fr.xlim.ssd</groupId>
-    <artifactId>opal</artifactId>
-    <version>0.1</version>
+        <groupId>fr.xlim.ssd</groupId>
+        <artifactId>opal</artifactId>
+        <version>0.1</version>
     </parent>
 
     <build>
@@ -64,15 +66,24 @@
             <artifactId>slf4j-api</artifactId>
             <version>1.6.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-swing</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.easytesting</groupId>
+            <artifactId>fest-util</artifactId>
+            <version>1.1.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.8.1</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <organization>
-        <name>SSD Team, XLIM Labs, University of Limoges, France</name>
-        <url>http://secinfo.msi.unilim.fr</url>
-    </organization>
-    
 </project>

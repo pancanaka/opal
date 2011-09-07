@@ -7,17 +7,15 @@
     <groupId>fr.xlim.ssd</groupId>
     <artifactId>opal-library</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>opal-library</name>
-    <url>https://bitbucket.org/ssd/opal-library</url>
+    <url>https://bitbucket.org/ssd/opal/</url>
 
-   <parent>
-    <groupId>fr.xlim.ssd</groupId>
-    <artifactId>opal</artifactId>
-    <version>0.1</version>
+    <parent>
+        <groupId>fr.xlim.ssd</groupId>
+        <artifactId>opal</artifactId>
+        <version>0.1</version>
     </parent>
-
-
 
     <dependencies>
         <dependency>
@@ -66,84 +64,37 @@
     </dependencies>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>2.3.2</version>
-                    <configuration>
-                        <source>1.6</source>
-                        <target>1.6</target>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>2.3.1</version>
-                    <configuration>
-                        <archive>
-                            <manifestEntries>
-                                <url>${project.url}</url>
-                            </manifestEntries>
-                        </archive>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-assembly-plugin</artifactId>
-                    <configuration>
-                        <archive>
-                            <!--<manifest>
-                                <mainClass>fr.xlim.ssd.opal.library.tester.Main</mainClass>
-                            </manifest>-->
-                            <manifestEntries>
-                                <url>${project.url}</url>
-                            </manifestEntries>
-                        </archive>
-                        <descriptorRefs>
-                            <descriptorRef>with-dependencies</descriptorRef>
-                        </descriptorRefs>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
-
-    <reporting>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.5</version>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.3.1</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <url>${project.url}</url>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <!--<manifest>
+                            <mainClass>fr.xlim.ssd.opal.library.tester.Main</mainClass>
+                        </manifest>-->
+                        <manifestEntries>
+                            <url>${project.url}</url>
+                        </manifestEntries>
+                    </archive>
+                    <descriptorRefs>
+                        <descriptorRef>with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                </configuration>
             </plugin>
         </plugins>
-    </reporting>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
-    <licenses>
-        <license>
-            <name>CeCILL version 2</name>
-            <url>http://www.cecill.info/licences/Licence_CeCILL_V2-en.txt</url>
-            <comments>French Free Software license, compatible with the GNU GPL</comments>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>SSD Team, XLIM Labs, University of Limoges, France</name>
-        <url>http://secinfo.msi.unilim.fr</url>
-    </organization>
-
-    <issueManagement>
-        <system>Bitbucket OPAL Issue Tracker</system>
-        <url>https://bitbucket.org/ssd/opal-library/issues</url>
-    </issueManagement>
-
-    <scm>
-        <connection>scm:hg:http://bitbucket.org/ssd/opal-library/</connection>
-    </scm>
+    </build>
 
 </project>
