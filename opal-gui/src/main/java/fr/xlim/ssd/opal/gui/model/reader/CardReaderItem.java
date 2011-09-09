@@ -18,8 +18,6 @@ import javax.smartcardio.CardChannel;
  * A simple card reader representation.
  *
  * The card reader representation contains:
-import org.jdesktop.application.Application;d the model which contains cardd the model which contains card
-import org.jdesktop.application.Application;d the model which contains cardd the model which contains card
  * <ul>
  *     <li>the card reader name;</li>
  *     <li>the card name;</li>

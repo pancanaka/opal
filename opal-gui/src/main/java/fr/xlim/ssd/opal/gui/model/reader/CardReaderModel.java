@@ -98,8 +98,7 @@ public class CardReaderModel {
      *
      * @param cardReaderItems the new terminal list
      */
-    public void setCardReaderItems(List<CardReaderItem> cardReaderItems) {
-        synchronized (this) {
+    public synchronized void setCardReaderItems(List<CardReaderItem> cardReaderItems) {
             if (cardReaderItems.isEmpty()) {
                 this.selectedCardReaderItem = new CardReaderItem("", "");
             } else if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase("") && !cardReaderItems.isEmpty()) {
@@ -119,7 +118,6 @@ public class CardReaderModel {
             this.cardReaderItems = cardReaderItems;
 
             this.fireCardReaderStateChanged();
-        }
     }
 
     /**
