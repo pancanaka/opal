@@ -28,19 +28,6 @@ import javax.smartcardio.CardChannel;
  */
 public class CardReaderModel {
 
-    private static CardReaderModel crm;
-
-    public static CardReaderModel getinstance(){
-        if(crm == null) crm = new CardReaderModel();
-        return crm;
-    }
-
-    /**
-     * Default constructor.
-     */
-    public CardReaderModel() {
-    }
-
     /**
      * Get selected terminal name identifier.
      * <p/>
