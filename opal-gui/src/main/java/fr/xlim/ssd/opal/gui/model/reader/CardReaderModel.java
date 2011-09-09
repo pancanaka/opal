@@ -76,56 +76,6 @@ public class CardReaderModel {
     }
 
     /**
-     * Set the selected terminal name identifier.
-     * <p/>
-     * If the terminalList is empty, <code>newTerminal</code> parameter will be ignored and selected terminal will
-     * be set to <code>""</code>(empty string).<br/>
-     * If the <code>newTerminal</code> parameter is not in the terminal list, the selected
-     * terminal will be set to the value from the <code>0</code> index.
-     * <p/>
-     * If the selected terminal index has been changed using this method, the event
-     * <code>CardReaderStateChangedEvent</code> will be fired.
-     *
-     * @param newTerminal the new selected terminal index
-     * @see fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent
-     */
-    public void setSelectedCardReaderByCardReaderName(String newTerminal) {
-        synchronized (this) {
-            if (!this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase(newTerminal)) {
-                if (this.cardReaderItems.isEmpty()) {
-                    if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase("")) {
-                        return;
-                    }
-                    this.selectedCardReaderItem = new CardReaderItem("", "");
-                } else {
-                    boolean found = false;
-                    for (CardReaderItem cardReaderItem : cardReaderItems) {
-                        if (newTerminal.equalsIgnoreCase(cardReaderItem.getCardReaderName())) {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (found) {
-                        if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase(newTerminal)) {
-                            return;
-                        }
-                        this.selectedCardReaderItem = new CardReaderItem(newTerminal, "");
-                    } else {
-                        if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase(this.cardReaderItems.get(0).getCardReaderName())) {
-                            return;
-                        }
-                        this.selectedCardReaderItem = this.cardReaderItems.get(0);
-                    }
-                }
-                System.out.println("Card Reader model fire ! ");
-                System.out.println("Selected " + this.selectedCardReaderItem.getCardATR());
-                this.fireCardReaderStateChanged();
-            }
-        }
-    }
-
-    /**
      * Get the terminal list as a <code>List</code> of <code>String</code> objects.
      *
      * @return the terminal list as a <code>List</code> of <code>String</code> objects
