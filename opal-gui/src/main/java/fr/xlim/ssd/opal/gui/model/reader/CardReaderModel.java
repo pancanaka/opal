@@ -28,6 +28,12 @@ import javax.smartcardio.CardChannel;
  */
 public class CardReaderModel {
 
+    private List<CardReaderItem> cardReaderItems = new ArrayList<CardReaderItem>();
+
+    private CardReaderItem selectedCardReaderItem = new CardReaderItem("", "");
+
+    private EventListenerList listeners = new EventListenerList();
+
     /**
      * Get selected terminal name identifier.
      * <p/>
@@ -48,8 +54,7 @@ public class CardReaderModel {
         return this.selectedCardReaderItem.getCardName();
     }
 
-    public boolean hasSelectedCardReaderItem()
-    {
+    public boolean hasSelectedCardReaderItem() {
         return (this.selectedCardReaderItem != null);
     }
     /**
@@ -66,8 +71,7 @@ public class CardReaderModel {
      *
      * @return the selected card channel
      */
-    public CardChannel getCardChannel()
-    {
+    public CardChannel getCardChannel() {
         return this.selectedCardReaderItem.getCardChannel();
     }
 
@@ -196,9 +200,4 @@ public class CardReaderModel {
             listener.cardReaderStateChanged(new CardReaderStateChangedEvent(this));
         }
     }
-
-
-    private List<CardReaderItem> cardReaderItems = new ArrayList<CardReaderItem>();
-    private CardReaderItem selectedCardReaderItem = new CardReaderItem("", "");
-    private EventListenerList listeners = new EventListenerList();
 }
