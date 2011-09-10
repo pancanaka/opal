@@ -28,18 +28,11 @@ import javax.smartcardio.CardChannel;
  */
 public class CardReaderModel {
 
-    private static CardReaderModel crm;
+    private List<CardReaderItem> cardReaderItems = new ArrayList<CardReaderItem>();
 
-    public static CardReaderModel getinstance(){
-        if(crm == null) crm = new CardReaderModel();
-        return crm;
-    }
+    private CardReaderItem selectedCardReaderItem = new CardReaderItem("", "");
 
-    /**
-     * Default constructor.
-     */
-    public CardReaderModel() {
-    }
+    private EventListenerList listeners = new EventListenerList();
 
     /**
      * Get selected terminal name identifier.
@@ -61,8 +54,7 @@ public class CardReaderModel {
         return this.selectedCardReaderItem.getCardName();
     }
 
-    public boolean hasSelectedCardReaderItem()
-    {
+    public boolean hasSelectedCardReaderItem() {
         return (this.selectedCardReaderItem != null);
     }
     /**
@@ -79,59 +71,8 @@ public class CardReaderModel {
      *
      * @return the selected card channel
      */
-    public CardChannel getCardChannel()
-    {
+    public CardChannel getCardChannel() {
         return this.selectedCardReaderItem.getCardChannel();
-    }
-
-    /**
-     * Set the selected terminal name identifier.
-     * <p/>
-     * If the terminalList is empty, <code>newTerminal</code> parameter will be ignored and selected terminal will
-     * be set to <code>""</code>(empty string).<br/>
-     * If the <code>newTerminal</code> parameter is not in the terminal list, the selected
-     * terminal will be set to the value from the <code>0</code> index.
-     * <p/>
-     * If the selected terminal index has been changed using this method, the event
-     * <code>CardReaderStateChangedEvent</code> will be fired.
-     *
-     * @param newTerminal the new selected terminal index
-     * @see fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateChangedEvent
-     */
-    public void setSelectedCardReaderByCardReaderName(String newTerminal) {
-        synchronized (this) {
-            if (!this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase(newTerminal)) {
-                if (this.cardReaderItems.isEmpty()) {
-                    if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase("")) {
-                        return;
-                    }
-                    this.selectedCardReaderItem = new CardReaderItem("", "");
-                } else {
-                    boolean found = false;
-                    for (CardReaderItem cardReaderItem : cardReaderItems) {
-                        if (newTerminal.equalsIgnoreCase(cardReaderItem.getCardReaderName())) {
-                            found = true;
-                            break;
-                        }
-                    }
-
-                    if (found) {
-                        if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase(newTerminal)) {
-                            return;
-                        }
-                        this.selectedCardReaderItem = new CardReaderItem(newTerminal, "");
-                    } else {
-                        if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase(this.cardReaderItems.get(0).getCardReaderName())) {
-                            return;
-                        }
-                        this.selectedCardReaderItem = this.cardReaderItems.get(0);
-                    }
-                }
-                System.out.println("Card Reader model fire ! ");
-                System.out.println("Selected " + this.selectedCardReaderItem.getCardATR());
-                this.fireCardReaderStateChanged();
-            }
-        }
     }
 
     /**
@@ -157,8 +98,7 @@ public class CardReaderModel {
      *
      * @param cardReaderItems the new terminal list
      */
-    public void setCardReaderItems(List<CardReaderItem> cardReaderItems) {
-        synchronized (this) {
+    public synchronized void setCardReaderItems(List<CardReaderItem> cardReaderItems) {
             if (cardReaderItems.isEmpty()) {
                 this.selectedCardReaderItem = new CardReaderItem("", "");
             } else if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase("") && !cardReaderItems.isEmpty()) {
@@ -178,7 +118,6 @@ public class CardReaderModel {
             this.cardReaderItems = cardReaderItems;
 
             this.fireCardReaderStateChanged();
-        }
     }
 
     /**
@@ -209,9 +148,4 @@ public class CardReaderModel {
             listener.cardReaderStateChanged(new CardReaderStateChangedEvent(this));
         }
     }
-
-
-    private List<CardReaderItem> cardReaderItems = new ArrayList<CardReaderItem>();
-    private CardReaderItem selectedCardReaderItem = new CardReaderItem("", "");
-    private EventListenerList listeners = new EventListenerList();
 }
