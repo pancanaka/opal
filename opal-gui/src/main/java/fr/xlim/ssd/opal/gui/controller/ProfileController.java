@@ -17,6 +17,7 @@ import fr.xlim.ssd.opal.gui.model.reader.ProfileModel;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -30,22 +31,21 @@ import java.util.regex.Pattern;
  * @author Yorick Lesecque
  * @author Thibault Desmoulins
  * @author Tiana Razafindralambo
- *
+ * @version 0.1
  * @see fr.xlim.ssd.opal.gui.model.reader.ProfileModel
  * @see fr.xlim.ssd.opal.library.params.CardConfigNotFoundException
- *
- * @version 0.1
  */
 
 public class ProfileController {
-    /** Contains the model */
+    /**
+     * Contains the model
+     */
     private ProfileModel profileModel;
 
     /**
      * Initialises a new {@code ProfileController} containing the model.
      *
-     * @throws  CardConfigNotFoundException
-     *          If an error occured while reading the XML config file
+     * @throws CardConfigNotFoundException If an error occured while reading the XML config file
      */
     public ProfileController()
             throws CardConfigNotFoundException {
@@ -55,7 +55,7 @@ public class ProfileController {
     /**
      * Used to get tu profile model.
      *
-     * @return  A {@code ProfileModel}
+     * @return A {@code ProfileModel}
      */
     public ProfileModel getProfileModel() {
         return profileModel;
@@ -64,14 +64,14 @@ public class ProfileController {
     /**
      * Used to get all profiles loaded from the XML config file.
      *
-     * @return  A String matrix that contains needed profile information
-     *          sorted by names in order to display them in the view.
-     *          It can be used this way: <br />
-     *          <ul>
-     *               <li>info[x][0] contains the name of the profile</li>
-     *               <li>info[x][1] contains the description of the profile</li>
-     *               <li>info[x][2] contains the default implementation of the profile</li>
-     *          </ul>
+     * @return A String matrix that contains needed profile information
+     *         sorted by names in order to display them in the view.
+     *         It can be used this way: <br />
+     *         <ul>
+     *         <li>info[x][0] contains the name of the profile</li>
+     *         <li>info[x][1] contains the description of the profile</li>
+     *         <li>info[x][2] contains the default implementation of the profile</li>
+     *         </ul>
      */
     public String[][] getAllProfiles() {
         return profileModel.getAllProfiles();
@@ -80,14 +80,11 @@ public class ProfileController {
     /**
      * Used to delete a profile from the XML config file
      *
-     * @param   id is the id of the profile to delete
-     *          It's meant to correspond with the line clicked by the user on the display panel
-     *
-     * @return  A boolean
-     *          {@code True} for config found {@code False} if not
-     *
-     * @throws  CardConfigNotFoundException
-     *          If an error occured while reading the XML config file or if the profile was not found
+     * @param id is the id of the profile to delete
+     *           It's meant to correspond with the line clicked by the user on the display panel
+     * @return A boolean
+     *         {@code True} for config found {@code False} if not
+     * @throws CardConfigNotFoundException If an error occured while reading the XML config file or if the profile was not found
      */
     public boolean deleteProfile(int id)
             throws CardConfigNotFoundException {
@@ -98,10 +95,8 @@ public class ProfileController {
     /**
      * Used to get a precise {@code ProfileComponent} from the model.
      *
-     * @param   i is the id of the profile to delete
-     *
-     * @return  A {@code ProfileComponent}
-     *
+     * @param i is the id of the profile to delete
+     * @return A {@code ProfileComponent}
      * @see fr.xlim.ssd.opal.gui.view.components.ProfileComponent
      */
     public ProfileComponent getProfile(int i) {
@@ -112,10 +107,9 @@ public class ProfileController {
     /**
      * Used add a profile to the XML config file
      *
-     * @param   p is the profile to add
-     *
-     * @throws  CardConfigNotFoundException If an error occured while reading the XML config file
-     *          ConfigFieldsException If the data entered by the user are incorrect
+     * @param p is the profile to add
+     * @throws CardConfigNotFoundException If an error occured while reading the XML config file
+     *                                     ConfigFieldsException If the data entered by the user are incorrect
      */
     public void addProfile(ProfileComponent p)
             throws CardConfigNotFoundException, ConfigFieldsException {
@@ -127,10 +121,9 @@ public class ProfileController {
     /**
      * Used to update the profile selected by the user.
      *
-     * @param   p is the profile to update
-     *
-     * @throws  CardConfigNotFoundException If an error occured while reading the XML config file or if the profile was not found
-     *          ConfigFieldsException If the data entered by the user are incorrect
+     * @param p is the profile to update
+     * @throws CardConfigNotFoundException If an error occured while reading the XML config file or if the profile was not found
+     *                                     ConfigFieldsException If the data entered by the user are incorrect
      */
     public void updateProfile(ProfileComponent p)
             throws CardConfigNotFoundException, ConfigFieldsException {
@@ -156,15 +149,14 @@ public class ProfileController {
     private void checkName(String name)
             throws ConfigFieldsException {
 
-        if(name.length() >= 4 && name.length() <= 25) {
+        if (name.length() >= 4 && name.length() <= 25) {
             Pattern p1 = Pattern.compile("[^0-9A-Z/_ .-]+", Pattern.CASE_INSENSITIVE);
             Matcher m = p1.matcher(name);
 
-            if(m.find()) {
+            if (m.find()) {
                 throw new ConfigFieldsException("The name contains illegal characters. You can only use figures, letters from A to Z and: /_.-\n");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("The name must contain between 4 and 25 characters.\n");
         }
     }
@@ -172,16 +164,15 @@ public class ProfileController {
     private void checkDesc(String desc)
             throws ConfigFieldsException {
 
-        if(desc.length() > 0) {
-            if(desc.length() < 141) {
+        if (desc.length() > 0) {
+            if (desc.length() < 141) {
                 Pattern p1 = Pattern.compile("[^0-9A-Z/_ .'-]+", Pattern.CASE_INSENSITIVE);
                 Matcher m = p1.matcher(desc);
 
-                if(m.find()) {
+                if (m.find()) {
                     throw new ConfigFieldsException("The description contains illegal characters. You can only use figures, letters from A to Z and: /_.-'\n");
                 }
-            }
-            else {
+            } else {
                 throw new ConfigFieldsException("The description is optional but can't contain more than 140 characters.\n");
             }
         }
@@ -190,7 +181,7 @@ public class ProfileController {
     private void checkATRs(String[] atrs)
             throws ConfigFieldsException {
 
-        for(int i = 0; i < atrs.length; i++) {
+        for (int i = 0; i < atrs.length; i++) {
             checkATR(atrs[i]);
         }
     }
@@ -201,15 +192,14 @@ public class ProfileController {
         atr = atr.replaceAll(":", "");
         atr = atr.replaceAll(" ", "");
 
-        if(atr.length() % 2 == 0) {
+        if (atr.length() % 2 == 0) {
             Pattern p1 = Pattern.compile("[^A-F0-9]+", Pattern.CASE_INSENSITIVE);
             Matcher m = p1.matcher(atr);
 
-            if(m.find()) {
+            if (m.find()) {
                 throw new ConfigFieldsException("The ATR has to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("The ATR is invalid.\n");
         }
     }
@@ -217,23 +207,21 @@ public class ProfileController {
     private void checkAID(String aid)
             throws ConfigFieldsException {
 
-        if(aid.length() > 0) {
+        if (aid.length() > 0) {
             aid = aid.replaceAll(":", "");
             aid = aid.replaceAll(" ", "");
 
-            if(aid.length() % 2 == 0 && aid.length() >= 10 && aid.length() <= 32) {
+            if (aid.length() % 2 == 0 && aid.length() >= 10 && aid.length() <= 32) {
                 Pattern p1 = Pattern.compile("[^A-F0-9]+", Pattern.CASE_INSENSITIVE);
                 Matcher m = p1.matcher(aid);
 
-                if(m.find()) {
+                if (m.find()) {
                     throw new ConfigFieldsException("The AID has to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
                 }
-            }
-            else {
+            } else {
                 throw new ConfigFieldsException("Issuer Security Domain AID is invalid.It must contain between 10 and 32 characters.\n");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("Issuer Security Domain AID can't be empty.\n");
         }
     }
@@ -241,8 +229,8 @@ public class ProfileController {
     private void checkSCP(String scp)
             throws ConfigFieldsException {
 
-        if(scp.length() > 0) {
-            if(scp.compareToIgnoreCase(SCPMode.SCP_01_05.toString()) != 0
+        if (scp.length() > 0) {
+            if (scp.compareToIgnoreCase(SCPMode.SCP_01_05.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_01_05.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_01_15.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_02_04.toString()) != 0
@@ -266,8 +254,7 @@ public class ProfileController {
 
                 throw new ConfigFieldsException("The SCPMode is unknown.\n");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("SCPMode can't be empty.\n");
         }
     }
@@ -275,14 +262,13 @@ public class ProfileController {
     private void checkTP(String tp)
             throws ConfigFieldsException {
 
-        if(tp.length() > 0) {
-            if(tp.compareToIgnoreCase("T=0") != 0
+        if (tp.length() > 0) {
+            if (tp.compareToIgnoreCase("T=0") != 0
                     && tp.compareToIgnoreCase("T=1") != 0
                     && tp.compareToIgnoreCase("*") != 0) {
                 throw new ConfigFieldsException("The Transmission Protocol is unknown.\n");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("Transmission Protocol can't be empty.\n");
         }
     }
@@ -292,7 +278,7 @@ public class ProfileController {
 
         int n = keys.size();
 
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             checkKey(keys.get(i), ++i);
         }
     }
@@ -303,30 +289,30 @@ public class ProfileController {
         Pattern p1 = Pattern.compile("[^0-9]+");
         Matcher m = p1.matcher(key.keyID);
 
-        if(!m.find()) {
+        if (!m.find()) {
             String id = key.keyID;
-            if(Integer.valueOf(id) < Integer.MAX_VALUE) {
+            if (Integer.valueOf(id) < Integer.MAX_VALUE) {
                 String version = key.version;
                 m = p1.matcher(version);
 
-                if(!m.find()) {
-                    if(Integer.valueOf(version) >= 0 && Integer.valueOf(version) < 256) {
+                if (!m.find()) {
+                    if (Integer.valueOf(version) >= 0 && Integer.valueOf(version) < 256) {
                         String value = key.key;
                         value = value.replaceAll(":", "");
                         value = value.replaceAll(" ", "");
 
-                        if(value.length() % 2 == 0 &&  value.length() < 64) {
+                        if (value.length() % 2 == 0 && value.length() < 64) {
                             p1 = Pattern.compile("[^0-9A-F]+", Pattern.CASE_INSENSITIVE);
                             m = p1.matcher(value);
 
-                            if(!m.find()) {
-                                if(key.type.compareTo("83") == 0
+                            if (!m.find()) {
+                                if (key.type.compareTo("83") == 0
                                         || key.type.compareTo("84") == 0
                                         || key.type.compareTo("0") == 0
                                         || key.type.compareTo("1") == 0
                                         || key.type.compareTo("88") == 0) {
 
-                                    if((key.type.compareTo("83") == 0
+                                    if ((key.type.compareTo("83") == 0
                                             || key.type.compareTo("0") == 0
                                             || key.type.compareTo("1") == 0)
                                             && value.length() != 48) {
@@ -334,39 +320,32 @@ public class ProfileController {
                                         throw new ConfigFieldsException("Key value at index " + index + " must contain 48 hex characters (192 bits).");
                                     }
 
-                                    if((key.type.compareTo("84") == 0
+                                    if ((key.type.compareTo("84") == 0
                                             || key.type.compareTo("88") == 0)
                                             && value.length() != 32) {
 
                                         throw new ConfigFieldsException("Key value at index " + index + " must contain 32 hex characters (128 bits).");
                                     }
-                                }
-                                else {
+                                } else {
                                     throw new ConfigFieldsException("Invalid key type at index " + index + ".");
                                 }
-                            }
-                            else {
+                            } else {
                                 throw new ConfigFieldsException("All key values have to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
                             }
-                        }
-                        else {
+                        } else {
                             throw new ConfigFieldsException("Key value at index " + index + " is invalid (maximum length: 192 bytes - 48 hex characters).");
                         }
 
-                    }
-                    else {
+                    } else {
                         throw new ConfigFieldsException("Key versions at index " + index + " must be between 0 and 255.");
                     }
-                }
-                else {
+                } else {
                     throw new ConfigFieldsException("Key versions at index " + index + " must be numeric.");
                 }
-            }
-            else {
+            } else {
                 throw new ConfigFieldsException("All key IDs must be numeric.");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("All key IDs must be numeric.");
         }
     }
@@ -374,14 +353,13 @@ public class ProfileController {
     private void checkImpl(String impl)
             throws ConfigFieldsException {
 
-        if(impl.length() > 0) {
-            if(impl.compareToIgnoreCase("GemXpresso211Commands") != 0
+        if (impl.length() > 0) {
+            if (impl.compareToIgnoreCase("GemXpresso211Commands") != 0
                     && impl.compareToIgnoreCase("GP2xCommands") != 0
-                    /* If new implementations are allowed : && impl.compareToIgnoreCase("*Implementation*") != 0  */) {
+                /* If new implementations are allowed : && impl.compareToIgnoreCase("*Implementation*") != 0  */) {
                 throw new ConfigFieldsException("The Implementation is unknown.\n");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("Implementation can't be empty.\n");
         }
     }

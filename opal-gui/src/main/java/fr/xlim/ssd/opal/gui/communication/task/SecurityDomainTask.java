@@ -16,40 +16,35 @@ import org.jdesktop.application.Application;
 import org.jdesktop.application.Task;
 
 /**
- *
  * @author Tiana Razafindralambo
  */
 public class SecurityDomainTask extends Task<Void, Void> {
 
-    private static final CustomLogger logger= new CustomLogger();
+    private static final CustomLogger logger = new CustomLogger();
     private SecurityDomainModel secModel;
-    
+
     /**
      * Default constructor
+     *
      * @param application
-     * @param secModel 
+     * @param secModel
      */
-    public SecurityDomainTask(Application application, SecurityDomainModel secModel)
-    {
+    public SecurityDomainTask(Application application, SecurityDomainModel secModel) {
         super(application);
         this.secModel = secModel;
     }
-    
+
     /**
-     * The <code>Task</code> operation 
+     * The <code>Task</code> operation
      */
     @Override
-    protected Void doInBackground(){ 
+    protected Void doInBackground() {
         message("Security domain task started");
-        while(!isCancelled())
-        { 
-            try
-            {
+        while (!isCancelled()) {
+            try {
                 Thread.sleep(2000);
-            }
-            catch(InterruptedException ie)
-            {
-                if(!isCancelled()) logger.debug("Error while sleeping", ie);
+            } catch (InterruptedException ie) {
+                if (!isCancelled()) logger.debug("Error while sleeping", ie);
             }
         }
         message("Security domain task finished");

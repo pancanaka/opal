@@ -17,8 +17,11 @@ package fr.xlim.ssd.opal.gui.model.dataExchanges;
 public interface Observable {
 
     public void addObserver(Observer obver);
+
     public void displayAllLogSendings(MyMessage message);
+
     public void displayApduSending(MyMessage message);
+
     public void displayLogSending(MyMessage message);
 
 }

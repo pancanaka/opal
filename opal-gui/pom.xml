@@ -90,4 +90,8 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <organization>
+        <name>SSD Team, XLIM Labs, University of Limoges, France</name>
+        <url>http://secinfo.msi.unilim.fr</url>
+    </organization>
 </project>

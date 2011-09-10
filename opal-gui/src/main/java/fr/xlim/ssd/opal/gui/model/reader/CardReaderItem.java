@@ -12,35 +12,36 @@
 package fr.xlim.ssd.opal.gui.model.reader;
 
 import fr.xlim.ssd.opal.library.params.ATR;
+
 import javax.smartcardio.CardChannel;
 
 /**
  * A simple card reader representation.
- *
+ * <p/>
  * The card reader representation contains:
-import org.jdesktop.application.Application;d the model which contains cardd the model which contains card
-import org.jdesktop.application.Application;d the model which contains cardd the model which contains card
+ * import org.jdesktop.application.Application;d the model which contains cardd the model which contains card
+ * import org.jdesktop.application.Application;d the model which contains cardd the model which contains card
  * <ul>
- *     <li>the card reader name;</li>
- *     <li>the card name;</li>
- *     <li>the card ATR.</li>
+ * <li>the card reader name;</li>
+ * <li>the card name;</li>
+ * <li>the card ATR.</li>
  * </ul>
- *
+ * <p/>
  * Please notice that a card reader may not contain a card. A good representation can be an empty <code>String</code>
  * for the card name and a <code>null ATR</code> instance for the card ATR.
- * 
+ *
  * @author David Pequegnot
  * @author Tiana Razafindralambo
  */
 public class CardReaderItem {
     private String cardReaderName;
     private String cardName;
-    private ATR    cardATR;
+    private ATR cardATR;
     private CardChannel channel;
 
     /**
      * Default constructor.
-     *
+     * <p/>
      * Card reader and card names will be set to an empty <code>String</code> and the card ATR to <code>null</code>.
      */
     public CardReaderItem() {
@@ -49,7 +50,7 @@ public class CardReaderItem {
 
     /**
      * Constructor.
-     *
+     * <p/>
      * Card reader name will be set with the <code>cardReaderName</code> value, card name will be set to an empty
      * <code>String</code> and the card ATR to <code>null</code>.
      *
@@ -61,7 +62,7 @@ public class CardReaderItem {
 
     /**
      * Constructor.
-     *
+     * <p/>
      * Card reader name will be set with the <code>cardReaderName</code> value, card name will be set to an empty
      * <code>String</code> and the card ATR with the <code>cardATR</code> instance.
      *
@@ -74,7 +75,7 @@ public class CardReaderItem {
 
     /**
      * Constructor.
-     *
+     * <p/>
      * Card reader name will be set with the <code>cardReaderName</code> value, card name with the <code>cardName</code>
      * value and the card ATR to <code>null</code>.
      *
@@ -87,7 +88,7 @@ public class CardReaderItem {
 
     /**
      * Constructor.
-     *
+     * <p/>
      * Card reader name will be set with the <code>cardReaderName</code> value, card name with the <code>cardName</code>
      * value and the card ATR the <code>cardATR</code> instance.
      *
@@ -97,8 +98,8 @@ public class CardReaderItem {
      */
     public CardReaderItem(String cardReaderName, String cardName, ATR cardATR) {
         this.cardReaderName = cardReaderName;
-        this.cardName       = cardName;
-        this.cardATR        = cardATR;
+        this.cardName = cardName;
+        this.cardATR = cardATR;
     }
 
     /**
@@ -157,21 +158,21 @@ public class CardReaderItem {
     }
 
     /**
-     * 
      * @return
      */
-    public CardChannel getCardChannel()
-    {
+    public CardChannel getCardChannel() {
         return this.channel;
     }
+
     /**
      * Sets the card channel
+     *
      * @param channel the card channel to set
      */
-    public void setCardChannel(CardChannel channel)
-    {
+    public void setCardChannel(CardChannel channel) {
         this.channel = channel;
     }
+
     /**
      * Equals method.
      *
@@ -183,7 +184,7 @@ public class CardReaderItem {
         if (this == aThat) {
             return true;
         }
-        
+
         if (!(aThat instanceof CardReaderItem)) {
             return false;
         }
@@ -191,7 +192,7 @@ public class CardReaderItem {
         CardReaderItem that = (CardReaderItem) aThat;
 
         return
-            that.getCardName().equals(this.getCardName()) &&
-            that.getCardReaderName().equals(this.getCardReaderName());
+                that.getCardName().equals(this.getCardName()) &&
+                        that.getCardReaderName().equals(this.getCardReaderName());
     }
 }

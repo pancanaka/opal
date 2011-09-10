@@ -1,5 +1,6 @@
 package fr.xlim.ssd.opal.library.tester;
 
+import fr.xlim.ssd.opal.library.RAMOverHTTP;
 import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
@@ -8,6 +9,7 @@ import fr.xlim.ssd.opal.library.params.CardConfigFactory;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.metastatic.jessie.provider.CipherSuite;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -144,12 +146,32 @@ public class Main {
 
     }
 
-    public static void main(String[] args) throws CardException, CardConfigNotFoundException,
-            CommandsImplementationNotFound, ClassNotFoundException, IOException {
+    public static void RAMOverHTTP() throws ClassNotFoundException, CommandsImplementationNotFound, IOException, CardException {
+        channel = null;
+        SecLevel secLevel = SecLevel.C_ENC_AND_MAC;
+        /// get the card config and card channel, detection of t=0 or t=1 is automatic
+        CardConfig cardConfig = getCardChannel(1, "*");
 
+        if (channel == null) {
+            logger.error("Cannot access to the card");
+            System.exit(-1);
+        }
+        //  select the security domain
+        logger.info("Selecting Security Domain");
+        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
+                cardConfig.getIssuerSecurityDomainAID());
+        securityDomain.setOffCardKeys(cardConfig.getSCKeys());
+
+
+        RAMOverHTTP ram = new RAMOverHTTP("psk-tls.key", "null", "PSK_A", "localhost", "OPALJcop21");
+        ram.setup("localhost", 9020, CipherSuite.TLS_PSK_WITH_3DES_EDE_CBC_SHA);
+        ram.manage(null, securityDomain);
+    }
+
+    public static void classicCommunication() throws ClassNotFoundException, CommandsImplementationNotFound, CardException, IOException {
         channel = null;
 
-        SecLevel secLevel = SecLevel.NO_SECURITY_LEVEL;
+        SecLevel secLevel = SecLevel.C_ENC_AND_MAC;
 
         /// get the card config and card channel, detection of t=0 or t=1 is automatic
         CardConfig cardConfig = getCardChannel(1, "*");
@@ -170,19 +192,6 @@ public class Main {
             java.util.logging.Logger.getLogger(Main.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        try {
-           logger.info("Delete Hello World applet if it is installed");
-           securityDomain.deleteOnCardObj(Main.APPLET_ID, false);
-        } catch (Exception e) {
-           // Applet did not installed on the card
-        }
-
-        try {
-           logger.info("Delete Hello World package if it is installed");
-           securityDomain.deleteOnCardObj(PACKAGE_ID, false);
-        } catch (Exception e) {
-           // Package did not installed on the card
-        }
 
         // initialize update
         logger.info("Initialize Update");
@@ -197,6 +206,7 @@ public class Main {
         logger.info("Installing Applet");
         logger.info("* Install For Load");
         securityDomain.installForLoad(PACKAGE_ID, null, null);
+        //File file = new File("cap/HelloWorld-2_1_2.cap");
 
         InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -252,6 +262,19 @@ public class Main {
         // Deleting package if existed
         logger.info("Deleting package");
         securityDomain.deleteOnCardObj(PACKAGE_ID, false);
+    }
+
+    public static void main(String[] args) throws CardException, CardConfigNotFoundException,
+            CommandsImplementationNotFound, ClassNotFoundException, IOException {
+
+        boolean ramOverHTTP = true;
+
+        if (ramOverHTTP) {
+            Main.RAMOverHTTP();
+        } else {
+            Main.classicCommunication();
+        }
+
     }
 
 }

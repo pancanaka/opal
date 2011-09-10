@@ -14,50 +14,64 @@ import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.securityDomain.event.SecurityDomainStateChangedEvent;
 import fr.xlim.ssd.opal.gui.model.securityDomain.event.SecurityDomainStateListener;
 import fr.xlim.ssd.opal.library.SecLevel;
-import javax.swing.event.EventListenerList;
 import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
-import java.util.logging.Level;
+
 import javax.smartcardio.CardChannel;
+import javax.swing.event.EventListenerList;
+import java.util.logging.Level;
 
 /**
  * Security domain Model
- * 
+ *
  * @author Tiana Razafindralambo
  */
 public class SecurityDomainModel {
 
-    private static final CustomLogger logger= new CustomLogger();
+    private static final CustomLogger logger = new CustomLogger();
     private EventListenerList listeners = new EventListenerList();
     private SecurityDomain domain = null;
     private boolean authenticated = false;
-    public SecurityDomainModel(){}
 
-    public SecurityDomain getDomain(){ return domain;}
-    public boolean hasDomain(){ return (domain != null);}
-    public void isAuthenticated(boolean bool){ this.authenticated = bool;}
-    public boolean isAuthenticated(){ return this.authenticated;};
-    
+    public SecurityDomainModel() {
+    }
+
+    public SecurityDomain getDomain() {
+        return domain;
+    }
+
+    public boolean hasDomain() {
+        return (domain != null);
+    }
+
+    public void isAuthenticated(boolean bool) {
+        this.authenticated = bool;
+    }
+
+    public boolean isAuthenticated() {
+        return this.authenticated;
+    }
+
+    ;
+
     /**
      * Security domain setter
-     * update the security domain model 
-     * 
+     * update the security domain model
+     *
      * @param cardConfig
-     * @param channel 
+     * @param channel
      */
-    public void setSecurityDomain(CardConfig cardConfig, CardChannel channel)
-    {
-        logger.info("Setting security domain..."); 
-        try
-        {
-            logger.info("-> IMPL : "+cardConfig.getImplementation().toString());
-            logger.info("-> channel : "+channel.toString()); 
-            this.domain = new SecurityDomain(   cardConfig.getImplementation(),
-                                                channel,
-                                                cardConfig.getIssuerSecurityDomainAID()
-                                            );
-            
+    public void setSecurityDomain(CardConfig cardConfig, CardChannel channel) {
+        logger.info("Setting security domain...");
+        try {
+            logger.info("-> IMPL : " + cardConfig.getImplementation().toString());
+            logger.info("-> channel : " + channel.toString());
+            this.domain = new SecurityDomain(cardConfig.getImplementation(),
+                    channel,
+                    cardConfig.getIssuerSecurityDomainAID()
+            );
+
             this.domain.setOffCardKeys(cardConfig.getSCKeys());
 
             try {
@@ -66,10 +80,13 @@ public class SecurityDomainModel {
             } catch (Exception ex) {
                 java.util.logging.Logger.getLogger(SecurityDomainModel.class.getName()).log(Level.SEVERE, null, ex);
             }
+        } catch (CommandsImplementationNotFound ex) {
+            logger.error("Commands Implementation not found");
+        } catch (ClassNotFoundException ex) {
+            logger.error("Class not found exception");
         }
-        catch(CommandsImplementationNotFound ex) { logger.error("Commands Implementation not found"); }
-        catch(ClassNotFoundException ex) { logger.error("Class not found exception"); } 
     }
+
     /**
      * Add a security domain state listener.
      *

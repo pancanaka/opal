@@ -70,4 +70,11 @@ public class SecurityDomain extends GPApplet {
     public ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID, byte[] moduleAID, byte[] applicationAID, byte[] privileges, byte[] params) throws CardException {
         return this.cmds.installForInstallAndMakeSelectable(loadFileAID, moduleAID, applicationAID, privileges, params);
     }
+
+    /* (non-Javadoc)
+    * @see fr.xlim.ssd.opal.library.commands.Commands.sendCommand
+    */
+    public ResponseAPDU sendCommand(byte[] APDUCommand) throws CardException {
+        return this.cmds.sendCommand(APDUCommand);
+    }
 }

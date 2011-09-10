@@ -11,7 +11,6 @@
 package fr.xlim.ssd.opal.gui.model.Key;
 
 /**
- *
  * @author Tiana Razafindralambo
  */
 public class KeyModel {

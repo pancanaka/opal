@@ -14,40 +14,30 @@ package fr.xlim.ssd.opal.gui.view.components.tab;
 import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.gui.controller.DeleteController;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-
 /**
  * @author Estelle Blandinieres
  * @author Thibault Desmoulins
- *
- * the DeletePanel class serves to instantiate the deletion tab
+ *         <p/>
+ *         the DeletePanel class serves to instantiate the deletion tab
  */
-public class DeletePanel extends JPanel implements ActionListener, KeyListener{
+public class DeletePanel extends JPanel implements ActionListener, KeyListener {
 
     public String title = "Delete";
     private DeleteController controller;
 
     private JComboBox cbAID;
     private JCheckBox cascade;
-    private JButton jbDelete ;
+    private JButton jbDelete;
 
     private short lineHeight = 20;
-    
+
     /**
      * DeletePanel constructor
      */
@@ -70,8 +60,8 @@ public class DeletePanel extends JPanel implements ActionListener, KeyListener{
 
     /**
      * Draw the elements of the panel
-     * @author Estelle Blandinieres
      *
+     * @author Estelle Blandinieres
      */
     private void drawWindow() {
 
@@ -93,15 +83,16 @@ public class DeletePanel extends JPanel implements ActionListener, KeyListener{
 
     /**
      * Create a box
+     *
      * @param label
      * @param field
      * @return a box with the label and the field
      */
     public Box createFormLine(String label, Component field) {
-        Box    ligne  = Box.createHorizontalBox();
-        JLabel lbl    = new JLabel(label);
+        Box ligne = Box.createHorizontalBox();
+        JLabel lbl = new JLabel(label);
 
-        lbl.setPreferredSize(new Dimension(100,lineHeight));
+        lbl.setPreferredSize(new Dimension(100, lineHeight));
         ligne.setPreferredSize(new Dimension(500, lineHeight));
 
         ligne.add(lbl);
@@ -114,25 +105,25 @@ public class DeletePanel extends JPanel implements ActionListener, KeyListener{
     public void setController(DeleteController controller) {
         this.controller = controller;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        Object o = e.getSource(); 
+        Object o = e.getSource();
 
-        if(o instanceof JButton) {
+        if (o instanceof JButton) {
             JButton b = (JButton) o;
             if (b.equals(jbDelete)) {
                 if (controller.isAuthenticated()) {
                     try {
                         boolean trouve = false;
-                        String aid = (String)cbAID.getSelectedItem();
+                        String aid = (String) cbAID.getSelectedItem();
                         aid = (aid == null) ? "" : aid;
 
                         controller.checkForm(aid, cascade.isSelected());
 
                         // if the aid is not in the comboBox yet, we add it to it
-                        for (int i=0; i<cbAID.getItemCount() && !trouve; i++) {
-                            if (aid.compareTo((String)cbAID.getItemAt(i))==0) {
+                        for (int i = 0; i < cbAID.getItemCount() && !trouve; i++) {
+                            if (aid.compareTo((String) cbAID.getItemAt(i)) == 0) {
                                 trouve = true;
                             }
                         }
@@ -144,7 +135,7 @@ public class DeletePanel extends JPanel implements ActionListener, KeyListener{
                                 "Caution", JOptionPane.WARNING_MESSAGE);
                     }
                 } else {
-                     JOptionPane.showMessageDialog(null, "You have to be authenticated.", "Caution", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "You have to be authenticated.", "Caution", JOptionPane.WARNING_MESSAGE);
                 }
             }
         }

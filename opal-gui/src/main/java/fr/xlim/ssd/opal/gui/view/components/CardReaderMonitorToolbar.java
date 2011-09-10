@@ -25,7 +25,7 @@ import java.awt.*;
 
 /**
  * Toolbar which monitors card readers.
- *
+ * <p/>
  * Allows the user to select a card reader in a list (<code>JComboBox</code>).
  * All card readers connected to the computer are displayed in this list. The toolbar implements a listener on
  * the <code>CardReaderModel</code> instance.
@@ -35,7 +35,7 @@ import java.awt.*;
  */
 public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStateListener {
 
-    private JLabel    cardReaderInformationLabel;
+    private JLabel cardReaderInformationLabel;
     private JComboBox cardReaderComboBox;
     private MainController mainController;
     private CardReaderModel cardReaderModel;
@@ -49,7 +49,7 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
         super();
 
         this.mainController = mainController;
-        
+
         this.cardReaderModel = this.mainController.getCardReaderModel();
         this.cardReaderModel.addCardReaderStateListener(this);
 
@@ -73,7 +73,7 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
         this.cardReaderComboBox.setEditable(false);
 
         add(this.cardReaderInformationLabel);
-        add(Box.createRigidArea(new Dimension(5,5)));
+        add(Box.createRigidArea(new Dimension(5, 5)));
         add(this.cardReaderComboBox);
 
         add(Box.createHorizontalGlue());
@@ -118,7 +118,7 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
                 this.cardReaderComboBox.addItem(item.getCardReaderName() +
                         " : " + item.getCardName() +
                         ((item.getCardATR() == null) ? "" :
-                        " [" + Conversion.arrayToHex(item.getCardATR().getValue()) + ']'));
+                                " [" + Conversion.arrayToHex(item.getCardATR().getValue()) + ']'));
             }
         }
 
@@ -128,7 +128,7 @@ public class CardReaderMonitorToolbar extends JToolBar implements CardReaderStat
             this.cardReaderComboBox.setSelectedItem(this.cardReaderModel.getSelectedCardReaderName() +
                     " : " + this.cardReaderModel.getSelectedCardName() +
                     ((this.cardReaderModel.getSelectedCardATR() == null) ? "" :
-                    " [" + Conversion.arrayToHex(this.cardReaderModel.getSelectedCardATR().getValue()) + ']'));
+                            " [" + Conversion.arrayToHex(this.cardReaderModel.getSelectedCardATR().getValue()) + ']'));
         }
     }
 }

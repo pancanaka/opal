@@ -10,11 +10,9 @@
 
 package fr.xlim.ssd.opal.gui.view;
 
+import javax.swing.*;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import javax.swing.JPanel;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 
 /**
  * The main panel of the gui, useful to bring up a scroll when
@@ -35,7 +33,6 @@ public class AppJScrollPan extends JScrollPane implements MouseWheelListener {
     }
 
 
-
     /**
      * This function override the function <code>mouseWheelMoved</code> which is in
      * the <code>MouseWheelListener</code> interface in order to accelerate the scroll
@@ -46,8 +43,8 @@ public class AppJScrollPan extends JScrollPane implements MouseWheelListener {
     public void mouseWheelMoved(MouseWheelEvent mwe) {
         final JScrollBar scrollBar = getVerticalScrollBar();
         final int rotation = mwe.getWheelRotation();
-        if (scrollBar!=null) {
-            scrollBar.setValue(scrollBar.getValue() + (scrollBar.getBlockIncrement(rotation)*rotation));
+        if (scrollBar != null) {
+            scrollBar.setValue(scrollBar.getValue() + (scrollBar.getBlockIncrement(rotation) * rotation));
         }
     }
 

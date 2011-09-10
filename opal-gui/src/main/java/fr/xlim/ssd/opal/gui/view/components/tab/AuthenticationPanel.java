@@ -22,35 +22,25 @@ import fr.xlim.ssd.opal.gui.view.components.KeyComponentApplet;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 
-import java.awt.Component;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-
-import javax.swing.JPanel;
-import javax.swing.Box;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import javax.swing.JSeparator;
-import javax.swing.SwingConstants;
-import javax.swing.border.TitledBorder;
-
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
 
 
 /**
-<<<<<<< local
+ * <<<<<<< local
+ *
  * @author Thibault
-=======
+ *         =======
  * @author Thibault Desmoulins
->>>>>>> other
+ *         >>>>>>> other
  * @author Tiana Razafindralambo
  * @author Estelle Blandinieres
  */
-public class AuthenticationPanel extends JPanel implements ActionListener{
+public class AuthenticationPanel extends JPanel implements ActionListener {
     // The parent view
     private HomeView f = null;
 
@@ -68,14 +58,14 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     private JComboBox cbSCPMode;
     private String[] SCPMode = {"SCP_UNDEFINED", "SCP_01_05", "SCP_01_15", "SCP_02_04",
-    "SCP_02_05", "SCP_02_0A", "SCP_02_0B", "SCP_02_14", "SCP_02_15", "SCP_02_1A",
-    "SCP_02_1B", "SCP_02_55", "SCP_02_45", "SCP_02_54", "SCP_10", "SCP_03_65",
-    "SCP_03_6D", "SCP_03_05", "SCP_03_0D", "SCP_03_2D", "SCP_03_25"};
+            "SCP_02_05", "SCP_02_0A", "SCP_02_0B", "SCP_02_14", "SCP_02_15", "SCP_02_1A",
+            "SCP_02_1B", "SCP_02_55", "SCP_02_45", "SCP_02_54", "SCP_10", "SCP_03_65",
+            "SCP_03_6D", "SCP_03_05", "SCP_03_0D", "SCP_03_2D", "SCP_03_25"};
 
     private JComboBox cbSecurityLevel;
     private String[] SecurityLevel = {"NO_SECURITY_LEVEL", "C_MAC",
-    "C_ENC_AND_MAC", "R_MAC", "C_MAC_AND_R_MAC", "C_ENC_AND_C_MAC_AND_R_MAC",
-    "C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC"};
+            "C_ENC_AND_MAC", "R_MAC", "C_MAC_AND_R_MAC", "C_ENC_AND_C_MAC_AND_R_MAC",
+            "C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC"};
 
     private JComboBox cbTransProto;
     private String[] TransProto = {"T=0", "T=1", "*"};
@@ -89,12 +79,13 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     private JButton jbRemove;
     private JButton jbAuthenticate;
 
-    private short lineHeight  = 20;
+    private short lineHeight = 20;
 
     //
     private String name;
     private String description;
-    private String [] ATR;
+    private String[] ATR;
+
     //String name, String description, String AID, String SCPmode, String TP, String[] ATR, String implementation
     public AuthenticationPanel(MainController mainController, HomeView f, HomePanel p) {
         this.f = f;
@@ -114,10 +105,10 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         drawWindow();
     }
 
-    public void setController(AuthenticationController controller)
-    {
+    public void setController(AuthenticationController controller) {
         this.controller = controller;
     }
+
     private void drawWindow() {
         this.removeAll();
 
@@ -172,15 +163,16 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
 
     /**
      * Create a box
+     *
      * @param label
      * @param field
      * @return a box with the label and the field
      */
     public Box createFormLine(String label, Component field) {
-        Box    ligne  = Box.createHorizontalBox();
-        JLabel lbl    = new JLabel(label);
+        Box ligne = Box.createHorizontalBox();
+        JLabel lbl = new JLabel(label);
 
-        lbl.setPreferredSize(new Dimension(150,lineHeight));
+        lbl.setPreferredSize(new Dimension(150, lineHeight));
         ligne.setPreferredSize(new Dimension(500, lineHeight));
 
         ligne.add(lbl);
@@ -190,7 +182,6 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     }
 
     /**
-     *
      * @param v
      */
     public void drawKeysLines(Box v) {
@@ -198,7 +189,7 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         Box ligne = Box.createHorizontalBox();
         ligne.setPreferredSize(new Dimension(500, 20));
 
-        int n      = Keylist.size();
+        int n = Keylist.size();
         JPanel jpKeys = new JPanel();
         TitledBorder tbKeys = new TitledBorder("Keys");
         jpKeys.setBorder(tbKeys);
@@ -206,11 +197,11 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
         Box verticalBoxKey = Box.createVerticalBox();
         verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 5)));
 
-        for(int i=0 ; i<n ; i++) {
+        for (int i = 0; i < n; i++) {
             Box b = Keylist.get(i).createLineForm();
             verticalBoxKey.add(b);
             verticalBoxKey.add(Box.createRigidArea(new Dimension(300, 10)));
-             //Remove field
+            //Remove field
             ligne = Box.createHorizontalBox();
             jbRemove = new JButton("Remove field");
             jbRemove.setName(Integer.toString(i));
@@ -241,46 +232,46 @@ public class AuthenticationPanel extends JPanel implements ActionListener{
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
-        if(o instanceof JButton) {
+        if (o instanceof JButton) {
             JButton b = (JButton) o;
 
-            if(b.equals(jbAdd)) {
+            if (b.equals(jbAdd)) {
                 Keylist.add(new KeyComponentApplet());
                 drawWindow();
 
-            } else if(b.getText().equals("Remove field")) {
+            } else if (b.getText().equals("Remove field")) {
                 // The index of the field we want to remove ("Keys" fields)
                 int iRemove = Integer.parseInt(b.getName());
 
-                if(iRemove>=0 && iRemove<Keylist.size() && Keylist.size()>1) {
+                if (iRemove >= 0 && iRemove < Keylist.size() && Keylist.size() > 1) {
                     Keylist.remove(iRemove);
                     drawWindow();
                 }
-            } else if(b.equals(jbLoadConf)) {
+            } else if (b.equals(jbLoadConf)) {
                 String[] configurations = controller.getAllProfileNames();
 
                 if (configurations == null) {
                     System.out.println("No configuration found.");
                 } else {
                     // name of the default configuration
-                   String defaultConfig = controller.getCurrentCardDefaultProfileName();
-                   //String defaultConfig = "";
+                    String defaultConfig = controller.getCurrentCardDefaultProfileName();
+                    //String defaultConfig = "";
 
                     int indexDefaultConfig = 0;
 
                     // default configuration card research
-                    for (int i =0; i<configurations.length; i++) {
+                    for (int i = 0; i < configurations.length; i++) {
                         if (configurations[i].compareTo(defaultConfig) == 0) {
                             indexDefaultConfig = i;
                         }
                     }
 
                     // name of the choosen configuration
-                    String configName = (String)JOptionPane.showInputDialog(null, "Choose a configuration",
-                        "Configuration choice", JOptionPane.DEFAULT_OPTION,
-                        null, configurations, configurations[indexDefaultConfig]);
+                    String configName = (String) JOptionPane.showInputDialog(null, "Choose a configuration",
+                            "Configuration choice", JOptionPane.DEFAULT_OPTION,
+                            null, configurations, configurations[indexDefaultConfig]);
 
-                    if (configName!=null) {
+                    if (configName != null) {
                         // the choosen configuration
                         ProfileComponent config = controller.getProfileByName(configName);
 

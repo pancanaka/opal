@@ -14,14 +14,11 @@ package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.library.KeyType;
-import fr.xlim.ssd.opal.library.SCGPKey;
-import fr.xlim.ssd.opal.library.SCGemVisa;
-import fr.xlim.ssd.opal.library.SCGemVisa2;
-import fr.xlim.ssd.opal.library.SCKey;
-import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.*;
 import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+
 import java.util.ArrayList;
 
 /**
@@ -41,12 +38,12 @@ public class ProfileComponent implements Comparable {
     /**
      * This constructor initializes attributes with values ​​given in parameters
      *
-     * @param name the name of the profile
-     * @param description a description of the profile
-     * @param AID the Issuer Security Domain AID of the profile
-     * @param SCPmode the SCP Mode of the profile
-     * @param TP the transmission protocol of the profile
-     * @param ATR the list of ATR of the profile
+     * @param name           the name of the profile
+     * @param description    a description of the profile
+     * @param AID            the Issuer Security Domain AID of the profile
+     * @param SCPmode        the SCP Mode of the profile
+     * @param TP             the transmission protocol of the profile
+     * @param ATR            the list of ATR of the profile
      * @param implementation the value of the profile
      */
     public ProfileComponent(String name, String description, String AID, String SCPmode, String TP, String[] ATR, String implementation) {
@@ -62,49 +59,66 @@ public class ProfileComponent implements Comparable {
     /**
      * @return the name of the profile
      */
-    public String getName() { return this.name; }
+    public String getName() {
+        return this.name;
+    }
 
     /**
      * @return the description of the profile
      */
-    public String getDescription() { return this.description; }
+    public String getDescription() {
+        return this.description;
+    }
 
     /**
      * @return the Issuer Security Domain AID of the profile
      */
-    public String getAID() { return this.AID; }
+    public String getAID() {
+        return this.AID;
+    }
 
     /**
      * @return the SCP Mode of the profile
      */
-    public String getSCPmode() { return this.SCPmode; }
+    public String getSCPmode() {
+        return this.SCPmode;
+    }
 
     /**
      * @return the Transmission Protocol of the profile
      */
-    public String getTP() { return this.TP; }
+    public String getTP() {
+        return this.TP;
+    }
 
     /**
      * @return the implementation of the profile
      */
-    public String getImplementation() { return this.implementation; }
+    public String getImplementation() {
+        return this.implementation;
+    }
 
     /**
      * @return a list of ATR
      */
-    public String[] getATR() { return this.ATR; }
+    public String[] getATR() {
+        return this.ATR;
+    }
 
     /**
      * @return an ArrayList of KeyComponent
      */
-    public ArrayList getKeylist() { return this.Keylist; }
+    public ArrayList getKeylist() {
+        return this.Keylist;
+    }
 
 
     /**
      * Add a new key to the list (and its associated model)
-     * @param type the type of the key
+     *
+     * @param type    the type of the key
      * @param version the version of the key
-     * @param key the key value
+     * @param key     the key value
      */
     public void addKey(String type, String version, String id, String key) {
         Keylist.add(new KeyComponent(type, version, id, key));
@@ -129,6 +143,7 @@ public class ProfileComponent implements Comparable {
     /**
      * Overrides the compareTo function in order to compare the ProfileComponent
      * given in parameter to this instance
+     *
      * @param o the <code>ProfileComponent</code> to compare to this class
      * @return -1 if this class is before the parameter, 1 if it is after, 0 if both are equals
      */
@@ -141,14 +156,15 @@ public class ProfileComponent implements Comparable {
 
     /**
      * Converts all fields of this class into a <code>CardConfig</code> object
+     *
      * @return an instance of <code>CardConfig</code>
      * @see fr.xlim.ssd.opal.library.params.CardConfig
      */
     public CardConfig convertToCardConfig() {
         //convert this.ATR into ATR[]
         int atrLength = this.ATR.length;
-        ATR[] atrs = new ATR[atrLength];        
-        for(int i = 0; i < atrLength; i++)
+        ATR[] atrs = new ATR[atrLength];
+        for (int i = 0; i < atrLength; i++)
             atrs[i] = new ATR(Conversion.hexToArray(this.ATR[i]));
         //-----------------------------------------------------------
 
@@ -157,7 +173,7 @@ public class ProfileComponent implements Comparable {
         SCKey[] keys = new SCKey[keysLength];
         KeyModel currentKey = null;
 
-        for(int i = 0; i < keysLength; i++) {
+        for (int i = 0; i < keysLength; i++) {
             currentKey = this.keys.get(i);
             String keyType = currentKey.type;
             String keyVersionNumber = currentKey.version;
@@ -183,24 +199,25 @@ public class ProfileComponent implements Comparable {
                         KeyType.AES_CBC, Conversion.hexToArray(keyDatas));
             }
         }
-        
+
         //---------------------------------------------------------------------------------------------------------
-        
-        return new CardConfig(  this.name,
-                                this.description,
-                                atrs,
-                                Conversion.hexToArray(this.AID),
-                                this.getSCPMode(this.SCPmode.replace("SCP_", "")),
-                                this.TP,
-                                keys,
-                                this.implementation
-                             );
+
+        return new CardConfig(this.name,
+                this.description,
+                atrs,
+                Conversion.hexToArray(this.AID),
+                this.getSCPMode(this.SCPmode.replace("SCP_", "")),
+                this.TP,
+                keys,
+                this.implementation
+        );
 
     }
 
 
     /**
      * Static function that convert a <code>CardConfig</code> object into a <code>ProfileComponent</code> object
+     *
      * @param card the <code>CardConfig</code> object to convert
      * @return an instance of <code>CardConfig</code>
      * @see fr.xlim.ssd.opal.library.params.CardConfig
@@ -210,18 +227,18 @@ public class ProfileComponent implements Comparable {
         ATR[] at = card.getAtrs();
         int atrLength = at.length;
         String[] atrs = new String[atrLength];
-        for(int i = 0; i < atrLength; i++)
+        for (int i = 0; i < atrLength; i++)
             atrs[i] = Conversion.arrayToHex(at[i].getValue());
         //-----------------------------------------------------------
 
         //---------------------------------------------------------------------------------------------------------
-        ProfileComponent p = new ProfileComponent(  card.getName(),
-                                                    card.getDescription(),
-                                                    Conversion.arrayToHex(card.getIssuerSecurityDomainAID()),
-                                                    card.getScpMode().name(),
-                                                    card.getTransmissionProtocol(),
-                                                    atrs,
-                                                    card.getImplementation());
+        ProfileComponent p = new ProfileComponent(card.getName(),
+                card.getDescription(),
+                Conversion.arrayToHex(card.getIssuerSecurityDomainAID()),
+                card.getScpMode().name(),
+                card.getTransmissionProtocol(),
+                atrs,
+                card.getImplementation());
         //---------------------------------------------------------------------------------------------------------
 
 
@@ -232,17 +249,15 @@ public class ProfileComponent implements Comparable {
         ArrayList<KeyModel> km = new ArrayList<KeyModel>();
         SCKey currentKey = null;
 
-        for(int i = 0; i < keysLength; i++) {
+        for (int i = 0; i < keysLength; i++) {
             currentKey = sc[i];
 
             String keyType = null;
-            if(currentKey instanceof SCGemVisa2) {
+            if (currentKey instanceof SCGemVisa2) {
                 keyType = "1";
-            }
-            else if(currentKey instanceof SCGemVisa) {
+            } else if (currentKey instanceof SCGemVisa) {
                 keyType = "0";
-            }
-            else if(currentKey instanceof SCGPKey) {
+            } else if (currentKey instanceof SCGPKey) {
                 keyType = Integer.toHexString(currentKey.getType().getValue() & 0xFF).toUpperCase();
             }
 
@@ -254,11 +269,12 @@ public class ProfileComponent implements Comparable {
 
         return p;
     }
-    
+
 
     /**
      * Function that return a SCPMode object corresponding to the string given in parameter.
      * Notice that SCPMode is an enumeration!
+     *
      * @param scp the SCP wanted
      * @return the SCPMode corresponding to the scp given in parameter
      * @see fr.xlim.ssd.opal.library.SCPMode
@@ -304,6 +320,7 @@ public class ProfileComponent implements Comparable {
 
     /**
      * Function that return the KeyComponent corresponding to the index
+     *
      * @param i the index of the KeyComponent in the ArrayList
      * @return a KeyComponent object
      */

@@ -1,7 +1,6 @@
 package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.*;
-import fr.xlim.ssd.opal.library.logging.LogType;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import org.slf4j.Logger;
@@ -32,7 +31,6 @@ import java.util.logging.Level;
  *
  * @author Damien Arcuset, Eric Linke
  * @author Guillaume Bouffard
- * @author David Pequegnot
  */
 public class GP2xCommands extends AbstractCommands implements Commands {
 
@@ -268,11 +266,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmdSelect = new CommandAPDU(selectComm);
         ResponseAPDU resp = this.getCc().transmit(cmdSelect);
-
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "SELECT Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdSelect.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
-
+        logger.debug("SELECT Command "
+                + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -304,11 +300,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             CommandAPDU cmdSelect = new CommandAPDU(selectComm);
             ResponseAPDU resp = this.getCc().transmit(cmdSelect);
-
-            logger.info(LogType.COMMAND_TYPE.getMarker(), "SELECT Command");
-            logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdSelect.getBytes()));
-            logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
-
+            logger.debug("SELECT Command "
+                    + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
+                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
             if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
                 this.resetParams();
                 throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -371,9 +365,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         ResponseAPDU resp = this.getCc().transmit(cmdInitUpd);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "INIT UPDATE Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdInitUpd.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("INIT UPDATE command "
+                + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
@@ -481,6 +475,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
         } else if (scpRec == SCP03) {
+
 
             if (desiredScp == SCPMode.SCP_03_65) {
                 this.scp = desiredScp;
@@ -721,9 +716,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdExtauth = new CommandAPDU(extAuthCmd);
         ResponseAPDU resp = this.getCc().transmit(cmdExtauth);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "EXTERNAL AUTHENTICATE Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdExtauth.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("EXTERNAL AUTHENTICATE command "
+                + "(-> " + Conversion.arrayToHex(cmdExtauth.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
@@ -817,9 +812,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdGetstatus = new CommandAPDU(getStatusCmd);
         ResponseAPDU resp = this.getCc().transmit(cmdGetstatus);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "GET STATUS Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdGetstatus.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("GET STATUS command "
+                + "(-> " + Conversion.arrayToHex(cmdGetstatus.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         responsesList.add(resp);
 
@@ -838,9 +833,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             cmdGetstatus = new CommandAPDU(getStatusCmd);
             resp = this.getCc().transmit(cmdGetstatus);
 
-            logger.info(LogType.COMMAND_TYPE.getMarker(), "GET STATUS Command");
-            logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdGetstatus.getBytes()));
-            logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+            logger.debug("GET STATUS command "
+                    + "(-> " + Conversion.arrayToHex(cmdGetstatus.getBytes()) + ") "
+                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
             // TODO: no check at responses ?
             responsesList.add(resp);
@@ -2032,15 +2027,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdDelete = new CommandAPDU(deleteComm);
         ResponseAPDU resp = this.getCc().transmit(cmdDelete);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "DELETE OBJECT Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdDelete.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("DELETE OBJECT command "
+                + "(-> " + Conversion.arrayToHex(cmdDelete.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in DELETE OBJECT : " + Integer.toHexString(resp.getSW()));
         }
 
-        this.computeAndVerifyRMac(resp.getBytes());
+        this.compudeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
             byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
@@ -2113,9 +2108,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdDelete = new CommandAPDU(deleteComm);
         ResponseAPDU resp = this.getCc().transmit(cmdDelete);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "DELETE KEY Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdDelete.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("DELETE KEY command "
+                + "(-> " + Conversion.arrayToHex(cmdDelete.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != 0x9000) {
             throw new CardException("Error in DELETE KEY : " + Integer.toHexString(resp.getSW()));
@@ -2263,15 +2258,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdInstallforload = new CommandAPDU(installForLoadComm);
         ResponseAPDU resp = this.getCc().transmit(cmdInstallforload);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "INSTALL FOR LOAD Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdInstallforload.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("INSTALL FOR LOAD command "
+                + "(-> " + Conversion.arrayToHex(cmdInstallforload.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR LOAD : " + Integer.toHexString(resp.getSW()));
         }
 
-        this.computeAndVerifyRMac(resp.getBytes());
+        this.compudeAndVerifyRMac(resp.getBytes());
 
         if (this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
             byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
@@ -2463,15 +2458,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             ResponseAPDU resp = null;
             resp = this.getCc().transmit(cmdLoad);
 
-            logger.info(LogType.COMMAND_TYPE.getMarker(), "LOAD Command");
-            logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdLoad.getBytes()));
-            logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+            logger.debug("LOAD command "
+                    + "(-> " + Conversion.arrayToHex(cmdLoad.getBytes()) + ") "
+                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
             responses.add(resp);
             if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
                 throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
-            this.computeAndVerifyRMac(resp.getBytes());
+            this.compudeAndVerifyRMac(resp.getBytes());
             if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
                 byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
             }
@@ -2660,15 +2655,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmdInstallForInstall = new CommandAPDU(installForInstallComm);
         ResponseAPDU resp = this.getCc().transmit(cmdInstallForInstall);
-
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "INSTALL FOR INSTALL AND MAKE SELECTABLE Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdInstallForInstall.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("INSTALL FOR INSTALL AND MAKE SELECTABLE "
+                + "(-> " + Conversion.arrayToHex(cmdInstallForInstall.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR INSTALL AND MAKE SELECTABLE : " + Integer.toHexString(resp.getSW()));
         }
-        this.computeAndVerifyRMac(resp.getBytes());
+        this.compudeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
             byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
@@ -2698,11 +2692,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         getDataComm[4] = (byte) 0x00; // (LC) data length
         CommandAPDU cmdGetData = new CommandAPDU(getDataComm);
         ResponseAPDU resp = this.getCc().transmit(cmdGetData);
-
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "GET DATA Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdGetData.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
-
+        logger.debug("Get Data Command "
+                + "(-> " + Conversion.arrayToHex(cmdGetData.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
             throw new CardException("Invalid response SW after Get Data command (" + Integer.toHexString(resp.getSW()) + ")");
@@ -2829,9 +2821,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdBeginRMac = new CommandAPDU(cmd);
         ResponseAPDU resp = this.getCc().transmit(cmdBeginRMac);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "EXTERNAL AUTHENTICATE Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdBeginRMac.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("EXTERNAL AUTHENTICATE command "
+                + "(-> " + Conversion.arrayToHex(cmdBeginRMac.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
@@ -2887,9 +2879,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         CommandAPDU cmdBeginRMac = new CommandAPDU(cmd);
         ResponseAPDU resp = this.getCc().transmit(cmdBeginRMac);
 
-        logger.info(LogType.COMMAND_TYPE.getMarker(), "EXTERNAL AUTHENTICATE Command");
-        logger.info(LogType.APDU_GP_OUT.getMarker(), Conversion.arrayToHex(cmdBeginRMac.getBytes()));
-        logger.info(LogType.APDU_GP_IN.getMarker(), Conversion.arrayToHex(resp.getBytes()));
+        logger.debug("EXTERNAL AUTHENTICATE command "
+                + "(-> " + Conversion.arrayToHex(cmdBeginRMac.getBytes()) + ") "
+                + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
 
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             this.resetParams();
@@ -2906,7 +2898,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      *
      * @response Response Message receved by the off card entity
      */
-    protected void computeAndVerifyRMac(byte[] response) throws CardException {
+    protected void compudeAndVerifyRMac(byte[] response) throws CardException {
         if (this.scp == SCPMode.SCP_03_65
                 || this.scp == SCPMode.SCP_03_6D
                 || this.scp == SCPMode.SCP_03_25) {
@@ -3056,5 +3048,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         } catch (Exception e) {
             throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
         }
+    }
+
+    @Override
+    public ResponseAPDU sendCommand(byte[] APDUCommand) throws CardException {
+        CommandAPDU cmd = new CommandAPDU(APDUCommand);
+        ResponseAPDU resp = this.getCc().transmit(cmd);
+
+        return resp;
     }
 }

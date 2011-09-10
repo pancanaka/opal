@@ -15,24 +15,15 @@ package fr.xlim.ssd.opal.gui.view.components.tab;
 import fr.xlim.ssd.opal.gui.controller.AppletController;
 import fr.xlim.ssd.opal.gui.controller.ConfigFieldsException;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
-import java.awt.Component;
 
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.border.TitledBorder;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JButton;
-import javax.swing.JTextField;
-import javax.swing.Box;
-import javax.swing.JCheckBox;
-import javax.swing.border.TitledBorder;
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-import javax.swing.filechooser.*;
 
 
 /**
@@ -42,10 +33,10 @@ import javax.swing.filechooser.*;
  * @author Estelle Blandinieres
  * @author Tiana Razafindralambo
  */
-public class AppletPanel extends JPanel implements ActionListener, KeyListener{
+public class AppletPanel extends JPanel implements ActionListener, KeyListener {
 
     private AppletController controller;
-    
+
     public String title = "Applet";
 
     private JLabel jlAppletFile;
@@ -64,7 +55,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
 
     private JButton jbLoad;
 
-    private short lineHeight  = 20;
+    private short lineHeight = 20;
 
     public AppletPanel() {
 
@@ -77,7 +68,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         // Package AID
         tfPackageAID = new JTextField();
         tfPackageAID.addKeyListener(this);
-        
+
         // Security domain AID
         tfSDAID = new JTextField();
         tfSDAID.addKeyListener(this);
@@ -85,7 +76,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         // Parameters
         tfParam = new JTextField();
         tfParam.addKeyListener(this);
-     
+
         // Reorder cap file components
         cbConversion = new JCheckBox("Reorder cap file components", true);
 
@@ -95,15 +86,15 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         // Applet AID
         tfAppletAID = new JTextField();
         tfAppletAID.addKeyListener(this);
-        
+
         // Instance AID
         tfInstanceAID = new JTextField();
         tfInstanceAID.addKeyListener(this);
-        
+
         // Parameters
         tfParam2 = new JTextField();
         tfParam2.addKeyListener(this);
-        
+
         //Privileges
         tfPrivileges = new JTextField("00");
         tfPrivileges.addKeyListener(this);
@@ -112,7 +103,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         jbLoad = new JButton("Load applet");
         jbLoad.addActionListener(this);
         drawWindow();
-        
+
     }
 
     private void drawWindow() {
@@ -207,6 +198,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
 
     /**
      * Create a new label
+     *
      * @param name
      * @param width
      * @param height
@@ -214,15 +206,15 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
      */
     private JLabel createLabel(String name, int width, int height) {
         JLabel label = new JLabel(name);
-        label.setPreferredSize(new Dimension(width,height));
+        label.setPreferredSize(new Dimension(width, height));
         return label;
     }
 
     public Box createFormLine(String label, Component field) {
-        Box    ligne  = Box.createHorizontalBox();
-        JLabel lbl    = new JLabel(label);
+        Box ligne = Box.createHorizontalBox();
+        JLabel lbl = new JLabel(label);
 
-        lbl.setPreferredSize(new Dimension(150,lineHeight));
+        lbl.setPreferredSize(new Dimension(150, lineHeight));
         ligne.setPreferredSize(new Dimension(480, lineHeight));
 
         ligne.add(lbl);
@@ -231,26 +223,26 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
         return ligne;
     }
 
-    public void setController(AppletController controller)
-    {
+    public void setController(AppletController controller) {
         this.controller = controller;
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         Object o = e.getSource();
-        if(o instanceof JButton) {
+        if (o instanceof JButton) {
             JButton b = (JButton) o;
 
-            if(b.equals(bFile)) { 
+            if (b.equals(bFile)) {
                 JFileChooser chooser = new JFileChooser();
                 FileNameExtensionFilter filter = new FileNameExtensionFilter("CAP Files", "cap");
                 chooser.setAcceptAllFileFilterUsed(false);
                 chooser.setFileFilter(filter);
                 int returnVal = chooser.showOpenDialog(null);
-                if(returnVal == JFileChooser.APPROVE_OPTION) {
+                if (returnVal == JFileChooser.APPROVE_OPTION) {
                     tfAppletFile.setText(chooser.getSelectedFile().getAbsolutePath());
                 }
-            }else if(b.equals(jbLoad)) {
+            } else if (b.equals(jbLoad)) {
                 if (controller.isAuthenticated()) {
                     try {
                         controller.checkForm(
@@ -271,13 +263,13 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                     JOptionPane.showMessageDialog(null, "You have to be authenticated.", "Caution", JOptionPane.WARNING_MESSAGE);
                 }
             }
-        } 
+        }
 
     }
 
     @Override
     public void keyTyped(KeyEvent e) {
-        
+
     }
 
     @Override
@@ -302,7 +294,7 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
                     tfParam2.setText(Conversion.arrayToHex(tfParam2.getText().getBytes()));
                 }
             }
-        // if the user press CTRL+N, the text is converted into ASCII
+            // if the user press CTRL+N, the text is converted into ASCII
         } else if (e.isControlDown() && e.getKeyCode() == KeyEvent.VK_N) {
             if (o instanceof JTextField) {
                 JTextField field = (JTextField) o;
@@ -325,10 +317,10 @@ public class AppletPanel extends JPanel implements ActionListener, KeyListener{
 
     @Override
     public void keyReleased(KeyEvent e) {
-        
+
     }
 
-    private String byteToString (byte [] data) {
+    private String byteToString(byte[] data) {
         String ascii = "";
         for (int i = 0; i < data.length; i++) {
             ascii += (char) data[i];

@@ -11,7 +11,6 @@
 package fr.xlim.ssd.opal.gui.controller;
 
 /**
- *
  * @author Yorick Lesecque <yorick.lesecque@gmail.com>
  */
 public class ConfigFieldsException extends Exception {

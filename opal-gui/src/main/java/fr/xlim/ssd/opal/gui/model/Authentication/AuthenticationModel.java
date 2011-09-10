@@ -24,38 +24,37 @@ import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 
 /**
  * The model containing informations needed to authenticate the card
- *
+ * <p/>
  * The security domain used to communicate with the card is set using the
  * communication model.
- * 
+ *
  * @author Tiana Razafindralambo
  */
 public class AuthenticationModel {
 
-    private static final CustomLogger logger= new CustomLogger();
+    private static final CustomLogger logger = new CustomLogger();
     private CardReaderModel cardReaderModel;
     private CommunicationModel communication;
     private CardConfig cardConfig;
     private CardReaderStateListener cardReaderStateListener;
     private ProfileModel profile;
-    private String[][] profiles; 
-    
-    public AuthenticationModel(){}
+    private String[][] profiles;
 
-    public AuthenticationModel(CardReaderModel crm, CommunicationModel communication, ProfileController profileController)
-    {
+    public AuthenticationModel() {
+    }
+
+    public AuthenticationModel(CardReaderModel crm, CommunicationModel communication, ProfileController profileController) {
         this.cardReaderModel = crm;
         this.communication = communication;
-        
+
         this.profile = profileController.getProfileModel();
-        loadAllProfile(); 
-    } 
- 
+        loadAllProfile();
+    }
+
     /**
-     *  Load all profiles (cf. config.xml)
+     * Load all profiles (cf. config.xml)
      */
-    private void loadAllProfile()
-    {
+    private void loadAllProfile() {
         logger.info("Getting all profiles ...");
 
         this.profiles = this.profile.getAllProfiles();
@@ -69,62 +68,59 @@ public class AuthenticationModel {
         }*/
     }
 
-    public String[] getAllProfileNames()
-    {
+    public String[] getAllProfileNames() {
         String[] res = new String[this.profiles.length];
 
-        for(int i = 0; i < this.profiles.length; i++)
+        for (int i = 0; i < this.profiles.length; i++)
             res[i] = this.profiles[i][0];
         return res;
     }
+
     /**
      * Get all profiles
+     *
      * @return all profiles loaded.
      */
-    public String[][] getAllProfiles()
-    {
+    public String[][] getAllProfiles() {
         return this.profiles;
     }
 
-    public ProfileComponent getProfileByName(String name)
-    {
+    public ProfileComponent getProfileByName(String name) {
         return this.profile.getProfileByName(name);
     }
+
     /**
      * Get the card configuration
-     *
+     * <p/>
      * It can be null.
-     * 
+     *
      * @return CardConfig
      */
-    public CardConfig getDefaultCardConfig()
-    {  
+    public CardConfig getDefaultCardConfig() {
         return this.cardConfig;
     }
-    public void setDefaultCardConfig(CardConfig cardConfig)
-    {
+
+    public void setDefaultCardConfig(CardConfig cardConfig) {
         this.cardConfig = cardConfig;
     }
 
     /**
      * Get the card configuration using its ATR's value
-     * 
+     *
      * @param atr
      * @return CardConfig
      * @throws CardConfigNotFoundException
      */
-    public CardConfig getCardConfigByATR(ATR atr) throws CardConfigNotFoundException
-    {
+    public CardConfig getCardConfigByATR(ATR atr) throws CardConfigNotFoundException {
         return CardConfigFactory.getCardConfig(atr.getValue());
     }
 
     /**
      * Set the card reader model
-     * 
+     *
      * @param crm
      */
-    public void setCardReaderModel(CardReaderModel crm)
-    {
+    public void setCardReaderModel(CardReaderModel crm) {
         this.cardReaderModel = crm;
     }
 }

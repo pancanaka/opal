@@ -17,9 +17,11 @@ package fr.xlim.ssd.opal.gui.model.dataExchanges;
 
 public interface Observer {
 
-    public void updateALL(String change_text,String level);
-    public void updateAPDU(String head, String req, String params,String le,String data, String response, String res,  String level);
+    public void updateALL(String change_text, String level);
+
+    public void updateAPDU(String head, String req, String params, String le, String data, String response, String res, String level);
+
     public void updateLog(String change_text, String level);
-    
+
 
 }

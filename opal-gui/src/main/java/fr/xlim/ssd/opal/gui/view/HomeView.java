@@ -12,27 +12,22 @@
 package fr.xlim.ssd.opal.gui.view;
 
 import fr.xlim.ssd.opal.gui.App;
-import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.controller.MainController;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.KeyStroke;
-
 import fr.xlim.ssd.opal.gui.view.components.CardReaderMonitorToolbar;
+import fr.xlim.ssd.opal.gui.view.components.HomePanel;
 import fr.xlim.ssd.opal.gui.view.profiles.AddUpdateProfileView;
 import fr.xlim.ssd.opal.gui.view.profiles.ShowProfileView;
-import java.awt.event.ActionListener;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.FrameView;
 
+import javax.swing.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+
 /**
  * Graphical user interface home view.
- *
+ * <p/>
  * Displays the application main view to interact with users.
  *
  * @author David Pequegnot
@@ -40,16 +35,16 @@ import org.jdesktop.application.FrameView;
  */
 public class HomeView extends FrameView implements ActionListener {
 
-    private MainController           controller;
-    
+    private MainController controller;
+
     private CardReaderMonitorToolbar cardReaderMonitorToolbar;
 
     private AppJScrollPan scrollPan;
 
     private HomePanel homePanel;
-    
+
     private boolean homePanelIsSet = false;
-    
+
 
     /**
      * Constructor
@@ -67,6 +62,7 @@ public class HomeView extends FrameView implements ActionListener {
 
     /**
      * Return the main controller of the application
+     *
      * @return the controller
      */
     public MainController getController() {
@@ -75,6 +71,7 @@ public class HomeView extends FrameView implements ActionListener {
 
     /**
      * Return the main panel of the application
+     *
      * @return the instance of HomePanel
      */
     public HomePanel getHomePanel() {
@@ -100,23 +97,23 @@ public class HomeView extends FrameView implements ActionListener {
      */
     private void initializeMenu() {
         // Menus
-        JMenuBar  menuBar           = new JMenuBar();
-        JMenu     file              = new JMenu("File");
-        JMenu     options           = new JMenu("Options");
-        JMenu     about             = new JMenu("About");
-        JMenuItem itemQuit          = new JMenuItem("Quit");
-        JMenuItem itemMProfiles     = new JMenuItem("Manage profiles");
+        JMenuBar menuBar = new JMenuBar();
+        JMenu file = new JMenu("File");
+        JMenu options = new JMenu("Options");
+        JMenu about = new JMenu("About");
+        JMenuItem itemQuit = new JMenuItem("Quit");
+        JMenuItem itemMProfiles = new JMenuItem("Manage profiles");
         JMenuItem itemDataExchanges = new JMenuItem("Open data exchanges");
-        JMenuItem itemAboutOpal     = new JMenuItem("Opal");
+        JMenuItem itemAboutOpal = new JMenuItem("Opal");
 
         menuBar.add(file);
-            file.add(itemQuit);
+        file.add(itemQuit);
         menuBar.add(options);
-            options.add(itemMProfiles);
-            options.add(itemDataExchanges);
+        options.add(itemMProfiles);
+        options.add(itemDataExchanges);
         menuBar.add(about);
-            about.add(itemAboutOpal);
-       
+        about.add(itemAboutOpal);
+
         this.setMenuBar(menuBar);
 
         // Events
@@ -138,20 +135,19 @@ public class HomeView extends FrameView implements ActionListener {
 
     /**
      * Show the panel (in the <code>AppJScrollPan</code> class) depending on its type
+     *
      * @param type the string corresponding of the view to be shown
      */
     public void showPanel(String type) {
-        if(type.equals("home")) {
-            if(!homePanelIsSet) {
+        if (type.equals("home")) {
+            if (!homePanelIsSet) {
                 homePanelIsSet = true;
                 homePanel = new HomePanel(this.controller, this);
             }
             scrollPan = new AppJScrollPan(homePanel);
-        }
-        else if(type.equals("show profiles")) {
+        } else if (type.equals("show profiles")) {
             scrollPan = new AppJScrollPan(new ShowProfileView(this));
-        }
-        else if(type.equals("add update")) {
+        } else if (type.equals("add update")) {
             scrollPan = new AppJScrollPan(new AddUpdateProfileView(this));
         }
 
@@ -164,45 +160,44 @@ public class HomeView extends FrameView implements ActionListener {
 
     /**
      * Show the panel given to the function (in the <code>AppJScrollPan</code> class)
+     *
      * @param pan the <code>JPanel</code> to be shown
      */
-    public void showPanel(JPanel pan) { 
+    public void showPanel(JPanel pan) {
         scrollPan = new AppJScrollPan(pan);
         this.getFrame().setContentPane(scrollPan);
 
         // Set te application toolbar on the vue
         scrollPan.setColumnHeaderView(this.cardReaderMonitorToolbar);
-        
+
         this.getFrame().setVisible(true);
     }
 
 
     /**
      * Function called when an action is performed on the menu
+     *
      * @param ae the action performed
      */
     @Override
     public void actionPerformed(ActionEvent ae) {
         Object o = ae.getSource();
 
-        if(o instanceof JMenuItem) {
+        if (o instanceof JMenuItem) {
             JMenuItem menu = (JMenuItem) o;
-            String name    = menu.getText();
+            String name = menu.getText();
 
             /* If we click on the Quit menu */
-            if(name.equals("Quit")) {
+            if (name.equals("Quit")) {
                 int option = JOptionPane.showConfirmDialog(null, "Do you really want to quit ?", "Quit", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
+                if (option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
                     System.exit(0);
                 }
-            }
-            else if(name.equals("Manage profiles")) {
+            } else if (name.equals("Manage profiles")) {
                 showPanel("show profiles");
-            }
-            else if(name.equals("Open data exchanges")) {
+            } else if (name.equals("Open data exchanges")) {
                 App.showDataExchangesVue();
-            }
-            else if(name.equals("Opal")) {
+            } else if (name.equals("Opal")) {
                 String message = ""
                         + "OPAL is a Java 6 library that implements Global Platform 2.x \n"
                         + "specification. It is able to upload and manage applet life cycle \n"

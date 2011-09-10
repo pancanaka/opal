@@ -15,15 +15,11 @@ import fr.xlim.ssd.opal.gui.controller.ProfileController;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.ProfileComponent;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
-import java.awt.BorderLayout;
+
+import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import javax.swing.Box;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 
 /**
@@ -42,10 +38,10 @@ public class ShowProfileView extends JPanel implements ActionListener {
 
 
     // All buttons of this view
-    private JButton btModify    = new JButton("Modify");
-    private JButton btDelete    = new JButton("Delete");
-    private JButton btAdd       = new JButton("Add");
-    private JButton btOK        = new JButton("OK");
+    private JButton btModify = new JButton("Modify");
+    private JButton btDelete = new JButton("Delete");
+    private JButton btAdd = new JButton("Add");
+    private JButton btOK = new JButton("OK");
 
 
     // The controller of this class
@@ -60,7 +56,7 @@ public class ShowProfileView extends JPanel implements ActionListener {
      */
     public ShowProfileView(HomeView f) {
         this.f = f;
-        
+
         // Data for the profile tab
         String[] title = {"Profile name", "Description", "Implementation"};
         profileController = f.getController().getProfileController();
@@ -99,7 +95,7 @@ public class ShowProfileView extends JPanel implements ActionListener {
         btAdd.addActionListener(this);
         btOK.addActionListener(this);
     }
-    
+
 
     /**
      * This function is called when an action is performed on a button in the form.
@@ -108,29 +104,26 @@ public class ShowProfileView extends JPanel implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         Object o = ae.getSource();
 
-        if(o instanceof JButton) {
-            JButton bt  = (JButton) o;
+        if (o instanceof JButton) {
+            JButton bt = (JButton) o;
             String name = bt.getText();
 
             /* If we click on the modify button */
-            if(name.equals("Modify")) {
+            if (name.equals("Modify")) {
                 int row = tableau.getSelectedRow();
-                if(row<0) {
+                if (row < 0) {
                     JOptionPane.showMessageDialog(null, "No profile selected!", "Caution", JOptionPane.WARNING_MESSAGE);
-                }
-                else {
+                } else {
                     ProfileComponent profile = profileController.getProfile(row);
-                    this.f.showPanel( new AddUpdateProfileView(f, profile) );
+                    this.f.showPanel(new AddUpdateProfileView(f, profile));
                 }
-            }
-            else if(name.equals("Delete")) {
+            } else if (name.equals("Delete")) {
                 int row = tableau.getSelectedRow();
-                if(row<0) {
+                if (row < 0) {
                     JOptionPane.showMessageDialog(null, "No profile selected!", "Caution", JOptionPane.WARNING_MESSAGE);
-                }
-                else {
+                } else {
                     int option = JOptionPane.showConfirmDialog(null, "Do you really want to remove the profile?", "Confirm", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    if(option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
+                    if (option != JOptionPane.NO_OPTION && option != JOptionPane.CANCEL_OPTION && option != JOptionPane.CLOSED_OPTION) {
                         boolean res;
                         try {
                             res = profileController.deleteProfile(row);
@@ -140,11 +133,9 @@ public class ShowProfileView extends JPanel implements ActionListener {
                         }
                     }
                 }
-            }
-            else if(name.equals("Add")) {
+            } else if (name.equals("Add")) {
                 this.f.showPanel("add update");
-            }
-            else if(name.equals("OK")) {
+            } else if (name.equals("OK")) {
                 this.f.showPanel("home");
             }
         }

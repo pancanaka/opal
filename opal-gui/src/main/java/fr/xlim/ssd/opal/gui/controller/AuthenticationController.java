@@ -14,7 +14,6 @@ package fr.xlim.ssd.opal.gui.controller;
 import fr.xlim.ssd.opal.gui.communication.task.AuthenticationTask;
 import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
 import fr.xlim.ssd.opal.gui.model.Authentication.AuthenticationModel;
-
 import fr.xlim.ssd.opal.gui.model.Key.KeyModel;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
@@ -28,18 +27,20 @@ import fr.xlim.ssd.opal.library.SecLevel;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
  * Main controller for the authentication view
+ *
  * @author Tiana Razafindralambo
  * @author Estelle Blandinières
  */
 public class AuthenticationController {
 
-    private static final CustomLogger logger= new CustomLogger();
+    private static final CustomLogger logger = new CustomLogger();
     private AuthenticationModel authModel;
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;
@@ -49,13 +50,12 @@ public class AuthenticationController {
 
     /**
      * Default constructor
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     *
      * @param cardReaderModel
      * @param communication
      * @param profileController
-     * @param homeView 
+     * @param homeView
+     * @author Tiana Razafindralambo
      */
     public AuthenticationController(CardReaderModel cardReaderModel, CommunicationController communication, ProfileController profileController, HomeView homeView) {
         this.cardReaderModel = cardReaderModel;
@@ -68,10 +68,10 @@ public class AuthenticationController {
             this.setDefaultCardConfig();
         }
     }
-    
+
     /**
      * Default card config setter
-     * 
+     *
      * @author Tiana Razafindralambo
      */
     private void setDefaultCardConfig() {
@@ -82,11 +82,11 @@ public class AuthenticationController {
                 if (cardReaderModel.hasSelectedCardReaderItem()) {
                     logger.info("Default Card selected Name : " + cardReaderModel.getSelectedCardName());
                     logger.info("Default Card selected ATR : " + Conversion.arrayToHex(cardReaderModel.getSelectedCardATR().getValue()));
-                    
+
                     try {
                         CardConfig cardConfig = null;
                         cardConfig = authModel.getCardConfigByATR(cardReaderModel.getSelectedCardATR());
-                        
+
                         logger.info("Setting default card config");
                         authModel.setDefaultCardConfig(cardConfig);
                     } catch (CardConfigNotFoundException ex) {
@@ -99,27 +99,25 @@ public class AuthenticationController {
             }
         });
     }
-    
+
     /**
      * Launch the authentication task
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     *
      * @param cardConfig
-     * @param secLevel 
+     * @param secLevel
+     * @author Tiana Razafindralambo
      */
     public void authenticateCard(CardConfig cardConfig, SecLevel secLevel) {
         logger.info("Proceed to authentication");
         AuthenticationTask authenticationTask = new AuthenticationTask(cardConfig, this.cardReaderModel, this.communication, secLevel);
-        TaskFactory taskFactory = TaskFactory.run(authenticationTask); 
+        TaskFactory taskFactory = TaskFactory.run(authenticationTask);
     }
 
     /**
-     *  Get all profiles
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     * Get all profiles
+     *
      * @return all profiles loaded.
+     * @author Tiana Razafindralambo
      */
     public String[][] getAllProfiles() {
         return this.authModel.getAllProfiles();
@@ -127,10 +125,9 @@ public class AuthenticationController {
 
     /**
      * Get all profile names
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     *
      * @return all the profiles names
+     * @author Tiana Razafindralambo
      */
     public String[] getAllProfileNames() {
         return this.authModel.getAllProfileNames();
@@ -138,22 +135,20 @@ public class AuthenticationController {
 
     /**
      * Get the current default card profile name
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     *
      * @return name of the current default card profile name
+     * @author Tiana Razafindralambo
      */
     public String getCurrentCardDefaultProfileName() {
         return this.authModel.getDefaultCardConfig().getName();
     }
-    
+
     /**
      * Get the profile by name
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     *
      * @param name
      * @return <code>Object</code> ProfileComponent
+     * @author Tiana Razafindralambo
      */
     public ProfileComponent getProfileByName(String name) {
         ProfileComponent currProfile = this.authModel.getProfileByName(name);
@@ -173,11 +168,10 @@ public class AuthenticationController {
 
     /**
      * Get the card config of a profile
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     *
      * @param profile
      * @return <code>Object</code> CardConfig
+     * @author Tiana Razafindralambo
      */
     public CardConfig getCardConfigOf(ProfileComponent profile) {
         return profile.convertToCardConfig();
@@ -185,13 +179,12 @@ public class AuthenticationController {
 
     /**
      * Proceed to the card authentication
-     * 
-     * @author Tiana Razafindralambo
-     * 
-     * @param p profile
+     *
+     * @param p             profile
      * @param securityLevel
      * @throws CardConfigNotFoundException
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Tiana Razafindralambo
      */
     public void authenticate(ProfileComponent p, String securityLevel)
             throws CardConfigNotFoundException, ConfigFieldsException {
@@ -217,12 +210,10 @@ public class AuthenticationController {
     }
 
     /**
-     * 
-     * @author Estelle Blandinières
-     * 
      * @param p
      * @param securityLevel
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
     private void checkForm(ProfileComponent p, String securityLevel)
             throws ConfigFieldsException {
@@ -236,10 +227,9 @@ public class AuthenticationController {
     }
 
     /**
-     * @author Estelle Blandinières
-     * 
      * @param aid
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
     private void checkAID(String aid) throws ConfigFieldsException {
         if (aid.length() > 0) {
@@ -265,16 +255,14 @@ public class AuthenticationController {
     }
 
     /**
-     * 
-     * @author Estelle Blandinières
-     * 
      * @param scp
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
     private void checkSCP(String scp) throws ConfigFieldsException {
         System.out.println(scp);
-        if(scp.length() > 0) {
-            if(scp.compareToIgnoreCase(SCPMode.SCP_01_05.toString()) != 0
+        if (scp.length() > 0) {
+            if (scp.compareToIgnoreCase(SCPMode.SCP_01_05.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_01_05.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_01_15.toString()) != 0
                     && scp.compareToIgnoreCase(SCPMode.SCP_02_04.toString()) != 0
@@ -304,16 +292,14 @@ public class AuthenticationController {
     }
 
     /**
-     * 
-     * @author Estelle Blandinières
-     * 
      * @param tp
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
     private void checkTP(String tp) throws ConfigFieldsException {
         System.out.println(tp);
-        if(tp.length() > 0) {
-            if(tp.compareToIgnoreCase("T=0") != 0
+        if (tp.length() > 0) {
+            if (tp.compareToIgnoreCase("T=0") != 0
                     && tp.compareToIgnoreCase("T=1") != 0
                     && tp.compareToIgnoreCase("*") != 0) {
                 throw new ConfigFieldsException("The Transmission Protocol is unknown.\n");
@@ -324,74 +310,70 @@ public class AuthenticationController {
     }
 
     /**
-     * @author Estelle Blandinières
-     * 
      * @param impl
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
     private void checkImpl(String impl) throws ConfigFieldsException {
         System.out.println(impl);
-        if(impl.length() > 0) {
-            if(impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands."+"GemXpresso211Commands") != 0
-                    && impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands."+"GP2xCommands") != 0
-                    /* If new implementations are allowed : && impl.compareToIgnoreCase("*Implementation*") != 0  */) {
+        if (impl.length() > 0) {
+            if (impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands." + "GemXpresso211Commands") != 0
+                    && impl.compareToIgnoreCase("fr.xlim.ssd.opal.library.commands." + "GP2xCommands") != 0
+                /* If new implementations are allowed : && impl.compareToIgnoreCase("*Implementation*") != 0  */) {
                 throw new ConfigFieldsException("The Implementation is unknown.\n");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("Implementation can't be empty.\n");
         }
     }
 
     /**
-     * @author Estelle Blandinières
-     * 
      * @param keys
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
     private void checkKeys(ArrayList<KeyModel> keys) throws ConfigFieldsException {
         int n = keys.size();
 
-        for(int i = 0; i < n; i++) {
+        for (int i = 0; i < n; i++) {
             checkKey(keys.get(i), ++i);
         }
     }
 
     /**
-     * @author Estelle Blandinières
-     * 
      * @param key
      * @param index
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
     private void checkKey(KeyModel key, int index) throws ConfigFieldsException {
         Pattern p1 = Pattern.compile("[^0-9]+");
         Matcher m = p1.matcher(key.keyID);
 
-        if(!m.find()) {
+        if (!m.find()) {
             String id = key.keyID;
-            if(Integer.valueOf(id) < Integer.MAX_VALUE) {
+            if (Integer.valueOf(id) < Integer.MAX_VALUE) {
                 String version = key.version;
                 m = p1.matcher(version);
 
-                if(!m.find()) {
-                    if(Integer.valueOf(version) >= 0 && Integer.valueOf(version) < 256) {
+                if (!m.find()) {
+                    if (Integer.valueOf(version) >= 0 && Integer.valueOf(version) < 256) {
                         String value = key.key;
                         value = value.replaceAll(":", "");
                         value = value.replaceAll(" ", "");
 
-                        if(value.length() % 2 == 0 &&  value.length() < 64) {
+                        if (value.length() % 2 == 0 && value.length() < 64) {
                             p1 = Pattern.compile("[^0-9A-F]+", Pattern.CASE_INSENSITIVE);
                             m = p1.matcher(value);
 
-                            if(!m.find()) {
-                                if(key.type.compareTo("83") == 0
+                            if (!m.find()) {
+                                if (key.type.compareTo("83") == 0
                                         || key.type.compareTo("84") == 0
                                         || key.type.compareTo("0") == 0
                                         || key.type.compareTo("1") == 0
                                         || key.type.compareTo("88") == 0) {
 
-                                    if((key.type.compareTo("83") == 0
+                                    if ((key.type.compareTo("83") == 0
                                             || key.type.compareTo("0") == 0
                                             || key.type.compareTo("1") == 0)
                                             && value.length() != 48) {
@@ -399,53 +381,45 @@ public class AuthenticationController {
                                         throw new ConfigFieldsException("Key value at index " + index + " must contain 48 hex characters (192 bits).");
                                     }
 
-                                    if((key.type.compareTo("84") == 0
+                                    if ((key.type.compareTo("84") == 0
                                             || key.type.compareTo("88") == 0)
                                             && value.length() != 32) {
 
                                         throw new ConfigFieldsException("Key value at index " + index + " must contain 32 hex characters (128 bits).");
                                     }
-                                }
-                                else {
+                                } else {
                                     throw new ConfigFieldsException("Invalid key type at index " + index + ".");
                                 }
-                            }
-                            else {
+                            } else {
                                 throw new ConfigFieldsException("All key values have to be an hexadecimal string. You can write it in different ways like:\n -AD0F98\n -AD:0F:98\n -AD 0F 98");
                             }
-                        }
-                        else {
+                        } else {
                             throw new ConfigFieldsException("Key value at index " + index + " is invalid (maximum length: 192 bytes - 48 hex characters).");
                         }
 
-                    }
-                    else {
+                    } else {
                         throw new ConfigFieldsException("Key versions at index " + index + " must be between 0 and 255.");
                     }
-                }
-                else {
+                } else {
                     throw new ConfigFieldsException("Key versions at index " + index + " must be numeric.");
                 }
-            }
-            else {
+            } else {
                 throw new ConfigFieldsException("All key IDs must be numeric.");
             }
-        }
-        else {
+        } else {
             throw new ConfigFieldsException("All key IDs must be numeric.");
         }
     }
 
     /**
-     * @author Estelle Blandinières
-     * 
      * @param sl
-     * @throws ConfigFieldsException 
+     * @throws ConfigFieldsException
+     * @author Estelle Blandinières
      */
-    private void checkSecurityLevel (String sl) throws ConfigFieldsException {
+    private void checkSecurityLevel(String sl) throws ConfigFieldsException {
         System.out.println(sl);
-        if(sl.length() > 0) {
-            if(sl.compareToIgnoreCase(SecLevel.NO_SECURITY_LEVEL.toString()) != 0
+        if (sl.length() > 0) {
+            if (sl.compareToIgnoreCase(SecLevel.NO_SECURITY_LEVEL.toString()) != 0
                     && sl.compareToIgnoreCase(SecLevel.C_MAC.toString()) != 0
                     && sl.compareToIgnoreCase(SecLevel.C_ENC_AND_MAC.toString()) != 0
                     && sl.compareToIgnoreCase(SecLevel.R_MAC.toString()) != 0

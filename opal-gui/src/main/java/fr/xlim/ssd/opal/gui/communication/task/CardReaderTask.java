@@ -15,31 +15,30 @@ import fr.xlim.ssd.opal.gui.App;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderItem;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.tools.SmartCardListParser; 
+import fr.xlim.ssd.opal.gui.tools.SmartCardListParser;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.ResourceMap;
 import org.jdesktop.application.Task;
 
 import javax.smartcardio.*;
-import javax.smartcardio.ATR;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 /**
  * Listens to card reader connected to the computer.
- *
+ * <p/>
  * This <code>Task</code> listens for card readers connected to the computer. When the list of readers changes,
  * an event will be published, and the model which contains card terminal list will be updated.
  *
  * @author David Pequegnot
  * @author Tiana Razafindralambo
  */
-public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
-    private static final CustomLogger logger= new CustomLogger();
+public class CardReaderTask extends Task<Void, List<CardReaderItem>> {
+    private static final CustomLogger logger = new CustomLogger();
 
-    private static final int DEFAULT_REFRESH_INTERVAL  = 2000;
+    private static final int DEFAULT_REFRESH_INTERVAL = 2000;
 
     private static final int DEFAULT_INITIAL_READER_NUMBER = 10;
 
@@ -82,7 +81,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
         this.refreshInterval = (refreshInterval == null) ? DEFAULT_REFRESH_INTERVAL : refreshInterval;
 
         Integer initialReaderNumber = resourceMap.getInteger("CardReaderManagement.initialCardReaderNumber");
-        this.cardReaderItemList    = new ArrayList<CardReaderItem>(
+        this.cardReaderItemList = new ArrayList<CardReaderItem>(
                 (initialReaderNumber == null) ? DEFAULT_INITIAL_READER_NUMBER : initialReaderNumber);
         this.cardReaderItemListTmp = new ArrayList<CardReaderItem>(
                 (initialReaderNumber == null) ? DEFAULT_INITIAL_READER_NUMBER : initialReaderNumber);
@@ -104,7 +103,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
         while (!isCancelled()) {
             this.populateCardReaderItemList();
 
-            if (this.compareCardReaderItemsLists()) {  
+            if (this.compareCardReaderItemsLists()) {
                 logger.debug("Terminal list changed!");
                 this.updateCardReaderItemList();
             }
@@ -209,7 +208,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
         if (!cardReaderList.isEmpty()) {
             for (CardTerminal cardReader : cardReaderList) {
                 boolean cardFound = false;
-                
+
                 CardReaderItem item = new CardReaderItem();
                 item.setCardReaderName(cardReader.getName());
 
@@ -218,7 +217,7 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                 } catch (CardException ce) {
                     this.cardReaderItemListTmp.add(item);
                     logger.info("Unable to state card");
-                   // logger.debug("Unable to state card", ce);
+                    // logger.debug("Unable to state card", ce);
                     continue;
                 }
 
@@ -229,18 +228,18 @@ public class CardReaderTask extends Task<Void, List<CardReaderItem>>{
                 } catch (CardException ce) {
                     this.cardReaderItemListTmp.add(item);
                     logger.info("Error while connecting to the card");
-                   // logger.debug("Error while connecting to the card", ce);
+                    // logger.debug("Error while connecting to the card", ce);
                     continue;
                 }
 
                 CardChannel channel = card.getBasicChannel();
 
                 item.setCardChannel(channel);
-                
+
                 ATR atr = card.getATR();
                 String sAtr = Conversion.arrayToHex(atr.getBytes()).trim();
 
-                item.setCardATR(new fr.xlim.ssd.opal.library.params.ATR(atr.getBytes())); 
+                item.setCardATR(new fr.xlim.ssd.opal.library.params.ATR(atr.getBytes()));
 
                 String cardName = this.atrCache.get(sAtr);
                 if (cardName == null) {

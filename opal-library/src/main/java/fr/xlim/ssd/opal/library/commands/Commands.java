@@ -257,4 +257,13 @@ public interface Commands {
     ResponseAPDU endRMacSession() throws CardException;
 
 
+    /**
+     * Send APDU command to to the smart card device and retrive response
+     *
+     * @param APDUCommand
+     * @return APDU Response
+     * @throws CardException CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
+     */
+    ResponseAPDU sendCommand(byte[] APDUCommand) throws CardException;
+
 }

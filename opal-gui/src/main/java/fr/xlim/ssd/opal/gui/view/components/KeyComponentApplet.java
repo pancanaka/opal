@@ -10,16 +10,14 @@
 
 package fr.xlim.ssd.opal.gui.view.components;
 
-import java.awt.Dimension;
-import javax.swing.Box;
-import javax.swing.JLabel;
+import javax.swing.*;
+import java.awt.*;
 
 /**
- *
  * @author Estelle Blandinieres
  */
-public class KeyComponentApplet extends KeyComponent{
-    private short lineHeight  = 20;
+public class KeyComponentApplet extends KeyComponent {
+    private short lineHeight = 20;
 
     /**
      * Default constructor
@@ -30,6 +28,7 @@ public class KeyComponentApplet extends KeyComponent{
 
     /**
      * Constructor with tyoe, version, Id and key
+     *
      * @param type
      * @param keyVersion
      * @param keyId
@@ -41,7 +40,7 @@ public class KeyComponentApplet extends KeyComponent{
 
     public Box createLineForm() {
 
-        Box line1  = Box.createHorizontalBox();
+        Box line1 = Box.createHorizontalBox();
         line1.setPreferredSize(new Dimension(500, lineHeight));
         line1.add(new JLabel("Type "));
         line1.add(cbImp);
@@ -50,7 +49,7 @@ public class KeyComponentApplet extends KeyComponent{
         line1.add(new JLabel("Key id "));
         line1.add(JkeyId);
 
-        Box line2  = Box.createHorizontalBox();
+        Box line2 = Box.createHorizontalBox();
         line2.setPreferredSize(new Dimension(500, lineHeight));
         line2.add(new JLabel("Key "));
         line2.add(Jkey);

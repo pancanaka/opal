@@ -15,10 +15,11 @@ import fr.xlim.ssd.opal.gui.communication.task.AppletInstallationTask;
 import fr.xlim.ssd.opal.gui.communication.task.TaskFactory;
 import fr.xlim.ssd.opal.gui.model.dataExchanges.CustomLogger;
 import fr.xlim.ssd.opal.gui.model.reader.CardReaderModel;
-import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener; 
+import fr.xlim.ssd.opal.gui.model.reader.event.CardReaderStateListener;
 import fr.xlim.ssd.opal.gui.view.HomeView;
 import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+
 import java.io.File;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -26,40 +27,37 @@ import java.util.regex.Pattern;
 
 /**
  * Main controller for the applet installation view
+ *
  * @author Tiana Razafindralambo
  * @author Estelle Blandinières
  */
 public class AppletController {
 
-    
-    private static final CustomLogger logger= new CustomLogger();
+
+    private static final CustomLogger logger = new CustomLogger();
     private AppletPanel appletPanel;
     private CardReaderStateListener cardReaderStateListener;
     private CardReaderModel cardReaderModel;
     private CommunicationController communication;
-    
+
     /**
      * Default constructor
-     * 
-     * @author Tiana Razafindralambo
-     * 
-     * @param homeView main view
+     *
+     * @param homeView        main view
      * @param cardReaderModel
-     * @param communication controller that allows to communicate with the card
+     * @param communication   controller that allows to communicate with the card
+     * @author Tiana Razafindralambo
      */
-    public AppletController(HomeView homeView, CardReaderModel cardReaderModel, CommunicationController communication)
-    {
+    public AppletController(HomeView homeView, CardReaderModel cardReaderModel, CommunicationController communication) {
         this.appletPanel = homeView.getHomePanel().getAppletPanel();
         this.appletPanel.setController(this);
         this.cardReaderModel = cardReaderModel;
         this.communication = communication;
     }
-                    
+
     /**
      * Launch the applet installation task in a thread
-     * 
-     * @author Tiana Razafindralambo
-     * 
+     *
      * @param PACKAGE_ID
      * @param MODULE_AID
      * @param APPLET_ID
@@ -69,14 +67,14 @@ public class AppletController {
      * @param maxDataLength
      * @param privileges
      * @param paramsInstall4Install
-     * @param reorderCapFileComponents 
+     * @param reorderCapFileComponents
+     * @author Tiana Razafindralambo
      */
-    public void installApplet(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install, boolean reorderCapFileComponents)
-    {
-        logger.info("Installing Applet");                                                                   
+    public void installApplet(byte[] PACKAGE_ID, byte[] MODULE_AID, byte[] APPLET_ID, String ressource, byte[] securityDomainAID, byte[] params4Install4load, byte maxDataLength, byte[] privileges, byte[] paramsInstall4Install, boolean reorderCapFileComponents) {
+        logger.info("Installing Applet");
         AppletInstallationTask appletInstallationTask = new AppletInstallationTask(PACKAGE_ID, MODULE_AID, APPLET_ID, ressource, securityDomainAID, params4Install4load, maxDataLength, privileges, paramsInstall4Install, this.communication, reorderCapFileComponents);
-        TaskFactory taskFactory = TaskFactory.run(appletInstallationTask); 
-    }  
+        TaskFactory taskFactory = TaskFactory.run(appletInstallationTask);
+    }
 
     /**
      * Check all fields of the applet panel and call
@@ -93,40 +91,40 @@ public class AppletController {
      * @param paramsInstall4Install
      * @param reorderCapFileComponents
      */
-     public void checkForm(String packageAID, String instanceAID, String appletAID,
-             String ressource,String securityDomainAID, String params4Install4load,
-             String maxDataLength, String privileges, String paramsInstall4Install,
-             boolean reorderCapFileComponents) throws ConfigFieldsException  {
+    public void checkForm(String packageAID, String instanceAID, String appletAID,
+                          String ressource, String securityDomainAID, String params4Install4load,
+                          String maxDataLength, String privileges, String paramsInstall4Install,
+                          boolean reorderCapFileComponents) throws ConfigFieldsException {
 
-         checkRessource(ressource);
-         checkPackageAID(packageAID);
-         checkSecurityDomain(securityDomainAID);
-         checkParam(params4Install4load);
-         checkMaxDataLength(maxDataLength);
+        checkRessource(ressource);
+        checkPackageAID(packageAID);
+        checkSecurityDomain(securityDomainAID);
+        checkParam(params4Install4load);
+        checkMaxDataLength(maxDataLength);
 
-         checkAppletAID(appletAID);
-         checkInstanceAID(instanceAID);
-         checkParam(paramsInstall4Install);
-         checkPrivileges(privileges);
+        checkAppletAID(appletAID);
+        checkInstanceAID(instanceAID);
+        checkParam(paramsInstall4Install);
+        checkPrivileges(privileges);
 
 
-         byte[] pAID = Conversion.hexToArray(packageAID);
-         byte[] aAID = Conversion.hexToArray(appletAID);
-         byte[] iAID = Conversion.hexToArray(instanceAID);
-         ressource = (ressource.equals("")) ? null : ressource;
-         byte[] secuDomainAID = (("".equals(securityDomainAID))) ? null : Conversion.hexToArray(securityDomainAID);
-         byte[] par4Install4load = (("".equals(params4Install4load))) ? null : Conversion.hexToArray(params4Install4load);
-         String length = Integer.toHexString(Integer.parseInt(maxDataLength)).toUpperCase();
-         if (length.length() < 2) {
-             length = "0" + length;
-         }
-         byte maxLength = (byte)(Conversion.hexToArray(length)[0]);
-         byte[] parInstall4Install = (("".equals(paramsInstall4Install))) ? null : Conversion.hexToArray(paramsInstall4Install);
-         byte[] privilege = Conversion.hexToArray(privileges);
+        byte[] pAID = Conversion.hexToArray(packageAID);
+        byte[] aAID = Conversion.hexToArray(appletAID);
+        byte[] iAID = Conversion.hexToArray(instanceAID);
+        ressource = (ressource.equals("")) ? null : ressource;
+        byte[] secuDomainAID = (("".equals(securityDomainAID))) ? null : Conversion.hexToArray(securityDomainAID);
+        byte[] par4Install4load = (("".equals(params4Install4load))) ? null : Conversion.hexToArray(params4Install4load);
+        String length = Integer.toHexString(Integer.parseInt(maxDataLength)).toUpperCase();
+        if (length.length() < 2) {
+            length = "0" + length;
+        }
+        byte maxLength = (byte) (Conversion.hexToArray(length)[0]);
+        byte[] parInstall4Install = (("".equals(paramsInstall4Install))) ? null : Conversion.hexToArray(paramsInstall4Install);
+        byte[] privilege = Conversion.hexToArray(privileges);
 
-         installApplet(pAID, aAID, iAID, ressource, secuDomainAID,
-                 par4Install4load, maxLength, privilege, parInstall4Install,
-                 reorderCapFileComponents);
+        installApplet(pAID, aAID, iAID, ressource, secuDomainAID,
+                par4Install4load, maxLength, privilege, parInstall4Install,
+                reorderCapFileComponents);
     }
 
     private void checkPackageAID(String packageAID) throws ConfigFieldsException {
@@ -241,6 +239,7 @@ public class AppletController {
     /**
      * Check the parameters field
      * The field can be null, has to be an hexadecimal string, and
+     *
      * @param params4Install4load
      * @throws ConfigFieldsException
      */
@@ -267,14 +266,14 @@ public class AppletController {
 
     private void checkMaxDataLength(String maxDataLength) throws ConfigFieldsException {
         if (maxDataLength.length() != 0) {
-            
-            if ((Integer.parseInt(maxDataLength))<0 || (Integer.parseInt(maxDataLength)>255)) {
+
+            if ((Integer.parseInt(maxDataLength)) < 0 || (Integer.parseInt(maxDataLength) > 255)) {
                 throw new ConfigFieldsException("Max Data Length is "
-                            + "invalid.It must be between 0 and 255.\n");
+                        + "invalid.It must be between 0 and 255.\n");
             }
         } else {
             throw new ConfigFieldsException("Max Data Length can't be null. "
-                        +"\n");
+                    + "\n");
         }
     }
 
@@ -299,7 +298,7 @@ public class AppletController {
         }
     }
 
-    public boolean isAuthenticated () {
+    public boolean isAuthenticated() {
         return communication.isAuthenticated();
     }
 }

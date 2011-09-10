@@ -25,38 +25,38 @@ public class MyMessage {
     private String msg_content;
 
     //Constructor
-    public MyMessage(String level,String msg_content){
+    public MyMessage(String level, String msg_content) {
 
-        this.level=level;
-        this.msg_content=msg_content;
+        this.level = level;
+        this.msg_content = msg_content;
 
     }
 
     //Getters
-    public String getLevel(){
-        return  this.level;
+    public String getLevel() {
+        return this.level;
     }
 
-    public String getMessage(){
-        return  this.msg_content;
+    public String getMessage() {
+        return this.msg_content;
     }
 
     //Overriding toString method to format the message
     @Override
-    public String toString(){
-        Date date=new Date();
-        
-        return (this.getCurrentTime()+"  ["+this.level+"]  "+msg_content);
-        
+    public String toString() {
+        Date date = new Date();
+
+        return (this.getCurrentTime() + "  [" + this.level + "]  " + msg_content);
+
     }
 
     //Function that gets the current time, it is used in the toString method
-    public String getCurrentTime(){
+    public String getCurrentTime() {
 
-        Date date=new Date();
-        SimpleDateFormat sdf=new SimpleDateFormat("HH:mm:ss");
-        String strDate=sdf.format(date);
-        return  strDate;
+        Date date = new Date();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss");
+        String strDate = sdf.format(date);
+        return strDate;
 
     }
 

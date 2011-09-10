@@ -13,24 +13,19 @@ package fr.xlim.ssd.opal.gui.view.components;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.view.HomeView;
-import fr.xlim.ssd.opal.gui.view.components.tab.AppletPanel;
-import fr.xlim.ssd.opal.gui.view.components.tab.AuthenticationPanel;
-import fr.xlim.ssd.opal.gui.view.components.tab.DeletePanel;
-import fr.xlim.ssd.opal.gui.view.components.tab.SelectPanel;
-import fr.xlim.ssd.opal.gui.view.components.tab.SendAPDUPanel;
-import java.awt.BorderLayout;
-import javax.swing.Box;
-import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
+import fr.xlim.ssd.opal.gui.view.components.tab.*;
+
+import javax.swing.*;
+import java.awt.*;
 
 /**
  * The first panel displayed on the application. It shows these different panels :
  * <ul>
- *     <li>Authentication;</li>
- *     <li>Applet;</li>
- *     <li>Delete;</li>
- *     <li>Select;</li>
- *     <li>Send APDU;</li>
+ * <li>Authentication;</li>
+ * <li>Applet;</li>
+ * <li>Delete;</li>
+ * <li>Select;</li>
+ * <li>Send APDU;</li>
  * </ul>
  *
  * @author Thibault Desmoulins
@@ -49,15 +44,15 @@ public class HomePanel extends JPanel {
      * Display the <code>JTabbedPane</code> which contains all the panels mentioned in the class description
      *
      * @param controller the main controller of the application
-     * @param f the main view of the application
+     * @param f          the main view of the application
      * @see fr.xlim.ssd.opal.gui.view.HomeView
      */
     public HomePanel(MainController controller, HomeView f) {
-        authentication      = new AuthenticationPanel(controller, f, this);
-        applet              = new AppletPanel();
-        delete              = new DeletePanel();
-        select              = new SelectPanel();
-        send                = new SendAPDUPanel(controller.sendApduController);
+        authentication = new AuthenticationPanel(controller, f, this);
+        applet = new AppletPanel();
+        delete = new DeletePanel();
+        select = new SelectPanel();
+        send = new SendAPDUPanel(controller.sendApduController);
         JTabbedPane myPanel = new JTabbedPane();
 
         myPanel.addTab(authentication.title, authentication);
@@ -78,7 +73,7 @@ public class HomePanel extends JPanel {
     /**
      * @return the authentication panel, instance of the <code>AuthenticationPanel</code> class
      */
-    public AuthenticationPanel getAuthenticationPanel(){
+    public AuthenticationPanel getAuthenticationPanel() {
         return authentication;
     }
 
@@ -86,7 +81,7 @@ public class HomePanel extends JPanel {
     /**
      * @return the applet panel, instance of the <code>AppletPanel</code> class
      */
-    public AppletPanel getAppletPanel(){
+    public AppletPanel getAppletPanel() {
         return applet;
     }
 
@@ -94,7 +89,7 @@ public class HomePanel extends JPanel {
     /**
      * @return the delete panel, instance of the <code>DeletePanel</code> class
      */
-    public DeletePanel getDeletePanel(){
+    public DeletePanel getDeletePanel() {
         return delete;
     }
 
@@ -102,7 +97,7 @@ public class HomePanel extends JPanel {
     /**
      * @return the select panel, instance of the <code>SelectPanel</code> class
      */
-    public SelectPanel getSelectPanel(){
+    public SelectPanel getSelectPanel() {
         return select;
     }
 
@@ -110,7 +105,7 @@ public class HomePanel extends JPanel {
     /**
      * @return the send APDU panel, instance of the <code>SendAPDUPanel</code> class
      */
-    public SendAPDUPanel getSendApduPanel(){
+    public SendAPDUPanel getSendApduPanel() {
         return send;
     }
 

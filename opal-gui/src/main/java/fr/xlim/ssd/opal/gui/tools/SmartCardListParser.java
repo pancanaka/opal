@@ -13,7 +13,7 @@ package fr.xlim.ssd.opal.gui.tools;
 import fr.xlim.ssd.opal.library.params.ATR;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 
-import java.io.*;
+import java.io.InputStream;
 import java.util.Scanner;
 import java.util.regex.Pattern;
 
@@ -32,7 +32,7 @@ public class SmartCardListParser {
 
 
         boolean readDescription = false;
-        String  cardDescription = "";
+        String cardDescription = "";
 
         try {
             while (scanner.hasNextLine()) {

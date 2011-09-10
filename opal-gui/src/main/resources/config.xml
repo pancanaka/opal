@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <cardsconfig>
-    
+
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="GemXplore3G">
         <description>GemXplore3G</description>
         <listATR>
@@ -10,25 +10,29 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="31 56 BB 17 B4 EE 92 96 9B 5D 20 ED 57 24 94 64 31 56 BB 17 B4 EE 92 96" keyId="1" keyVersionNumber="01" type="DES_ECB"/>
-            <key keyDatas="E5 98 31 E0 66 54 B5 4B 12 0C E9 FF 33 C3 86 8E E5 98 31 E0 66 54 B5 4B" keyId="2" keyVersionNumber="01" type="DES_ECB"/>
-            <key keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20" keyId="3" keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="31 56 BB 17 B4 EE 92 96 9B 5D 20 ED 57 24 94 64 31 56 BB 17 B4 EE 92 96" keyId="1"
+                 keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="E5 98 31 E0 66 54 B5 4B 12 0C E9 FF 33 C3 86 8E E5 98 31 E0 66 54 B5 4B" keyId="2"
+                 keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20" keyId="3"
+                 keyVersionNumber="01" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="GemCombiXpresso_Lite_R2_Std_Jcop30">
         <description>GemCombiXpresso Lite R2 Std Jcop30</description>
         <listATR>
             <ATR value="3B 6D 00 00 80 31 80 65 B0 07 02 02 89 83 00 90 00"/>
-            <ATR value="3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00"/> 
+            <ATR value="3B 0F 11 38 77 B1 80 31 80 65 B0 07 02 02 89 83 00"/>
         </listATR>
         <isdAID value="A0 00 00 00 18 43 4D 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53" keyVersionNumber="255" type="SCGemVisa2"/>
+            <key keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"
+                 keyVersionNumber="255" type="SCGemVisa2"/>
         </defaultKeys>
     </card>
-    
+
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="JCOP20">
         <listATR>
             <ATR value="3B 69 00 FF 00 64 4A 10 04 32 05 90 00"/>
@@ -38,25 +42,31 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
-	
+
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="NXP_JCOP_31V2.2_36K">
         <description>NXP JCOP 31V2.2 36K</description>
         <listATR>
             <ATR value="3B EB 00 00 81 31 20 45 4A 43 4F 50 33 31 33 36 47 44 54 78"/>
-            <ATR value="3B 0A 0A 38 77 B1 4A 43 4F 50 33 30"/> 
+            <ATR value="3B 0A 0A 38 77 B1 4A 43 4F 50 33 30"/>
         </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="31 56 BB 17 B4 EE 92 96 9B 5D 20 ED 57 24 94 64 31 56 BB 17 B4 EE 92 96" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="E5 98 31 E0 66 54 B5 4B 12 0C E9 FF 33 C3 86 8E E5 98 31 E0 66 54 B5 4B" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="31 56 BB 17 B4 EE 92 96 9B 5D 20 ED 57 24 94 64 31 56 BB 17 B4 EE 92 96" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="E5 98 31 E0 66 54 B5 4B 12 0C E9 FF 33 C3 86 8E E5 98 31 E0 66 54 B5 4B" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="Gemalto_TOP_IM_GX4">
@@ -68,7 +78,8 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53" keyVersionNumber="255" type="SCGemVisa2"/>
+            <key keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"
+                 keyVersionNumber="255" type="SCGemVisa2"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="GemXplore_Xpresso">
@@ -80,13 +91,19 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="31 56 BB 17 B4 EE 92 96 9B 5D 20 ED 57 24 94 64 31 56 BB 17 B4 EE 92 96" keyId="1" keyVersionNumber="1" type="DES_ECB"/>
-            <key keyDatas="E5 98 31 E0 66 54 B5 4B 12 0C E9 FF 33 C3 86 8E E5 98 31 E0 66 54 B5 4B" keyId="2" keyVersionNumber="1" type="DES_ECB"/>
-            <key keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20" keyId="3" keyVersionNumber="1" type="DES_ECB"/>
+            <key keyDatas="31 56 BB 17 B4 EE 92 96 9B 5D 20 ED 57 24 94 64 31 56 BB 17 B4 EE 92 96" keyId="1"
+                 keyVersionNumber="1" type="DES_ECB"/>
+            <key keyDatas="E5 98 31 E0 66 54 B5 4B 12 0C E9 FF 33 C3 86 8E E5 98 31 E0 66 54 B5 4B" keyId="2"
+                 keyVersionNumber="1" type="DES_ECB"/>
+            <key keyDatas="8B 34 8F F6 C4 8A 8F 20 27 3A D0 1C 84 33 DA 8C 8B 34 8F F6 C4 8A 8F 20" keyId="3"
+                 keyVersionNumber="1" type="DES_ECB"/>
 
-            <key keyDatas="30 42 30 42 30 44 30 44 30 45 30 45 30 46 30 46" keyId="1" keyVersionNumber="2" type="DES_CBC"/>
-            <key keyDatas="01 23 45 67 89 AB CD EF 10 02 76 FE DC BA 01 23" keyId="2" keyVersionNumber="2" type="DES_CBC"/>
-            <key keyDatas="41 42 41 42 43 44 43 44 45 46 44 46 41 42 41 42" keyId="3" keyVersionNumber="2" type="DES_CBC"/>
+            <key keyDatas="30 42 30 42 30 44 30 44 30 45 30 45 30 46 30 46" keyId="1" keyVersionNumber="2"
+                 type="DES_CBC"/>
+            <key keyDatas="01 23 45 67 89 AB CD EF 10 02 76 FE DC BA 01 23" keyId="2" keyVersionNumber="2"
+                 type="DES_CBC"/>
+            <key keyDatas="41 42 41 42 43 44 43 44 45 46 44 46 41 42 41 42" keyId="3" keyVersionNumber="2"
+                 type="DES_CBC"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="Oberthur_Cosmopolic">
@@ -99,13 +116,16 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="Sm@rtcafe_Expert_64_V2">
-         <listATR>
+        <listATR>
             <ATR value="3B FD 18 00 FF 80 B1 FE 45 1F 07 80 73 00 21 13 57 4A 54 48 61 31 48 00 50"/>
         </listATR>
         <description>Sm@rtcafe Expert 64 V2</description>
@@ -113,9 +133,12 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="Infineon_JTOP_V2_16k">
@@ -127,9 +150,12 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="Oberthur_Cosmo_Dual_72k">
@@ -142,9 +168,12 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="Cyberflex_Palmera_V3">
@@ -156,9 +185,12 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="01" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="01" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="01" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="Cyberflex_Access_Augmented_Crypto">
@@ -170,9 +202,12 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="01" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="01" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="01" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="01" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="mNF1.2/SCWS">
@@ -184,9 +219,12 @@
         <scpMode value="02_15"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11" keyId="1" keyVersionNumber="3" type="DES_ECB"/>
-            <key keyDatas="22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22" keyId="2" keyVersionNumber="3" type="DES_ECB"/>
-            <key keyDatas="33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33" keyId="3" keyVersionNumber="3" type="DES_ECB"/>
+            <key keyDatas="11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11 11" keyId="1"
+                 keyVersionNumber="3" type="DES_ECB"/>
+            <key keyDatas="22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22" keyId="2"
+                 keyVersionNumber="3" type="DES_ECB"/>
+            <key keyDatas="33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33 33" keyId="3"
+                 keyVersionNumber="3" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest02_04">
@@ -194,7 +232,8 @@
         <scpMode value="02_04"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest02_05">
@@ -202,9 +241,12 @@
         <scpMode value="02_05"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest02_14">
@@ -212,7 +254,8 @@
         <scpMode value="02_14"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest02_0A">
@@ -220,7 +263,8 @@
         <scpMode value="02_0A"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest02_45">
@@ -228,9 +272,12 @@
         <scpMode value="02_45"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest02_55">
@@ -238,9 +285,12 @@
         <scpMode value="02_55"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest03_65">
@@ -248,20 +298,26 @@
         <scpMode value="03_65"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255" type="AES"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255"
+                 type="AES"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255"
+                 type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255"
+                 type="DES_ECB"/>
         </defaultKeys>
     </card>
-    
+
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest03_05">
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="03_05"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255" type="AES"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255"
+                 type="AES"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255"
+                 type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255"
+                 type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest03_0D">
@@ -269,9 +325,12 @@
         <scpMode value="03_0D"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255" type="AES"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255"
+                 type="AES"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255"
+                 type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255"
+                 type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest03_2D">
@@ -279,9 +338,12 @@
         <scpMode value="03_2D"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255" type="AES"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255"
+                 type="AES"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255"
+                 type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255"
+                 type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="CardTest03_25">
@@ -289,27 +351,33 @@
         <scpMode value="03_25"/>
         <transmissionProtocol value="T=1"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255" type="AES"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="1" keyVersionNumber="255"
+                 type="AES"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="2" keyVersionNumber="255"
+                 type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F" keyId="3" keyVersionNumber="255"
+                 type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="JCOP31_72B1_V2.2">
         <description>Smartcard Dual Interface JCOP31 with 72KB EEPROM and V2.2 Java Card Open Platform</description>
         <listATR>
             <ATR value="3B F9 18 00 00 81 31 FE 45 4A 43 4F 50 33 31 56 32 32 A8"/>
-            <ATR value="3B 8D 80 01 0D 38 33 B1 4A 43 4F 50 33 31 56 32 FF 34"/>   
+            <ATR value="3B 8D 80 01 0D 38 33 B1 4A 43 4F 50 33 31 56 32 FF 34"/>
         </listATR>
         <isdAID value="A0 00 00 00 03 00 00 00"/>
         <scpMode value="02_15"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
-    
+
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="JCOP UNKNOW">
         <description>An unknow JCOP card name</description>
         <listATR>
@@ -319,9 +387,12 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
         </defaultKeys>
     </card>
     <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="GALITT_WADAPA">
@@ -333,21 +404,25 @@
         <scpMode value="01_05"/>
         <transmissionProtocol value="T=0"/>
         <defaultKeys>
-            <key keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53" keyVersionNumber="255" type="SCGemVisa2"/>
+            <key keyDatas="47 45 4D 58 50 52 45 53 53 4F 53 41 4D 50 4C 45 47 45 4D 58 50 52 45 53"
+                 keyVersionNumber="255" type="SCGemVisa2"/>
         </defaultKeys>
     </card>
-	<card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="JCOP21">
-      <description>Jcop 21</description>
-      <listeATR>
-         <ATR value="3B FA 13 00 00 81 31 FE 45 4A 43 4F 50 32 31 56 32 33 31 91"/>
-      </listeATR>
-      <isdAID value="A0 00 00 00 03 00 00 00"/>
-      <scpMode value="02_15"/>
-      <transmissionProtocol value="T=1"/>
-      <defaultKeys>
-         <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1" keyVersionNumber="255" type="DES_ECB"/>
-         <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2" keyVersionNumber="255" type="DES_ECB"/>
-         <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3" keyVersionNumber="255" type="DES_ECB"/>
-      </defaultKeys>
-   </card>
+    <card defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands" name="JCOP21">
+        <description>Jcop 21</description>
+        <listeATR>
+            <ATR value="3B FA 13 00 00 81 31 FE 45 4A 43 4F 50 32 31 56 32 33 31 91"/>
+        </listeATR>
+        <isdAID value="A0 00 00 00 03 00 00 00"/>
+        <scpMode value="02_15"/>
+        <transmissionProtocol value="T=1"/>
+        <defaultKeys>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="1"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="2"
+                 keyVersionNumber="255" type="DES_ECB"/>
+            <key keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47" keyId="3"
+                 keyVersionNumber="255" type="DES_ECB"/>
+        </defaultKeys>
+    </card>
 </cardsconfig>

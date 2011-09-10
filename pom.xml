@@ -12,6 +12,7 @@
     <url>https://bitbucket.org/ssd/opal/</url>
 
     <modules>
+        <module>jessie-tls-psk</module>
         <module>opal-library</module>
         <module>opal-gui</module>
     </modules>
