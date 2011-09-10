@@ -7,14 +7,14 @@
     <groupId>fr.xlim.ssd</groupId>
     <artifactId>jessie-tls-psk</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>jessie-tls-psk</name>
     <url>https://bitbucket.org/ssd/opal-library</url>
 
     <parent>
         <groupId>fr.xlim.ssd</groupId>
         <artifactId>opal</artifactId>
-        <version>0.1</version>
+        <version>0.2-SNAPSHOT</version>
     </parent>
 
 </project>
