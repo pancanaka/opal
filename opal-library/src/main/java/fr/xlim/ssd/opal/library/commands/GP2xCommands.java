@@ -186,7 +186,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public SCKey[] getKeys() {
-        return this.keys.toArray(new SCKey[0]);
+        return this.keys.toArray(new SCKey[this.keys.size()]);
     }
 
     /* (non-Javadoc)
