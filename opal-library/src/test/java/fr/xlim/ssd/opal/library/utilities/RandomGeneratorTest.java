@@ -5,6 +5,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 public class RandomGeneratorTest {
@@ -30,6 +31,6 @@ public class RandomGeneratorTest {
     public void testGenerateRandom() {
         byte[] rs = new byte[]{1, 2, 2};
         RandomGenerator.setRandomSequence(rs);
-        assertEquals(rs, RandomGenerator.generateRandom(3));
+        assertArrayEquals(rs, RandomGenerator.generateRandom(3));
     }
 }
