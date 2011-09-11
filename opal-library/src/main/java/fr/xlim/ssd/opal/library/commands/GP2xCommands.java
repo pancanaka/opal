@@ -1325,7 +1325,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         IvParameterSpec ivSpec = new IvParameterSpec(iv_zero);
         byte[] dataWithPadding;
-        byte[] res = new byte[8];
+
+        byte[] res;
+
         if (aid.length % 8 != 0) { // We need a PADDING
 
             logger.debug("- Data needs PADDING!");
@@ -1870,7 +1872,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         byte[] computedCardChallenge = null;
         IvParameterSpec ivSpec = new IvParameterSpec(iv_zero);
         byte[] dataWithPadding;
-        byte[] res = new byte[8];
+        byte[] res;
         if (aid.length % 8 != 0) { // We need a PADDING
 
             logger.debug("- Data needs PADDING!");
@@ -2038,7 +2040,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.compudeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
-            byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
+            this.decryptCardResponseData(resp.getBytes());
         }
 
         // increment the value of counter icv for CENC
@@ -2468,7 +2470,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
             this.compudeAndVerifyRMac(resp.getBytes());
             if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
-                byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
+                this.decryptCardResponseData(resp.getBytes());
             }
             if (this.getSecMode() == secMode.C_ENC_AND_MAC
                     || this.getSecMode() == secMode.C_ENC_AND_C_MAC_AND_R_MAC
@@ -2665,7 +2667,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.compudeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
-            byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
+            this.decryptCardResponseData(resp.getBytes());
         }
 
         // increment the value of counter icv for CENC

@@ -147,8 +147,9 @@ public class Main {
     }
 
     public static void RAMOverHTTP() throws ClassNotFoundException, CommandsImplementationNotFound, IOException, CardException {
+
         channel = null;
-        SecLevel secLevel = SecLevel.C_ENC_AND_MAC;
+
         /// get the card config and card channel, detection of t=0 or t=1 is automatic
         CardConfig cardConfig = getCardChannel(1, "*");
 
