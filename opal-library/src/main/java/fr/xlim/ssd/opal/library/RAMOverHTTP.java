@@ -26,10 +26,9 @@ public class RAMOverHTTP {
     /// the logger
     private final static Logger logger = LoggerFactory.getLogger(RAMOverHTTP.class);
 
-    SecLevel securityLevel;
-    String serverAdress;
+    String serverAddress;
     int portNumber;
-    String administratioHost;
+    String administrationHost;
     String agentId;
 
     SSLSocket cSock;
@@ -41,12 +40,12 @@ public class RAMOverHTTP {
         Security.setProperty("jessie.psk.identity", PSKIdentity);
 
         String nextURI = null;
-        this.administratioHost = "localhost";
+        this.administrationHost = "localhost";
         this.agentId = "OpalJcop21";
     }
 
     public void setup(String serverAdress, int portNumber, CipherSuite cipherSuite) throws IOException {
-        this.serverAdress = serverAdress;
+        this.serverAddress = serverAdress;
         this.portNumber = portNumber;
         Security.addProvider(new Jessie());
         SSLSocketFactory fact = new SSLSocketFactory(null, null, new SecureRandom(), null);
@@ -61,11 +60,10 @@ public class RAMOverHTTP {
         cSock.session.params.setDeflating(false);
     }
 
-    public void manage(String nextURI, SecurityDomain securityDomain) throws IOException, CardException {
+    public void manage(SecurityDomain securityDomain) throws IOException, CardException {
 
         OutputStream out = cSock.getOutputStream();
         InputStream in = cSock.getInputStream();
-        String inputLine;
 
 
         boolean moreCommand = true;
@@ -133,14 +131,14 @@ public class RAMOverHTTP {
             }
             logger.debug("message " + i + "\n" + message);
             HttpPostResponse httpResponse = new HttpPostResponse(message.getBytes());
-            nextURI = httpResponse.getNextURI();
+            String nextURI = httpResponse.getNextURI();
             ResponseAPDU response = securityDomain.sendCommand(httpResponse.getCommandAPDU());
             //logger.info(Conversion.arrayToHex(response.getData()));
             if (nextURI == null) {
                 moreCommand = false;
                 logger.debug("No more URI");
             } else {
-                HttpPostRequest httpPostRequest = new HttpPostRequest(nextURI, administratioHost, agentId, response);
+                HttpPostRequest httpPostRequest = new HttpPostRequest(nextURI, administrationHost, agentId, response);
                 out.write(httpPostRequest.getContent());
             }
             if (response.getSW() != ISO7816.SW_NO_ERROR.getValue()) {

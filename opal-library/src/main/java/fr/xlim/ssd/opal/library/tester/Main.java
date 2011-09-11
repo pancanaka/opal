@@ -166,7 +166,7 @@ public class Main {
 
         RAMOverHTTP ram = new RAMOverHTTP("psk-tls.key", "null", "PSK_A", "localhost", "OPALJcop21");
         ram.setup("localhost", 9020, CipherSuite.TLS_PSK_WITH_3DES_EDE_CBC_SHA);
-        ram.manage(null, securityDomain);
+        ram.manage(securityDomain);
     }
 
     public static void classicCommunication() throws ClassNotFoundException, CommandsImplementationNotFound, CardException, IOException {
