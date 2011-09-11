@@ -51,7 +51,7 @@ public class RandomGenerator {
             logger.warn("Using a not random sequence: "
                     + Conversion.arrayToHex(randomSequence));
 
-            return randomSequence;
+            return randomSequence.clone();
         }
 
         // classical random
