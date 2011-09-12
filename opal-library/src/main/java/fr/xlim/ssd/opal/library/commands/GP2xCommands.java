@@ -2355,6 +2355,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             ber[1] = (byte) 0x82;
             ber[2] = (byte) (capFileRemainLen / 256);
             ber[3] = (byte) (capFileRemainLen % 256);
+        }  else {
+            throw new IllegalStateException("capFileRemainLen is >= 65536");
         }
 
         logger.debug("* ber is " + Conversion.arrayToHex(ber));

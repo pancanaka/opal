@@ -69,7 +69,7 @@ public class HttpPostRequest {
             temp = new byte[response.getData().length % 8];
             System.arraycopy(response.getData(), k * 8, temp, 0, response.getData().length % 8);
             restOfdivision = Integer.toHexString(response.getData().length % 8);
-            if ((restOfdivision.length() % 2) == 1) {
+            if ((restOfdivision.length() % 2) != 0) {
                 restOfdivision = "0" + restOfdivision;
             }
             chunkedResponse += restOfdivision + " " + Conversion.arrayToHex(CRLF);

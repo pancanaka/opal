@@ -40,16 +40,20 @@ public class ATR {
         this.value = newATR;
     }
 
-    /* (non-Javadoc)
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
-        if (this == obj) return true;
+        ATR atr = (ATR) o;
 
-        if (!(obj instanceof ATR)) return false;
+        if (!Arrays.equals(value, atr.value)) return false;
 
-        return (Arrays.equals(((ATR) obj).getValue(), this.getValue()));
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return Arrays.hashCode(value);
     }
 }
