@@ -33,7 +33,7 @@ import java.util.Collections;
  */
 public class ProfileModel {
 
-    ArrayList<ProfileComponent> profiles = new ArrayList<ProfileComponent>();
+    private ArrayList<ProfileComponent> profiles = new ArrayList<ProfileComponent>();
 
     private CardConfig profiles_cf[];
 
