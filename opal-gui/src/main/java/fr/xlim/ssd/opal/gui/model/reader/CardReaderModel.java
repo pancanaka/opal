@@ -101,7 +101,7 @@ public class CardReaderModel {
     public synchronized void setCardReaderItems(List<CardReaderItem> cardReaderItems) {
             if (cardReaderItems.isEmpty()) {
                 this.selectedCardReaderItem = new CardReaderItem("", "");
-            } else if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase("") && !cardReaderItems.isEmpty()) {
+            } else if (this.selectedCardReaderItem.getCardReaderName().equalsIgnoreCase("")) {
                 this.selectedCardReaderItem = cardReaderItems.get(0);
             } else {
                 boolean found = false;

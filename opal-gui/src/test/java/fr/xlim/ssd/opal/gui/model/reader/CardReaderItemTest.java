@@ -12,6 +12,9 @@ public class CardReaderItemTest {
     @Test
     public void testEquals() {
         CardReaderItem cri1 = new CardReaderItem();
+        assertEquals(cri1,cri1);
+        assertFalse(cri1.equals(new Object()));
+
         CardReaderItem cri2 = new CardReaderItem();
         assertEquals(cri1,cri2);
 
