@@ -106,7 +106,7 @@ public class TLV {
      * @return value of value.
      */
     public byte[] getValue() {
-        return this.value;
+        return this.value.clone();
     }
 
     /**

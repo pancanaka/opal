@@ -36,8 +36,7 @@ public class ATR {
      * @param newATR The new ATR value
      */
     public void setValue(byte[] newATR) {
-        //TODO: check ATR size
-        this.value = newATR;
+        this.value = newATR.clone();
     }
 
     @Override
