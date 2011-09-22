@@ -13,4 +13,9 @@ public class CardConfigNotFoundException extends Exception {
     public CardConfigNotFoundException(String message) {
         super(message);
     }
+
+    public CardConfigNotFoundException(String message, Exception exception) {
+        super(message,exception);
+    }
+
 }

@@ -71,71 +71,7 @@ public class CardConfigFactoryTest {
         }
     }
 
-    /**
-     * TODO: Create a valid test
-     */
     @Test
-    public void testGetCardConfigNullAtrParameter() {
-
-    }
-
-    /**
-     * TODO: Create a valid test
-     */
-    @Test
-    public void testGetCardConfigValidAtrParameter() {
-
-    }
-
-    /**
-     * TODO: Create a valid test
-     */
-    @Test
-    public void testGetCardConfigNotValidAtrParameter() {
-
-    }
-
-    /**
-     * TODO: Create a valid test
-     */
-    @Test
-    public void testDeleteCardConfigNullNameParameter() {
-
-    }
-
-    /**
-     * TODO: Create a valid test
-     */
-    @Test
-    public void testDeleteCardConfigNonExistentNameParameter() {
-
-    }
-
-    /**
-     * TODO: Create a valid test
-     */
-    @Test
-    public void testDeleteCardConfigExistentNameParameter() {
-
-    }
-
-    /**
-     * TODO: Create a valid test
-     */
-    @Test
-    public void testAddCardConfigNullCardConfigParameter() {
-
-    }
-
-    /**
-     * TODO: Create a valid test
-     */
-    public void testAddCardConfig() {
-
-    }
-
-    @Test
-    @Ignore
     public void testGetAllCardFromATR() throws JDOMException, IOException, CardConfigNotFoundException {
         InputStream input = CardConfigFactoryTest.class.getResourceAsStream("/atr.xml");
         Reader reader = new InputStreamReader(input);

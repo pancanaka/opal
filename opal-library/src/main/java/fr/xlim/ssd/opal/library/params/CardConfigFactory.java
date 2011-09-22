@@ -16,7 +16,9 @@ import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Delivers card configuration CardConfig
@@ -34,25 +36,17 @@ public class CardConfigFactory {
     /// the logger
     private final static Logger logger = LoggerFactory.getLogger(CardConfigFactory.class);
 
-    private static String configFile = "/src/main/resources/config.xml";
+    private static String localConfigFile;
 
-    public static void setConfigFile(String configFile) {
-        CardConfigFactory.configFile = configFile;
+    public static void setLocalConfigFile(String localConfigFile) {
+        CardConfigFactory.localConfigFile = localConfigFile;
     }
 
-    public static String getConfigFile() {
-        return CardConfigFactory.configFile;
+    public static String getLocalConfigFile() {
+        return CardConfigFactory.localConfigFile;
     }
 
-    /**
-     * Get the card config based on its name.
-     *
-     * @param cardName the card identifier in config.xml
-     * @return a CardConfig object if the card identifier is found
-     * @throws CardConfigNotFoundException if card configuration not found
-     */
-    public static CardConfig getCardConfig(String cardName)
-            throws CardConfigNotFoundException {
+    private static CardConfig searchCardConfig(InputStream stream, String cardName) throws CardConfigNotFoundException {
 
         String name = null;
         String description = null;
@@ -65,10 +59,8 @@ public class CardConfigFactory {
 
         try {
 
-            File f = new File(System.getProperty("user.dir") + configFile);
-
             Document document = DocumentBuilderFactory.newInstance().
-                    newDocumentBuilder().parse(f);
+                    newDocumentBuilder().parse(stream);
 
             NodeList cards = document.getElementsByTagName("card");
             Element desiredCard = null;
@@ -78,10 +70,6 @@ public class CardConfigFactory {
                 if (((Element) cards.item(i)).getAttribute("name").equals(cardName)) {
                     desiredCard = (Element) cards.item(i);
                 }
-            }
-
-            if (desiredCard == null) {
-                throw new CardConfigNotFoundException("Card \"" + cardName + "\" not found");
             }
 
             // set and return CardConfig
@@ -95,14 +83,43 @@ public class CardConfigFactory {
             impl = getImpl(desiredCard);
 
         } catch (IOException e) {
-            throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
+            throw new CardConfigNotFoundException("cannot read the config.xml file ", e);
         } catch (SAXException e) {
-            throw new CardConfigNotFoundException("SAX error when reading config.xml file:" + e.getMessage());
+            throw new CardConfigNotFoundException("SAX error when reading config.xml file", e);
         } catch (ParserConfigurationException e) {
-            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
+            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file", e);
         }
 
         return new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
+
+    }
+
+    /**
+     * Get the card config based on its name.
+     *
+     * @param cardName the card identifier in config.xml
+     * @return a CardConfig object if the card identifier is found
+     * @throws CardConfigNotFoundException if card configuration not found
+     */
+    public static CardConfig getCardConfig(String cardName) throws CardConfigNotFoundException {
+        CardConfig cardConfig;
+        if(localConfigFile != null) {
+            File f = new File(System.getProperty("user.dir") + localConfigFile);
+            try {
+                cardConfig = searchCardConfig(new FileInputStream(f), cardName);
+            } catch (IOException e) {
+                throw new CardConfigNotFoundException("cannot read the config.xml file ", e);
+            }
+            if(cardConfig != null) {
+                return cardConfig;
+            }
+        }
+        InputStream is = CardConfigFactory.class.getResourceAsStream("/config.xml");
+        cardConfig = searchCardConfig(is,cardName);
+        if(cardConfig != null) {
+            return cardConfig;
+        }
+        throw new CardConfigNotFoundException("cannot found card config");
     }
 
     /**
@@ -125,7 +142,7 @@ public class CardConfigFactory {
         CardConfig configs[];
 
         try {
-            File f = new File(System.getProperty("user.dir") + configFile);
+            File f = new File(System.getProperty("user.dir") + localConfigFile);
 
             Document document = DocumentBuilderFactory.newInstance().
                     newDocumentBuilder().parse(f);
@@ -345,7 +362,7 @@ public class CardConfigFactory {
         ATR arr2found = new ATR(atr);
 
         try {
-            File f = new File(System.getProperty("user.dir") + configFile);
+            File f = new File(System.getProperty("user.dir") + localConfigFile);
 
             Document document = DocumentBuilderFactory.newInstance().
                     newDocumentBuilder().parse(f);
@@ -398,7 +415,7 @@ public class CardConfigFactory {
         boolean t = false;
 
         try {
-            File f = new File(System.getProperty("user.dir") + configFile);
+            File f = new File(System.getProperty("user.dir") + localConfigFile);
 
             Document document = DocumentBuilderFactory.newInstance().
                     newDocumentBuilder().parse(f);
@@ -447,7 +464,7 @@ public class CardConfigFactory {
             throws CardConfigNotFoundException {
 
         try {
-            File f = new File(System.getProperty("user.dir") + configFile);
+            File f = new File(System.getProperty("user.dir") + localConfigFile);
 
             Document document = DocumentBuilderFactory.newInstance().
                     newDocumentBuilder().parse(f);
