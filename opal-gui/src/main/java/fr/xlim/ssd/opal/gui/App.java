@@ -12,6 +12,7 @@ package fr.xlim.ssd.opal.gui;
 
 import fr.xlim.ssd.opal.gui.controller.MainController;
 import fr.xlim.ssd.opal.gui.view.dataExchanges.DataExchangesView;
+import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import org.jdesktop.application.Application;
 import org.jdesktop.application.SingleFrameApplication;
 
@@ -33,7 +34,11 @@ public class App extends SingleFrameApplication {
      */
     @Override
     protected void startup() {
-        this.mainController = new MainController(this);
+        try {
+            this.mainController = new MainController(this);
+        } catch (CardConfigNotFoundException e) {
+            throw new IllegalStateException("cannot found card config",e);
+        }
 
         this.instance = this;
 

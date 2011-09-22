@@ -113,7 +113,7 @@ public class ProfileModel {
     public void addProfile(CardConfig card)
             throws CardConfigNotFoundException {
 
-        CardConfigFactory.addCardConfig(card);
+        //CardConfigFactory.addCardConfig(card);
         profiles.add(ProfileComponent.convertToProfileComponent(card));
         Collections.sort(this.profiles);
     }
@@ -121,8 +121,8 @@ public class ProfileModel {
     public void updateProfile(CardConfig card)
             throws CardConfigNotFoundException {
 
-        CardConfigFactory.deleteCardConfig(card.getName());
-        CardConfigFactory.addCardConfig(card);
+        //CardConfigFactory.deleteCardConfig(card.getName());
+        //CardConfigFactory.addCardConfig(card);
 
         profiles.remove(getProfileByName(card.getName()));
         profiles.add(ProfileComponent.convertToProfileComponent(card));
@@ -174,11 +174,13 @@ public class ProfileModel {
         String name = profiles.get(id).getName();
         boolean t = false;
 
+        /*
         t = CardConfigFactory.deleteCardConfig(name);
 
         if (t) {
             profiles.remove(id);
         }
+        */
 
         return t;
     }

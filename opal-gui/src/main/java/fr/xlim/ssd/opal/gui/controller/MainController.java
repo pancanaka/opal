@@ -57,7 +57,7 @@ public class MainController {
      * @param application the application context
      * @see HomeView
      */
-    public MainController(Application application) {
+    public MainController(Application application) throws CardConfigNotFoundException {
 
         this.application = application; 
         
@@ -71,12 +71,8 @@ public class MainController {
 
         //this.com = new Communication();
 
-        try {
             this.profileController = new ProfileController();
-        } catch (CardConfigNotFoundException ex) {
-           new JOptionPane().showMessageDialog(null, ex.getMessage(), "Caution", JOptionPane.WARNING_MESSAGE);
-        }
-        
+
         this.authController = new AuthenticationController(this.cardReaderModel, this.communication, this.profileController, this.homeView);
 
         this.appletController = new AppletController(this.homeView, this.cardReaderModel, this.communication);
