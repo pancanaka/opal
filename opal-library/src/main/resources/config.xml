@@ -210,6 +210,23 @@
                  keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
         </defaultKeys>
     </card>
+    <card name="Cyberflex_32K e-gate" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
+        <description>Cyberflex Palmera V3</description>
+        <listATR>
+            <ATR value="3B 75 94 00 00 62 02 02 03 01"/>
+        </listATR>
+        <isdAID value="A0 00 00 00 03 00 00"/>
+        <scpMode value="01_05"/>
+        <transmissionProtocol value="T=0"/>
+        <defaultKeys>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="1"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="2"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+            <key type="DES_ECB" keyVersionNumber="01" keyId="3"
+                 keyDatas="40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"/>
+        </defaultKeys>
+    </card>
     <card name="Cyberflex_Palmera_V3" defaultImpl="fr.xlim.ssd.opal.library.commands.GP2xCommands">
         <description>Cyberflex Palmera V3</description>
         <listATR>
