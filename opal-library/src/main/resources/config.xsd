@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://secinfo.msi.unilim.fr/opal"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://secinfo.msi.unilim.fr/opal"
+            xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+            jxb:version="2.0">
+
+    <xsd:element name="cards">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="card" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="description" type="xsd:string" minOccurs="0"/>
+                            <xsd:element name="atrs">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="atr" minOccurs="1" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:attribute name="value" type="xsd:string"/>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="aid">
+                                <xsd:complexType>
+                                    <xsd:attribute name="value" type="xsd:string"/>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="scp">
+                                <xsd:complexType>
+                                    <xsd:attribute name="value">
+                                        <xsd:simpleType>
+                                            <xsd:restriction base="xsd:string">
+                                                <xsd:enumeration value="01_05"/>
+                                                <xsd:enumeration value="02_15"/>
+                                            </xsd:restriction>
+                                        </xsd:simpleType>
+                                    </xsd:attribute>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="tp">
+                                <xsd:complexType>
+                                    <xsd:attribute name="value">
+                                        <xsd:simpleType>
+                                            <xsd:restriction base="xsd:string">
+                                                <xsd:enumeration value="T=0"/>
+                                                <xsd:enumeration value="T=1"/>
+                                            </xsd:restriction>
+                                        </xsd:simpleType>
+                                    </xsd:attribute>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="keys">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="key" minOccurs="1" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:attribute name="type" type="xsd:string">
+                                                    <xsd:simpleType>
+                                                        <xsd:restriction base="xsd:string">
+                                                            <xsd:enumeration value="DES_ECB"/>
+                                                            <xsd:enumeration value="SCGemVisa2"/>
+                                                            <xsd:enumeration value="DES_CBC"/>
+                                                        </xsd:restriction>
+                                                    </xsd:simpleType>
+
+                                                        </xsd:attribute>
+                                                <xsd:attribute name="version" type="xsd:positiveInteger"/>
+                                                <xsd:attribute name="id" type="xsd:positiveInteger"/>
+                                                <xsd:attribute name="value" type="xsd:string"/>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                        <xsd:attribute name="name" type="xsd:string"/>
+                        <xsd:attribute name="implementation" type="xsd:string"/>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>
