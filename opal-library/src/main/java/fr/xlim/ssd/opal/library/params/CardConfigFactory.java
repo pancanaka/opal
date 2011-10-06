@@ -1,24 +1,25 @@
 package fr.xlim.ssd.opal.library.params;
 
-import fr.xlim.ssd.opal.library.*;
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import fr.xlim.ssd.opal.library.SCKey;
+import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.jdom.Document;
+import org.jdom.Element;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.*;
-import org.xml.sax.SAXException;
+import org.w3c.dom.NodeList;
 
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Delivers card configuration CardConfig
@@ -29,97 +30,61 @@ import java.io.InputStream;
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
+ *
  * @see CardConfig
  */
 public class CardConfigFactory {
 
-    /// the logger
     private final static Logger logger = LoggerFactory.getLogger(CardConfigFactory.class);
 
-    private static String localConfigFile;
+    private final static String MAIN_OPAL_CONFIG_IN_CLASSPATH = "/config.xml";
 
-    public static void setLocalConfigFile(String localConfigFile) {
-        CardConfigFactory.localConfigFile = localConfigFile;
-    }
+    private File localConfigFile;
 
-    public static String getLocalConfigFile() {
-        return CardConfigFactory.localConfigFile;
-    }
-
-    private static CardConfig searchCardConfig(InputStream stream, String cardName) throws CardConfigNotFoundException {
-
-        String name = null;
-        String description = null;
-        ATR[] atrs = null;
-        byte[] isd = null;
-        SCPMode scpMode = null;
-        String tp = null;
-        SCKey[] keys = null;
-        String impl = null;
-
-        try {
-
-            Document document = DocumentBuilderFactory.newInstance().
-                    newDocumentBuilder().parse(stream);
-
-            NodeList cards = document.getElementsByTagName("card");
-            Element desiredCard = null;
-
-            // looking for the card identifier in config.xml file
-            for (int i = 0; i < cards.getLength(); i++) {
-                if (((Element) cards.item(i)).getAttribute("name").equals(cardName)) {
-                    desiredCard = (Element) cards.item(i);
-                }
-            }
-
-            // set and return CardConfig
-            name = getName(desiredCard);
-            description = getDescription(desiredCard);
-            atrs = getATRs(desiredCard);
-            isd = getISD(desiredCard);
-            scpMode = getSCP(desiredCard);
-            tp = getTP(desiredCard);
-            keys = getKeys(desiredCard);
-            impl = getImpl(desiredCard);
-
-        } catch (IOException e) {
-            throw new CardConfigNotFoundException("cannot read the config.xml file ", e);
-        } catch (SAXException e) {
-            throw new CardConfigNotFoundException("SAX error when reading config.xml file", e);
-        } catch (ParserConfigurationException e) {
-            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file", e);
+    public void setConfigFile(String filename) {
+        this.localConfigFile = new File(filename);
+        if (!this.localConfigFile.canRead()) {
+            logger.warn("cannot read to config XML file");
         }
-
-        return new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
-
+        if (!this.localConfigFile.canWrite()) {
+            logger.debug("cannot write to config XML file");
+        }
     }
 
     /**
-     * Get the card config based on its name.
+     * Get the card config based on its name in local filename and then, if not found, in classpath:/config.xml
      *
      * @param cardName the card identifier in config.xml
      * @return a CardConfig object if the card identifier is found
      * @throws CardConfigNotFoundException if card configuration not found
      */
-    public static CardConfig getCardConfig(String cardName) throws CardConfigNotFoundException {
-        CardConfig cardConfig;
-        if(localConfigFile != null) {
-            File f = new File(System.getProperty("user.dir") + localConfigFile);
-            try {
-                cardConfig = searchCardConfig(new FileInputStream(f), cardName);
-            } catch (IOException e) {
-                throw new CardConfigNotFoundException("cannot read the config.xml file ", e);
-            }
-            if(cardConfig != null) {
+    public CardConfig getCardConfigByName(String cardName) throws CardConfigNotFoundException {
+
+        for (CardConfig cardConfig : getAllCardConfigs()) {
+            if (cardConfig.getName().equals(cardName)) {
                 return cardConfig;
             }
         }
-        InputStream is = CardConfigFactory.class.getResourceAsStream("/config.xml");
-        cardConfig = searchCardConfig(is,cardName);
-        if(cardConfig != null) {
-            return cardConfig;
+
+        throw new CardConfigNotFoundException("cannot found card in config XML file");
+    }
+
+    public List<CardConfig> getAllCardConfigs() throws CardConfigNotFoundException {
+
+        List<CardConfig> cardConfigs = new LinkedList<CardConfig>();
+
+        if (localConfigFile != null) {
+            try {
+                cardConfigs.addAll(getAllCardConfigs(new FileInputStream(localConfigFile)));
+            } catch (IOException e) {
+                throw new CardConfigNotFoundException("cannot open input stream to local config XML file ", e);
+            }
         }
-        throw new CardConfigNotFoundException("cannot found card config");
+
+        InputStream mainConfigFile = CardConfigFactory.class.getResourceAsStream(MAIN_OPAL_CONFIG_IN_CLASSPATH);
+        cardConfigs.addAll(getAllCardConfigs(mainConfigFile));
+
+        return cardConfigs;
     }
 
     /**
@@ -128,115 +93,59 @@ public class CardConfigFactory {
      * @return an array of CardConfig objects with the name of the config as a key
      * @throws CardConfigNotFoundException if an error occured while reading the XML file
      */
-    public static CardConfig[] getAllCardConfigs()
-            throws CardConfigNotFoundException {
+    private List<CardConfig> getAllCardConfigs(InputStream stream) throws CardConfigNotFoundException {
 
-        String name = null;
-        String description = null;
-        ATR[] atrs = null;
-        byte[] isd = null;
-        SCPMode scpMode = null;
-        String tp = null;
-        SCKey[] keys = null;
-        String impl = null;
-        CardConfig configs[];
+        List<CardConfig> configs = new LinkedList<CardConfig>();
 
-        try {
-            File f = new File(System.getProperty("user.dir") + localConfigFile);
+        XStream xStream = new XStream(new StaxDriver());
 
-            Document document = DocumentBuilderFactory.newInstance().
-                    newDocumentBuilder().parse(f);
+        configs = (List<CardConfig>)xStream.fromXML(stream);
 
-            NodeList cards = document.getElementsByTagName("card");
-            Element currentCard = null;
-            configs = new CardConfig[cards.getLength()];
+        /*
+        List<Element> elements = document.getRootElement().getChildren("card");
 
-            for (int i = 0; i < cards.getLength(); i++) {
-                currentCard = (Element) cards.item(i);
+        for (Element currentCard : elements) {
 
-                // set and return CardConfig
-                name = getName(currentCard);
-                description = getDescription(currentCard);
-                atrs = getATRs(currentCard);
-                isd = getISD(currentCard);
-                scpMode = getSCP(currentCard);
-                tp = getTP(currentCard);
-                keys = getKeys(currentCard);
-                impl = getImpl(currentCard);
+            // get name
+            String name = currentCard.getAttribute("name").getValue();
 
-                configs[i] = new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
+            // get description
+            String description = "No description";
+            Element desc = currentCard.getChild("description");
+            if (desc.getValue().length() != 0) {
+                description = desc.getValue();
             }
 
-        } catch (IOException e) {
-            throw new CardConfigNotFoundException("cannot read the config.xml file: " + e.getMessage());
-        } catch (SAXException e) {
-            throw new CardConfigNotFoundException("SAX error when reading config.xml file:" + e.getMessage());
-        } catch (ParserConfigurationException e) {
-            throw new CardConfigNotFoundException("XML parsing error when reading config.xml file:" + e.getMessage());
+            // get ATR
+            List<ATR> ATRs = null;
+            List<Element> listATR = currentCard.getChildren("ATR");
+            if (listATR.size() == 0) {
+                logger.warn("There are not ATR list for card with name: " + name);
+            } else {
+                for(Element atr : listATR) {
+                    ATRs.add(new ATR(Conversion.hexToArray(atr.getAttribute("value").getValue())));
+                }
+            }
+
+            // get ISD
+            byte[] isd = Conversion.hexToArray((currentCard.getChild("isdAID").getAttribute("value").getValue()));
+
+            // get SCP mode
+            SCPMode scpMode = getSCP(currentCard);
+
+            String tp = currentCard.getChild("transmissionProtocol").getAttribute("value").getValue();
+
+            // get keys
+            SCKey[] keys = getKeys(currentCard);
+
+            // get implementation
+            String impl = currentCard.getAttribute("defaultImpl").getValue();
+
+            configs.add(new CardConfig(name, description, ATRs, isd, scpMode, tp, keys, impl));
         }
+        */
 
         return configs;
-    }
-
-
-    /**
-     * Get the value between name tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return A string with the name of the configuration
-     */
-    private static String getName(Element card) {
-        return card.getAttribute("name");
-    }
-
-    /**
-     * Get the value between description tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return A string with the description of the configuration
-     */
-    private static String getDescription(Element card) {
-        NodeList desc = card.getElementsByTagName("description");
-
-        if (desc.getLength() == 0) {
-            return "No description";
-        } else {
-            return desc.item(0).getChildNodes().item(0).getNodeValue();
-        }
-    }
-
-    /**
-     * Get the keys between key tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return the credentials keys
-     */
-    private static ATR[] getATRs(Element card) {
-
-        NodeList listATR = card.getElementsByTagName("ATR");
-        ATR[] atrs = null;
-        try {
-            atrs = new ATR[listATR.getLength()];
-            // for each key in the Element
-            for (int i = 0; i < listATR.getLength(); i++) {
-                atrs[i] = new ATR(Conversion.hexToArray(((Element) listATR.item(i)).getAttribute("value")));
-            }
-        } catch (ClassCastException e) {
-            logger.warn("There are not ATR list" + e.getMessage());
-        } finally {
-            return atrs;
-        }
-    }
-
-
-    /**
-     * Get the value between isdAID tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return a byte array with the issuer security domain AID value
-     */
-    private static byte[] getISD(Element card) {
-        return Conversion.hexToArray(((Element) card.getElementsByTagName("isdAID").item(0)).getAttribute("value"));
     }
 
     /**
@@ -244,9 +153,9 @@ public class CardConfigFactory {
      *
      * @param card an element in the config.xml
      * @return the SCP mode
-     */
-    private static SCPMode getSCP(Element card) {
-        String scp = ((Element) card.getElementsByTagName("scpMode").item(0)).getAttribute("value");
+     */             /*
+    private SCPMode getSCP(Element card) {
+        String scp = card.getChild("scpMode").getAttribute("value").getValue();
         SCPMode res = null;
         if (scp.equals("01_05")) {
             res = SCPMode.SCP_01_05;
@@ -280,25 +189,15 @@ public class CardConfigFactory {
             res = SCPMode.SCP_03_25;
         }
         return res;
-    }
-
-    /**
-     * Get the value between transmissionProtocol tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return the transmission protocol used
-     */
-    private static String getTP(Element card) {
-        return ((Element) card.getElementsByTagName("transmissionProtocol").item(0)).getAttribute("value");
-    }
+    }             */
 
     /**
      * Get the keys between key tags from an element in the config.xml
      *
      * @param card an element in the config.xml
      * @return the credentials keys
-     */
-    private static SCKey[] getKeys(Element card) {
+     */         /*
+    private SCKey[] getKeys(Element card) {
 
         NodeList keysElem = card.getElementsByTagName("key");
         SCKey[] keys = new SCKey[keysElem.getLength()];
@@ -328,17 +227,7 @@ public class CardConfigFactory {
             }
         }
         return keys;
-    }
-
-    /**
-     * Get the value between defaultImpl tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return A string with the name of the implementation
-     */
-    private static String getImpl(Element card) {
-        return card.getAttribute("defaultImpl");
-    }
+    }         */
 
     /**
      * Return the card config based on the ATR returns by the card.
@@ -347,81 +236,29 @@ public class CardConfigFactory {
      * @return the name of the card config
      * @throws CardConfigNotFoundException if ATR not found
      */
-    public static CardConfig getCardConfig(byte[] atr)
-            throws CardConfigNotFoundException {
+    public CardConfig getCardConfigByATR(byte[] atr) throws CardConfigNotFoundException {
 
-        String name = null;
-        String description = null;
-        ATR[] atrs = null;
-        byte[] isd = null;
-        SCPMode scpMode = null;
-        String tp = null;
-        SCKey[] keys = null;
-        String impl = null;
-
-        ATR arr2found = new ATR(atr);
-
-        try {
-            File f = new File(System.getProperty("user.dir") + localConfigFile);
-
-            Document document = DocumentBuilderFactory.newInstance().
-                    newDocumentBuilder().parse(f);
-
-            NodeList cards = document.getElementsByTagName("card");
-            Element card = null;
-            Element cardFound = null;
-
-            // looking for the card identifiant in atr.xml file
-            for (int i = 0; (i < cards.getLength()) & (cardFound == null); i++) {
-                card = (Element) cards.item(i);
-                atrs = getATRs(card);
-                for (ATR a : atrs) {
-                    if (arr2found.equals(a)) {
-                        cardFound = card;
-                        break;
-                    }
+        for (CardConfig cardConfig : getAllCardConfigs()) {
+            for (ATR atr2 : cardConfig.getAtrs()) {
+                if (Arrays.equals(atr, atr2.getValue())) {
+                    return cardConfig;
                 }
             }
-
-            if (cardFound == null) {
-                throw new CardConfigNotFoundException("ATR \"" + Conversion.arrayToHex(atr) + "\" not found");
-            }
-
-            // set and return CardConfig
-            name = getName(cardFound);
-            description = getDescription(cardFound);
-            isd = getISD(cardFound);
-            scpMode = getSCP(cardFound);
-            tp = getTP(cardFound);
-            keys = getKeys(cardFound);
-            impl = getImpl(cardFound);
-
-            logger.debug("==> card matching is " + name);
-
-        } catch (IOException e) {
-            throw new CardConfigNotFoundException("cannot read the atr.xml file: " + e.getMessage());
-        } catch (SAXException e) {
-            throw new CardConfigNotFoundException("SAX error when reading atr.xml file: " + e.getMessage());
-        } catch (ParserConfigurationException e) {
-            throw new CardConfigNotFoundException("XML parsing error when reading atr.xml file: " + e.getMessage());
         }
 
-        return new CardConfig(name, description, atrs, isd, scpMode, tp, keys, impl);
+        throw new CardConfigNotFoundException("cannot found card in config XML file");
     }
 
-    public static boolean deleteCardConfig(String name)
+    /*
+    public boolean deleteCardConfigInLocalConfigFile(String name)
             throws CardConfigNotFoundException {
 
-        boolean t = false;
-
         try {
-            File f = new File(System.getProperty("user.dir") + localConfigFile);
 
-            Document document = DocumentBuilderFactory.newInstance().
-                    newDocumentBuilder().parse(f);
-
-            NodeList cards = document.getElementsByTagName("card");
+            NodeList cards = getXMLCardConfigs(new FileInputStream(localConfigFile));
             Element desiredCard = null;
+
+            boolean found = false;
 
             // looking for the card identifier in config.xml file
             for (int i = 0; i < cards.getLength() && !t; i++) {
@@ -429,13 +266,11 @@ public class CardConfigFactory {
 
                 if (desiredCard.getAttribute("name").equals(name)) {
                     desiredCard.getParentNode().removeChild(desiredCard);
-                    t = true;
+                    found = true;
                 }
             }
 
-            document.normalize();
-
-            if (!t) {
+            if (!found) {
                 throw new CardConfigNotFoundException("Card \"" + name + "\" not found");
             } else {
                 try {
@@ -460,7 +295,7 @@ public class CardConfigFactory {
         return t;
     }
 
-    public static void addCardConfig(CardConfig card)
+    public static void addCardConfigInLocalConfigFile(CardConfig card)
             throws CardConfigNotFoundException {
 
         try {
@@ -578,5 +413,5 @@ public class CardConfigFactory {
         } catch (ParserConfigurationException e) {
             throw new CardConfigNotFoundException("XML parsing error when reading config file:" + e.getMessage());
         }
-    }
+    }     */
 }

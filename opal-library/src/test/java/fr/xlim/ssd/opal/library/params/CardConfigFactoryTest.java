@@ -70,24 +70,4 @@ public class CardConfigFactoryTest {
             assert(cardNames.contains(cardConfig.getName()));
         }
     }
-
-    @Test
-    public void testGetAllCardFromATR() throws JDOMException, IOException, CardConfigNotFoundException {
-        InputStream input = CardConfigFactoryTest.class.getResourceAsStream("/atr.xml");
-        Reader reader = new InputStreamReader(input);
-
-        SAXBuilder builder = new SAXBuilder();
-        Document document = builder.build(reader);
-
-        Element root = document.getRootElement();
-        List<Element> cards = root.getChildren("card");
-
-        for(Element card : cards) {
-            String atr = card.getAttribute("ATR").getValue();
-            Element config = card.getChild("config");
-            String  configName = config.getValue();
-            CardConfig response = CardConfigFactory.getCardConfig(Conversion.hexToArray(atr));
-            assertEquals(response.getName(),configName);
-        }
-    }
 }

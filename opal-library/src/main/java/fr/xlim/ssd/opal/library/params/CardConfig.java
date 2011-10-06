@@ -3,6 +3,8 @@ package fr.xlim.ssd.opal.library.params;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 
+import java.util.List;
+
 /**
  * Contains card configuration information (instance obtained from CardConfigFactory)
  *
@@ -20,7 +22,7 @@ public class CardConfig {
     private String description;
 
     /// The ATR list linked to this card configuration
-    private ATR[] atrs;
+    private List<ATR> atrs;
 
     /// The Issuer Security Domain (ISD) AID
     private byte[] isd;
@@ -51,7 +53,7 @@ public class CardConfig {
      */
     public CardConfig(String name,
                       String description,
-                      ATR[] atrs,
+                      List<ATR> atrs,
                       byte[] isd,
                       SCPMode scp,
                       String tp,
@@ -118,7 +120,7 @@ public class CardConfig {
      *
      * @return An ATR array which contains linked card ATR
      */
-    public ATR[] getAtrs() {
+    public List<ATR> getAtrs() {
         return atrs;
     }
 
@@ -193,77 +195,4 @@ public class CardConfig {
         }
 
     }
-
-    /**
-     * Set the name used in the configuration file
-     *
-     * @param name A string with the new configuration name
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * Set the description used in the configuration file
-     *
-     * @param description A string with the new configuration description
-     */
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    /**
-     * Set the card ATRs linked to this configuration
-     *
-     * @param atrs An ATR array which contains linked card ATR
-     */
-    public void setAtrs(ATR[] atrs) {
-        this.atrs = atrs;
-    }
-
-    /**
-     * Set the issuer security domain AID used by this card configuration
-     *
-     * @param isd An byte array with the ISD AID
-     */
-    public void setIsd(byte[] isd) {
-        this.isd = isd;
-    }
-
-    /**
-     * Set the secure channel protocol mode used by this card configuration
-     *
-     * @param scp the SCP mode
-     */
-    public void setScp(SCPMode scp) {
-        this.scp = scp;
-    }
-
-    /**
-     * Set the transmission protocol used by this card configuration
-     *
-     * @param tp the transmission protocol used
-     */
-    public void setTp(String tp) {
-        this.tp = tp;
-    }
-
-    /**
-     * Set the Secure Channel Keys used by this card configuration
-     *
-     * @param keys the new default SC keys
-     */
-    public void setKeys(SCKey[] keys) {
-        this.keys = keys;
-    }
-
-    /**
-     * Set the name of the default implementation class used by this card configuration
-     *
-     * @param impl A string with the class name
-     */
-    public void setImpl(String impl) {
-        this.impl = impl;
-    }
-
 }
