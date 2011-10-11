@@ -28,7 +28,7 @@ public class httpPostRequestTest {
     @Test
     public void httpPostRequestConstructorTest() throws IOException
     {
-        String filename="/055-HttpPostRequest-with-goof-response.txt";
+        String filename= "/fr/xlim/ssd/opal/library/test/055-HttpPostRequest-with-goof-response.txt";
         InputStream input = GP2xCommands.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(input);
         if (reader == null) {
@@ -77,7 +77,7 @@ public class httpPostRequestTest {
 
     @Test
     public void HttpPostRequestBadFile() throws UnsupportedEncodingException, IOException{
-        String filename="/056-HttpPostRequest-with-response-file-not-found.txt";
+        String filename= "/fr/xlim/ssd/opal/library/test/056-HttpPostRequest-with-response-file-not-found.txt";
         InputStream input = GP2xCommands.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(input);
         if (reader == null) {
@@ -105,7 +105,7 @@ public class httpPostRequestTest {
 
     @Test
     public void HttpPostRequestWith_SECURITY_STATUS_NOT_SATISFIED() throws UnsupportedEncodingException, IOException{
-        String filename="/057-HttpPostRequest-with-SECURITY_STATUS_NOT_SATISFIED.txt";
+        String filename= "/fr/xlim/ssd/opal/library/test/057-HttpPostRequest-with-SECURITY_STATUS_NOT_SATISFIED.txt";
         InputStream input = GP2xCommands.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(input);
         if (reader == null) {

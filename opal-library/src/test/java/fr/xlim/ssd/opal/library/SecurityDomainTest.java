@@ -4,7 +4,6 @@ import fr.xlim.ssd.opal.library.commands.CardChannelMock;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -31,7 +30,7 @@ public class SecurityDomainTest {
         Reader reader = new InputStreamReader(input);
         try {
             cardChannel = new CardChannelMock(reader);
-            commands = new SecurityDomain(cardConfig.getImplementation(), cardChannel, cardConfig.getIssuerSecurityDomainAID());
+            commands = new SecurityDomain(cardConfig.getImplementation(), cardChannel, cardConfig.getIsd());
         } catch (CardException ce) {
             throw new IllegalStateException("CardException");
         } catch (IOException ioe) {
@@ -156,8 +155,8 @@ public class SecurityDomainTest {
 
         CardConfig cardConfig = null;
         try {
-            cardConfig = CardConfigFactory.getCardConfig("JCOP21");
-            SecurityDomain commands = createCommands("/052-SecurityDomain-select-good.txt", cardConfig);
+            cardConfig = new CardConfigFactory().getCardConfigByName("JCOP21");
+            SecurityDomain commands = createCommands("/fr/xlim/ssd/opal/library/test/052-SecurityDomain-select-good.txt", cardConfig);
             commands.select();
 
             FileControlInformation cardInformation = commands.getCardInformation();
@@ -173,8 +172,6 @@ public class SecurityDomainTest {
             Assert.assertArrayEquals(cardInformation.getCardConfiguration(), cardConfiguration);
             Assert.assertArrayEquals(cardInformation.getCardDetails(), cardDetails);
 
-        } catch (CardConfigNotFoundException e) {
-            throw new IllegalStateException("CardConfigNotFoundException");
         } catch (CardException e) {
             throw new IllegalStateException("CardException");
         } catch (IOException e) {

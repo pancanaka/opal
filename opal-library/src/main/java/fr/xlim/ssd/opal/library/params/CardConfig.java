@@ -3,6 +3,8 @@ package fr.xlim.ssd.opal.library.params;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 
+import java.util.List;
+
 /**
  * Contains card configuration information (instance obtained from CardConfigFactory)
  *
@@ -11,6 +13,7 @@ import fr.xlim.ssd.opal.library.SCPMode;
  * @author Julien Iguchi-Cartigny
  * @see CardConfigFactory
  */
+
 public class CardConfig {
 
     /// The configuration name
@@ -20,7 +23,7 @@ public class CardConfig {
     private String description;
 
     /// The ATR list linked to this card configuration
-    private ATR[] atrs;
+    private List<ATR> atrs;
 
     /// The Issuer Security Domain (ISD) AID
     private byte[] isd;
@@ -35,7 +38,10 @@ public class CardConfig {
     private SCKey[] keys;
 
     /// The implementation class name
-    private String impl;
+    private String implementation;
+
+    // a card config is local if not present in the main config file <classpath://config.xml>
+    private boolean local;
 
     /**
      * Constructor for CardConfig object
@@ -47,23 +53,31 @@ public class CardConfig {
      * @param scp         the SCP mode
      * @param tp          the transmission protocol
      * @param keys        the credential keys
-     * @param impl        the class name of the implementation
+     * @param implementation        the class name of the implementation
      */
     public CardConfig(String name,
                       String description,
-                      ATR[] atrs,
+                      List<ATR> atrs,
                       byte[] isd,
                       SCPMode scp,
                       String tp,
                       SCKey[] keys,
-                      String impl) {
+                      String implementation) {
 
         if (name == null) {
             throw new IllegalArgumentException("name must be not null");
         }
 
         // description may be null
-        // ATR may be null
+
+        // At least one ATR
+        if(atrs == null) {
+            throw new IllegalArgumentException("atrs must be not null");
+        }
+
+        if(atrs.size() == 0) {
+            throw new IllegalArgumentException("atrs must contain at lesat one ATR");
+        }
 
         if (isd == null) {
             throw new IllegalArgumentException("isd must be not null");
@@ -81,8 +95,8 @@ public class CardConfig {
             throw new IllegalArgumentException("keys must be not null");
         }
 
-        if (impl == null) {
-            throw new IllegalArgumentException("impl must be not null");
+        if (implementation == null) {
+            throw new IllegalArgumentException("implementation must be not null");
         }
 
         this.name = name;
@@ -92,7 +106,8 @@ public class CardConfig {
         this.scp = scp;
         this.tp = tp;
         this.keys = keys;
-        this.impl = impl;
+        this.implementation = implementation;
+        this.local = false;
     }
 
     /**
@@ -118,7 +133,7 @@ public class CardConfig {
      *
      * @return An ATR array which contains linked card ATR
      */
-    public ATR[] getAtrs() {
+    public List<ATR> getAtrs() {
         return atrs;
     }
 
@@ -128,7 +143,7 @@ public class CardConfig {
      * @return A string with the class name
      */
     public String getImplementation() {
-        return this.impl;
+        return this.implementation;
     }
 
     /**
@@ -136,7 +151,7 @@ public class CardConfig {
      *
      * @return An byte array with the ISD AID
      */
-    public byte[] getIssuerSecurityDomainAID() {
+    public byte[] getIsd() {
         return this.isd;
     }
 
@@ -194,76 +209,28 @@ public class CardConfig {
 
     }
 
-    /**
-     * Set the name used in the configuration file
-     *
-     * @param name A string with the new configuration name
-     */
-    public void setName(String name) {
-        this.name = name;
+    public boolean isLocal() {
+        return local;
     }
 
-    /**
-     * Set the description used in the configuration file
-     *
-     * @param description A string with the new configuration description
-     */
-    public void setDescription(String description) {
-        this.description = description;
+    public void setLocal(boolean local) {
+        this.local = local;
     }
 
-    /**
-     * Set the card ATRs linked to this configuration
-     *
-     * @param atrs An ATR array which contains linked card ATR
-     */
-    public void setAtrs(ATR[] atrs) {
-        this.atrs = atrs;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CardConfig that = (CardConfig) o;
+
+        if (!name.equals(that.name)) return false;
+
+        return true;
     }
 
-    /**
-     * Set the issuer security domain AID used by this card configuration
-     *
-     * @param isd An byte array with the ISD AID
-     */
-    public void setIsd(byte[] isd) {
-        this.isd = isd;
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
-
-    /**
-     * Set the secure channel protocol mode used by this card configuration
-     *
-     * @param scp the SCP mode
-     */
-    public void setScp(SCPMode scp) {
-        this.scp = scp;
-    }
-
-    /**
-     * Set the transmission protocol used by this card configuration
-     *
-     * @param tp the transmission protocol used
-     */
-    public void setTp(String tp) {
-        this.tp = tp;
-    }
-
-    /**
-     * Set the Secure Channel Keys used by this card configuration
-     *
-     * @param keys the new default SC keys
-     */
-    public void setKeys(SCKey[] keys) {
-        this.keys = keys;
-    }
-
-    /**
-     * Set the name of the default implementation class used by this card configuration
-     *
-     * @param impl A string with the class name
-     */
-    public void setImpl(String impl) {
-        this.impl = impl;
-    }
-
 }

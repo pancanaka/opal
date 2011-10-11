@@ -18,7 +18,7 @@ public class ATR {
      * @param atr ATR value
      */
     public ATR(byte[] atr) {
-        this.setValue(atr);
+        this.value = atr.clone();
     }
 
     /**
@@ -28,15 +28,6 @@ public class ATR {
      */
     public byte[] getValue() {
         return this.value;
-    }
-
-    /**
-     * Set a card ATR value
-     *
-     * @param newATR The new ATR value
-     */
-    public void setValue(byte[] newATR) {
-        this.value = newATR.clone();
     }
 
     @Override

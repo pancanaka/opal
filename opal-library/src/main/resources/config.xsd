@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xsd:schema targetNamespace="http://secinfo.msi.unilim.fr/opal"
+            xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns="http://secinfo.msi.unilim.fr/opal">
+
+    <xsd:element name="cards">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="card" minOccurs="1" maxOccurs="unbounded">
+                    <xsd:complexType>
+                        <xsd:sequence>
+                            <xsd:element name="name" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="implementation" type="xsd:string" minOccurs="1" maxOccurs="1"/>
+                            <xsd:element name="description" type="xsd:string" minOccurs="0" maxOccurs="1"/>
+                            <xsd:element name="atrs">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="atr" minOccurs="1" maxOccurs="unbounded" type="xsd:string"/>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                            <xsd:element name="isd" type="xsd:string"/>
+                            <xsd:element name="scp">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="01_05"/>
+                                        <xsd:enumeration value="02_04"/>
+                                        <xsd:enumeration value="02_05"/>
+                                        <xsd:enumeration value="02_0A"/>
+                                        <xsd:enumeration value="02_14"/>
+                                        <xsd:enumeration value="02_15"/>
+                                        <xsd:enumeration value="02_45"/>
+                                        <xsd:enumeration value="02_55"/>
+                                        <xsd:enumeration value="03_05"/>
+                                        <xsd:enumeration value="03_0D"/>
+                                        <xsd:enumeration value="03_25"/>
+                                        <xsd:enumeration value="03_2D"/>
+                                        <xsd:enumeration value="03_65"/>
+                                        <xsd:enumeration value="03_6D"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:element>
+                            <xsd:element name="tp">
+                                <xsd:simpleType>
+                                    <xsd:restriction base="xsd:string">
+                                        <xsd:enumeration value="T=0"/>
+                                        <xsd:enumeration value="T=1"/>
+                                    </xsd:restriction>
+                                </xsd:simpleType>
+                            </xsd:element>
+                            <xsd:element name="keys">
+                                <xsd:complexType>
+                                    <xsd:sequence>
+                                        <xsd:element name="key" minOccurs="1" maxOccurs="unbounded">
+                                            <xsd:complexType>
+                                                <xsd:sequence>
+                                                    <xsd:element name="type" minOccurs="1" maxOccurs="1">
+                                                        <xsd:simpleType>
+                                                            <xsd:restriction base="xsd:string">
+                                                                <xsd:enumeration value="DES_ECB"/>
+                                                                <xsd:enumeration value="SCGemVisa2"/>
+                                                                <xsd:enumeration value="DES_CBC"/>
+                                                                <xsd:enumeration value="AES_CBC"/>
+                                                            </xsd:restriction>
+                                                        </xsd:simpleType>
+                                                    </xsd:element>
+                                                    <xsd:element name="version" type="xsd:unsignedByte"  minOccurs="1" maxOccurs="1"/>
+                                                    <xsd:element name="id" type="xsd:unsignedByte" minOccurs="0" maxOccurs="1"/>
+                                                    <xsd:element name="value" type="xsd:string"  minOccurs="1" maxOccurs="1"/>
+                                                </xsd:sequence>
+                                            </xsd:complexType>
+                                        </xsd:element>
+                                    </xsd:sequence>
+                                </xsd:complexType>
+                            </xsd:element>
+                        </xsd:sequence>
+                    </xsd:complexType>
+                </xsd:element>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+
+</xsd:schema>

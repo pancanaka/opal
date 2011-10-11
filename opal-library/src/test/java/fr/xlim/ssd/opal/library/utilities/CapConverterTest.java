@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.URL;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -54,7 +55,8 @@ public class CapConverterTest {
 
     @Test
     public void testConvert() throws FileNotFoundException {
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = CapConverterTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
         InputStream is = new FileInputStream(file);
         byte[] result = CapConverter.convert(is);
         assertArrayEquals(expected, result);

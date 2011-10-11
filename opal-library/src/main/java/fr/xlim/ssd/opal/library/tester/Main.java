@@ -6,7 +6,6 @@ import fr.xlim.ssd.opal.library.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.metastatic.jessie.provider.CipherSuite;
@@ -136,14 +135,8 @@ public class Main {
         ATR atr = card.getATR();
         logger.info("Card ATR:  " + Conversion.arrayToHex(atr.getBytes()));
 
-        try {
-            return CardConfigFactory.getCardConfig(atr.getBytes());
-        } catch (CardConfigNotFoundException ex) {
-            logger.error(ex.getMessage());
-        }
-
-        return null;
-
+            CardConfigFactory ccFactory = new CardConfigFactory();
+            return ccFactory.getCardConfigByATR(atr.getBytes());
     }
 
     public static void RAMOverHTTP() throws ClassNotFoundException, CommandsImplementationNotFound, IOException, CardException {
@@ -160,7 +153,7 @@ public class Main {
         //  select the security domain
         logger.info("Selecting Security Domain");
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
-                cardConfig.getIssuerSecurityDomainAID());
+                cardConfig.getIsd());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
 
 
@@ -185,7 +178,7 @@ public class Main {
         //  select the security domain
         logger.info("Selecting Security Domain");
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
-                cardConfig.getIssuerSecurityDomainAID());
+                cardConfig.getIsd());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         try {
             securityDomain.select();
@@ -265,8 +258,8 @@ public class Main {
         securityDomain.deleteOnCardObj(PACKAGE_ID, false);
     }
 
-    public static void main(String[] args) throws CardException, CardConfigNotFoundException,
-            CommandsImplementationNotFound, ClassNotFoundException, IOException {
+    public static void main(String[] args) throws CardException,CommandsImplementationNotFound, ClassNotFoundException,
+            IOException {
 
         boolean ramOverHTTP = true;
 
