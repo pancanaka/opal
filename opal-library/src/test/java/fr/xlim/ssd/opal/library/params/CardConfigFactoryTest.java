@@ -11,7 +11,6 @@ import fr.xlim.ssd.opal.library.KeyType;
 import fr.xlim.ssd.opal.library.SCGPKey;
 import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
-import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -23,8 +22,12 @@ import static org.junit.Assert.*;
 public class CardConfigFactoryTest {
 
     private List<String> cardNames = new LinkedList<String>();
-    private List<CardConfig> cardConfigs = null;
     private CardConfigFactory cardConfigFactory;
+
+    @Before
+    public void fillCardConfigFactory() {
+        cardConfigFactory = new CardConfigFactory();
+    }
 
     @Before
     public void getAllCardName() throws JDOMException, IOException {
@@ -45,40 +48,34 @@ public class CardConfigFactoryTest {
         }
     }
 
-    @Before
-    public void getAllCardConfigs() throws CardConfigNotFoundException {
-        cardConfigFactory = new CardConfigFactory();
-        cardConfigs = cardConfigFactory.getAllCardConfigs();
-    }
-
     @Test
-    public void testAllExistingCodeList() throws CardConfigNotFoundException {
+    public void testAllExistingCodeList() {
         for (String s : cardNames) {
             CardConfig config = cardConfigFactory.getCardConfigByName(s);
             assertNotNull("Looking for card " + s,config);
         }
     }
 
-    @Test(expected = CardConfigNotFoundException.class)
-    public void testNotExistingCode() throws CardConfigNotFoundException {
-        cardConfigFactory.getCardConfigByName("dummy");
+    @Test
+    public void testNotExistingCode() {
+        assertNull(cardConfigFactory.getCardConfigByName("dummy"));
     }
 
     @Test
     public void testGetAllCardConfigsSize() {
-        assertEquals(cardNames.size(), cardConfigs.size());
-        assertEquals(21,cardConfigs.size());
+        assertEquals(cardNames.size(), cardConfigFactory.getCardConfigs().size());
+        assertEquals(21,cardConfigFactory.getCardConfigs().size());
     }
 
     @Test
     public void testGetAllCardConfigsNames() {
-        for (CardConfig cardConfig : cardConfigs) {
+        for (CardConfig cardConfig : cardConfigFactory.getCardConfigs()) {
             assert(cardNames.contains(cardConfig.getName()));
         }
     }
 
     @Test
-    public void testUnmarshalGemXpresso211() throws CardConfigNotFoundException {
+    public void testUnmarshalGemXpresso211() {
         CardConfig cardConfig = cardConfigFactory.getCardConfigByName("GemXpresso211");
         assertEquals("GemXpresso211",cardConfig.getName());
         assertEquals("GemXpresso 211", cardConfig.getDescription());

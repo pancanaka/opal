@@ -40,6 +40,9 @@ public class CardConfig {
     /// The implementation class name
     private String implementation;
 
+    // a card config is local if not present in the main config file <classpath://config.xml>
+    private boolean local;
+
     /**
      * Constructor for CardConfig object
      *
@@ -66,7 +69,15 @@ public class CardConfig {
         }
 
         // description may be null
-        // ATR may be null
+
+        // At least one ATR
+        if(atrs == null) {
+            throw new IllegalArgumentException("atrs must be not null");
+        }
+
+        if(atrs.size() == 0) {
+            throw new IllegalArgumentException("atrs must contain at lesat one ATR");
+        }
 
         if (isd == null) {
             throw new IllegalArgumentException("isd must be not null");
@@ -96,6 +107,7 @@ public class CardConfig {
         this.tp = tp;
         this.keys = keys;
         this.implementation = implementation;
+        this.local = false;
     }
 
     /**
@@ -195,5 +207,30 @@ public class CardConfig {
             return this.keys[0].getId();
         }
 
+    }
+
+    public boolean isLocal() {
+        return local;
+    }
+
+    public void setLocal(boolean local) {
+        this.local = local;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CardConfig that = (CardConfig) o;
+
+        if (!name.equals(that.name)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
     }
 }

@@ -11,6 +11,7 @@ import org.junit.rules.ExpectedException;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import java.io.*;
+import java.net.URL;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -942,7 +943,8 @@ public class GP2xCommandsTest {
     @Test
     public void testLoad() throws CardException, FileNotFoundException, IOException {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/040-GP2xCommands-load-good.txt");
-        File file = new File("src/test/resources/HelloWorld.cap");
+        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
+        File file = new File(url.getFile());
         byte maxDataLength = (byte) 0xFF;
 
         byte[] buffer = new byte[(int) file.length()];
@@ -954,7 +956,8 @@ public class GP2xCommandsTest {
     @Test
     public void testLoadWithCMac() throws CardException, FileNotFoundException, IOException {
         GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/041-GP2xCommands-load-good.txt");
-        File file = new File("src/test/resources/HelloWorld.cap");
+        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
+        File file = new File(url.getFile());
         commands.secMode = SecLevel.C_MAC;
         commands.sessMac = new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -973,7 +976,8 @@ public class GP2xCommandsTest {
     @Test
     public void testLoadWithCEncAndMac() throws CardException, FileNotFoundException, IOException {
         GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/042-GP2xCommands-load-good.txt");
-        File file = new File("src/test/resources/HelloWorld.cap");
+        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
+        File file = new File(url.getFile());
         commands.secMode = SecLevel.C_ENC_AND_MAC;
         commands.sessMac = new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -997,7 +1001,8 @@ public class GP2xCommandsTest {
     @Test
     public void testLoadFailWhenSWNot9000() throws CardException, FileNotFoundException, IOException {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/047-GP2xCommands-load-failed.txt");
-        File file = new File("src/test/resources/HelloWorld.cap");
+        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
+        File file = new File(url.getFile());
         byte maxDataLength = (byte) 0xFF;
 
         byte[] buffer = new byte[(int) file.length()];

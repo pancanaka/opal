@@ -4,7 +4,6 @@ import fr.xlim.ssd.opal.library.commands.CardChannelMock;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -173,8 +172,6 @@ public class SecurityDomainTest {
             Assert.assertArrayEquals(cardInformation.getCardConfiguration(), cardConfiguration);
             Assert.assertArrayEquals(cardInformation.getCardDetails(), cardDetails);
 
-        } catch (CardConfigNotFoundException e) {
-            throw new IllegalStateException("CardConfigNotFoundException");
         } catch (CardException e) {
             throw new IllegalStateException("CardException");
         } catch (IOException e) {

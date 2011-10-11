@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<opal:cards xmlns:opal="http://secinfo.msi.unilim.fr/opal"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://secinfo.msi.unilim.fr/opal config.xsd">
+
+
+    <card>
+        <name>CardTest02_04</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_04</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest02_05</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_05</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest02_14</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_14</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest02_0A</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_0A</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest02_45</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_45</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest02_55</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_55</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest03_65</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>03_65</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>AES_CBC</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest03_6D</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>03_6D</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>AES_CBC</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest03_05</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>03_05</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>AES_CBC</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest03_0D</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>03_0D</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>AES_CBC</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest03_2D</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>03_2D</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>AES_CBC</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>CardTest03_25</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <atrs>
+            <atr>00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>03_25</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>AES_CBC</type>
+                <version>255</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
+            </key>
+        </keys>
+    </card>
+
+</opal:cards>

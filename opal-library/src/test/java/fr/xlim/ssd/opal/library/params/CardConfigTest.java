@@ -41,7 +41,7 @@ public class CardConfigTest {
                         "dummy", new SCKey[]{scKey}, "dummy");
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void checkCardConfigFailedWhenATRsNull() {
         CardConfig cc = new CardConfig
                 ("dummy", "dummy", null, new byte[0], SCPMode.SCP_UNDEFINED,

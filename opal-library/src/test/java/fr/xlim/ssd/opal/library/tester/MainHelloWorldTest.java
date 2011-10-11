@@ -7,7 +7,6 @@ import fr.xlim.ssd.opal.library.commands.GP2xCommands;
 import fr.xlim.ssd.opal.library.commands.GemXpresso211Commands;
 import fr.xlim.ssd.opal.library.params.CardConfig;
 import fr.xlim.ssd.opal.library.params.CardConfigFactory;
-import fr.xlim.ssd.opal.library.params.CardConfigNotFoundException;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
@@ -18,6 +17,7 @@ import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import java.io.*;
+import java.net.URL;
 
 public class MainHelloWorldTest {
 
@@ -44,7 +44,6 @@ public class MainHelloWorldTest {
 
     private GP2xCommands createCommands(String filename) throws IOException, CardException {
         GP2xCommands commands = new GP2xCommands();
-        System.out.println("/fr/xlim/ssd/opal/library/test/cards" + filename);
         InputStream input = GP2xCommands.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename);
         Reader reader = new InputStreamReader(input);
         CardChannel cardChannel = new CardChannelMock(reader);
@@ -54,7 +53,7 @@ public class MainHelloWorldTest {
 
     private GP2xCommands createCommandsgemalto211(String filename) throws IOException, CardException {
         GP2xCommands commands = new GemXpresso211Commands();
-        InputStream input = GP2xCommands.class.getResourceAsStream(filename);
+        InputStream input = GP2xCommands.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename);
         Reader reader = new InputStreamReader(input);
         CardChannel cardChannel = new CardChannelMock(reader);
         commands.setCc(cardChannel);
@@ -68,7 +67,7 @@ public class MainHelloWorldTest {
      */
 
     @Test
-    public void testCyberflexPalmeraV3NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testCyberflexPalmeraV3NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Cyberflex_Palmera_V3-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Cyberflex_Palmera_V3");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -82,7 +81,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -121,7 +121,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testCyberflexPalmeraV3C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testCyberflexPalmeraV3C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Cyberflex_Palmera_V3-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Cyberflex_Palmera_V3");
 
@@ -145,7 +145,8 @@ public class MainHelloWorldTest {
 
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -184,7 +185,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testCyberflexPalmeraV3C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testCyberflexPalmeraV3C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Cyberflex_Palmera_V3-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Cyberflex_Palmera_V3");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -198,7 +199,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -237,7 +239,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testInfineon_JTOP_V2_16kNoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testInfineon_JTOP_V2_16kNoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Infineon_JTOP_V2_16k-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Infineon_JTOP_V2_16k");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -251,7 +253,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -290,7 +293,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testInfineon_JTOP_V2_16kC_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testInfineon_JTOP_V2_16kC_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Infineon_JTOP_V2_16k-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Infineon_JTOP_V2_16k");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -304,7 +307,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -343,7 +347,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testInfineon_JTOP_V2_16kC_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testInfineon_JTOP_V2_16kC_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Infineon_JTOP_V2_16k-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Infineon_JTOP_V2_16k");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -357,7 +361,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -396,7 +401,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testOberthur_Cosmo_Dual_72kNoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testOberthur_Cosmo_Dual_72kNoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Oberthur_Cosmo_Dual_72k-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Oberthur_Cosmo_Dual_72k");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -410,7 +415,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -449,7 +455,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testOberthur_Cosmo_Dual_72kC_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testOberthur_Cosmo_Dual_72kC_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Oberthur_Cosmo_Dual_72k-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Oberthur_Cosmo_Dual_72k");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -463,7 +469,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -502,7 +509,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testOberthur_Cosmo_Dual_72kC_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testOberthur_Cosmo_Dual_72kC_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Oberthur_Cosmo_Dual_72k-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Oberthur_Cosmo_Dual_72k");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -516,7 +523,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -555,7 +563,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testOberthurCosmopolicNoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testOberthurCosmopolicNoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Oberthur_CosmopolIC-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Oberthur_Cosmopolic");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -569,7 +577,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -608,7 +617,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testOberthurCosmopolicC_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testOberthurCosmopolicC_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Oberthur_CosmopolIC-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Oberthur_Cosmopolic");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -622,7 +631,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -661,7 +671,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testOberthurCosmopolicC_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testOberthurCosmopolicC_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Oberthur_CosmopolIC-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Oberthur_Cosmopolic");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -675,7 +685,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -714,7 +725,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemCombiXpresso_Lite_R2_Std_Jcop30NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemCombiXpresso_Lite_R2_Std_Jcop30NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GemCombiXpresso_Lite_R2_Std_Jcop30-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemCombiXpresso_Lite_R2_Std_Jcop30");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -728,7 +739,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -767,7 +779,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemCombiXpresso_Lite_R2_Std_Jcop30C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemCombiXpresso_Lite_R2_Std_Jcop30C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GemCombiXpresso_Lite_R2_Std_Jcop30-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemCombiXpresso_Lite_R2_Std_Jcop30");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -781,7 +793,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -820,7 +833,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemCombiXpresso_Lite_R2_Std_Jcop30C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemCombiXpresso_Lite_R2_Std_Jcop30C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GemCombiXpresso_Lite_R2_Std_Jcop30-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemCombiXpresso_Lite_R2_Std_Jcop30");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -834,7 +847,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -873,7 +887,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemXplore3GC_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemXplore3GC_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GemXplore3G-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemXplore3G");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -887,7 +901,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -926,7 +941,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemXplore3GC_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemXplore3GC_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GemXplore3G-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemXplore3G");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -940,7 +955,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -979,7 +995,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemXpresso211isNoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemXpresso211isNoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommandsgemalto211("/HelloWorld-GemXpresso_211is-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemXpresso211");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -993,7 +1009,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet -- test
         InputStream is = new FileInputStream(file);
@@ -1032,7 +1049,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemXpresso211isC_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemXpresso211isC_MAC() throws  CardException, IOException {
         Commands commands = createCommandsgemalto211("/HelloWorld-GemXpresso_211is-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemXpresso211");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1046,7 +1063,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1085,7 +1103,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGemXpresso211isC_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGemXpresso211isC_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommandsgemalto211("/HelloWorld-GemXpresso_211is-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GemXpresso211");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1099,7 +1117,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1144,7 +1163,7 @@ public class MainHelloWorldTest {
 //     */
 //
     @Test
-    public void testJCOP21NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP21NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP21-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP21");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1158,7 +1177,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1198,7 +1218,7 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testJCOP21C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP21C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP21-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP21");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1212,7 +1232,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1252,7 +1273,7 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testJCOP21C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP21C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP21-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP21");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1266,7 +1287,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1305,7 +1327,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGALITT_WADAPA_NO_SECURITY_LEVEL() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGALITT_WADAPA_NO_SECURITY_LEVEL() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GALITT_WADAPA-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GALITT_WADAPA");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1319,7 +1341,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1358,7 +1381,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGALITT_WADAPA_C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGALITT_WADAPA_C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GALITT_WADAPA-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GALITT_WADAPA");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1372,7 +1395,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1411,7 +1435,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testGALITT_WADAPA_C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testGALITT_WADAPA_C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-GALITT_WADAPA-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("GALITT_WADAPA");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1426,7 +1450,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1466,7 +1491,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testJCOP31_72B1_V2_2_NO_SECURITY_LEVEL() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP31_72B1_V2_2_NO_SECURITY_LEVEL() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP31_72B1_V2.2-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP31_72B1_V2.2");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1480,7 +1505,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1520,7 +1546,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testJCOP31_72B1_V2_2_C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP31_72B1_V2_2_C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP31_72B1_V2.2-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP31_72B1_V2.2");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1534,7 +1560,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1574,7 +1601,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testJCOP31_72B1_V2_2_C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP31_72B1_V2_2_C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP31_72B1_V2.2-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP31_72B1_V2.2");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1589,7 +1616,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1630,7 +1658,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testJCOP31_72B1_V2_2_NFC_NO_SECURITY_LEVEL() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP31_72B1_V2_2_NFC_NO_SECURITY_LEVEL() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP31_72B1_V2.2_NFC-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP31_72B1_V2.2");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1644,7 +1672,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1683,7 +1712,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testJCOP31_72B1_V2_2_NFC_C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP31_72B1_V2_2_NFC_C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP31_72B1_V2.2_NFC-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP31_72B1_V2.2");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1697,7 +1726,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1736,7 +1766,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testJCOP31_72B1_V2_2_NFC_C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testJCOP31_72B1_V2_2_NFC_C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-JCOP31_72B1_V2.2_NFC-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("JCOP31_72B1_V2.2");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1751,7 +1781,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1792,7 +1823,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testCOSMO_16_RSA_V3_5_NO_SECURITY_LEVEL() throws CardConfigNotFoundException, CardException, IOException {
+    public void testCOSMO_16_RSA_V3_5_NO_SECURITY_LEVEL() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-COSMO_16_RSA_V3_5-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("COSMO_16_RSA_V3.5");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1806,7 +1837,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1845,7 +1877,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testCOSMO_16_RSA_V3_5_C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testCOSMO_16_RSA_V3_5_C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-COSMO_16_RSA_V3_5-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("COSMO_16_RSA_V3.5");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1860,7 +1892,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1900,7 +1933,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testCOSMO_16_RSA_V3_5_C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testCOSMO_16_RSA_V3_5_C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-COSMO_16_RSA_V3_5-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("COSMO_16_RSA_V3.5");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1915,7 +1948,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1955,7 +1989,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testSAMSUNG_NFC_SGH_X700N_NO_SECURITY_LEVEL() throws CardConfigNotFoundException, CardException, IOException {
+    public void testSAMSUNG_NFC_SGH_X700N_NO_SECURITY_LEVEL() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-SAMSUNG_NFC_SGH-X700N-NO_SECURITY_LEVEL.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("SAMSUNG_NFC_SGH-X700N");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -1970,7 +2004,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2009,7 +2044,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testSAMSUNG_NFC_SGH_X700N_C_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testSAMSUNG_NFC_SGH_X700N_C_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-SAMSUNG_NFC_SGH-X700N-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("SAMSUNG_NFC_SGH-X700N");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -2024,7 +2059,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2064,7 +2100,7 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testSAMSUNG_NFC_SGH_X700N_C_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testSAMSUNG_NFC_SGH_X700N_C_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-SAMSUNG_NFC_SGH-X700N-C_ENC_AND_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("SAMSUNG_NFC_SGH-X700N");
         commands.setOffCardKeys(cardConfig.getSCKeys());
@@ -2079,7 +2115,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2119,9 +2156,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp02_04_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_04_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_04-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_04");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_04");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2133,7 +2173,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2173,9 +2214,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp02_04_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_04_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_04-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_04");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_04");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2187,7 +2231,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2227,9 +2272,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp02_04_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_04_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_04-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_04");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_04");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2241,7 +2289,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2280,9 +2329,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp02_05_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_05_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_05-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_05");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_05");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2294,7 +2346,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2334,9 +2387,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp02_05_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_05_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_05-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_05");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_05");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2348,7 +2404,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2388,9 +2445,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp02_05_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_05_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_05-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_05");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_05");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2402,7 +2462,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2443,9 +2504,12 @@ public class MainHelloWorldTest {
 
     //     Test SCP 02 Option '14'
     @Test
-    public void testTestCardScp02_14_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_14_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_14-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_14");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_14");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2457,7 +2521,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2497,9 +2562,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp02_14_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_14_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_14-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_14");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_14");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2511,7 +2579,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2552,9 +2621,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp02_14_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_14_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_14-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_14");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_14");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2566,7 +2638,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2609,9 +2682,12 @@ public class MainHelloWorldTest {
 
     //SCP 02_45 Tests
     @Test
-    public void testTestCardScp02_45_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_45_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_45-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_45");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_45");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2623,7 +2699,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2662,9 +2739,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp02_45_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_45_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_45-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_45");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_45");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2676,7 +2756,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2715,9 +2796,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp02_45_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_45_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_45-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_45");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_45");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2729,7 +2813,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2770,9 +2855,12 @@ public class MainHelloWorldTest {
 
     //SCP 02_55 Tests
     @Test
-    public void testTestCardScp02_55_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_55_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_55-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_55");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_55");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2784,7 +2872,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2823,9 +2912,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp02_55_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_55_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_55-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_55");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_55");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2837,7 +2929,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2876,9 +2969,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp02_55_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp02_55_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test02_55-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest02_55");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest02_55");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2890,7 +2986,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2929,9 +3026,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_65");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_65");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2943,7 +3043,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2983,9 +3084,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp03_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_65");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_65");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -2997,7 +3101,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3037,9 +3142,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_65");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_65");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3051,7 +3159,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3091,9 +3200,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_ENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_ENC_AND_MAC_AND_RMAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03-C_ENC_AND_MAC_AND_RMAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_65");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_65");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3105,7 +3217,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3145,9 +3258,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_ENC_AND_MAC_AND_RDNC_AND_RMAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_ENC_AND_MAC_AND_RDNC_AND_RMAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03-C_ENC_AND_MAC_AND_CDEC_AND_RMAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_65");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_65");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3159,7 +3275,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3200,9 +3317,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp03_6D_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_6D_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_6D-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_6D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_6D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3214,7 +3334,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3254,9 +3375,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp03_6D_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_6D_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_6D-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_6D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_6D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3268,7 +3392,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3308,9 +3433,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_6D_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_6D_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_6D-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_6D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_6D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3322,7 +3450,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3363,9 +3492,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp03_6D_CENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_6D_CENC_AND_MAC_AND_RMAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_6D-C_ENC_AND_MAC_AND_RMAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_6D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_6D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3377,7 +3509,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3417,9 +3550,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_05_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_05_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_05-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_05");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_05");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3431,7 +3567,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3470,9 +3607,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_05_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_05_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_05-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_05");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_05");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3484,7 +3624,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3524,9 +3665,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_05_ENC_AND_MAC_RENC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_05_ENC_AND_MAC_RENC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_05-C_ENC_AND_MAC_RENC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_05");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_05");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3538,7 +3682,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3578,9 +3723,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_0D_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_0D_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_0D-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_0D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_0D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3592,7 +3740,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3631,9 +3780,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_0D_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_0D_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_0D-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_0D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_0D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3645,7 +3797,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3685,9 +3838,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_0D_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_0D_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_0D-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_0D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_0D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3699,7 +3855,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3739,9 +3896,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_2D_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_2D_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_2D-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_2D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_2D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3753,7 +3913,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3792,9 +3953,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_2D_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_2D_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_2D-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_2D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_2D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3806,7 +3970,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3846,9 +4011,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_2D_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_2D_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_2D-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_2D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_2D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3860,7 +4028,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3900,9 +4069,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_2D_CENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_2D_CENC_AND_MAC_AND_RMAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_2D-C_ENC_AND_MAC_AND_RMAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_2D");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_2D");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3914,7 +4086,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3955,9 +4128,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp03_25_NoSecurityLevel() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_25_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_25-NO_SECURITY_LEVEL.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_25");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_25");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3969,7 +4145,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -4008,9 +4185,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_25_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_25_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_25-MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_25");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_25");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -4022,7 +4202,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -4063,9 +4244,12 @@ public class MainHelloWorldTest {
 
 
     @Test
-    public void testTestCardScp03_25_ENC_AND_MAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_25_ENC_AND_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_25-C_ENC_AND_MAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_25");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_25");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -4077,7 +4261,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -4117,9 +4302,12 @@ public class MainHelloWorldTest {
     }
 
     @Test
-    public void testTestCardScp03_25_CENC_AND_MAC_AND_RMAC() throws CardConfigNotFoundException, CardException, IOException {
+    public void testTestCardScp03_25_CENC_AND_MAC_AND_RMAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03_25-C_ENC_AND_MAC_AND_RMAC.txt");
-        CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("CardTest03_25");
+        CardConfigFactory cardConfigFactory = new CardConfigFactory();
+        File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
+        cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_25");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -4131,7 +4319,8 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        File file = new File("src/main/resources/cap/HelloWorld-2_1_2.cap");
+        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
+        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
