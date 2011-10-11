@@ -13,6 +13,7 @@ import java.util.List;
  * @author Julien Iguchi-Cartigny
  * @see CardConfigFactory
  */
+
 public class CardConfig {
 
     /// The configuration name
@@ -37,7 +38,7 @@ public class CardConfig {
     private SCKey[] keys;
 
     /// The implementation class name
-    private String impl;
+    private String implementation;
 
     /**
      * Constructor for CardConfig object
@@ -49,7 +50,7 @@ public class CardConfig {
      * @param scp         the SCP mode
      * @param tp          the transmission protocol
      * @param keys        the credential keys
-     * @param impl        the class name of the implementation
+     * @param implementation        the class name of the implementation
      */
     public CardConfig(String name,
                       String description,
@@ -58,7 +59,7 @@ public class CardConfig {
                       SCPMode scp,
                       String tp,
                       SCKey[] keys,
-                      String impl) {
+                      String implementation) {
 
         if (name == null) {
             throw new IllegalArgumentException("name must be not null");
@@ -83,8 +84,8 @@ public class CardConfig {
             throw new IllegalArgumentException("keys must be not null");
         }
 
-        if (impl == null) {
-            throw new IllegalArgumentException("impl must be not null");
+        if (implementation == null) {
+            throw new IllegalArgumentException("implementation must be not null");
         }
 
         this.name = name;
@@ -94,7 +95,7 @@ public class CardConfig {
         this.scp = scp;
         this.tp = tp;
         this.keys = keys;
-        this.impl = impl;
+        this.implementation = implementation;
     }
 
     /**
@@ -130,7 +131,7 @@ public class CardConfig {
      * @return A string with the class name
      */
     public String getImplementation() {
-        return this.impl;
+        return this.implementation;
     }
 
     /**
@@ -138,7 +139,7 @@ public class CardConfig {
      *
      * @return An byte array with the ISD AID
      */
-    public byte[] getIssuerSecurityDomainAID() {
+    public byte[] getIsd() {
         return this.isd;
     }
 

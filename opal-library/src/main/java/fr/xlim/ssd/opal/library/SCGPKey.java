@@ -44,6 +44,8 @@ public class SCGPKey implements SCKey {
         this.data = data;
     }
 
+
+
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.SCKey#getData()
      */

@@ -31,7 +31,7 @@ public class HttpPostResponseTest {
     @Before
     public void createInstance() throws IOException
     {
-        String filename="/053-HttpPostResponse-Encoding-Length.txt";
+        String filename= "/fr/xlim/ssd/opal/library/test/053-HttpPostResponse-Encoding-Length.txt";
         InputStream input = GP2xCommands.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(input);
         if (reader == null) {
@@ -54,7 +54,7 @@ public class HttpPostResponseTest {
         }
         httpPostResponse = new HttpPostResponse(postResponseLenthEncoding);
         
-        filename="/054-HttpPostResponse-Encoding-Chunked.txt";
+        filename= "/fr/xlim/ssd/opal/library/test/054-HttpPostResponse-Encoding-Chunked.txt";
         input = GP2xCommands.class.getResourceAsStream(filename);
         reader = new InputStreamReader(input);
         if (reader == null) {

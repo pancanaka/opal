@@ -1,23 +1,26 @@
 package fr.xlim.ssd.opal.library.params;
 
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.converters.Converter;
+import com.thoughtworks.xstream.converters.MarshallingContext;
+import com.thoughtworks.xstream.converters.SingleValueConverter;
+import com.thoughtworks.xstream.converters.UnmarshallingContext;
+import com.thoughtworks.xstream.converters.enums.EnumConverter;
+import com.thoughtworks.xstream.io.HierarchicalStreamReader;
+import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import fr.xlim.ssd.opal.library.SCKey;
-import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.*;
+import fr.xlim.ssd.opal.library.commands.SCP.SCP;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
-import org.jdom.Document;
-import org.jdom.Element;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -95,139 +98,130 @@ public class CardConfigFactory {
      */
     private List<CardConfig> getAllCardConfigs(InputStream stream) throws CardConfigNotFoundException {
 
-        List<CardConfig> configs = new LinkedList<CardConfig>();
-
-        XStream xStream = new XStream(new StaxDriver());
-
-        configs = (List<CardConfig>)xStream.fromXML(stream);
-
-        /*
-        List<Element> elements = document.getRootElement().getChildren("card");
-
-        for (Element currentCard : elements) {
-
-            // get name
-            String name = currentCard.getAttribute("name").getValue();
-
-            // get description
-            String description = "No description";
-            Element desc = currentCard.getChild("description");
-            if (desc.getValue().length() != 0) {
-                description = desc.getValue();
-            }
-
-            // get ATR
-            List<ATR> ATRs = null;
-            List<Element> listATR = currentCard.getChildren("ATR");
-            if (listATR.size() == 0) {
-                logger.warn("There are not ATR list for card with name: " + name);
-            } else {
-                for(Element atr : listATR) {
-                    ATRs.add(new ATR(Conversion.hexToArray(atr.getAttribute("value").getValue())));
-                }
-            }
-
-            // get ISD
-            byte[] isd = Conversion.hexToArray((currentCard.getChild("isdAID").getAttribute("value").getValue()));
-
-            // get SCP mode
-            SCPMode scpMode = getSCP(currentCard);
-
-            String tp = currentCard.getChild("transmissionProtocol").getAttribute("value").getValue();
-
-            // get keys
-            SCKey[] keys = getKeys(currentCard);
-
-            // get implementation
-            String impl = currentCard.getAttribute("defaultImpl").getValue();
-
-            configs.add(new CardConfig(name, description, ATRs, isd, scpMode, tp, keys, impl));
-        }
-        */
-
-        return configs;
+        XStream xstream = new XStream(new StaxDriver());
+        xstream.registerConverter(new SCPConverter());
+        xstream.registerConverter(new KeyConverter());
+        xstream.registerConverter(new ATRConverter());
+        xstream.registerLocalConverter(CardConfig.class, "isd", new HexadecimalConverter());
+        xstream.alias("cards", LinkedList.class);
+        xstream.alias("card", CardConfig.class);
+        xstream.alias("atrs", LinkedList.class);
+        xstream.alias("atr", ATR.class);
+        xstream.aliasType("key",SCKey.class);
+        return (List<CardConfig>)xstream.fromXML(stream);
     }
 
-    /**
-     * Get the value between scpMode tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return the SCP mode
-     */             /*
-    private SCPMode getSCP(Element card) {
-        String scp = card.getChild("scpMode").getAttribute("value").getValue();
-        SCPMode res = null;
-        if (scp.equals("01_05")) {
-            res = SCPMode.SCP_01_05;
-        } else if (scp.equals("01_15")) {
-            res = SCPMode.SCP_01_15;
-        } else if (scp.equals("02_15")) {
-            res = SCPMode.SCP_02_15;
-        } else if (scp.equals("02_04")) {
-            res = SCPMode.SCP_02_04;
-        } else if (scp.equals("02_05")) {
-            res = SCPMode.SCP_02_05;
-        } else if (scp.equals("02_14")) {
-            res = SCPMode.SCP_02_14;
-        } else if (scp.equals("02_0A")) {
-            res = SCPMode.SCP_02_0A;
-        } else if (scp.equals("02_45")) {
-            res = SCPMode.SCP_02_45;
-        } else if (scp.equals("02_55")) {
-            res = SCPMode.SCP_02_55;
-        } else if (scp.equals("03_65")) {
-            res = SCPMode.SCP_03_65;
-        } else if (scp.equals("03_6D")) {
-            res = SCPMode.SCP_03_6D;
-        } else if (scp.equals("03_05")) {
-            res = SCPMode.SCP_03_05;
-        } else if (scp.equals("03_0D")) {
-            res = SCPMode.SCP_03_0D;
-        } else if (scp.equals("03_2D")) {
-            res = SCPMode.SCP_03_2D;
-        } else if (scp.equals("03_25")) {
-            res = SCPMode.SCP_03_25;
+    private class ATRConverter implements Converter {
+        @Override
+        public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+            throw new UnsupportedOperationException("not implemented");
         }
-        return res;
-    }             */
 
-    /**
-     * Get the keys between key tags from an element in the config.xml
-     *
-     * @param card an element in the config.xml
-     * @return the credentials keys
-     */         /*
-    private SCKey[] getKeys(Element card) {
+        @Override
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+            byte[] value = Conversion.hexToArray(reader.getValue());
+            return new ATR(value);
+        }
 
-        NodeList keysElem = card.getElementsByTagName("key");
-        SCKey[] keys = new SCKey[keysElem.getLength()];
+        @Override
+        public boolean canConvert(Class type) {
+            return type.equals(ATR.class);
+        }
+    }
 
-        // for each key in the Element
-        for (int i = 0; i < keysElem.getLength(); i++) {
-            String keyType = ((Element) keysElem.item(i)).getAttribute("type");
-            String keyVersionNumber = ((Element) keysElem.item(i)).getAttribute("keyVersionNumber");
-            String keyDatas = ((Element) keysElem.item(i)).getAttribute("keyDatas");
-            if (keyType.equals("DES_ECB")) {
-                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
-                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
-                        KeyType.DES_ECB, Conversion.hexToArray(keyDatas));
-            } else if (keyType.equals("DES_CBC")) {
-                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
-                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
-                        KeyType.DES_CBC, Conversion.hexToArray(keyDatas));
-            } else if (keyType.equals("SCGemVisa2")) {
-                keys[i] = new SCGemVisa2((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
-            } else if (keyType.equals("SCGemVisa")) {
-                keys[i] = new SCGemVisa((byte) Integer.parseInt(keyVersionNumber), Conversion.hexToArray(keyDatas));
+    private class HexadecimalConverter implements SingleValueConverter {
+
+        @Override
+        public String toString(Object obj) {
+            throw new UnsupportedOperationException("not implemented");
+        }
+
+        @Override
+        public Object fromString(String str) {
+            return Conversion.hexToArray(str);
+        }
+
+        @Override
+        public boolean canConvert(Class type) {
+            return type.equals(byte[].class);
+        }
+    }
+
+    private class SCPConverter implements Converter {
+        @Override
+        public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+            throw new UnsupportedOperationException("not implemented");
+        }
+
+        @Override
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+            return SCPMode.valueOf("SCP_" + reader.getValue());
+        }
+
+        @Override
+        public boolean canConvert(Class type) {
+            return type.equals(SCPMode.class);
+        }
+    }
+
+    private class KeyConverter implements Converter {
+        @Override
+        public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
+            throw new UnsupportedOperationException("not implemented");
+        }
+
+        @Override
+        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
+
+            String type = null;
+            String version = null;
+            String id = null;
+            String value = null;
+
+            while (reader.hasMoreChildren()) {
+                reader.moveDown();
+                if ("type".equals(reader.getNodeName())) {
+                    type = reader.getValue();
+                } else if ("version".equals(reader.getNodeName())) {
+                    version = reader.getValue();
+                } else if ("id".equals(reader.getNodeName())) {
+                    id = reader.getValue();
+                } else if ("value".equals(reader.getNodeName())) {
+                    value = reader.getValue();
+                }
+                reader.moveUp();
             }
-            if (keyType.equals("AES")) {
-                String keyId = ((Element) keysElem.item(i)).getAttribute("keyId");
-                keys[i] = new SCGPKey((byte) Integer.parseInt(keyVersionNumber), (byte) Integer.parseInt(keyId),
-                        KeyType.AES_CBC, Conversion.hexToArray(keyDatas));
+
+            if(type.equals("DES_ECB")) {
+                return new SCGPKey((byte) Integer.parseInt(version),
+                        (byte) Integer.parseInt(id),
+                        KeyType.DES_ECB,
+                        Conversion.hexToArray(value));
+            } else if(type.equals("DES_CBC")) {
+                return new SCGPKey((byte) Integer.parseInt(version),
+                        (byte) Integer.parseInt(id),
+                        KeyType.DES_CBC,
+                        Conversion.hexToArray(value));
+            } else if (type.equals("SCGemVisa2")) {
+                return new SCGemVisa2((byte) Integer.parseInt(version), Conversion.hexToArray(value));
+            } else if (type.equals("SCGemVisa")) {
+                return new SCGemVisa((byte) Integer.parseInt(version),
+                        Conversion.hexToArray(value));
+            } else if (type.equals("AES_CBC")) {
+                return new SCGPKey((byte) Integer.parseInt(version),
+                        (byte) Integer.parseInt(id),
+                        KeyType.AES_CBC,
+                        Conversion.hexToArray(value));
+            } else {
+                throw new IllegalArgumentException("Cannot find key type in XML");
             }
         }
-        return keys;
-    }         */
+
+        @Override
+        public boolean canConvert(Class type) {
+            return SCKey.class.isAssignableFrom(type);
+        }
+    }
 
     /**
      * Return the card config based on the ATR returns by the card.
@@ -337,7 +331,7 @@ public class CardConfigFactory {
             Node isdAID = document.createElement("isdAID");
             NamedNodeMap isdAIDAttributes = isdAID.getAttributes();
             Attr valueidsAID = document.createAttribute("value");
-            valueidsAID.setValue(Conversion.arrayToHex(card.getIssuerSecurityDomainAID()));
+            valueidsAID.setValue(Conversion.arrayToHex(card.getIsd()));
             isdAIDAttributes.setNamedItem(valueidsAID);
             newCard.appendChild(isdAID);
 

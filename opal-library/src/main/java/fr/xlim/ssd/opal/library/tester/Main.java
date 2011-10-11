@@ -161,7 +161,7 @@ public class Main {
         //  select the security domain
         logger.info("Selecting Security Domain");
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
-                cardConfig.getIssuerSecurityDomainAID());
+                cardConfig.getIsd());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
 
 
@@ -186,7 +186,7 @@ public class Main {
         //  select the security domain
         logger.info("Selecting Security Domain");
         SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
-                cardConfig.getIssuerSecurityDomainAID());
+                cardConfig.getIsd());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         try {
             securityDomain.select();
