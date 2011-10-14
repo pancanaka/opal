@@ -23,7 +23,7 @@ public class CardConfig {
     private String description;
 
     /// The ATR list linked to this card configuration
-    private List<ATR> atrs;
+    private List<byte[]> atrs;
 
     /// The Issuer Security Domain (ISD) AID
     private byte[] isd;
@@ -57,7 +57,7 @@ public class CardConfig {
      */
     public CardConfig(String name,
                       String description,
-                      List<ATR> atrs,
+                      List<byte[]> atrs,
                       byte[] isd,
                       SCPMode scp,
                       String tp,
@@ -133,7 +133,7 @@ public class CardConfig {
      *
      * @return An ATR array which contains linked card ATR
      */
-    public List<ATR> getAtrs() {
+    public List<byte[]> getAtrs() {
         return atrs;
     }
 

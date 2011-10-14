@@ -6,9 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
@@ -23,21 +20,21 @@ public class CardConfigTest {
     public void setUp() {
         scKey = mock(SCKey.class);
         cardConfig = new CardConfig
-                ("dummy", "dummy", Arrays.asList(new ATR[]{new ATR(new byte[0])}), new byte[0], SCPMode.SCP_UNDEFINED,
+                ("dummy", "dummy", Arrays.asList(new byte[][]{new byte[0]}), new byte[0], SCPMode.SCP_UNDEFINED,
                         "dummy", new SCKey[]{scKey}, "dummy");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkCardConfigFailedWhenNameNull() {
         CardConfig cc = new CardConfig
-                (null, "dummy", Arrays.asList(new ATR[]{new ATR(new byte[0])}), new byte[0], SCPMode.SCP_UNDEFINED,
+                (null, "dummy", Arrays.asList(new byte[][]{new byte[0]}), new byte[0], SCPMode.SCP_UNDEFINED,
                         "dummy", new SCKey[]{scKey}, "dummy");
     }
 
     @Test
     public void checkCardConfigFailedWhenDescriptionNull() {
         CardConfig cc = new CardConfig
-                ("dummy", null, Arrays.asList(new ATR[]{new ATR(new byte[0])}), new byte[0], SCPMode.SCP_UNDEFINED,
+                ("dummy", null, Arrays.asList(new byte[][]{new byte[0]}), new byte[0], SCPMode.SCP_UNDEFINED,
                         "dummy", new SCKey[]{scKey}, "dummy");
     }
 
@@ -51,35 +48,35 @@ public class CardConfigTest {
     @Test(expected = IllegalArgumentException.class)
     public void checkCardConfigFailedWhenIsdNull() {
         CardConfig cc = new CardConfig
-                ("dummy", "dummy", Arrays.asList(new ATR[]{new ATR(new byte[0])}), null, SCPMode.SCP_UNDEFINED,
+                ("dummy", "dummy", Arrays.asList(new byte[][]{new byte[0]}), null, SCPMode.SCP_UNDEFINED,
                         "dummy", new SCKey[]{scKey}, "dummy");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkCardConfigFailedWhenScpNull() {
         CardConfig cc = new CardConfig
-                ("dummy", "dummy", Arrays.asList(new ATR[]{new ATR(new byte[0])}), new byte[0], null,
+                ("dummy", "dummy", Arrays.asList(new byte[][]{new byte[0]}), new byte[0], null,
                         "dummy", new SCKey[]{scKey}, "dummy");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkCardConfigFailedWhenTpNull() {
         CardConfig cc = new CardConfig
-                ("dummy", "dummy", Arrays.asList(new ATR[]{new ATR(new byte[0])}), new byte[0], SCPMode.SCP_UNDEFINED,
+                ("dummy", "dummy", Arrays.asList(new byte[][]{new byte[0]}), new byte[0], SCPMode.SCP_UNDEFINED,
                         null, new SCKey[]{scKey}, "dummy");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkCardConfigFailedWhenKeysNull() {
         CardConfig cc = new CardConfig
-                ("dummy", "dummy", Arrays.asList(new ATR[]{new ATR(new byte[0])}), new byte[0], SCPMode.SCP_UNDEFINED,
+                ("dummy", "dummy", Arrays.asList(new byte[][]{new byte[0]}), new byte[0], SCPMode.SCP_UNDEFINED,
                         "dummy", null, "dummy");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void checkCardConfigFailedWhenImplNull() {
         CardConfig cc = new CardConfig
-                ("dummy", "dummy", Arrays.asList(new ATR[]{new ATR(new byte[0])}), new byte[0], SCPMode.SCP_UNDEFINED,
+                ("dummy", "dummy", Arrays.asList(new byte[][]{new byte[0]}), new byte[0], SCPMode.SCP_UNDEFINED,
                         "dummy", new SCKey[]{scKey}, null);
     }
 

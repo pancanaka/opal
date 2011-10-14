@@ -82,7 +82,7 @@ public class CardConfigFactoryTest {
         assertEquals("fr.xlim.ssd.opal.library.commands.GemXpresso211Commands", cardConfig.getImplementation());
         assertEquals(1,cardConfig.getAtrs().size());
         assertArrayEquals(new byte[]{0x3B, 0x6E, 0x00, 0x00, (byte) 0x80, 0x31, (byte) 0x80, 0x65, (byte) 0xB0, 0x03, 0x02,
-                0x01, 0x5E, (byte) 0x83, 0x00, 0x00, (byte) 0x90, 0x00}, cardConfig.getAtrs().get(0).getValue());
+                0x01, 0x5E, (byte) 0x83, 0x00, 0x00, (byte) 0x90, 0x00}, cardConfig.getAtrs().get(0));
         assertArrayEquals(new byte[]{(byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D}, cardConfig.getIsd());
         assertEquals(SCPMode.SCP_01_05, cardConfig.getScpMode());
         assertEquals("T=0",cardConfig.getTransmissionProtocol());

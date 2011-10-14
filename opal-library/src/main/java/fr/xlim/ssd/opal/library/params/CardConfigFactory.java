@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,12 +46,10 @@ public class CardConfigFactory {
         xstream = new XStream(new StaxDriver());
         xstream.registerConverter(new SCPConverter());
         xstream.registerConverter(new KeyConverter());
-        xstream.registerConverter(new ATRConverter());
         xstream.registerLocalConverter(CardConfig.class, "isd", new HexadecimalConverter());
-        xstream.alias("cards", LinkedList.class);
+        xstream.registerLocalConverter(CardConfig.class, "atrs", new ATRConverter());
+        xstream.alias("cards", ArrayList.class);
         xstream.alias("card", CardConfig.class);
-        xstream.alias("atrs", LinkedList.class);
-        xstream.alias("atr", ATR.class);
         xstream.aliasType("key", SCKey.class);
 
         // add all card configs from main config file
@@ -84,8 +83,8 @@ public class CardConfigFactory {
     public CardConfig getCardConfigByATR(byte[] atr) {
 
         for (CardConfig cardConfig : cardConfigs) {
-            for (ATR atr2 : cardConfig.getAtrs()) {
-                if (Arrays.equals(atr, atr2.getValue())) {
+            for (byte[] atr2 : cardConfig.getAtrs()) {
+                if (Arrays.equals(atr, atr2)) {
                     return cardConfig;
                 }
             }
@@ -136,13 +135,18 @@ public class CardConfigFactory {
 
         @Override
         public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-            byte[] value = Conversion.hexToArray(reader.getValue());
-            return new ATR(value);
+            List l = new ArrayList<byte[]>();
+            while (reader.hasMoreChildren()) {
+            reader.moveDown();
+            l.add(Conversion.hexToArray(reader.getValue()));
+            reader.moveUp();
+            }
+            return l;
         }
 
         @Override
         public boolean canConvert(Class type) {
-            return type.equals(ATR.class);
+            return type.equals(ArrayList.class);
         }
     }
 
