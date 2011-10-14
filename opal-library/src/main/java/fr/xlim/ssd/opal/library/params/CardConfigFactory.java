@@ -27,7 +27,6 @@ import java.util.List;
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
- *
  * @see CardConfig
  */
 public class CardConfigFactory {
@@ -52,11 +51,11 @@ public class CardConfigFactory {
         xstream.alias("card", CardConfig.class);
         xstream.alias("atrs", LinkedList.class);
         xstream.alias("atr", ATR.class);
-        xstream.aliasType("key",SCKey.class);
+        xstream.aliasType("key", SCKey.class);
 
         // add all card configs from main config file
         InputStream mainConfigFile = CardConfigFactory.class.getResourceAsStream(MAIN_OPAL_CONFIG_IN_CLASSPATH);
-        cardConfigs.addAll((List<CardConfig>)xstream.fromXML(mainConfigFile));
+        cardConfigs.addAll((List<CardConfig>) xstream.fromXML(mainConfigFile));
     }
 
     /**
@@ -96,7 +95,7 @@ public class CardConfigFactory {
     }
 
     public boolean registerLocalCardConfig(CardConfig cardConfig) {
-        if(cardConfigs.contains(cardConfig)) {
+        if (cardConfigs.contains(cardConfig)) {
             return false;
         }
         cardConfig.setLocal(true);
@@ -105,27 +104,29 @@ public class CardConfigFactory {
     }
 
     public void registerLocalCardConfigsFromXML(File inputStream) {
-        List<CardConfig> l = (List<CardConfig>)xstream.fromXML(inputStream);
-        for(CardConfig cardConfig : l) {
+        List<CardConfig> l = (List<CardConfig>) xstream.fromXML(inputStream);
+        for (CardConfig cardConfig : l) {
             registerLocalCardConfig(cardConfig);
         }
     }
 
     public void saveLocalCardConfigsToXML(OutputStream outputStream) {
         List<CardConfig> l = new LinkedList<CardConfig>();
-        for(CardConfig c : cardConfigs) {
-            if(c.isLocal()) {
+        for (CardConfig c : cardConfigs) {
+            if (c.isLocal()) {
                 l.add(c);
             }
         }
-         xstream.toXML(l,outputStream);
+        xstream.toXML(l, outputStream);
     }
 
     public List<CardConfig> getCardConfigs() {
         return cardConfigs;
     }
 
-    /*************************** XStream converters ***************************/
+    /**
+     * ************************ XStream converters **************************
+     */
 
     private class ATRConverter implements Converter {
         @Override
@@ -208,12 +209,12 @@ public class CardConfigFactory {
                 reader.moveUp();
             }
 
-            if(type.equals("DES_ECB")) {
+            if (type.equals("DES_ECB")) {
                 return new SCGPKey((byte) Integer.parseInt(version),
                         (byte) Integer.parseInt(id),
                         KeyType.DES_ECB,
                         Conversion.hexToArray(value));
-            } else if(type.equals("DES_CBC")) {
+            } else if (type.equals("DES_CBC")) {
                 return new SCGPKey((byte) Integer.parseInt(version),
                         (byte) Integer.parseInt(id),
                         KeyType.DES_CBC,

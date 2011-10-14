@@ -6,7 +6,7 @@ import static org.junit.Assert.assertArrayEquals;
 
 public class ATRtest {
 
-    ATR atr;
+    private ATR atr;
 
     @Test
     public void checkGetATR() {
