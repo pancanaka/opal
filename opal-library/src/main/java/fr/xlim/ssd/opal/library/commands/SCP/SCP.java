@@ -1,6 +1,6 @@
 package fr.xlim.ssd.opal.library.commands.SCP;
 
-import fr.xlim.ssd.opal.library.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCGPKey;
 
 /**
  * Secure Channel Protocol interface

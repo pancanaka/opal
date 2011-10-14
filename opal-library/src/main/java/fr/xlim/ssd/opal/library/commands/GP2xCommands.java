@@ -1,6 +1,9 @@
 package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.*;
+import fr.xlim.ssd.opal.library.config.SCDerivableKey;
+import fr.xlim.ssd.opal.library.config.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCKey;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import org.slf4j.Logger;

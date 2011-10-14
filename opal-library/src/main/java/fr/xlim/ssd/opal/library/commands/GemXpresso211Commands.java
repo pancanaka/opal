@@ -1,7 +1,7 @@
 package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.CommandsProvider;
-import fr.xlim.ssd.opal.library.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCGPKey;
 
 /**
  * Specific implementation of @link{fr.xlim.ssd.opal.library.commands.GP2xCommands} to GemXpresso 211 authentication

@@ -1,5 +1,8 @@
 package fr.xlim.ssd.opal.library;
 
+import fr.xlim.ssd.opal.library.config.KeyType;
+import fr.xlim.ssd.opal.library.config.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCGemVisa2;
 import org.junit.Before;
 import org.junit.Test;
 

@@ -1,6 +1,5 @@
-package fr.xlim.ssd.opal.library.params;
+package fr.xlim.ssd.opal.library.config;
 
-import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 
 import java.util.List;

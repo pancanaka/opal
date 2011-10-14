@@ -1,6 +1,7 @@
 package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.*;
+import fr.xlim.ssd.opal.library.config.SCKey;
 
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;

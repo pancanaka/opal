@@ -1,7 +1,7 @@
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.KeyType;
-import fr.xlim.ssd.opal.library.SCGPKey;
+import fr.xlim.ssd.opal.library.config.KeyType;
+import fr.xlim.ssd.opal.library.config.SCGPKey;
 import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;

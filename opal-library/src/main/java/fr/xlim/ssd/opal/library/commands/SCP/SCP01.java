@@ -1,6 +1,6 @@
 package fr.xlim.ssd.opal.library.commands.SCP;
 
-import fr.xlim.ssd.opal.library.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

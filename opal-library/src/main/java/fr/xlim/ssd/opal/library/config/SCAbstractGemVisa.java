@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.config;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;

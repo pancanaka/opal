@@ -2,8 +2,8 @@ package fr.xlim.ssd.opal.library;
 
 import fr.xlim.ssd.opal.library.commands.CardChannelMock;
 import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
-import fr.xlim.ssd.opal.library.params.CardConfig;
-import fr.xlim.ssd.opal.library.params.CardConfigFactory;
+import fr.xlim.ssd.opal.library.config.CardConfig;
+import fr.xlim.ssd.opal.library.config.CardConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 

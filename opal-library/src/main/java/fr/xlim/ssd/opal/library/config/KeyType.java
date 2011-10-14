@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.config;
 
 /**
  * Define the key type used.

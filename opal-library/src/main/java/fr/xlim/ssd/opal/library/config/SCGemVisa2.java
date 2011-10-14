@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.config;
 
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 

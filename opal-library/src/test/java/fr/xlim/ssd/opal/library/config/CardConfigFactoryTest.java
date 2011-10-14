@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library.params;
+package fr.xlim.ssd.opal.library.config;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -7,9 +7,6 @@ import java.io.Reader;
 import java.util.LinkedList;
 import java.util.List;
 
-import fr.xlim.ssd.opal.library.KeyType;
-import fr.xlim.ssd.opal.library.SCGPKey;
-import fr.xlim.ssd.opal.library.SCKey;
 import fr.xlim.ssd.opal.library.SCPMode;
 import org.jdom.Document;
 import org.jdom.Element;

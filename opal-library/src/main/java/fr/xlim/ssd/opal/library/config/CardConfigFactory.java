@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library.params;
+package fr.xlim.ssd.opal.library.config;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
