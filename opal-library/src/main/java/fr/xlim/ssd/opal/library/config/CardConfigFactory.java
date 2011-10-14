@@ -8,13 +8,14 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import fr.xlim.ssd.opal.library.*;
+import fr.xlim.ssd.opal.library.SCPMode;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -42,15 +43,7 @@ public class CardConfigFactory {
 
     public CardConfigFactory() {
 
-        // configuring xstream
-        xstream = new XStream(new StaxDriver());
-        xstream.registerConverter(new SCPConverter());
-        xstream.registerConverter(new KeyConverter());
-        xstream.registerLocalConverter(CardConfig.class, "isd", new HexadecimalConverter());
-        xstream.registerLocalConverter(CardConfig.class, "atrs", new ATRConverter());
-        xstream.alias("cards", ArrayList.class);
-        xstream.alias("card", CardConfig.class);
-        xstream.aliasType("key", SCKey.class);
+        configureXStream();
 
         // add all card configs from main config file
         InputStream mainConfigFile = CardConfigFactory.class.getResourceAsStream(MAIN_OPAL_CONFIG_IN_CLASSPATH);
@@ -123,30 +116,50 @@ public class CardConfigFactory {
         return cardConfigs;
     }
 
-    /**
+    /*
      * ************************ XStream converters **************************
+     *
+     * TODO: At the present time, this is not perfect, we need to get rid of the "class='cards'" at output
      */
 
+    private void configureXStream() {
+        xstream = new XStream(new StaxDriver());
+        xstream.registerConverter(new SCPConverter());
+        xstream.registerConverter(new KeyConverter());
+        xstream.registerLocalConverter(CardConfig.class, "isd", new HexadecimalConverter());
+        xstream.registerLocalConverter(CardConfig.class, "atrs", new ATRConverter());
+        xstream.alias("cards",LinkedList.class);
+        xstream.alias("card", CardConfig.class);
+        xstream.aliasType("key", SCKey.class);
+        xstream.omitField(CardConfig.class,"local");
+    }
+
     private class ATRConverter implements Converter {
+
         @Override
         public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-            throw new UnsupportedOperationException("not implemented");
+            List<byte[]> atrs = (List<byte[]>) source;
+            for (byte[] atr : atrs) {
+                writer.startNode("atr");
+                writer.setValue(Conversion.arrayToHex(atr));
+                writer.endNode();
+            }
         }
 
         @Override
         public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-            List l = new ArrayList<byte[]>();
+            List l = new LinkedList<byte[]>();
             while (reader.hasMoreChildren()) {
-            reader.moveDown();
-            l.add(Conversion.hexToArray(reader.getValue()));
-            reader.moveUp();
+                reader.moveDown();
+                l.add(Conversion.hexToArray(reader.getValue()));
+                reader.moveUp();
             }
             return l;
         }
 
         @Override
         public boolean canConvert(Class type) {
-            return type.equals(ArrayList.class);
+            return List.class.isAssignableFrom(type);
         }
     }
 
@@ -154,7 +167,7 @@ public class CardConfigFactory {
 
         @Override
         public String toString(Object obj) {
-            throw new UnsupportedOperationException("not implemented");
+            return Conversion.arrayToHex((byte[])obj);
         }
 
         @Override
@@ -168,15 +181,16 @@ public class CardConfigFactory {
         }
     }
 
-    private class SCPConverter implements Converter {
+    private class SCPConverter implements SingleValueConverter {
+
         @Override
-        public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-            throw new UnsupportedOperationException("not implemented");
+        public String toString(Object obj) {
+            return ((SCPMode)obj).name().substring(4);
         }
 
         @Override
-        public Object unmarshal(HierarchicalStreamReader reader, UnmarshallingContext context) {
-            return SCPMode.valueOf("SCP_" + reader.getValue());
+        public Object fromString(String str) {
+            return SCPMode.valueOf("SCP_" + str);
         }
 
         @Override
@@ -186,9 +200,24 @@ public class CardConfigFactory {
     }
 
     private class KeyConverter implements Converter {
+
         @Override
         public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
-            throw new UnsupportedOperationException("not implemented");
+            SCKey key = (SCKey)source;
+            writer.startNode("type");
+            writer.setValue(key.getType().name());
+            writer.endNode();
+            writer.startNode("version");
+            writer.setValue(new Byte(key.getVersion()).toString());
+            writer.endNode();
+            if (key instanceof SCGPKey) {
+                writer.startNode("id");
+                writer.setValue(new Byte(key.getId()).toString());
+                writer.endNode();
+            }
+            writer.startNode("value");
+            writer.setValue(Conversion.arrayToHex(key.getValue()));
+            writer.endNode();
         }
 
         @Override

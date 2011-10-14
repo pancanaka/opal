@@ -45,14 +45,14 @@ public class CardConfig {
     /**
      * Constructor for CardConfig object
      *
-     * @param name        the card configuration name
-     * @param description the card configuration description
-     * @param atrs        the card ATR linked to this configuration
-     * @param isd         the issuer security domain AID
-     * @param scp         the SCP mode
-     * @param tp          the transmission protocol
-     * @param keys        the credential keys
-     * @param implementation        the class name of the implementation
+     * @param name           the card configuration name
+     * @param description    the card configuration description
+     * @param atrs           the card ATR linked to this configuration
+     * @param isd            the issuer security domain AID
+     * @param scp            the SCP mode
+     * @param tp             the transmission protocol
+     * @param keys           the credential keys
+     * @param implementation the class name of the implementation
      */
     public CardConfig(String name,
                       String description,
@@ -70,11 +70,11 @@ public class CardConfig {
         // description may be null
 
         // At least one ATR
-        if(atrs == null) {
+        if (atrs == null) {
             throw new IllegalArgumentException("atrs must be not null");
         }
 
-        if(atrs.size() == 0) {
+        if (atrs.size() == 0) {
             throw new IllegalArgumentException("atrs must contain at lesat one ATR");
         }
 
@@ -187,10 +187,10 @@ public class CardConfig {
      * @return the P1 param to send to initUpdtate Command according to the KeySetVersion found in configured keys
      */
     public byte getDefaultInitUpdateP1() {
-        if (this.keys[0].getSetVersion() == (byte) 255) {
+        if (this.keys[0].getVersion() == (byte) 255) {
             return 0;
         } else {
-            return this.keys[0].getSetVersion();
+            return this.keys[0].getVersion();
         }
     }
 

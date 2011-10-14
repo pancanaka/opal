@@ -100,12 +100,12 @@ public abstract class SCAbstractGemVisa implements SCKey, SCDerivableKey {
     protected abstract byte[] getDivDataStaticKek(byte[] keydata);
 
     @Override
-    public byte[] getData() {
+    public byte[] getValue() {
         return this.data.clone();
     }
 
     @Override
-    public byte getSetVersion() {
+    public byte getVersion() {
         return this.setVersion;
     }
 

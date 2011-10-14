@@ -62,9 +62,9 @@ public class SCP01 implements SCP {
 
             Cipher myCipher = null;
 
-            logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getData()));
-            logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getData()));
-            logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getData()));
+            logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getValue()));
+            logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getValue()));
+            logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getValue()));
             logger.debug("* SCP_Mode is SCP01");
 
             this.sessEnc = new byte[24];
@@ -74,7 +74,7 @@ public class SCP01 implements SCP {
             myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
 
             /* Calculating session encryption key */
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"));
             session = myCipher.doFinal(this.derivationData);
             System.arraycopy(session, 0, this.sessEnc, 0, 16);
             System.arraycopy(session, 0, this.sessEnc, 16, 8);
@@ -82,7 +82,7 @@ public class SCP01 implements SCP {
             logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));
 
             /* Calculating session mac key */
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"));
             session = myCipher.doFinal(this.derivationData);
             System.arraycopy(session, 0, this.sessMac, 0, 16);
             System.arraycopy(session, 0, this.sessMac, 16, 8);
@@ -90,7 +90,7 @@ public class SCP01 implements SCP {
             logger.debug("* sessMac = " + Conversion.arrayToHex(this.sessMac));
 
             /* Calculating session data encryption key */
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"));
+            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"));
             session = myCipher.doFinal(this.derivationData);
             System.arraycopy(session, 0, this.sessKek, 0, 16);
             System.arraycopy(session, 0, this.sessKek, 16, 8);

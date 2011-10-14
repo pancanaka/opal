@@ -1,13 +1,11 @@
 package fr.xlim.ssd.opal.library.config;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
 import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -88,28 +86,56 @@ public class CardConfigFactoryTest {
         SCKey key = cardConfig.getSCKeys()[0];
         assertEquals(SCGPKey.class,key.getClass());
         assertEquals(KeyType.DES_ECB,key.getType());
-        assertEquals(13,key.getSetVersion());
+        assertEquals(13,key.getVersion());
         assertEquals(1,key.getId());
         assertArrayEquals(new byte[]{(byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
                 (byte)0xCA, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, (byte)0xCA, (byte)0xCA, (byte)0xCA,
-                (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA},key.getData());
+                (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA},key.getValue());
 
         key = cardConfig.getSCKeys()[1];
         assertEquals(SCGPKey.class,key.getClass());
         assertEquals(KeyType.DES_ECB,key.getType());
-        assertEquals(13,key.getSetVersion());
+        assertEquals(13,key.getVersion());
         assertEquals(2,key.getId());
         assertArrayEquals(new byte[]{0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D,
                 (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA, (byte)0xCA,
-                0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D},key.getData());
+                0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D, 0x2D},key.getValue());
 
         key = cardConfig.getSCKeys()[2];
         assertEquals(SCGPKey.class,key.getClass());
         assertEquals(KeyType.DES_ECB,key.getType());
-        assertEquals(13,key.getSetVersion());
+        assertEquals(13,key.getVersion());
         assertEquals(3,key.getId());
         assertArrayEquals(new byte[]{(byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA,
                 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D, (byte)0xCA, 0x2D,
-                 (byte)0xCA, 0x2D, (byte)0xCA, 0x2D},key.getData());
+                 (byte)0xCA, 0x2D, (byte)0xCA, 0x2D},key.getValue());
     }
+
+    @Test
+    public void testSaveLocalCardConfigsToXML() {
+        LinkedList<byte[]> atrs = new LinkedList<byte[]>();
+        atrs.add(Conversion.hexToArray("01 23 45 67 89"));
+        atrs.add(Conversion.hexToArray("AB CD EF 01 23"));
+        LinkedList<SCKey> keys = new LinkedList<SCKey>();
+        keys.add(new SCGPKey((byte)0,(byte)1,KeyType.AES_CBC,Conversion.hexToArray("01 23")));
+        keys.add(new SCGPKey((byte)2,(byte)3,KeyType.DES_CBC,Conversion.hexToArray("45 67")));
+        keys.add(new SCGPKey((byte)4,(byte)5,KeyType.DES_ECB,Conversion.hexToArray("89 AB")));
+        keys.add(new SCGPKey((byte)6,(byte)7,KeyType.MOTHER_KEY,Conversion.hexToArray("CD EF")));
+        CardConfig cardConfig = new CardConfig("name","description",atrs,
+                Conversion.hexToArray("01 23 45 67 89"), SCPMode.SCP_02_05,
+                "T=0", keys.toArray(new SCKey[0]),"implementation");
+        cardConfig.setLocal(true);
+        cardConfigFactory.registerLocalCardConfig(cardConfig);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(5000);
+        cardConfigFactory.saveLocalCardConfigsToXML(baos);
+        byte [] expected =  ("<?xml version=\"1.0\" ?><cards><card><name>name</name><description>description" +
+                "</description><atrs class=\"cards\"><atr>01 23 45 67 89 </atr><atr>AB CD EF 01 23 </atr></atrs>" +
+                "<isd>01 23 45 67 89 </isd><scp>02_05</scp><tp>T=0</tp><keys><key><type>AES_CBC</type><version>0" +
+                "</version><id>1</id><value>01 23 </value></key><key><type>DES_CBC</type><version>2</version><id>3</id>" +
+                "<value>45 67 </value></key><key><type>DES_ECB</type><version>4</version><id>5</id><value>89 AB " +
+                "</value></key><key><type>MOTHER_KEY</type><version>6</version><id>7</id><value>CD EF </value></key>" +
+                "</keys><implementation>implementation</implementation></card></cards>").getBytes();
+        assertArrayEquals(expected,baos.toByteArray());
+    }
+
 }

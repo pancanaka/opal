@@ -133,7 +133,7 @@ public class RAMOverHTTP {
             HttpPostResponse httpResponse = new HttpPostResponse(message.getBytes());
             String nextURI = httpResponse.getNextURI();
             ResponseAPDU response = securityDomain.sendCommand(httpResponse.getCommandAPDU());
-            //logger.info(Conversion.arrayToHex(response.getData()));
+            //logger.info(Conversion.arrayToHex(response.getValue()));
             if (nextURI == null) {
                 moreCommand = false;
                 logger.debug("No more URI");

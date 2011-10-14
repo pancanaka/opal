@@ -17,8 +17,8 @@ public class SCGemVisa extends SCAbstractGemVisa {
 
     @Override
     public String toString() {
-        return "SCGemVisa(setVersion: " + getSetVersion()
-                + ", data:" + Conversion.arrayToHex(getData()) + ")";
+        return "SCGemVisa(setVersion: " + getVersion()
+                + ", data:" + Conversion.arrayToHex(getValue()) + ")";
     }
 
     @Override

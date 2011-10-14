@@ -125,11 +125,11 @@ public class MainHelloWorldTest {
         Commands commands = createCommands("/HelloWorld-Cyberflex_Palmera_V3-C_MAC.txt");
         CardConfig cardConfig = new CardConfigFactory().getCardConfigByName("Cyberflex_Palmera_V3");
 
-        org.junit.Assert.assertArrayEquals(cardConfig.getSCKeys()[0].getData(),
+        org.junit.Assert.assertArrayEquals(cardConfig.getSCKeys()[0].getValue(),
                 Conversion.hexToArray("40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"));
-        org.junit.Assert.assertArrayEquals(cardConfig.getSCKeys()[1].getData(),
+        org.junit.Assert.assertArrayEquals(cardConfig.getSCKeys()[1].getValue(),
                 Conversion.hexToArray("40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"));
-        org.junit.Assert.assertArrayEquals(cardConfig.getSCKeys()[2].getData(),
+        org.junit.Assert.assertArrayEquals(cardConfig.getSCKeys()[2].getValue(),
                 Conversion.hexToArray("40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47"));
 
         commands.setOffCardKeys(cardConfig.getSCKeys());

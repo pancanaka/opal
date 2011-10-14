@@ -198,7 +198,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public SCKey getKey(byte keySetVersion, byte keyId) {
         for (SCKey currKey : this.keys) {
-            if (currKey.getSetVersion() == keySetVersion && currKey.getId() == keyId) {
+            if (currKey.getVersion() == keySetVersion && currKey.getId() == keyId) {
                 return currKey;
             }
         }
@@ -211,7 +211,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public SCKey setOffCardKey(SCKey key) {
         for (SCKey currKey : this.keys) {
-            if (currKey.getSetVersion() == key.getSetVersion() && currKey.getId() == key.getId()) {
+            if (currKey.getVersion() == key.getVersion() && currKey.getId() == key.getId()) {
                 this.keys.remove(currKey);
                 this.keys.add(key);
                 return currKey;
@@ -239,7 +239,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public SCKey deleteOffCardKey(byte keySetVersion, byte keyId) {
         for (SCKey currKey : this.keys) {
-            if (currKey.getSetVersion() == keySetVersion && currKey.getId() == keyId) {
+            if (currKey.getVersion() == keySetVersion && currKey.getId() == keyId) {
                 this.keys.remove(currKey);
                 return currKey;
             }
@@ -1579,9 +1579,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             Cipher myCipher = null;
 
-            logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getData()));
-            logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getData()));
-            logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getData()));
+            logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getValue()));
+            logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getValue()));
+            logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getValue()));
             logger.debug("* SCP_Mode is " + this.scp);
 
             if ((this.scp == SCPMode.SCP_UNDEFINED)
@@ -1595,7 +1595,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
 
                 /* Calculating session encryption key */
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"));
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessEnc, 0, 16);
                 System.arraycopy(session, 0, this.sessEnc, 16, 8);
@@ -1603,7 +1603,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));
 
                 /* Calculating session mac key */
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"));
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessMac, 0, 16);
                 System.arraycopy(session, 0, this.sessMac, 16, 8);
@@ -1611,7 +1611,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* sessMac = " + Conversion.arrayToHex(this.sessMac));
 
                 /* Calculating session data encryption key */
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"));
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessKek, 0, 16);
                 System.arraycopy(session, 0, this.sessKek, 16, 8);
@@ -1637,7 +1637,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 // Calculing Encryption Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4ENCKEY, 0, this.derivationData, 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getData(), "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessEnc, 0, 16);
                 System.arraycopy(session, 0, this.sessEnc, 16, 8);
@@ -1646,7 +1646,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 // Calculing C_Mac Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4CMAC, 0, this.derivationData, 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessMac, 0, 16);
                 System.arraycopy(session, 0, this.sessMac, 16, 8);
@@ -1655,7 +1655,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 // Calculing R_Mac Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4RMAC, 0, this.derivationData, 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getData(), "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessRMac, 0, 16);
                 System.arraycopy(session, 0, this.sessRMac, 16, 8);
@@ -1664,7 +1664,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 // Calculing Data Encryption Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4DATAENC, 0, this.derivationData, 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getData(), "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
                 System.arraycopy(session, 0, this.sessKek, 0, 16);
                 System.arraycopy(session, 0, this.sessKek, 16, 8);
@@ -1688,7 +1688,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("*** Initialize IV : " + Conversion.arrayToHex(this.icv));
 
 
-                SecretKeySpec skeySpec = new SecretKeySpec(staticKenc.getData(), "AES");
+                SecretKeySpec skeySpec = new SecretKeySpec(staticKenc.getValue(), "AES");
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
                 logger.debug("key : " + Conversion.arrayToHex(skeySpec.getEncoded()));
 

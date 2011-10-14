@@ -45,28 +45,26 @@ public class SCGPKey implements SCKey {
     }
 
 
-
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getData()
-     */
+    * @see fr.xlim.ssd.opal.SCKey#getValue()
+    */
     @Override
-    public byte[] getData() {
+    public byte[] getValue() {
         return this.data.clone();
     }
 
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.SCKey#getKeyId()
      */
-    @Override
     public byte getId() {
         return this.id;
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.SCKey#getSetVersion()
+     * @see fr.xlim.ssd.opal.SCKey#getVersion()
      */
     @Override
-    public byte getSetVersion() {
+    public byte getVersion() {
         return this.setVersion;
     }
 
@@ -81,8 +79,8 @@ public class SCGPKey implements SCKey {
 
     @Override
     public String toString() {
-        return "SCGPKey(setVersion: " + getSetVersion() + ", id:" + getId()
+        return "SCGPKey(setVersion: " + getVersion() + ", id:" + getId()
                 + ", type:" + getType() + ", data:"
-                + Conversion.arrayToHex(getData()) + ")";
+                + Conversion.arrayToHex(getValue()) + ")";
     }
 }

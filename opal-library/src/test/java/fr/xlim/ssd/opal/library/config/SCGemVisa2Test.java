@@ -1,8 +1,5 @@
 package fr.xlim.ssd.opal.library.config;
 
-import fr.xlim.ssd.opal.library.config.KeyType;
-import fr.xlim.ssd.opal.library.config.SCGPKey;
-import fr.xlim.ssd.opal.library.config.SCGemVisa2;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -23,7 +20,7 @@ public class SCGemVisa2Test {
 
         scgv = new SCGemVisa2((byte) 0x32, key);
 
-        assertEquals(0x32, scgv.getSetVersion());
+        assertEquals(0x32, scgv.getVersion());
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -54,8 +51,8 @@ public class SCGemVisa2Test {
                 (byte) 0xEC, (byte) 0xB5, 0x3F, (byte) 0x81
         };
 
-        assertArrayEquals(encKey, keys[0].getData());
-        assertEquals((byte) 0x32, keys[0].getSetVersion());
+        assertArrayEquals(encKey, keys[0].getValue());
+        assertEquals((byte) 0x32, keys[0].getVersion());
         assertEquals((byte) 0x01, keys[0].getId());
         assertEquals(KeyType.DES_ECB, keys[0].getType());
 
@@ -66,8 +63,8 @@ public class SCGemVisa2Test {
                 0x48, (byte) 0x99, 0x38
         };
 
-        assertArrayEquals(macKey, keys[1].getData());
-        assertEquals((byte) 0x32, keys[1].getSetVersion());
+        assertArrayEquals(macKey, keys[1].getValue());
+        assertEquals((byte) 0x32, keys[1].getVersion());
         assertEquals((byte) 0x02, keys[1].getId());
         assertEquals(KeyType.DES_ECB, keys[1].getType());
 
@@ -77,8 +74,8 @@ public class SCGemVisa2Test {
                 0x35, 0x4B, 0x5F, 0x7D, 0x63
         };
 
-        assertArrayEquals(kekKey, keys[2].getData());
-        assertEquals((byte) 0x32, keys[2].getSetVersion());
+        assertArrayEquals(kekKey, keys[2].getValue());
+        assertEquals((byte) 0x32, keys[2].getVersion());
         assertEquals((byte) 0x03, keys[2].getId());
         assertEquals(KeyType.DES_ECB, keys[2].getType());
     }

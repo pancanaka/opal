@@ -147,7 +147,7 @@ public class GPApplet {
     public ResponseAPDU select(SCPMode desiredScp) throws CardException, IOException {
         ResponseAPDU ret = this.cmds.select(this.aid,desiredScp);
 
-        this.fileControlInformation = new FileControlInformation(ret.getData());
+        this.fileControlInformation = new FileControlInformation(ret.getValue());
 
         return ret;
     }
@@ -200,7 +200,7 @@ public class GPApplet {
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.Commands#getData( )
+     * @see fr.xlim.ssd.opal.commands.Commands#getValue( )
      */
     public ResponseAPDU getData() throws CardException {
         return this.cmds.getData();

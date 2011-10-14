@@ -8,15 +8,16 @@ package fr.xlim.ssd.opal.library.config;
  */
 public interface SCKey {
 
-    /// data
-    byte[] getData();
+    /// key type
+    KeyType getType();
 
     /// key version
-    byte getSetVersion();
+    byte getVersion();
 
     /// key id
     byte getId();
 
-    /// key type
-    KeyType getType();
+    /// value
+    byte[] getValue();
+
 }
