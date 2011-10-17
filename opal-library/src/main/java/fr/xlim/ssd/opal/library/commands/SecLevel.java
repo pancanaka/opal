@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.commands;
 
 /**
  * Define the security level for the communication.

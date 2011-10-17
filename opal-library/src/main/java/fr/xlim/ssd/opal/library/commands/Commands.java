@@ -1,7 +1,7 @@
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.*;
 import fr.xlim.ssd.opal.library.config.SCKey;
+import fr.xlim.ssd.opal.library.config.SCPMode;
 
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
@@ -106,7 +106,7 @@ public interface Commands {
      * Select the Applet matching with And security canal protocol mode parameter
      *
      * @param aid     wished Applet AID
-     * @param SCPMode wished the security canal protocol Mode
+     * @param desiredScp wished the security canal protocol Mode
      * @return Select APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -125,7 +125,7 @@ public interface Commands {
      * for Implicit Initiation Mode (SCP_02_0A,SCP_02_0B)
      *
      * @param aid     wished Applet AID
-     * @param SCPMode wished the security canal protocol Mode
+     * @param desiredScp wished the security canal protocol Mode
      * @param keyId   Key ID to use to do the authenticate step
      * @throws CardException
      */

@@ -4,7 +4,8 @@ import java.io.*;
 import java.util.LinkedList;
 import java.util.List;
 
-import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.CardConfigFactory;
+import fr.xlim.ssd.opal.library.commands.GP2xCommands;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -74,7 +75,7 @@ public class CardConfigFactoryTest {
         CardConfig cardConfig = cardConfigFactory.getCardConfigByName("GemXpresso211");
         assertEquals("GemXpresso211",cardConfig.getName());
         assertEquals("GemXpresso 211", cardConfig.getDescription());
-        assertEquals("fr.xlim.ssd.opal.library.commands.GemXpresso211Commands", cardConfig.getImplementation());
+        assertEquals("fr.xlim.ssd.opal.library.commands.GemXpresso211Commands", cardConfig.getImplementation().getClass().getCanonicalName());
         assertEquals(1,cardConfig.getAtrs().size());
         assertArrayEquals(new byte[]{0x3B, 0x6E, 0x00, 0x00, (byte) 0x80, 0x31, (byte) 0x80, 0x65, (byte) 0xB0, 0x03, 0x02,
                 0x01, 0x5E, (byte) 0x83, 0x00, 0x00, (byte) 0x90, 0x00}, cardConfig.getAtrs().get(0));
@@ -123,18 +124,20 @@ public class CardConfigFactoryTest {
         keys.add(new SCGPKey((byte)6,(byte)7,KeyType.MOTHER_KEY,Conversion.hexToArray("CD EF")));
         CardConfig cardConfig = new CardConfig("name","description",atrs,
                 Conversion.hexToArray("01 23 45 67 89"), SCPMode.SCP_02_05,
-                "T=0", keys.toArray(new SCKey[0]),"implementation");
+                "T=0", keys.toArray(new SCKey[0]), new GP2xCommands());
         cardConfig.setLocal(true);
         cardConfigFactory.registerLocalCardConfig(cardConfig);
         ByteArrayOutputStream baos = new ByteArrayOutputStream(5000);
         cardConfigFactory.saveLocalCardConfigsToXML(baos);
+        System.out.println(baos);
         byte [] expected =  ("<?xml version=\"1.0\" ?><cards><card><name>name</name><description>description" +
                 "</description><atrs class=\"cards\"><atr>01 23 45 67 89 </atr><atr>AB CD EF 01 23 </atr></atrs>" +
                 "<isd>01 23 45 67 89 </isd><scp>02_05</scp><tp>T=0</tp><keys><key><type>AES_CBC</type><version>0" +
-                "</version><id>1</id><value>01 23 </value></key><key><type>DES_CBC</type><version>2</version><id>3</id>" +
-                "<value>45 67 </value></key><key><type>DES_ECB</type><version>4</version><id>5</id><value>89 AB " +
+                "</version><id>1</id><value>01 23 </value></key><key><type>DES_CBC</type><version>2</version><id>3" +
+                "</id><value>45 67 </value></key><key><type>DES_ECB</type><version>4</version><id>5</id><value>89 AB " +
                 "</value></key><key><type>MOTHER_KEY</type><version>6</version><id>7</id><value>CD EF </value></key>" +
-                "</keys><implementation>implementation</implementation></card></cards>").getBytes();
+                "</keys><implementation class=\"fr.xlim.ssd.opal.library.commands.GP2xCommands\">" +
+                "fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation></card></cards>").getBytes();
         assertArrayEquals(expected,baos.toByteArray());
     }
 

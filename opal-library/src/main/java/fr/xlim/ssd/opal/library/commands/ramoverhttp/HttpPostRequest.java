@@ -1,5 +1,6 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.commands.ramoverhttp;
 
+import fr.xlim.ssd.opal.library.commands.ISO7816;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 
 import javax.smartcardio.ResponseAPDU;

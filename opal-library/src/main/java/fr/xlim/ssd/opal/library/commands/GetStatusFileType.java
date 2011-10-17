@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.commands;
 
 /**
  * Used as GET STATUS parameters to select a subset of statuses to be included in the response message. Please see the

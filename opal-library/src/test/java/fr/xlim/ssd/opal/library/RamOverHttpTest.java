@@ -6,10 +6,11 @@
 package fr.xlim.ssd.opal.library;
 
 
-import java.io.IOException;
 import java.security.Security;
+
+import fr.xlim.ssd.opal.library.commands.ramoverhttp.RAMOverHTTP;
 import org.junit.Test;
-import org.metastatic.jessie.provider.CipherSuite;
+
 import static org.junit.Assert.*;
 
 /**

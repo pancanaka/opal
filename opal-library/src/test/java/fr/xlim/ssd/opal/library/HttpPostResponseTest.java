@@ -6,6 +6,7 @@ package fr.xlim.ssd.opal.library;
 
 
 import fr.xlim.ssd.opal.library.commands.GP2xCommands;
+import fr.xlim.ssd.opal.library.commands.ramoverhttp.HttpPostResponse;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.io.BufferedReader;
 import java.io.IOException;

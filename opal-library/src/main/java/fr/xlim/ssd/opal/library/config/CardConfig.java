@@ -1,6 +1,6 @@
 package fr.xlim.ssd.opal.library.config;
 
-import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.commands.Commands;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ import java.util.List;
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
- * @see CardConfigFactory
+ * @see fr.xlim.ssd.opal.library.CardConfigFactory
  */
 
 public class CardConfig {
@@ -37,7 +37,7 @@ public class CardConfig {
     private SCKey[] keys;
 
     /// The implementation class name
-    private String implementation;
+    private Commands implementation;
 
     // a card config is local if not present in the main config file <classpath://config.xml>
     private boolean local;
@@ -61,7 +61,7 @@ public class CardConfig {
                       SCPMode scp,
                       String tp,
                       SCKey[] keys,
-                      String implementation) {
+                      Commands implementation) {
 
         if (name == null) {
             throw new IllegalArgumentException("name must be not null");
@@ -137,11 +137,11 @@ public class CardConfig {
     }
 
     /**
-     * Get the name of the default implementation class used by this card configuration
+     * Get the implementation class used by this card configuration
      *
      * @return A string with the class name
      */
-    public String getImplementation() {
+    public Commands getImplementation() {
         return this.implementation;
     }
 

@@ -2,8 +2,10 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.commands.ramoverhttp;
 
+import fr.xlim.ssd.opal.library.commands.ISO7816;
+import fr.xlim.ssd.opal.library.applet.SecurityDomain;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.metastatic.jessie.provider.*;
 import org.slf4j.Logger;

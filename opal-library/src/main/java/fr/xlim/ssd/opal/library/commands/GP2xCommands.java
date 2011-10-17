@@ -4,6 +4,7 @@ import fr.xlim.ssd.opal.library.*;
 import fr.xlim.ssd.opal.library.config.SCDerivableKey;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.config.SCKey;
+import fr.xlim.ssd.opal.library.config.SCPMode;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import org.slf4j.Logger;
@@ -39,11 +40,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     /// Logger used to print messages
     private static final Logger logger = LoggerFactory.getLogger(GP2xCommands.class);
-
-    static {
-        /// @see{fr.xlim.ssd.opal.library.CommandsProvider.register}
-        CommandsProvider.register(new GP2xCommands());
-    }
 
     /// Default PADDING to encrypt data for SCP 02 and SCP 01
     protected static final byte[] PADDING = Conversion.hexToArray("80 00 00 00 00 00 00 00");

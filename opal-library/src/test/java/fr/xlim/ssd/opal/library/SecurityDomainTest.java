@@ -1,9 +1,9 @@
 package fr.xlim.ssd.opal.library;
 
+import fr.xlim.ssd.opal.library.applet.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CardChannelMock;
-import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+import fr.xlim.ssd.opal.library.commands.FileControlInformation;
 import fr.xlim.ssd.opal.library.config.CardConfig;
-import fr.xlim.ssd.opal.library.config.CardConfigFactory;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -14,37 +14,24 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 
-/**
- * Created by IntelliJ IDEA.
- * User: stroumph
- * Date: 12/14/10
- * Time: 11:06 AM
- * To change this template use File | Settings | File Templates.
- */
 public class SecurityDomainTest {
 
-    private SecurityDomain createCommands(String filename, CardConfig cardConfig) {
+    private SecurityDomain createCommands(String filename, CardConfig cardConfig) throws ClassNotFoundException, IOException, CardException {
         CardChannel cardChannel = null;
         SecurityDomain commands = null;
         InputStream input = SecurityDomain.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(input);
-        try {
-            cardChannel = new CardChannelMock(reader);
-            commands = new SecurityDomain(cardConfig.getImplementation(), cardChannel, cardConfig.getIsd());
-        } catch (CardException ce) {
-            throw new IllegalStateException("CardException");
-        } catch (IOException ioe) {
-            throw new IllegalStateException("IOException");
-        } catch (ClassNotFoundException e) {
-            throw new IllegalStateException("ClassNotFoundException");
-        } catch (CommandsImplementationNotFound commandsImplementationNotFound) {
-            throw new IllegalStateException("CommandsImplementationNotFound");
-        }
+        cardChannel = new CardChannelMock(reader);
+        cardConfig.getImplementation().setCc(cardChannel);
+        Assert.assertNotNull(cardConfig.getImplementation());
+        Assert.assertNotNull(cardConfig.getImplementation().getCc());
+        Assert.assertNotNull(cardChannel);
+        commands = new SecurityDomain(cardConfig.getImplementation(), cardConfig.getIsd());
         return commands;
     }
 
     @Test
-    public void testSelect() {
+    public void testSelect() throws ClassNotFoundException, IOException, CardException {
 
         /**
          * Select APDU Response:
@@ -154,28 +141,23 @@ public class SecurityDomainTest {
         };
 
         CardConfig cardConfig = null;
-        try {
-            cardConfig = new CardConfigFactory().getCardConfigByName("JCOP21");
-            SecurityDomain commands = createCommands("/fr/xlim/ssd/opal/library/test/052-SecurityDomain-select-good.txt", cardConfig);
-            commands.select();
+        cardConfig = new CardConfigFactory().getCardConfigByName("JCOP21");
+        SecurityDomain commands = createCommands("/fr/xlim/ssd/opal/library/test/052-SecurityDomain-select-good.txt", cardConfig);
 
-            FileControlInformation cardInformation = commands.getCardInformation();
+        Assert.assertNotNull(commands.getCc());
+        commands.select();
 
-            //Assert.assertArrayEquals(cardInformation.getAllInformation(),allInformation);
-            Assert.assertArrayEquals(cardInformation.getApplicationAID(), applicationAID);
-            Assert.assertArrayEquals(cardInformation.getMaximumLengthOfDataFieldInCommandMessage(), MaximumLengthOfDataFieldInCommandMessage);
-            Assert.assertArrayEquals(cardInformation.getApplicationProductionLifeCycleData(), ApplicationProductionLifeCycleData);
-            Assert.assertArrayEquals(cardInformation.getGpTagAllocationAuthority(), GPTagAllocationAuthority);
-            Assert.assertArrayEquals(cardInformation.getCardManagementTypeAndVersion(), cardManagementTypeAndVersion);
-            Assert.assertArrayEquals(cardInformation.getCardIdentificationScheme(), cardIdentificationScheme);
-            Assert.assertArrayEquals(cardInformation.getScpConfiguration(), scpConfiguration);
-            Assert.assertArrayEquals(cardInformation.getCardConfiguration(), cardConfiguration);
-            Assert.assertArrayEquals(cardInformation.getCardDetails(), cardDetails);
+        FileControlInformation cardInformation = commands.getCardInformation();
 
-        } catch (CardException e) {
-            throw new IllegalStateException("CardException");
-        } catch (IOException e) {
-            throw new IllegalStateException("IOException:" + e);
-        }
+        //Assert.assertArrayEquals(cardInformation.getAllInformation(),allInformation);
+        Assert.assertArrayEquals(cardInformation.getApplicationAID(), applicationAID);
+        Assert.assertArrayEquals(cardInformation.getMaximumLengthOfDataFieldInCommandMessage(), MaximumLengthOfDataFieldInCommandMessage);
+        Assert.assertArrayEquals(cardInformation.getApplicationProductionLifeCycleData(), ApplicationProductionLifeCycleData);
+        Assert.assertArrayEquals(cardInformation.getGpTagAllocationAuthority(), GPTagAllocationAuthority);
+        Assert.assertArrayEquals(cardInformation.getCardManagementTypeAndVersion(), cardManagementTypeAndVersion);
+        Assert.assertArrayEquals(cardInformation.getCardIdentificationScheme(), cardIdentificationScheme);
+        Assert.assertArrayEquals(cardInformation.getScpConfiguration(), scpConfiguration);
+        Assert.assertArrayEquals(cardInformation.getCardConfiguration(), cardConfiguration);
+        Assert.assertArrayEquals(cardInformation.getCardDetails(), cardDetails);
     }
 }

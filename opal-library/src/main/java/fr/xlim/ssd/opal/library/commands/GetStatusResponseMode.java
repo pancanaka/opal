@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.commands;
 
 /**
  * Used by GET STATUS to controls the number of consecutives GET STATUS command and incaites the format of the response

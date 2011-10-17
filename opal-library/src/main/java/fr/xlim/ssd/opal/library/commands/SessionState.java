@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.commands;
 
 /**
  * Define the session state of Smart Card identification. It used internally to identify state during authentication

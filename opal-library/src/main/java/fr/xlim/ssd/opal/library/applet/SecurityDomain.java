@@ -1,6 +1,6 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.applet;
 
-import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+import fr.xlim.ssd.opal.library.commands.Commands;
 
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
@@ -23,11 +23,10 @@ public class SecurityDomain extends GPApplet {
      *                          {@link fr.xlim.ssd.opal.library.commands.Commands}
      * @param cc                the initialized card channel on which data will be sent to the card
      * @param aid               the byte array containing the aid representation of the Security Domain
-     * @throws CommandsImplementationNotFound
      * @throws ClassNotFoundException
      */
-    public SecurityDomain(String cmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
-        super(cmdImplementation, cc, aid);
+    public SecurityDomain(Commands implementation, byte[] aid) throws ClassNotFoundException {
+        super(implementation, aid);
     }
 
     /* (non-Javadoc)

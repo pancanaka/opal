@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library.config;
+package fr.xlim.ssd.opal.library;
 
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.converters.Converter;
@@ -8,7 +8,9 @@ import com.thoughtworks.xstream.converters.UnmarshallingContext;
 import com.thoughtworks.xstream.io.HierarchicalStreamReader;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
 import com.thoughtworks.xstream.io.xml.StaxDriver;
-import fr.xlim.ssd.opal.library.SCPMode;
+import fr.xlim.ssd.opal.library.commands.Commands;
+import fr.xlim.ssd.opal.library.commands.CommandsProvider;
+import fr.xlim.ssd.opal.library.config.*;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +31,7 @@ import java.util.List;
  * @author Damien Arcuset
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
- * @see CardConfig
+ * @see fr.xlim.ssd.opal.library.config.CardConfig
  */
 public class CardConfigFactory {
 
@@ -41,13 +43,21 @@ public class CardConfigFactory {
 
     private List<CardConfig> cardConfigs = new LinkedList<CardConfig>();
 
-    public CardConfigFactory() {
+    private CommandsProvider commandsProvider;
+
+    public CardConfigFactory(CommandsProvider commandsProvider) {
+
+        this.commandsProvider = commandsProvider;
 
         configureXStream();
 
         // add all card configs from main config file
         InputStream mainConfigFile = CardConfigFactory.class.getResourceAsStream(MAIN_OPAL_CONFIG_IN_CLASSPATH);
         cardConfigs.addAll((List<CardConfig>) xstream.fromXML(mainConfigFile));
+    }
+
+    public CardConfigFactory() {
+        this(new CommandsProvider());
     }
 
     /**
@@ -128,10 +138,11 @@ public class CardConfigFactory {
         xstream.registerConverter(new KeyConverter());
         xstream.registerLocalConverter(CardConfig.class, "isd", new HexadecimalConverter());
         xstream.registerLocalConverter(CardConfig.class, "atrs", new ATRConverter());
+        xstream.registerLocalConverter(CardConfig.class, "implementation", new CommandsConverter());
         xstream.alias("cards",LinkedList.class);
         xstream.alias("card", CardConfig.class);
         xstream.aliasType("key", SCKey.class);
-        xstream.omitField(CardConfig.class,"local");
+        xstream.omitField(CardConfig.class, "local");
     }
 
     private class ATRConverter implements Converter {
@@ -160,6 +171,34 @@ public class CardConfigFactory {
         @Override
         public boolean canConvert(Class type) {
             return List.class.isAssignableFrom(type);
+        }
+    }
+
+    private class CommandsConverter implements SingleValueConverter {
+
+        @Override
+        public String toString(Object obj) {
+            return obj.getClass().getCanonicalName();
+        }
+
+        @Override
+        public Object fromString(String str) {
+            Class c = commandsProvider.getImplementation(str);
+            if(c == null) {
+                throw new IllegalStateException("cannot found implementation " + str);
+            }
+            try {
+                return c.newInstance();
+            } catch (InstantiationException e) {
+                throw new IllegalStateException("cannot instantiate commands " + str,e);
+            } catch (IllegalAccessException e) {
+                throw new IllegalStateException("cannot access to commands "  + str,e);
+            }
+        }
+
+        @Override
+        public boolean canConvert(Class type) {
+            return Commands.class.isAssignableFrom(type);
         }
     }
 

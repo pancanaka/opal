@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library.commands.SCP;
+package fr.xlim.ssd.opal.library.commands.scp;
 
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 

@@ -1,6 +1,5 @@
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.CommandsProvider;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 
 /**
@@ -9,10 +8,6 @@ import fr.xlim.ssd.opal.library.config.SCGPKey;
  * @author Damien Arcuset, Eric Linke
  */
 public class GemXpresso211Commands extends GP2xCommands {
-
-    static {
-        CommandsProvider.register(new GemXpresso211Commands());
-    }
 
     /* (non-Javadoc)
      * @see fr.xlim.ssd.opal.commands.GP2xCommands#generateSessionKeys(fr.xlim.ssd.opal.SCGPKey, fr.xlim.ssd.opal.SCGPKey, fr.xlim.ssd.opal.SCGPKey)

@@ -1,8 +1,8 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.applet;
 
-import fr.xlim.ssd.opal.library.commands.Commands;
-import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+import fr.xlim.ssd.opal.library.commands.*;
 import fr.xlim.ssd.opal.library.config.SCKey;
+import fr.xlim.ssd.opal.library.config.SCPMode;
 
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
@@ -36,13 +36,11 @@ public class GPApplet {
      *                          This designed implementation must override the class {@link fr.xlim.ssd.opal.library.commands.Commands}
      * @param cc                the initialized card channel on which data will be sent to the card
      * @param aid               the byte array containing the aid representation of the Applet
-     * @throws CommandsImplementationNotFound cmdImplementation and cc parameters value prevents from find the card implementation
      * @throws ClassNotFoundException         cmdImplementation value is a wrong class name
      */
-    public GPApplet(String cmdImplementation, CardChannel cc, byte[] aid) throws CommandsImplementationNotFound, ClassNotFoundException {
+    public GPApplet(Commands implementation, byte[] aid) throws ClassNotFoundException {
         this.aid = aid.clone();
-        Class.forName(cmdImplementation);
-        this.cmds = CommandsProvider.getImplementation(cmdImplementation, cc);
+        this.cmds = implementation;
         this.fileControlInformation = null;
     }
 

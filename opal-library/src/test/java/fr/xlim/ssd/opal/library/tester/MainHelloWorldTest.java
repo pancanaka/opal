@@ -1,12 +1,9 @@
 package fr.xlim.ssd.opal.library.tester;
 
-import fr.xlim.ssd.opal.library.SecLevel;
-import fr.xlim.ssd.opal.library.commands.CardChannelMock;
-import fr.xlim.ssd.opal.library.commands.Commands;
-import fr.xlim.ssd.opal.library.commands.GP2xCommands;
-import fr.xlim.ssd.opal.library.commands.GemXpresso211Commands;
+import fr.xlim.ssd.opal.library.CardConfigFactory;
+import fr.xlim.ssd.opal.library.commands.SecLevel;
+import fr.xlim.ssd.opal.library.commands.*;
 import fr.xlim.ssd.opal.library.config.CardConfig;
-import fr.xlim.ssd.opal.library.config.CardConfigFactory;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;

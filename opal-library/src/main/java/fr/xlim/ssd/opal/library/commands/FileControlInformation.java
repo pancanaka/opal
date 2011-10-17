@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.utilities.TLV;
 

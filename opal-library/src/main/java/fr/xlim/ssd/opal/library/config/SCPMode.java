@@ -1,4 +1,4 @@
-package fr.xlim.ssd.opal.library;
+package fr.xlim.ssd.opal.library.config;
 
 /**
  * Define the SCP protocol used. Please see the description Secure Channel Protocols 01 and 02 in Section D and E,

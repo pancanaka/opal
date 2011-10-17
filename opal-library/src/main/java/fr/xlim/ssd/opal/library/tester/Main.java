@@ -1,11 +1,10 @@
 package fr.xlim.ssd.opal.library.tester;
 
-import fr.xlim.ssd.opal.library.RAMOverHTTP;
-import fr.xlim.ssd.opal.library.SecLevel;
-import fr.xlim.ssd.opal.library.SecurityDomain;
-import fr.xlim.ssd.opal.library.commands.CommandsImplementationNotFound;
+import fr.xlim.ssd.opal.library.CardConfigFactory;
+import fr.xlim.ssd.opal.library.commands.SecLevel;
+import fr.xlim.ssd.opal.library.commands.ramoverhttp.RAMOverHTTP;
+import fr.xlim.ssd.opal.library.applet.SecurityDomain;
 import fr.xlim.ssd.opal.library.config.CardConfig;
-import fr.xlim.ssd.opal.library.config.CardConfigFactory;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import org.metastatic.jessie.provider.CipherSuite;
@@ -139,7 +138,7 @@ public class Main {
             return ccFactory.getCardConfigByATR(atr.getBytes());
     }
 
-    public static void RAMOverHTTP() throws ClassNotFoundException, CommandsImplementationNotFound, IOException, CardException {
+    public static void RAMOverHTTP() throws ClassNotFoundException, IOException, CardException {
 
         channel = null;
 
@@ -152,7 +151,8 @@ public class Main {
         }
         //  select the security domain
         logger.info("Selecting Security Domain");
-        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
+        cardConfig.getImplementation().setCc(channel);
+        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(),
                 cardConfig.getIsd());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
 
@@ -162,7 +162,7 @@ public class Main {
         ram.manage(securityDomain);
     }
 
-    public static void classicCommunication() throws ClassNotFoundException, CommandsImplementationNotFound, CardException, IOException {
+    public static void classicCommunication() throws ClassNotFoundException, CardException, IOException {
         channel = null;
 
         SecLevel secLevel = SecLevel.C_ENC_AND_MAC;
@@ -177,7 +177,8 @@ public class Main {
 
         //  select the security domain
         logger.info("Selecting Security Domain");
-        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(), channel,
+        cardConfig.getImplementation().setCc(channel);
+        SecurityDomain securityDomain = new SecurityDomain(cardConfig.getImplementation(),
                 cardConfig.getIsd());
         securityDomain.setOffCardKeys(cardConfig.getSCKeys());
         try {
@@ -258,7 +259,7 @@ public class Main {
         securityDomain.deleteOnCardObj(PACKAGE_ID, false);
     }
 
-    public static void main(String[] args) throws CardException,CommandsImplementationNotFound, ClassNotFoundException,
+    public static void main(String[] args) throws CardException, ClassNotFoundException,
             IOException {
 
         boolean ramOverHTTP = true;
