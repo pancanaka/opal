@@ -50,26 +50,26 @@ import javax.smartcardio.CardChannel;
 public abstract class AbstractCommands {
 
     /// Card Channel used to communicate with smart card
-    private CardChannel cc;
+    private CardChannel cardChannel;
 
     /**
      * Class constructor
      */
     protected AbstractCommands() {
-        this.cc = null;
+        this.cardChannel = null;
     }
 
     /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.library.commands.Commands#setCc(javax.smartcardio.CardChannel)
+     * @see fr.xlim.ssd.opal.library.commands.Commands#setCardChannel(javax.smartcardio.CardChannel)
      */
-    public final void setCc(CardChannel cc) {
+    public final void setCardChannel(CardChannel cardChannel) {
 
-        if (cc == null) {
+        if (cardChannel == null) {
             throw new IllegalArgumentException("CardChannel must not be null");
         }
 
-        if (this.cc == null) {
-            this.cc = cc;
+        if (this.cardChannel == null) {
+            this.cardChannel = cardChannel;
         }
     }
 
@@ -78,8 +78,8 @@ public abstract class AbstractCommands {
      *
      * @return the Card Channel
      */
-    public final CardChannel getCc() {
-        return this.cc;
+    public final CardChannel getCardChannel() {
+        return this.cardChannel;
     }
 
 }

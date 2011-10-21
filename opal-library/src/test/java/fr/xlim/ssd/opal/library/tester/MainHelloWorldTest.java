@@ -83,7 +83,7 @@ public class MainHelloWorldTest {
         InputStream input = GP2xCommands.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename);
         Reader reader = new InputStreamReader(input);
         CardChannel cardChannel = new CardChannelMock(reader);
-        commands.setCc(cardChannel);
+        commands.setCardChannel(cardChannel);
         return commands;
     }
 
@@ -92,7 +92,7 @@ public class MainHelloWorldTest {
         InputStream input = GP2xCommands.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename);
         Reader reader = new InputStreamReader(input);
         CardChannel cardChannel = new CardChannelMock(reader);
-        commands.setCc(cardChannel);
+        commands.setCardChannel(cardChannel);
         return commands;
     }
 

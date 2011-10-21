@@ -55,13 +55,13 @@ public class AbstractCommandtest {
     public void testSetCC() {
         AbstractCommands ac = new AbstractCommandImpl();
         CardChannel cc = mock(CardChannel.class);
-        ac.setCc(cc);
-        assertSame(cc, ac.getCc());
+        ac.setCardChannel(cc);
+        assertSame(cc, ac.getCardChannel());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testSetCCFailsIfCcNull() {
         AbstractCommands ac = new AbstractCommandImpl();
-        ac.setCc(null);
+        ac.setCardChannel(null);
     }
 }

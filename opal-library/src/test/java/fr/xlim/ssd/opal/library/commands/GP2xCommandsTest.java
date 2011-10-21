@@ -112,7 +112,7 @@ public class GP2xCommandsTest {
         } catch (IOException ioe) {
             throw new IllegalStateException("IOException");
         }
-        commands.setCc(cardChannel);
+        commands.setCardChannel(cardChannel);
         return commands;
     }
 

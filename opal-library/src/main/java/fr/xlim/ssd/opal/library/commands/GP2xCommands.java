@@ -39,7 +39,6 @@
  */
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.*;
 import fr.xlim.ssd.opal.library.config.SCDerivableKey;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.config.SCKey;
@@ -303,7 +302,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         System.arraycopy(aid, 0, selectComm, 5, aid.length); // put the AID into selectComm
 
         CommandAPDU cmdSelect = new CommandAPDU(selectComm);
-        ResponseAPDU resp = this.getCc().transmit(cmdSelect);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdSelect);
         logger.debug("SELECT Command "
                 + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
@@ -337,7 +336,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             System.arraycopy(aid, 0, selectComm, 5, aid.length); // put the AID into selectComm
 
             CommandAPDU cmdSelect = new CommandAPDU(selectComm);
-            ResponseAPDU resp = this.getCc().transmit(cmdSelect);
+            ResponseAPDU resp = this.getCardChannel().transmit(cmdSelect);
             logger.debug("SELECT Command "
                     + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
                     + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
@@ -401,7 +400,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
 
-        ResponseAPDU resp = this.getCc().transmit(cmdInitUpd);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdInitUpd);
 
         logger.debug("INIT UPDATE command "
                 + "(-> " + Conversion.arrayToHex(cmdInitUpd.getBytes()) + ") "
@@ -752,7 +751,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         System.arraycopy(mac, 0, extAuthCmd, extAuthCmd.length - mac.length, mac.length);
         CommandAPDU cmdExtauth = new CommandAPDU(extAuthCmd);
-        ResponseAPDU resp = this.getCc().transmit(cmdExtauth);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdExtauth);
 
         logger.debug("EXTERNAL AUTHENTICATE command "
                 + "(-> " + Conversion.arrayToHex(cmdExtauth.getBytes()) + ") "
@@ -848,7 +847,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmdGetstatus = new CommandAPDU(getStatusCmd);
-        ResponseAPDU resp = this.getCc().transmit(cmdGetstatus);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdGetstatus);
 
         logger.debug("GET STATUS command "
                 + "(-> " + Conversion.arrayToHex(cmdGetstatus.getBytes()) + ") "
@@ -869,7 +868,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 getStatusCmd = this.encryptCommand(uncipheredgetStatusCmd);
             }
             cmdGetstatus = new CommandAPDU(getStatusCmd);
-            resp = this.getCc().transmit(cmdGetstatus);
+            resp = this.getCardChannel().transmit(cmdGetstatus);
 
             logger.debug("GET STATUS command "
                     + "(-> " + Conversion.arrayToHex(cmdGetstatus.getBytes()) + ") "
@@ -2065,7 +2064,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmdDelete = new CommandAPDU(deleteComm);
-        ResponseAPDU resp = this.getCc().transmit(cmdDelete);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdDelete);
 
         logger.debug("DELETE OBJECT command "
                 + "(-> " + Conversion.arrayToHex(cmdDelete.getBytes()) + ") "
@@ -2146,7 +2145,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmdDelete = new CommandAPDU(deleteComm);
-        ResponseAPDU resp = this.getCc().transmit(cmdDelete);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdDelete);
 
         logger.debug("DELETE KEY command "
                 + "(-> " + Conversion.arrayToHex(cmdDelete.getBytes()) + ") "
@@ -2296,7 +2295,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmdInstallforload = new CommandAPDU(installForLoadComm);
-        ResponseAPDU resp = this.getCc().transmit(cmdInstallforload);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdInstallforload);
 
         logger.debug("INSTALL FOR LOAD command "
                 + "(-> " + Conversion.arrayToHex(cmdInstallforload.getBytes()) + ") "
@@ -2498,7 +2497,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             CommandAPDU cmdLoad = new CommandAPDU(cmd);
             ResponseAPDU resp = null;
-            resp = this.getCc().transmit(cmdLoad);
+            resp = this.getCardChannel().transmit(cmdLoad);
 
             logger.debug("LOAD command "
                     + "(-> " + Conversion.arrayToHex(cmdLoad.getBytes()) + ") "
@@ -2696,7 +2695,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmdInstallForInstall = new CommandAPDU(installForInstallComm);
-        ResponseAPDU resp = this.getCc().transmit(cmdInstallForInstall);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdInstallForInstall);
         logger.debug("INSTALL FOR INSTALL AND MAKE SELECTABLE "
                 + "(-> " + Conversion.arrayToHex(cmdInstallForInstall.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
@@ -2733,7 +2732,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         getDataComm[ISO7816.OFFSET_P2.getValue()] = (byte) 0xC1; // (P2) first or only occurrence
         getDataComm[4] = (byte) 0x00; // (LC) data length
         CommandAPDU cmdGetData = new CommandAPDU(getDataComm);
-        ResponseAPDU resp = this.getCc().transmit(cmdGetData);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdGetData);
         logger.debug("Get Data Command "
                 + "(-> " + Conversion.arrayToHex(cmdGetData.getBytes()) + ") "
                 + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
@@ -2861,7 +2860,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmdBeginRMac = new CommandAPDU(cmd);
-        ResponseAPDU resp = this.getCc().transmit(cmdBeginRMac);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdBeginRMac);
 
         logger.debug("EXTERNAL AUTHENTICATE command "
                 + "(-> " + Conversion.arrayToHex(cmdBeginRMac.getBytes()) + ") "
@@ -2919,7 +2918,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         CommandAPDU cmdBeginRMac = new CommandAPDU(cmd);
-        ResponseAPDU resp = this.getCc().transmit(cmdBeginRMac);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmdBeginRMac);
 
         logger.debug("EXTERNAL AUTHENTICATE command "
                 + "(-> " + Conversion.arrayToHex(cmdBeginRMac.getBytes()) + ") "
@@ -3095,7 +3094,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public ResponseAPDU sendCommand(byte[] APDUCommand) throws CardException {
         CommandAPDU cmd = new CommandAPDU(APDUCommand);
-        ResponseAPDU resp = this.getCc().transmit(cmd);
+        ResponseAPDU resp = this.getCardChannel().transmit(cmd);
 
         return resp;
     }
