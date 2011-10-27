@@ -141,7 +141,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -153,7 +153,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -205,7 +205,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -217,7 +217,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -259,7 +259,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -271,7 +271,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -313,7 +313,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -325,7 +325,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -367,7 +367,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -379,7 +379,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -421,7 +421,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -433,7 +433,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -475,7 +475,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -487,7 +487,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -529,7 +529,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -541,7 +541,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -583,7 +583,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -595,7 +595,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -637,7 +637,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -649,7 +649,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -691,7 +691,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -703,7 +703,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -745,7 +745,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -757,7 +757,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -799,7 +799,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -811,7 +811,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -853,7 +853,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -865,7 +865,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -907,7 +907,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -919,7 +919,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -961,7 +961,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -973,7 +973,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1015,7 +1015,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1027,7 +1027,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1069,7 +1069,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1081,7 +1081,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1123,7 +1123,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1135,7 +1135,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1177,7 +1177,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1189,7 +1189,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     //    /**
@@ -1237,7 +1237,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1249,7 +1249,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -1292,7 +1292,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1304,7 +1304,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -1347,7 +1347,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1359,7 +1359,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1401,7 +1401,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1413,7 +1413,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1455,7 +1455,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1467,7 +1467,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1510,7 +1510,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1523,7 +1523,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1565,7 +1565,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1577,7 +1577,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -1620,7 +1620,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1632,7 +1632,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -1676,7 +1676,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1689,7 +1689,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -1732,7 +1732,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1744,7 +1744,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1786,7 +1786,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1798,7 +1798,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1841,7 +1841,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1854,7 +1854,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -1897,7 +1897,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1909,7 +1909,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -1952,7 +1952,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -1965,7 +1965,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2008,7 +2008,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2021,7 +2021,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2064,7 +2064,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2076,7 +2076,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2119,7 +2119,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2132,7 +2132,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2175,7 +2175,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2188,7 +2188,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2233,7 +2233,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2245,7 +2245,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2291,7 +2291,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2303,7 +2303,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2349,7 +2349,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2361,7 +2361,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2406,7 +2406,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2418,7 +2418,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2464,7 +2464,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2476,7 +2476,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2522,7 +2522,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2534,7 +2534,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2581,7 +2581,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2593,7 +2593,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2639,7 +2639,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2653,7 +2653,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2698,7 +2698,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2712,7 +2712,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2759,7 +2759,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2771,7 +2771,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2816,7 +2816,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2828,7 +2828,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2873,7 +2873,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2885,7 +2885,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -2932,7 +2932,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -2944,7 +2944,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -2989,7 +2989,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3001,7 +3001,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -3046,7 +3046,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3058,7 +3058,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -3103,7 +3103,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3115,7 +3115,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -3161,7 +3161,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3173,7 +3173,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3219,7 +3219,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3231,7 +3231,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3277,7 +3277,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3289,7 +3289,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3335,7 +3335,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3347,7 +3347,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3394,7 +3394,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3406,7 +3406,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
 
@@ -3452,7 +3452,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3464,7 +3464,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3510,7 +3510,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3522,7 +3522,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3569,7 +3569,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3581,7 +3581,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3627,7 +3627,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3639,7 +3639,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -3684,7 +3684,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3696,7 +3696,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3742,7 +3742,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3754,7 +3754,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3800,7 +3800,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3812,7 +3812,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -3857,7 +3857,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3869,7 +3869,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3915,7 +3915,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3927,7 +3927,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -3973,7 +3973,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -3985,7 +3985,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -4030,7 +4030,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -4042,7 +4042,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -4088,7 +4088,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -4100,7 +4100,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -4146,7 +4146,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -4158,7 +4158,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -4205,7 +4205,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -4217,7 +4217,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test
@@ -4262,7 +4262,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -4274,7 +4274,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -4321,7 +4321,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -4333,7 +4333,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 
@@ -4379,7 +4379,7 @@ public class MainHelloWorldTest {
                 , HELLO_WORLD // DATA
         );
 
-        commands.getCc().transmit(hello);
+        commands.getCardChannel().transmit(hello);
 
         // Select Security Domain to delete Hello World Applet & Package
         commands.select(cardConfig.getIsd());
@@ -4391,7 +4391,7 @@ public class MainHelloWorldTest {
         commands.deleteOnCardObj(APPLET_ID, false);
         commands.deleteOnCardObj(PACKAGE_ID, false);
 
-        commands.getCc().close();
+        commands.getCardChannel().close();
 
     }
 }

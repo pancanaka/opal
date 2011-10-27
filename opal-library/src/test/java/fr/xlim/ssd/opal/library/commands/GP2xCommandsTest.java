@@ -182,7 +182,7 @@ public class GP2xCommandsTest {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/010-GP2xCommands-select-good.txt");
         byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
         commands.select(aid);
-        commands.getCc().close();
+        commands.getCardChannel().close();
     }
 
     @Test

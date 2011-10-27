@@ -61,9 +61,9 @@ public class SecurityDomainTest {
         InputStream input = SecurityDomain.class.getResourceAsStream(filename);
         Reader reader = new InputStreamReader(input);
         cardChannel = new CardChannelMock(reader);
-        cardConfig.getImplementation().setCc(cardChannel);
+        cardConfig.getImplementation().setCardChannel(cardChannel);
         Assert.assertNotNull(cardConfig.getImplementation());
-        Assert.assertNotNull(cardConfig.getImplementation().getCc());
+        Assert.assertNotNull(cardConfig.getImplementation().getCardChannel());
         Assert.assertNotNull(cardChannel);
         commands = new SecurityDomain(cardConfig.getImplementation(), cardConfig.getIsd());
         return commands;

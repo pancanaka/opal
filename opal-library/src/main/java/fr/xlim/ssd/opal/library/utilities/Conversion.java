@@ -87,7 +87,7 @@ public class Conversion {
         boolean valid = p.matcher(s).matches();
 
         if (!valid) {
-            throw new IllegalArgumentException("not a valid string representation of a byte array");
+            throw new IllegalArgumentException("not a valid string representation of a byte array :" + s);
         }
 
         String hex = s.replaceAll(" ", "");

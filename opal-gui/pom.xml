@@ -7,7 +7,7 @@
     <groupId>fr.xlim.ssd</groupId>
     <artifactId>opal-gui</artifactId>
     <packaging>jar</packaging>
-    <version>0.1</version>
+    <version>0.2-SNAPSHOT</version>
     <name>opal-gui</name>
     <url>https://bitbucket.org/ssd/opal/</url>
 

@@ -89,7 +89,7 @@ public class GPApplet {
      * @return Card Channel
      */
     public CardChannel getCc() {
-        return this.cmds.getCc();
+        return this.cmds.getCardChannel();
     }
 
     /**
@@ -217,7 +217,7 @@ public class GPApplet {
      * @see fr.xlim.ssd.opal.commands.Commands#transmit(javax.smartcardio.CommandAPDU)
      */
     public ResponseAPDU send(CommandAPDU command) throws CardException {
-        return this.cmds.getCc().transmit(command);
+        return this.cmds.getCardChannel().transmit(command);
     }
 
     /* (non-Javadoc)

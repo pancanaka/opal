@@ -51,14 +51,14 @@ import javax.smartcardio.ResponseAPDU;
  */
 public interface Commands {
 
-    void setCc(CardChannel cc);
+    void setCardChannel(CardChannel cardChannel);
 
     /**
      * Get Card Channel used to trasmit APDU
      *
      * @return Card Channel
      */
-    CardChannel getCc();
+    CardChannel getCardChannel();
 
     /**
      * Get SCP mode used
