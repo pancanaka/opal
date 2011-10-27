@@ -131,16 +131,4 @@
         <name>SSD Team, XLIM Labs, University of Limoges, France</name>
         <url>http://secinfo.msi.unilim.fr</url>
     </organization>
-
-    <distributionManagement>
-        <repository>
-            <id>nexus.ssd.lan-releases</id>
-            <url>dav:http://nexus.ssd.lan/content/repositories/releases</url>
-        </repository>
-        <snapshotRepository>
-          <id>nexus.ssd.lan-snapshots</id>
-          <url>dav:http://nexus.ssd.lan/content/repositories/snapshots</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>
