@@ -13,6 +13,7 @@ import javax.smartcardio.CommandAPDU
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.junit.runners.Parameterized.Parameters
+import org.junit.Ignore
 import org.junit.Test
 import org.junit.Before
 
@@ -54,8 +55,9 @@ class Main2Test {
 
     @Ignore
     @Test
-    void testCards(String filename, String cardName, SecLevel secLevel, byte[] firstRandomSequence,
-                  byte[] secondRandomSequence) {
+/*    void testCards(String filename, String cardName, SecLevel secLevel, byte[] firstRandomSequence,
+                  byte[] secondRandomSequence) { */
+    void testCards() {
 
         InputStream input = MainTest.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename)
         Reader reader = new InputStreamReader(input)
