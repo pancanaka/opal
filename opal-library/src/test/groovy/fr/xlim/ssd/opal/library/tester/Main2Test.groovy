@@ -52,8 +52,9 @@ class Main2Test {
         RandomGenerator.setRandomSequence(null)
     }
 
+    @Ignore
     @Test
-    def testCards(String filename, String cardName, SecLevel secLevel, byte[] firstRandomSequence,
+    void testCards(String filename, String cardName, SecLevel secLevel, byte[] firstRandomSequence,
                   byte[] secondRandomSequence) {
 
         InputStream input = MainTest.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename)
