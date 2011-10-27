@@ -179,18 +179,6 @@
                 </dependency>
               </dependencies>
             </plugin>
-            <plugin>
-              <groupId>org.spockframework</groupId>
-              <artifactId>spock-maven</artifactId>
-              <version>0.5-groovy-1.7</version>
-              <executions>
-                <execution>
-                  <goals>
-                    <goal>find-specs</goal>
-                  </goals>
-                </execution>
-              </executions>
-            </plugin>
         </plugins>
     </build>
 
