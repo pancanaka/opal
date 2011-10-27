@@ -14,7 +14,7 @@
     <modules>
         <module>jessie-tls-psk</module>
         <module>opal-library</module>
-        <module>opal-gui</module>
+        <!--module>opal-gui</module-->
     </modules>
 
     <licenses>
