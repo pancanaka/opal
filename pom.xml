@@ -43,7 +43,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <distributionManagement>  
+    <distributionManagement>
         <repository>  
             <id>nexus.ssd.lan-releases</id>  
             <url>dav:http://nexus.ssd.lan/content/repositories/releases</url>  
@@ -52,6 +52,14 @@
           <id>nexus.ssd.lan-snapshots</id>  
           <url>dav:http://nexus.ssd.lan/content/repositories/snapshots</url>  
         </snapshotRepository>  
-    </distributionManagement>  
+    </distributionManagement>
+
+    <scm>
+        <connection>scm:hg:https://bitbucket.org/ssd/opal</connection>
+        <developerConnection>scm:hg:ssh://hg@bitbucket.org/ssd/opal</developerConnection>
+        <url>https://bitbucket.org/ssd/opal</url>
+    </scm>
+
+
 
 </project>
