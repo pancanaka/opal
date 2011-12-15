@@ -99,7 +99,7 @@ public class CardConfigFactoryTest {
     @Test
     public void testGetAllCardConfigsSize() {
         assertEquals(cardNames.size(), cardConfigFactory.getCardConfigs().size());
-        assertEquals(21,cardConfigFactory.getCardConfigs().size());
+        assertEquals(22,cardConfigFactory.getCardConfigs().size());
     }
 
     @Test
