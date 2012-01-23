@@ -40,6 +40,7 @@ package org.metastatic.jessie.pki;
 
 import org.metastatic.jessie.pki.der.*;
 import org.metastatic.jessie.pki.ext.*;
+import org.metastatic.jessie.pki.ext.Extension;
 import org.metastatic.jessie.pki.io.ASN1ParsingException;
 
 import java.io.*;
