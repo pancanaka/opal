@@ -67,7 +67,7 @@
     <appender name="APDU_IN" class="ch.qos.logback.core.ConsoleAppender">
         <filter class="fr.xlim.ssd.opal.library.logging.filters.MarkerFilter">
             <marker>APDU_GP_IN</marker>
-            <marker>APDU_APPLICATION_IN</marker>>
+            <marker>APDU_APPLICATION_IN</marker>
             <OnMismatch>DENY</OnMismatch>
             <OnMatch>ACCEPT</OnMatch>
         </filter>
