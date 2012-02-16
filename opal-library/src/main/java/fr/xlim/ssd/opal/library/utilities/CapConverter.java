@@ -42,8 +42,8 @@ package fr.xlim.ssd.opal.library.utilities;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.jar.JarEntry;
+import java.util.jar.JarInputStream;
 
 /**
  * The CAP converter extracts main components from the CAP file and reorder them. This is needed because order of
@@ -52,6 +52,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Damien Arcuset
  * @author Julien Iguchi-Cartigny
+ * @author Guillaume Bouffard
  */
 public class CapConverter {
 
@@ -75,12 +76,12 @@ public class CapConverter {
         int size = 0;
 
         try {
-            ZipInputStream jis = new ZipInputStream(is);
+            JarInputStream jis = new JarInputStream(is);
 
-            ZipEntry ze = jis.getNextEntry();
+            JarEntry je = jis.getNextJarEntry();
 
-            while (ze != null) {
-                int sizeEntry = (int) ze.getCompressedSize();
+            while (je != null) {
+                int sizeEntry = (int) je.getSize();
                 byte b[] = new byte[sizeEntry];
                 jis.read(b);
 
@@ -141,7 +142,7 @@ public class CapConverter {
                         break;
                 }
 
-                ze = jis.getNextEntry();
+                je = jis.getNextJarEntry();
             }
 
             jis.close();
