@@ -247,13 +247,6 @@ public class CardConfig {
 
     }
 
-    public boolean isLocal() {
-        return local;
-    }
-
-    public void setLocal(boolean local) {
-        this.local = local;
-    }
 
     @Override
     public boolean equals(Object o) {

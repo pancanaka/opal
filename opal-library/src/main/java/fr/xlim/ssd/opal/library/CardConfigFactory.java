@@ -55,6 +55,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -98,6 +99,16 @@ public class CardConfigFactory {
     public CardConfigFactory() {
         this(new CommandsProvider());
     }
+    
+    public CardConfigFactory(File opalConfig) {
+    	this.commandsProvider = new CommandsProvider();
+
+        configureXStream();
+
+        // add all card configs from main config file
+        InputStream mainConfigFile = CardConfigFactory.class.getResourceAsStream(opalConfig.getPath());
+        cardConfigs.addAll((List<CardConfig>) xstream.fromXML(opalConfig));
+    }
 
     /**
      * Get the card config based on its name in local filename and then, if not found, in classpath:/config.xml
@@ -139,7 +150,6 @@ public class CardConfigFactory {
         if (cardConfigs.contains(cardConfig)) {
             return false;
         }
-        cardConfig.setLocal(true);
         cardConfigs.add(cardConfig);
         return true;
     }
@@ -153,16 +163,23 @@ public class CardConfigFactory {
 
     public void saveLocalCardConfigsToXML(OutputStream outputStream) {
         List<CardConfig> l = new LinkedList<CardConfig>();
-        for (CardConfig c : cardConfigs) {
-            if (c.isLocal()) {
+        for (CardConfig c : cardConfigs) 	
                 l.add(c);
-            }
-        }
+        		
         xstream.toXML(l, outputStream);
     }
 
     public List<CardConfig> getCardConfigs() {
         return cardConfigs;
+    }
+    
+    public boolean deleteCardConfig(CardConfig cardConfig) {
+        return cardConfigs.remove(cardConfig);
+    }
+    
+    public void deleteAllCardConfig() {
+    	cardConfigs = null; 
+        cardConfigs  = new LinkedList<CardConfig>();
     }
 
     /*
@@ -283,10 +300,21 @@ public class CardConfigFactory {
         public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
             SCKey key = (SCKey)source;
             writer.startNode("type");
-            writer.setValue(key.getType().name());
+            if (key.getType() == KeyType.MOTHER_KEY) { // SCGemVisa ou SCGemVisa2
+            	if (key instanceof SCGemVisa) { // SCGemVisa
+            		writer.setValue("SCGemVisa");
+            	} else if (key instanceof SCGemVisa2) { // SCGemVisa2
+            		writer.setValue("SCGemVisa2");
+            	} else { // Cas où l'instance n'est pas reconnue ou encore implémentée
+            		writer.setValue("Error");
+            	}
+            } else { // DES_CBC, DES_ECB ou AES_CBC
+            	writer.setValue(key.getType().name());
+            }
             writer.endNode();
             writer.startNode("version");
-            writer.setValue(new Byte(key.getVersion()).toString());
+
+            writer.setValue(String.valueOf(new Byte(key.getVersion()) & 0xff));
             writer.endNode();
             if (key instanceof SCGPKey) {
                 writer.startNode("id");

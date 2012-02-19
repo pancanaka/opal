@@ -164,7 +164,6 @@ public class CardConfigFactoryTest {
         CardConfig cardConfig = new CardConfig("name","description",atrs,
                 Conversion.hexToArray("01 23 45 67 89"), SCPMode.SCP_02_05,
                 "T=0", keys.toArray(new SCKey[0]), new GP2xCommands());
-        cardConfig.setLocal(true);
         cardConfigFactory.registerLocalCardConfig(cardConfig);
         ByteArrayOutputStream baos = new ByteArrayOutputStream(5000);
         cardConfigFactory.saveLocalCardConfigsToXML(baos);
