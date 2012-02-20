@@ -91,7 +91,7 @@ public class CardConfigFactory {
 
         configureXStream();
 
-        // add all card configs from main config file
+        // Add all card configs from main config file
         InputStream mainConfigFile = CardConfigFactory.class.getResourceAsStream(MAIN_OPAL_CONFIG_IN_CLASSPATH);
         cardConfigs.addAll((List<CardConfig>) xstream.fromXML(mainConfigFile));
     }
@@ -99,13 +99,13 @@ public class CardConfigFactory {
     public CardConfigFactory() {
         this(new CommandsProvider());
     }
-    
+
     public CardConfigFactory(File opalConfig) {
     	this.commandsProvider = new CommandsProvider();
 
         configureXStream();
 
-        // add all card configs from main config file
+        // Add all card configs from main config file
         InputStream mainConfigFile = CardConfigFactory.class.getResourceAsStream(opalConfig.getPath());
         cardConfigs.addAll((List<CardConfig>) xstream.fromXML(opalConfig));
     }
@@ -163,22 +163,22 @@ public class CardConfigFactory {
 
     public void saveLocalCardConfigsToXML(OutputStream outputStream) {
         List<CardConfig> l = new LinkedList<CardConfig>();
-        for (CardConfig c : cardConfigs) 	
+        for (CardConfig c : cardConfigs)
                 l.add(c);
-        		
+
         xstream.toXML(l, outputStream);
     }
 
     public List<CardConfig> getCardConfigs() {
         return cardConfigs;
     }
-    
+
     public boolean deleteCardConfig(CardConfig cardConfig) {
         return cardConfigs.remove(cardConfig);
     }
-    
+
     public void deleteAllCardConfig() {
-    	cardConfigs = null; 
+    	cardConfigs = null;
         cardConfigs  = new LinkedList<CardConfig>();
     }
 
@@ -300,20 +300,19 @@ public class CardConfigFactory {
         public void marshal(Object source, HierarchicalStreamWriter writer, MarshallingContext context) {
             SCKey key = (SCKey)source;
             writer.startNode("type");
-            if (key.getType() == KeyType.MOTHER_KEY) { // SCGemVisa ou SCGemVisa2
+            if (key.getType() == KeyType.MOTHER_KEY) { // SCGemVisa or SCGemVisa2
             	if (key instanceof SCGemVisa) { // SCGemVisa
             		writer.setValue("SCGemVisa");
             	} else if (key instanceof SCGemVisa2) { // SCGemVisa2
             		writer.setValue("SCGemVisa2");
-            	} else { // Cas où l'instance n'est pas reconnue ou encore implémentée
+            	} else { // When the instance was not recognized
             		writer.setValue("Error");
             	}
-            } else { // DES_CBC, DES_ECB ou AES_CBC
+            } else { // DES_CBC, DES_ECB or AES_CBC
             	writer.setValue(key.getType().name());
             }
             writer.endNode();
             writer.startNode("version");
-
             writer.setValue(String.valueOf(new Byte(key.getVersion()) & 0xff));
             writer.endNode();
             if (key instanceof SCGPKey) {

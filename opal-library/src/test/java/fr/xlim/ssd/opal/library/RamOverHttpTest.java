@@ -69,6 +69,6 @@ public class RamOverHttpTest {
         assertEquals(Security.getProperty("jessie.psk.identity"),"PSK_A");
     }
 
-    
+
 
 }

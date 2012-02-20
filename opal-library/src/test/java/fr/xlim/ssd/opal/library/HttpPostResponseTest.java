@@ -61,13 +61,13 @@ import static org.junit.Assert.*;
  * @author Bkakria Anis
  */
 public class HttpPostResponseTest {
-    
-    
+
+
     byte[] postResponseLenthEncoding;
     byte[] postResponseChunkEncoding;
     HttpPostResponse httpPostResponse;
     HttpPostResponse httpPostResponseChunked;
-    
+
     @Before
     public void createInstance() throws IOException
     {
@@ -93,7 +93,7 @@ public class HttpPostResponseTest {
             buffer = br.readLine();
         }
         httpPostResponse = new HttpPostResponse(postResponseLenthEncoding);
-        
+
         filename= "/fr/xlim/ssd/opal/library/test/054-HttpPostResponse-Encoding-Chunked.txt";
         input = GP2xCommands.class.getResourceAsStream(filename);
         reader = new InputStreamReader(input);
@@ -116,45 +116,45 @@ public class HttpPostResponseTest {
             buffer = br.readLine();
         }
         httpPostResponseChunked = new HttpPostResponse(postResponseChunkEncoding);
-        
+
     }
-    
+
     @Test
     public void getHeaderContentTest()
     {
         assertEquals(httpPostResponse.getHeaderContent(),"HTTP/1.1 200 OK \r\nX-Admin-Protocol: globalplatform-remote-admin/1.0 \r\nX-Admin-Next-URI: URI01 \r\nContent-Type: application/vnd.globalplatform.card-content-mgt;version=1.0 \r\nX-Admin-Targeted-Application: A000000003000000 \r\nContent-Length: 13\r\n\r\n");
     }
-    
+
     @Test
     public void getAdminTargetApplicationTest()
     {
         assertEquals(httpPostResponse.getAdminTargetApplication(),"A000000003000000 ");
     }
-    
+
     @Test
     public void getCommandAPDUTest()
     {
         assertArrayEquals(httpPostResponse.getCommandAPDU(),Conversion.hexToArray("00 A4 04 00 08 A0 00 00 00 03 00 00 00"));
     }
-    
+
     @Test
     public void getNextURITest()
     {
         assertEquals(httpPostResponse.getNextURI(),"URI01 ");
     }
-    
+
     @Test
     public void getEncodingMethodLengthTest()
     {
         assertEquals(httpPostResponse.getEncodingMethod(httpPostResponse.getHeaderContent()),"length");
     }
-    
+
     @Test
     public void getEncodingMethodChunkedTest()
     {
         assertEquals(httpPostResponseChunked.getEncodingMethod(httpPostResponseChunked.getHeaderContent()),"chunked ");
     }
-    
+
     @Test
     public void getDataLengthTest()
     {

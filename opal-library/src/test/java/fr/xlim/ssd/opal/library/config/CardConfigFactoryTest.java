@@ -160,20 +160,22 @@ public class CardConfigFactoryTest {
         keys.add(new SCGPKey((byte)0,(byte)1,KeyType.AES_CBC,Conversion.hexToArray("01 23")));
         keys.add(new SCGPKey((byte)2,(byte)3,KeyType.DES_CBC,Conversion.hexToArray("45 67")));
         keys.add(new SCGPKey((byte)4,(byte)5,KeyType.DES_ECB,Conversion.hexToArray("89 AB")));
-        keys.add(new SCGPKey((byte)6,(byte)7,KeyType.MOTHER_KEY,Conversion.hexToArray("CD EF")));
+        keys.add(new SCGemVisa((byte)6, Conversion.hexToArray("CD EF 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31")));
+        keys.add(new SCGemVisa2((byte)8, Conversion.hexToArray("CD EF 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31")));
         CardConfig cardConfig = new CardConfig("name","description",atrs,
                 Conversion.hexToArray("01 23 45 67 89"), SCPMode.SCP_02_05,
                 "T=0", keys.toArray(new SCKey[0]), new GP2xCommands());
+        cardConfigFactory.deleteAllCardConfig();
         cardConfigFactory.registerLocalCardConfig(cardConfig);
         ByteArrayOutputStream baos = new ByteArrayOutputStream(5000);
         cardConfigFactory.saveLocalCardConfigsToXML(baos);
-        System.out.println(baos);
         byte [] expected =  ("<?xml version=\"1.0\" ?><cards><card><name>name</name><description>description" +
                 "</description><atrs class=\"cards\"><atr>01 23 45 67 89 </atr><atr>AB CD EF 01 23 </atr></atrs>" +
                 "<isd>01 23 45 67 89 </isd><scp>02_05</scp><tp>T=0</tp><keys><key><type>AES_CBC</type><version>0" +
                 "</version><id>1</id><value>01 23 </value></key><key><type>DES_CBC</type><version>2</version><id>3" +
                 "</id><value>45 67 </value></key><key><type>DES_ECB</type><version>4</version><id>5</id><value>89 AB " +
-                "</value></key><key><type>MOTHER_KEY</type><version>6</version><id>7</id><value>CD EF </value></key>" +
+                "</value></key><key><type>SCGemVisa</type><version>6</version><value>CD EF 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 </value></key>" +
+                "<key><type>SCGemVisa2</type><version>8</version><value>CD EF 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 </value></key>" +
                 "</keys><implementation class=\"fr.xlim.ssd.opal.library.commands.GP2xCommands\">" +
                 "fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation></card></cards>").getBytes();
         assertArrayEquals(expected,baos.toByteArray());
