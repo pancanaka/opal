@@ -60,9 +60,6 @@ import java.util.zip.ZipFile;
  */
 public class CapConverter {
 
-    /// the logger
-    private final static Logger logger = LoggerFactory.getLogger(CapConverter.class);
-
     public static byte HEADER_COMPONENT_TAG = 0x01;
     public static byte DIRECTORY_COMPONENT_TAG = 0x02;
     public static byte APPLET_COMPONENT_TAG = 0x03;
@@ -132,16 +129,6 @@ public class CapConverter {
                         !name.substring(penultimateslash + 1, lastslash).equalsIgnoreCase("javacard"))
                     continue;
 
-
-                if(je.getMethod() == je.DEFLATED) {
-                    logger.info("DEFLATED MODE");
-                    logger.info("Extracting: " + je.getName());
-                    logger.info("Size: " + je.getSize());
-                    logger.info("Compressed Size: " + je.getCompressedSize());
-                } else {
-                    logger.info("STORED MODE");
-                }
-
                 ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                 byte[] buffer = new byte[1024];
                 int nrBytesRead = 0;
@@ -151,8 +138,6 @@ public class CapConverter {
 
                 // int sizeEntry = (int) je.getSize();
                 int sizeEntry = byteArrayOutputStream.size();
-
-                logger.info("Size entry : " + sizeEntry);
 
                 byte b[] = byteArrayOutputStream.toByteArray().clone(); // new byte[sizeEntry];
                 byteArrayOutputStream.reset();
