@@ -39,11 +39,15 @@
  */
 package fr.xlim.ssd.opal.library.utilities;
 
-import java.io.IOException;
-import java.io.InputStream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.*;
 import java.nio.ByteBuffer;
 import java.util.jar.JarEntry;
 import java.util.jar.JarInputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 /**
  * The CAP converter extracts main components from the CAP file and reorder them. This is needed because order of
@@ -55,6 +59,36 @@ import java.util.jar.JarInputStream;
  * @author Guillaume Bouffard
  */
 public class CapConverter {
+
+    /// the logger
+    private final static Logger logger = LoggerFactory.getLogger(CapConverter.class);
+
+    public static byte HEADER_COMPONENT_TAG = 0x01;
+    public static byte DIRECTORY_COMPONENT_TAG = 0x02;
+    public static byte APPLET_COMPONENT_TAG = 0x03;
+    public static byte IMPORT_COMPONENT_TAG = 0x04;
+    public static byte CONSTANTPOOL_COMPONENT_TAG = 0x05;
+    public static byte CLASS_COMPONENT_TAG = 0x06;
+    public static byte METHOD_COMPONENT_TAG = 0x07;
+    public static byte STATICFIELD_COMPONENT_TAG = 0x08;
+    public static byte REFERENCELOCATION_COMPONENT_TAG = 0x09;
+    public static byte EXPORT_COMPONENT_TAG = 0x0A;
+    public static byte DESCRIPTOR_COMPONENT_TAG = 0x0B;
+    public static byte DEBUG_COMPONENT_TAG = 0x0C;
+
+    public static byte HEADER_COMPONENT_INSTALLATION_ORDER = 0x01;
+    public static byte DIRECTORY_COMPONENT_INSTALLATION_ORDER = 0x02;
+    public static byte IMPORT_COMPONENT_INSTALLATION_ORDER = 0x03;
+    public static byte APPLET_COMPONENT_INSTALLATION_ORDER = 0x04;
+    public static byte CLASS_COMPONENT_INSTALLATION_ORDER = 0x05;
+    public static byte METHOD_COMPONENT_INSTALLATION_ORDER = 0x06;
+    public static byte STATICFIELD_COMPONENT_INSTALLATION_ORDER = 0x07;
+    public static byte EXPORT_COMPONENT_INSTALLATION_ORDER = 0x08;
+    public static byte CONSTANTPOOL_COMPONENT_INSTALLATION_ORDER = 0x09;
+    public static byte REFERENCELOCATION_COMPONENT_INSTALLATION_ORDER = 0x0A;
+    public static byte DESCRIPTOR_COMPONENT_INSTALLATION_ORDER = 0x0B;
+    public static byte DEBUG_COMPONENT_INSTALLATION_ORDER = -1; // this component isn't sent
+
 
     /**
      * Get the CAP file (ZIP format) from the input stream and extract each component to a byte array, with respect
@@ -77,72 +111,111 @@ public class CapConverter {
 
         try {
             JarInputStream jis = new JarInputStream(is);
+            JarEntry je;
 
-            JarEntry je = jis.getNextJarEntry();
+            while ( (je = jis.getNextJarEntry() ) != null) {
 
-            while (je != null) {
-                int sizeEntry = (int) je.getSize();
-                byte b[] = new byte[sizeEntry];
-                jis.read(b);
+                // read only the cap file
+                String name = je.getName();
+                // Ignore files not ending with .cap (case-insensitive matching)
+                if (name.length() < 4 ||
+                        !name.substring(name.length() - 4).equalsIgnoreCase(".cap"))
+                    continue;
+
+                // Split name into <directory part>/javacard/<file part>
+                int lastslash = name.lastIndexOf('/');
+                if (lastslash == -1) continue;
+                int penultimateslash = name.lastIndexOf('/', lastslash - 1);
+
+                // Ignore if no /javacard/ part
+                if (penultimateslash == -1 ||
+                        !name.substring(penultimateslash + 1, lastslash).equalsIgnoreCase("javacard"))
+                    continue;
+
+
+                if(je.getMethod() == je.DEFLATED) {
+                    logger.info("DEFLATED MODE");
+                    logger.info("Extracting: " + je.getName());
+                    logger.info("Size: " + je.getSize());
+                    logger.info("Compressed Size: " + je.getCompressedSize());
+                } else {
+                    logger.info("STORED MODE");
+                }
+
+                ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+                byte[] buffer = new byte[1024];
+                int nrBytesRead = 0;
+                while ((nrBytesRead = jis.read(buffer)) > 0) {
+                    byteArrayOutputStream.write(buffer, 0, nrBytesRead);
+                }
+
+                // int sizeEntry = (int) je.getSize();
+                int sizeEntry = byteArrayOutputStream.size();
+
+                logger.info("Size entry : " + sizeEntry);
+
+                byte b[] = byteArrayOutputStream.toByteArray().clone(); // new byte[sizeEntry];
+                byteArrayOutputStream.reset();
 
                 switch (b[0]) {
                     case 1:
-                        components[0] = b;
+                        components[HEADER_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 2:
-                        components[1] = b;
+                        components[DIRECTORY_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 3:
-                        components[3] = b;
+                        components[APPLET_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 4:
-                        components[2] = b;
+                        components[IMPORT_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 5:
-                        components[8] = b;
+                        components[CONSTANTPOOL_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 6:
-                        components[4] = b;
+                        components[CLASS_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 7:
-                        components[5] = b;
+                        components[METHOD_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 8:
-                        components[6] = b;
+                        components[STATICFIELD_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 9:
-                        components[9] = b;
+                        components[REFERENCELOCATION_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 10:
-                        components[7] = b;
+                        components[EXPORT_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
 
                     case 11:
-                        components[10] = b;
+                        components[DESCRIPTOR_COMPONENT_INSTALLATION_ORDER-1] = b;
                         size += sizeEntry;
                         break;
+                    case 12:
+                        // not send to the card
+                        break;
                 }
-
-                je = jis.getNextJarEntry();
             }
 
             jis.close();
