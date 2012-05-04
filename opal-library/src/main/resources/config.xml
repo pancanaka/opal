@@ -735,7 +735,7 @@
         <atrs>
             <atr>3B 69 00 00 80 63 31 46 00 83 FF 90 00</atr>
         </atrs>
-        <isd>A0 00 00 00 03 00 00</isd>
+        <isd>A0 00 00 00 03 00 00 00</isd>
         <scp>01_05</scp>
         <tp>T=0</tp>
         <keys>
@@ -754,6 +754,38 @@
             <key>
                 <type>DES_ECB</type>
                 <version>255</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
+    <card>
+        <name>NXP_J2A80</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <description>NXP J2A80</description>
+        <atrs>
+            <atr>3B F6 18 00 FF 81 31 FE 45 4A 32 41 30 38 30 1B</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_15</scp>
+        <tp>T=0</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>1</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>1</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>1</version>
                 <id>3</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
             </key>
