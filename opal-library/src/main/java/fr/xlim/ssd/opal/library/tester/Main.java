@@ -40,6 +40,8 @@
 package fr.xlim.ssd.opal.library.tester;
 
 import fr.xlim.ssd.opal.library.CardConfigFactory;
+import fr.xlim.ssd.opal.library.commands.GetStatusFileType;
+import fr.xlim.ssd.opal.library.commands.GetStatusResponseMode;
 import fr.xlim.ssd.opal.library.commands.SecLevel;
 import fr.xlim.ssd.opal.library.commands.ramoverhttp.RAMOverHTTP;
 import fr.xlim.ssd.opal.library.applet.SecurityDomain;
@@ -52,6 +54,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.smartcardio.*;
 import javax.smartcardio.CardTerminals.State;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -93,16 +96,24 @@ public class Main {
     };
 
     /// applet ID of hello world CAP
-    private final static byte[] APPLET_ID = {
+    /*private final static byte[] APPLET_ID = {
             (byte) 0xA0, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x62,
             (byte) 0x03, (byte) 0x01, (byte) 0x0C, (byte) 0x01, (byte) 0x01
+    };   */
+
+    private final static byte[] APPLET_ID = {
+            (byte) 0x46, 0x56, 0x55, 0x4c, 0x4e, 0x54, 0x45, 0x53, 0x54, 0x53, 0x41, 0x70, 0x70
     };
 
     /// package ID of hello world CAP
-    private final static byte[] PACKAGE_ID = {
+    /*private final static byte[] PACKAGE_ID = {
             (byte) 0xA0, (byte) 0x00, (byte) 0x00,
             (byte) 0x00, (byte) 0x62, (byte) 0x03,
             (byte) 0x01, (byte) 0x0C, (byte) 0x01
+    };*/
+
+    private final static byte[] PACKAGE_ID = {
+            (byte) 0x46, 0x56, 0x55, 0x4c, 0x4e, 0x54, 0x45, 0x53, 0x54, 0x53
     };
 
     /// channel to the card
@@ -204,7 +215,7 @@ public class Main {
     public static void classicCommunication() throws ClassNotFoundException, CardException, IOException {
         channel = null;
 
-        SecLevel secLevel = SecLevel.C_ENC_AND_MAC;
+        SecLevel secLevel = SecLevel.C_MAC;
 
         /// get the card config and card channel, detection of t=0 or t=1 is automatic
         CardConfig cardConfig = getCardChannel(1, "*");
@@ -236,14 +247,25 @@ public class Main {
         logger.info("External Authenticate");
         securityDomain.externalAuthenticate(secLevel);
 
+        //securityDomain.getStatus(GetStatusFileType.LOAD_FILES_AND_MODULES, GetStatusResponseMode.OLD_TYPE, null);
+        //System.exit(0);
+
         // install Applet
+
         logger.info("Installing Applet");
         logger.info("* Install For Load");
         securityDomain.installForLoad(PACKAGE_ID, null, null);
         //File file = new File("cap/HelloWorld-2_1_2.cap");
 
-        InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
+        //InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
+        FileInputStream is = new FileInputStream("/tmp/HelloWorld.cap");
+
+        //byte convertedBuffer[] = new byte[is.available()];
+
+        //is.read(convertedBuffer);
+
         byte[] convertedBuffer = CapConverter.convert(is);
+
         logger.info("* Loading file");
         securityDomain.load(convertedBuffer, (byte) 0x10);
         logger.info("* Install for install");
@@ -301,7 +323,7 @@ public class Main {
     public static void main(String[] args) throws CardException, ClassNotFoundException,
             IOException {
 
-        boolean ramOverHTTP = true;
+        boolean ramOverHTTP = false;
 
         if (ramOverHTTP) {
             Main.RAMOverHTTP();
