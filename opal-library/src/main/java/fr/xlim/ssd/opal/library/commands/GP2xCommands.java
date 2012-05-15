@@ -39,6 +39,7 @@
  */
 package fr.xlim.ssd.opal.library.commands;
 
+import fr.xlim.ssd.opal.library.commands.scp.SCP;
 import fr.xlim.ssd.opal.library.config.SCDerivableKey;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.config.SCKey;
@@ -186,6 +187,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     //Counter ICV padding for R-ENC computing
     protected static final byte[] SCP03_C_ENC_COUNTER_ICV_PADDING = Conversion.hexToArray("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
 
+    private SCP scp;
+
     /**
      * Default constructor
      */
@@ -321,6 +324,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     public ResponseAPDU select(byte[] aid, SCPMode desiredScp) throws CardException {
 
         this.sequenceCounter = new byte[2];
+
+        // TODO: if true ? maybe check desired SCP ?
         if (true) {
             this.scpMode = desiredScp;
 
