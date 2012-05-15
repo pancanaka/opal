@@ -324,26 +324,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.sequenceCounter = new byte[2];
         if (true) {
             this.scp = desiredScp;
-            byte headerSize = (byte) 5; // CLA + INS + P1 + P2 + LC
-            byte[] selectComm = new byte[headerSize + aid.length];
 
-            selectComm[ISO7816.OFFSET_CLA.getValue()] = (byte) 0x00; // (CLA) command class
-            selectComm[ISO7816.OFFSET_INS.getValue()] = (byte) 0xA4; // (INS) SELECT command
-            selectComm[ISO7816.OFFSET_P1.getValue()] = (byte) 0x04; // (P1) SELECT by name
-            selectComm[ISO7816.OFFSET_P2.getValue()] = (byte) 0x00; // (P2) first or only occurrence
-            selectComm[ISO7816.OFFSET_LC.getValue()] = (byte) aid.length; // (LC) data length
-
-            System.arraycopy(aid, 0, selectComm, 5, aid.length); // put the AID into selectComm
-
-            CommandAPDU cmdSelect = new CommandAPDU(selectComm);
-            ResponseAPDU resp = this.getCardChannel().transmit(cmdSelect);
-            logger.debug("SELECT Command "
-                    + "(-> " + Conversion.arrayToHex(cmdSelect.getBytes()) + ") "
-                    + "(<- " + Conversion.arrayToHex(resp.getBytes()) + ")");
-            if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
-                this.resetParams();
-                throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
-            }
+            ResponseAPDU resp = select(aid);
 
             // get the value of Secure Channel Sequence Counter,Calculate derivation data
             getData();
