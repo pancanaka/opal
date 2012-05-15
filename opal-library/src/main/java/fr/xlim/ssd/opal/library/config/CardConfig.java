@@ -40,7 +40,6 @@
 package fr.xlim.ssd.opal.library.config;
 
 import fr.xlim.ssd.opal.library.commands.Commands;
-
 import java.util.List;
 
 /**
@@ -122,7 +121,7 @@ public class CardConfig {
         }
 
         if (scp == null) {
-            throw new IllegalArgumentException("scp must be not null");
+            throw new IllegalArgumentException("scpMode must be not null");
         }
 
         if (tp == null) {

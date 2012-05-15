@@ -41,7 +41,6 @@ package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.config.SCKey;
 import fr.xlim.ssd.opal.library.config.SCPMode;
-
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.ResponseAPDU;
@@ -65,7 +64,7 @@ public interface Commands {
      *
      * @return SCP mode used
      */
-    SCPMode getScp();
+    SCPMode getScpMode();
 
     /**
      * Get Session State used to indicate the Authenticate state
@@ -93,6 +92,7 @@ public interface Commands {
      *
      * @param keySetVersion key version of the wished key
      * @param keyId         Key id of the wished jey
+     *
      * @return wished key
      */
     SCKey getKey(byte keySetVersion, byte keyId);
@@ -101,6 +101,7 @@ public interface Commands {
      * Set the off card static keys with a same input key. Every key does the same.
      *
      * @param key new key used to set up static keys
+     *
      * @return the input key
      */
     SCKey setOffCardKey(SCKey key);
@@ -122,6 +123,7 @@ public interface Commands {
      *
      * @param keySetVersion Key set version of the wished key
      * @param keyId         key ID of the wished key
+     *
      * @return The deleted key or null if this key had not found
      */
     SCKey deleteOffCardKey(byte keySetVersion, byte keyId);
@@ -135,6 +137,7 @@ public interface Commands {
      * Select the Applet matching with AID parameter
      *
      * @param aid wished Applet AID
+     *
      * @return Select APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -144,8 +147,9 @@ public interface Commands {
     /**
      * Select the Applet matching with And security canal protocol mode parameter
      *
-     * @param aid     wished Applet AID
+     * @param aid        wished Applet AID
      * @param desiredScp wished the security canal protocol Mode
+     *
      * @return Select APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -163,9 +167,10 @@ public interface Commands {
      * initilizate parameters (Sequence counter,Session key, Mac Key,Encription key,ICV)
      * for Implicit Initiation Mode (SCP_02_0A,SCP_02_0B)
      *
-     * @param aid     wished Applet AID
+     * @param aid        wished Applet AID
      * @param desiredScp wished the security canal protocol Mode
-     * @param keyId   Key ID to use to do the authenticate step
+     * @param keyId      Key ID to use to do the authenticate step
+     *
      * @throws CardException
      */
 
@@ -177,6 +182,7 @@ public interface Commands {
      * @param keySetVersion Key Set Version to use to do the authenticate step
      * @param keyId         Key ID to use to do the authenticate step
      * @param desiredScp    SCP mode to use to do the authenticate step
+     *
      * @return APDU response
      * @throws CardException <ul>
      *                       <il> Card return an error status word
@@ -190,6 +196,7 @@ public interface Commands {
      * External Authenticate uses for validate the @see{fr.xlim.ssd.opal.library.commands.Commands.initializeUpdate}
      *
      * @param secLevel Security Level will use to communicate
+     *
      * @return APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -203,6 +210,7 @@ public interface Commands {
      * @param respMode        @see{fr.xlim.ssd.opal.library.GetStatusResponseMode}
      * @param searchQualifier Shall used to indicate the Application Identifier (AID). If is null, you search all occurrences that match the
      *                        selection criteria according to the reference by ft.
+     *
      * @return APDU Response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -215,6 +223,7 @@ public interface Commands {
      *
      * @param aid     Object AID to delete
      * @param cascade Delete in cascade mode
+     *
      * @return Delete APDU Response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -226,6 +235,7 @@ public interface Commands {
      *
      * @param keySetVersion Key Set Version to delete
      * @param keyId         Key ID to delete
+     *
      * @return APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -238,6 +248,7 @@ public interface Commands {
      * @param packageAid        Package AID of the install Applet
      * @param securityDomainAID Smart Card ISD
      * @param params            Install parameters
+     *
      * @return APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -248,6 +259,7 @@ public interface Commands {
      * Load CAP File to the smart card device
      *
      * @param capFile cap data to send
+     *
      * @return APDU response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -258,6 +270,7 @@ public interface Commands {
      *
      * @param capFile       cap data to send
      * @param maxDataLength Size of each CAP File part sent to the smart card
+     *
      * @return APDU Response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -272,6 +285,7 @@ public interface Commands {
      * @param applicationAID Application AID
      * @param privileges     Applet privileges
      * @param params         Install parameters
+     *
      * @return APDU Response
      * @throws CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */
@@ -301,6 +315,7 @@ public interface Commands {
      * Send APDU command to to the smart card device and retrive response
      *
      * @param APDUCommand
+     *
      * @return APDU Response
      * @throws CardException CardException APDU status word response is not equals to @see{fr.xlim.ssd.opal.library.ISO7816.SW_NO_ERROR}
      */

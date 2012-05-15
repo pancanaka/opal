@@ -45,18 +45,6 @@ import fr.xlim.ssd.opal.library.config.SCKey;
 import fr.xlim.ssd.opal.library.config.SCPMode;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.smartcardio.CardException;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.security.InvalidAlgorithmParameterException;
@@ -67,6 +55,17 @@ import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Implementation of Global Platform specification
@@ -125,7 +124,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     protected List<SCKey> keys = new LinkedList<SCKey>();
 
     /// Secure Channel Protocol used
-    protected SCPMode scp;
+    protected SCPMode scpMode;
 
     /// Secure Level used to communicate
     protected SecLevel secMode;
@@ -198,8 +197,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @see fr.xlim.ssd.opal.library.commands.Commands#getScp()
      */
     @Override
-    public SCPMode getScp() {
-        return this.scp;
+    public SCPMode getScpMode() {
+        return this.scpMode;
     }
 
     /* (non-Javadoc)
@@ -323,7 +322,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         this.sequenceCounter = new byte[2];
         if (true) {
-            this.scp = desiredScp;
+            this.scpMode = desiredScp;
 
             ResponseAPDU resp = select(aid);
 
@@ -345,7 +344,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public void resetParams() {
         this.initIcv();
-        this.scp = SCPMode.SCP_UNDEFINED;
+        this.scpMode = SCPMode.SCP_UNDEFINED;
         this.secMode = SecLevel.NO_SECURITY_LEVEL;
         this.sessState = SessionState.NO_SESSION;
         this.sessEnc = null;
@@ -367,7 +366,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
 
         logger.debug("=> Initialize Update");
-        this.scp = desiredScp;
+        this.scpMode = desiredScp;
         this.resetParams();
         this.hostChallenge = RandomGenerator.generateRandom(8);
 
@@ -413,16 +412,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         if (scpRec == SCP01) {
             if (desiredScp == SCPMode.SCP_UNDEFINED) {
-                this.scp = SCPMode.SCP_01_05;
+                this.scpMode = SCPMode.SCP_01_05;
                 logger.trace("Change " + SCPMode.SCP_UNDEFINED + " to " + SCPMode.SCP_01_05);
             } else if (desiredScp == SCPMode.SCP_01_05 || desiredScp == SCPMode.SCP_01_15) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             } else {
                 this.resetParams();
                 throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
             }
 
-            logger.debug("SCPMode is " + this.scp);
+            logger.debug("SCPMode is " + this.scpMode);
 
             this.cardChallenge = new byte[8];
 
@@ -445,26 +444,26 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         } else if (scpRec == SCP02) {
 
             if (desiredScp == SCPMode.SCP_UNDEFINED) {
-                this.scp = SCPMode.SCP_02_15;
+                this.scpMode = SCPMode.SCP_02_15;
                 logger.trace("Change " + SCPMode.SCP_UNDEFINED + " to " + SCPMode.SCP_02_15);
             } else if (desiredScp == SCPMode.SCP_02_15) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             } else if (desiredScp == SCPMode.SCP_02_14) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             } else if (desiredScp == SCPMode.SCP_02_04) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             } else if (desiredScp == SCPMode.SCP_02_05) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             } else if (desiredScp == SCPMode.SCP_02_45) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             } else if (desiredScp == SCPMode.SCP_02_55) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             } else {
                 this.resetParams();
                 throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
             }
 
-            logger.debug("SCPMode is " + this.scp);
+            logger.debug("SCPMode is " + this.scpMode);
 
             this.cardChallenge = new byte[6];
             this.sequenceCounter = new byte[2];
@@ -497,22 +496,22 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
             if (desiredScp == SCPMode.SCP_03_65) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             }
             if (desiredScp == SCPMode.SCP_03_6D) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             }
             if (desiredScp == SCPMode.SCP_03_05) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             }
             if (desiredScp == SCPMode.SCP_03_0D) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             }
             if (desiredScp == SCPMode.SCP_03_2D) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             }
             if (desiredScp == SCPMode.SCP_03_25) {
-                this.scp = desiredScp;
+                this.scpMode = desiredScp;
             }
 
 
@@ -569,7 +568,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         SCGPKey kKek = null;
 
 
-        if (scp == SCPMode.SCP_01_15 || scp == SCPMode.SCP_01_05) {
+        if (scpMode == SCPMode.SCP_01_15 || scpMode == SCPMode.SCP_01_05) {
             if (key instanceof SCDerivableKey) {
                 SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
                 kEnc = keysFromDerivableKey[0];
@@ -591,10 +590,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
 
-        if (scp == SCPMode.SCP_02_15
-                || scp == SCPMode.SCP_02_45
-                || scp == SCPMode.SCP_02_05
-                || scp == SCPMode.SCP_02_55) {
+        if (scpMode == SCPMode.SCP_02_15
+                || scpMode == SCPMode.SCP_02_45
+                || scpMode == SCPMode.SCP_02_05
+                || scpMode == SCPMode.SCP_02_55) {
             if (key instanceof SCDerivableKey) {
                 SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
                 kEnc = keysFromDerivableKey[0];
@@ -614,8 +613,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 }
             }
 
-        } else if (scp == SCPMode.SCP_02_04
-                || scp == SCPMode.SCP_02_14) {
+        } else if (scpMode == SCPMode.SCP_02_04
+                || scpMode == SCPMode.SCP_02_14) {
             if (key instanceof SCDerivableKey) {
                 SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
                 kEnc = keysFromDerivableKey[0];
@@ -636,12 +635,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
         }
 
-        if ((scp == SCPMode.SCP_03_65)
-                || (scp == SCPMode.SCP_03_6D)
-                || (scp == SCPMode.SCP_03_05)
-                || (scp == SCPMode.SCP_03_0D)
-                || (scp == SCPMode.SCP_03_2D)
-                || (scp == SCPMode.SCP_03_25)) {
+        if ((scpMode == SCPMode.SCP_03_65)
+                || (scpMode == SCPMode.SCP_03_6D)
+                || (scpMode == SCPMode.SCP_03_05)
+                || (scpMode == SCPMode.SCP_03_0D)
+                || (scpMode == SCPMode.SCP_03_2D)
+                || (scpMode == SCPMode.SCP_03_25)) {
             this.initIcv();
             if (key instanceof SCDerivableKey) {
                 SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
@@ -668,7 +667,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.calculateCryptograms();
 
 
-        if (this.scp == SCPMode.SCP_02_45 || this.scp == SCPMode.SCP_02_55) {
+        if (this.scpMode == SCPMode.SCP_02_45 || this.scpMode == SCPMode.SCP_02_55) {
             byte[] computedCardChallenge = new byte[6];
             computedCardChallenge = this.pseudoRandomGenerationCardChallenge(this.aid);
             if (!Arrays.equals(this.cardChallenge, computedCardChallenge)) {
@@ -875,6 +874,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * Generate mac value according input data in a specific SCP version
      *
      * @param data data used to generate Mac value
+     *
      * @return Mac value calculated
      */
     protected byte[] generateMac(byte[] data) {
@@ -904,12 +904,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         byte[] res = new byte[8];
         IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
         try {
-            logger.debug("SCP: " + this.scp);
-            if ((this.scp == SCPMode.SCP_UNDEFINED)    // TODO: Undefined SCPMode Here ?
-                    || (this.scp == SCPMode.SCP_01_05)
-                    || (this.scp == SCPMode.SCP_01_15)) {
+            logger.debug("SCP: " + this.scpMode);
+            if ((this.scpMode == SCPMode.SCP_UNDEFINED)    // TODO: Undefined SCPMode Here ?
+                    || (this.scpMode == SCPMode.SCP_01_05)
+                    || (this.scpMode == SCPMode.SCP_01_15)) {
 
-                logger.debug("* SCP 01 Protocol (" + this.scp + ") used");
+                logger.debug("* SCP 01 Protocol (" + this.scpMode + ") used");
                 logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
 
                 Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
@@ -919,7 +919,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Calculated cryptogram is " + Conversion.arrayToHex(res));
 
-                switch (this.scp) {
+                switch (this.scpMode) {
                     case SCP_01_05:
                         this.icv = res; // update ICV with new C-MAC
                         break;
@@ -932,14 +932,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
 
-            } else if (this.scp == SCPMode.SCP_02_15
-                    || this.scp == SCPMode.SCP_02_04
-                    || this.scp == SCPMode.SCP_02_05
-                    || this.scp == SCPMode.SCP_02_14
-                    || this.scp == SCPMode.SCP_02_45
-                    || this.scp == SCPMode.SCP_02_55) {
+            } else if (this.scpMode == SCPMode.SCP_02_15
+                    || this.scpMode == SCPMode.SCP_02_04
+                    || this.scpMode == SCPMode.SCP_02_05
+                    || this.scpMode == SCPMode.SCP_02_14
+                    || this.scpMode == SCPMode.SCP_02_45
+                    || this.scpMode == SCPMode.SCP_02_55) {
 
-                logger.debug("* SCP 02 Protocol (" + this.scp + ") used");
+                logger.debug("* SCP 02 Protocol (" + this.scpMode + ") used");
                 logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
 
                 SecretKeySpec desSingleKey = new SecretKeySpec(this.sessMac, 0, 8, "DES");
@@ -971,13 +971,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 //ivSpec = new IvParameterSpec(ivForLastBlock);
                 myCipher.init(Cipher.ENCRYPT_MODE, desKey, ivSpec);
                 res = myCipher.doFinal(dataWithPadding, offset, 8);
-                if (this.scp == SCPMode.SCP_02_04
-                        || this.scp == SCPMode.SCP_02_05
-                        || this.scp == SCPMode.SCP_02_45) {
+                if (this.scpMode == SCPMode.SCP_02_04
+                        || this.scpMode == SCPMode.SCP_02_05
+                        || this.scpMode == SCPMode.SCP_02_45) {
                     this.icv = res; // update ICV with new C-MAC //no ICV encryption
-                } else if (this.scp == SCPMode.SCP_02_15
-                        || this.scp == SCPMode.SCP_02_14
-                        || this.scp == SCPMode.SCP_02_55) {
+                } else if (this.scpMode == SCPMode.SCP_02_15
+                        || this.scpMode == SCPMode.SCP_02_14
+                        || this.scpMode == SCPMode.SCP_02_55) {
                     // update ICV with new ENCRYPTED C-MAC
                     ivSpec = new IvParameterSpec(new byte[8]);
                     singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
@@ -987,12 +987,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* Calculated cryptogram is " + Conversion.arrayToHex(res));
                 logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
 
-            } else if (this.scp == SCPMode.SCP_03_65
-                    || this.scp == SCPMode.SCP_03_6D
-                    || this.scp == SCPMode.SCP_03_05
-                    || this.scp == SCPMode.SCP_03_0D
-                    || this.scp == SCPMode.SCP_03_2D
-                    || this.scp == SCPMode.SCP_03_25) {
+            } else if (this.scpMode == SCPMode.SCP_03_65
+                    || this.scpMode == SCPMode.SCP_03_6D
+                    || this.scpMode == SCPMode.SCP_03_05
+                    || this.scpMode == SCPMode.SCP_03_0D
+                    || this.scpMode == SCPMode.SCP_03_2D
+                    || this.scpMode == SCPMode.SCP_03_25) {
 
 
                 if (data.length % 16 != 0) { // We need a PADDING
@@ -1019,7 +1019,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("data used to génerate mac : " + Conversion.arrayToHex(dataToCalulateMac));
 
                 ivSpec = new IvParameterSpec(iv_zero_scp03);
-                logger.debug("* SCP 03 Protocol (" + this.scp + ") used");
+                logger.debug("* SCP 03 Protocol (" + this.scpMode + ") used");
                 logger.debug("* IV is " + Conversion.arrayToHex(this.icv));
 
                 SecretKeySpec skeySpec = new SecretKeySpec(this.sessMac, "AES");
@@ -1065,6 +1065,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * Only SCP 01 protocol is yet implemented
      *
      * @param command command to encrypt
+     *
      * @return encrypted command
      */
     protected byte[] encryptCommand(byte[] command) {
@@ -1077,7 +1078,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
         try {
-            if (scp == SCPMode.SCP_01_05 || scp == SCPMode.SCP_01_15) {
+            if (scpMode == SCPMode.SCP_01_05 || scpMode == SCPMode.SCP_01_15) {
 
                 int dataLength = command.length - 4 - 8; // command without (CLA, INS, P1, P2) AND C-MAC
                 if (dataLength % 8 == 0) { // don't need a PADDING
@@ -1113,17 +1114,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* Encrypted data is " + Conversion.arrayToHex(encryptedCmd));
             }
 
-            if (scp == SCPMode.SCP_02_04
-                    || scp == SCPMode.SCP_02_05
-                    || scp == SCPMode.SCP_02_0A
-                    || scp == SCPMode.SCP_02_0B
-                    || scp == SCPMode.SCP_02_14
-                    || scp == SCPMode.SCP_02_15
-                    || scp == SCPMode.SCP_02_1A
-                    || scp == SCPMode.SCP_02_1B
-                    || scp == SCPMode.SCP_02_45
-                    || scp == SCPMode.SCP_02_54
-                    || scp == SCPMode.SCP_02_55) {
+            if (scpMode == SCPMode.SCP_02_04
+                    || scpMode == SCPMode.SCP_02_05
+                    || scpMode == SCPMode.SCP_02_0A
+                    || scpMode == SCPMode.SCP_02_0B
+                    || scpMode == SCPMode.SCP_02_14
+                    || scpMode == SCPMode.SCP_02_15
+                    || scpMode == SCPMode.SCP_02_1A
+                    || scpMode == SCPMode.SCP_02_1B
+                    || scpMode == SCPMode.SCP_02_45
+                    || scpMode == SCPMode.SCP_02_54
+                    || scpMode == SCPMode.SCP_02_55) {
 
                 int dataLength = command.length - 5 - 8; // command without (CLA, INS, P1, P2) AND C-MAC
 
@@ -1169,9 +1170,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
 
 
-            if (this.scp == SCPMode.SCP_03_65
-                    || this.scp == SCPMode.SCP_03_05
-                    || this.scp == SCPMode.SCP_03_25) {
+            if (this.scpMode == SCPMode.SCP_03_65
+                    || this.scpMode == SCPMode.SCP_03_05
+                    || this.scpMode == SCPMode.SCP_03_25) {
 
                 int dataLength = command.length - 5; // command without (CLA, INS, P1, P2) AND C-MAC
 
@@ -1208,9 +1209,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
             }
-            if (this.scp == SCPMode.SCP_03_6D
-                    || this.scp == SCPMode.SCP_03_0D
-                    || this.scp == SCPMode.SCP_03_2D) {
+            if (this.scpMode == SCPMode.SCP_03_6D
+                    || this.scpMode == SCPMode.SCP_03_0D
+                    || this.scpMode == SCPMode.SCP_03_2D) {
                 // compute the counter icv
                 byte[] icvCEnc = new byte[16];
                 String hexaCounter = Integer.toHexString(CENC_Counter);
@@ -1289,20 +1290,20 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * ICV Initialization. All values set to 0
      */
     protected void initIcv() {
-        if (scp == SCPMode.SCP_01_15
-                || scp == SCPMode.SCP_01_05
-                || scp == SCPMode.SCP_UNDEFINED
-                || scp == SCPMode.SCP_02_04
-                || scp == SCPMode.SCP_02_05
-                || scp == SCPMode.SCP_02_0A
-                || scp == SCPMode.SCP_02_0B
-                || scp == SCPMode.SCP_02_14
-                || scp == SCPMode.SCP_02_15
-                || scp == SCPMode.SCP_02_1A
-                || scp == SCPMode.SCP_02_1B
-                || scp == SCPMode.SCP_02_45
-                || scp == SCPMode.SCP_02_54
-                || scp == SCPMode.SCP_02_55) {
+        if (scpMode == SCPMode.SCP_01_15
+                || scpMode == SCPMode.SCP_01_05
+                || scpMode == SCPMode.SCP_UNDEFINED
+                || scpMode == SCPMode.SCP_02_04
+                || scpMode == SCPMode.SCP_02_05
+                || scpMode == SCPMode.SCP_02_0A
+                || scpMode == SCPMode.SCP_02_0B
+                || scpMode == SCPMode.SCP_02_14
+                || scpMode == SCPMode.SCP_02_15
+                || scpMode == SCPMode.SCP_02_1A
+                || scpMode == SCPMode.SCP_02_1B
+                || scpMode == SCPMode.SCP_02_45
+                || scpMode == SCPMode.SCP_02_54
+                || scpMode == SCPMode.SCP_02_55) {
 
             logger.debug("==> Init ICV begin");
             this.icv = new byte[8];
@@ -1312,12 +1313,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
             logger.debug("==> Init ICV end");
         }
-        if (scp == SCPMode.SCP_03_05
-                || scp == SCPMode.SCP_03_0D
-                || scp == SCPMode.SCP_03_25
-                || scp == SCPMode.SCP_03_2D
-                || scp == SCPMode.SCP_03_65
-                || scp == SCPMode.SCP_03_6D) {
+        if (scpMode == SCPMode.SCP_03_05
+                || scpMode == SCPMode.SCP_03_0D
+                || scpMode == SCPMode.SCP_03_25
+                || scpMode == SCPMode.SCP_03_2D
+                || scpMode == SCPMode.SCP_03_65
+                || scpMode == SCPMode.SCP_03_6D) {
 
             logger.debug("==> Init ICV begin");
             this.icv = new byte[16];
@@ -1339,7 +1340,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     protected void initIcvToMacOverAid(byte[] aid) {
 
         logger.info("==> init ICV to mac over AID");
-        logger.info("* SCP 02 Protocol (" + this.scp + ") used");
+        logger.info("* SCP 02 Protocol (" + this.scpMode + ") used");
         logger.info("* IV is " + Conversion.arrayToHex(iv_zero));
 
         IvParameterSpec ivSpec = new IvParameterSpec(iv_zero);
@@ -1429,9 +1430,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
 
-            if ((this.scp == SCPMode.SCP_UNDEFINED)
-                    || (this.scp == SCPMode.SCP_01_05)
-                    || (this.scp == SCPMode.SCP_01_15)) {
+            if ((this.scpMode == SCPMode.SCP_UNDEFINED)
+                    || (this.scpMode == SCPMode.SCP_01_05)
+                    || (this.scpMode == SCPMode.SCP_01_15)) {
 
                 logger.debug("* SCP 01 protocol used");
 
@@ -1458,12 +1459,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(this.hostCrypto));
 
-            } else if (this.scp == SCPMode.SCP_02_15
-                    || this.scp == SCPMode.SCP_02_04
-                    || this.scp == SCPMode.SCP_02_05
-                    || this.scp == SCPMode.SCP_02_14
-                    || this.scp == SCPMode.SCP_02_45
-                    || this.scp == SCPMode.SCP_02_55) {
+            } else if (this.scpMode == SCPMode.SCP_02_15
+                    || this.scpMode == SCPMode.SCP_02_04
+                    || this.scpMode == SCPMode.SCP_02_05
+                    || this.scpMode == SCPMode.SCP_02_14
+                    || this.scpMode == SCPMode.SCP_02_45
+                    || this.scpMode == SCPMode.SCP_02_55) {
 
                 logger.debug("* SCP 02 protocol used");
 
@@ -1494,12 +1495,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(this.hostCrypto));
 
-            } else if (this.scp == SCPMode.SCP_03_65
-                    || this.scp == SCPMode.SCP_03_6D
-                    || this.scp == SCPMode.SCP_03_05
-                    || this.scp == SCPMode.SCP_03_0D
-                    || this.scp == SCPMode.SCP_03_2D
-                    || this.scp == SCPMode.SCP_03_25) {
+            } else if (this.scpMode == SCPMode.SCP_03_65
+                    || this.scpMode == SCPMode.SCP_03_6D
+                    || this.scpMode == SCPMode.SCP_03_05
+                    || this.scpMode == SCPMode.SCP_03_0D
+                    || this.scpMode == SCPMode.SCP_03_2D
+                    || this.scpMode == SCPMode.SCP_03_25) {
 
                 logger.debug("* SCP 03 protocol used");
 
@@ -1598,11 +1599,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getValue()));
             logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getValue()));
             logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getValue()));
-            logger.debug("* SCP_Mode is " + this.scp);
+            logger.debug("* SCP_Mode is " + this.scpMode);
 
-            if ((this.scp == SCPMode.SCP_UNDEFINED)
-                    || (this.scp == SCPMode.SCP_01_05)
-                    || (this.scp == SCPMode.SCP_01_15)) {  // TODO: SCPMode.SCP_UNDEFINED Here ?
+            if ((this.scpMode == SCPMode.SCP_UNDEFINED)
+                    || (this.scpMode == SCPMode.SCP_01_05)
+                    || (this.scpMode == SCPMode.SCP_01_15)) {  // TODO: SCPMode.SCP_UNDEFINED Here ?
 
                 this.sessEnc = new byte[24];
                 this.sessMac = new byte[24];
@@ -1634,12 +1635,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* sessKek = " + Conversion.arrayToHex(this.sessKek));
 
-            } else if (this.scp == SCPMode.SCP_02_15
-                    || this.scp == SCPMode.SCP_02_04
-                    || this.scp == SCPMode.SCP_02_05
-                    || this.scp == SCPMode.SCP_02_14
-                    || this.scp == SCPMode.SCP_02_45
-                    || this.scp == SCPMode.SCP_02_55) {
+            } else if (this.scpMode == SCPMode.SCP_02_15
+                    || this.scpMode == SCPMode.SCP_02_04
+                    || this.scpMode == SCPMode.SCP_02_05
+                    || this.scpMode == SCPMode.SCP_02_14
+                    || this.scpMode == SCPMode.SCP_02_45
+                    || this.scpMode == SCPMode.SCP_02_55) {
 
                 this.sessEnc = new byte[24];
                 this.sessMac = new byte[24];
@@ -1687,12 +1688,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* sessKek = " + Conversion.arrayToHex(this.sessRMac));
 
-            } else if ((scp == SCPMode.SCP_03_65)
-                    || (scp == SCPMode.SCP_03_6D)
-                    || (scp == SCPMode.SCP_03_05)
-                    || (scp == SCPMode.SCP_03_0D)
-                    || (scp == SCPMode.SCP_03_2D)
-                    || (scp == SCPMode.SCP_03_25)) {
+            } else if ((scpMode == SCPMode.SCP_03_65)
+                    || (scpMode == SCPMode.SCP_03_6D)
+                    || (scpMode == SCPMode.SCP_03_05)
+                    || (scpMode == SCPMode.SCP_03_0D)
+                    || (scpMode == SCPMode.SCP_03_2D)
+                    || (scpMode == SCPMode.SCP_03_25)) {
 
                 logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
 
@@ -1806,9 +1807,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("==> Calculate Derivation Data");
 
-        if ((this.scp == SCPMode.SCP_UNDEFINED)
-                || (this.scp == SCPMode.SCP_01_05)
-                || (this.scp == SCPMode.SCP_01_15)) { // SCP 01_*
+        if ((this.scpMode == SCPMode.SCP_UNDEFINED)
+                || (this.scpMode == SCPMode.SCP_01_05)
+                || (this.scpMode == SCPMode.SCP_01_15)) { // SCP 01_*
 
             this.derivationData = new byte[16];
 
@@ -1817,23 +1818,23 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             System.arraycopy(this.cardChallenge, 0, this.derivationData, 8, 4);
             System.arraycopy(this.cardChallenge, 4, this.derivationData, 0, 4);
 
-        } else if (this.scp == SCPMode.SCP_02_15
-                || this.scp == SCPMode.SCP_02_04
-                || this.scp == SCPMode.SCP_02_05
-                || this.scp == SCPMode.SCP_02_14
-                || this.scp == SCPMode.SCP_02_0A
-                || this.scp == SCPMode.SCP_02_45
-                || this.scp == SCPMode.SCP_02_55) { // SCP 02_*
+        } else if (this.scpMode == SCPMode.SCP_02_15
+                || this.scpMode == SCPMode.SCP_02_04
+                || this.scpMode == SCPMode.SCP_02_05
+                || this.scpMode == SCPMode.SCP_02_14
+                || this.scpMode == SCPMode.SCP_02_0A
+                || this.scpMode == SCPMode.SCP_02_45
+                || this.scpMode == SCPMode.SCP_02_55) { // SCP 02_*
 
             this.derivationData = new byte[16];
             System.arraycopy(this.sequenceCounter, 0, this.derivationData, 2, 2);
 
-        } else if ((this.scp == SCPMode.SCP_03_65)
-                || (scp == SCPMode.SCP_03_6D)
-                || (scp == SCPMode.SCP_03_05)
-                || (scp == SCPMode.SCP_03_0D)
-                || (scp == SCPMode.SCP_03_2D)
-                || (scp == SCPMode.SCP_03_25)) {
+        } else if ((this.scpMode == SCPMode.SCP_03_65)
+                || (scpMode == SCPMode.SCP_03_6D)
+                || (scpMode == SCPMode.SCP_03_05)
+                || (scpMode == SCPMode.SCP_03_0D)
+                || (scpMode == SCPMode.SCP_03_2D)
+                || (scpMode == SCPMode.SCP_03_25)) {
 
 
             /*
@@ -1885,7 +1886,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     protected byte[] pseudoRandomGenerationCardChallenge(byte[] aid) {
 
         logger.info("==> pseudo Random Generation CardChallenge");
-        logger.info("* SCP 02 Protocol (" + this.scp + ") used");
+        logger.info("* SCP 02 Protocol (" + this.scpMode + ") used");
         logger.info("* IV is " + Conversion.arrayToHex(iv_zero));
 
         byte[] computedCardChallenge = null;
@@ -2008,12 +2009,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if (((this.getSecMode() == SecLevel.C_ENC_AND_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC))
-                && (this.scp != SCPMode.SCP_03_65)
-                && (this.scp != SCPMode.SCP_03_6D)
-                && (this.scp != SCPMode.SCP_03_05)
-                && (this.scp != SCPMode.SCP_03_0D)
-                && (this.scp != SCPMode.SCP_03_2D)
-                && (this.scp != SCPMode.SCP_03_25)) {
+                && (this.scpMode != SCPMode.SCP_03_65)
+                && (this.scpMode != SCPMode.SCP_03_6D)
+                && (this.scpMode != SCPMode.SCP_03_05)
+                && (this.scpMode != SCPMode.SCP_03_0D)
+                && (this.scpMode != SCPMode.SCP_03_2D)
+                && (this.scpMode != SCPMode.SCP_03_25)) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
             System.arraycopy(deleteComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
             byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
@@ -2025,12 +2026,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)) {
-            if ((this.scp == SCPMode.SCP_03_65)
-                    || (this.scp == SCPMode.SCP_03_6D)
-                    || (this.scp == SCPMode.SCP_03_05)
-                    || (this.scp == SCPMode.SCP_03_0D)
-                    || (this.scp == SCPMode.SCP_03_2D)
-                    || (this.scp == SCPMode.SCP_03_25)) {
+            if ((this.scpMode == SCPMode.SCP_03_65)
+                    || (this.scpMode == SCPMode.SCP_03_6D)
+                    || (this.scpMode == SCPMode.SCP_03_05)
+                    || (this.scpMode == SCPMode.SCP_03_0D)
+                    || (this.scpMode == SCPMode.SCP_03_2D)
+                    || (this.scpMode == SCPMode.SCP_03_25)) {
                 byte[] dataToEnc = new byte[headerSize + dataSize - 8]; // data to encrypt without 8 bytes of CMAC
                 System.arraycopy(deleteComm, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
@@ -2058,7 +2059,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         this.compudeAndVerifyRMac(resp.getBytes());
 
-        if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
+        if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scpMode == SCPMode.SCP_03_65)) {
             this.decryptCardResponseData(resp.getBytes());
         }
 
@@ -2238,12 +2239,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)
-                && (this.scp != SCPMode.SCP_03_65)
-                && (this.scp != SCPMode.SCP_03_6D)
-                && (this.scp != SCPMode.SCP_03_05)
-                && (this.scp != SCPMode.SCP_03_0D)
-                && (this.scp != SCPMode.SCP_03_2D)
-                && (this.scp != SCPMode.SCP_03_25)) {
+                && (this.scpMode != SCPMode.SCP_03_65)
+                && (this.scpMode != SCPMode.SCP_03_6D)
+                && (this.scpMode != SCPMode.SCP_03_05)
+                && (this.scpMode != SCPMode.SCP_03_0D)
+                && (this.scpMode != SCPMode.SCP_03_2D)
+                && (this.scpMode != SCPMode.SCP_03_25)) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
             System.arraycopy(installForLoadComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
             byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
@@ -2255,12 +2256,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if (((this.getSecMode() == SecLevel.C_ENC_AND_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC))) {
-            if (this.scp == SCPMode.SCP_03_65
-                    || this.scp == SCPMode.SCP_03_6D
-                    || this.scp == SCPMode.SCP_03_05
-                    || this.scp == SCPMode.SCP_03_0D
-                    || this.scp == SCPMode.SCP_03_2D
-                    || this.scp == SCPMode.SCP_03_25) {
+            if (this.scpMode == SCPMode.SCP_03_65
+                    || this.scpMode == SCPMode.SCP_03_6D
+                    || this.scpMode == SCPMode.SCP_03_05
+                    || this.scpMode == SCPMode.SCP_03_0D
+                    || this.scpMode == SCPMode.SCP_03_2D
+                    || this.scpMode == SCPMode.SCP_03_25) {
                 byte[] dataToEnc = new byte[headerSize + dataSize - 8]; // data to encrypt without 8 bytes of CMAC
                 System.arraycopy(installForLoadComm, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
@@ -2374,7 +2375,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             ber[1] = (byte) 0x82;
             ber[2] = (byte) (capFileRemainLen / 256);
             ber[3] = (byte) (capFileRemainLen % 256);
-        }  else {
+        } else {
             throw new IllegalStateException("capFileRemainLen is >= 65536");
         }
 
@@ -2440,12 +2441,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
 
             if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)
-                    && (this.scp != SCPMode.SCP_03_65)
-                    && (this.scp != SCPMode.SCP_03_6D)
-                    && (this.scp != SCPMode.SCP_03_05)
-                    && (this.scp != SCPMode.SCP_03_0D)
-                    && (this.scp != SCPMode.SCP_03_2D)
-                    && (this.scp != SCPMode.SCP_03_25)) {
+                    && (this.scpMode != SCPMode.SCP_03_65)
+                    && (this.scpMode != SCPMode.SCP_03_6D)
+                    && (this.scpMode != SCPMode.SCP_03_05)
+                    && (this.scpMode != SCPMode.SCP_03_0D)
+                    && (this.scpMode != SCPMode.SCP_03_2D)
+                    && (this.scpMode != SCPMode.SCP_03_25)) {
                 byte[] dataCmac = new byte[cmd.length - 8]; // data used to generate C-MAC
                 System.arraycopy(cmd, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
                 byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
@@ -2457,12 +2458,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
 
             if (((this.getSecMode() == SecLevel.C_ENC_AND_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) || (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC))) {
-                if (this.scp == SCPMode.SCP_03_65
-                        || scp == SCPMode.SCP_03_6D
-                        || scp == SCPMode.SCP_03_05
-                        || scp == SCPMode.SCP_03_0D
-                        || scp == SCPMode.SCP_03_2D
-                        || scp == SCPMode.SCP_03_25) {
+                if (this.scpMode == SCPMode.SCP_03_65
+                        || scpMode == SCPMode.SCP_03_6D
+                        || scpMode == SCPMode.SCP_03_05
+                        || scpMode == SCPMode.SCP_03_0D
+                        || scpMode == SCPMode.SCP_03_2D
+                        || scpMode == SCPMode.SCP_03_25) {
                     byte[] dataToEnc = new byte[cmd.length - 8]; // data to encrypt without 8 bytes of CMAC
                     System.arraycopy(cmd, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
@@ -2490,7 +2491,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
             this.compudeAndVerifyRMac(resp.getBytes());
-            if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
+            if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scpMode == SCPMode.SCP_03_65)) {
                 this.decryptCardResponseData(resp.getBytes());
             }
             if (this.getSecMode() == secMode.C_ENC_AND_MAC
@@ -2641,12 +2642,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)
-                && (this.scp != SCPMode.SCP_03_65)
-                && (this.scp != SCPMode.SCP_03_6D)
-                && (this.scp != SCPMode.SCP_03_05)
-                && (this.scp != SCPMode.SCP_03_0D)
-                && (this.scp != SCPMode.SCP_03_2D)
-                && (this.scp != SCPMode.SCP_03_25)) {
+                && (this.scpMode != SCPMode.SCP_03_65)
+                && (this.scpMode != SCPMode.SCP_03_6D)
+                && (this.scpMode != SCPMode.SCP_03_05)
+                && (this.scpMode != SCPMode.SCP_03_0D)
+                && (this.scpMode != SCPMode.SCP_03_2D)
+                && (this.scpMode != SCPMode.SCP_03_25)) {
             byte[] dataCmac = new byte[installForInstallComm.length - 8]; // data used to generate C-MAC
             System.arraycopy(installForInstallComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
             byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
@@ -2658,12 +2659,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_MAC)) {
-            if (scp == SCPMode.SCP_03_65
-                    || scp == SCPMode.SCP_03_6D
-                    || scp == SCPMode.SCP_03_05
-                    || scp == SCPMode.SCP_03_0D
-                    || scp == SCPMode.SCP_03_2D
-                    || scp == SCPMode.SCP_03_25) {
+            if (scpMode == SCPMode.SCP_03_65
+                    || scpMode == SCPMode.SCP_03_6D
+                    || scpMode == SCPMode.SCP_03_05
+                    || scpMode == SCPMode.SCP_03_0D
+                    || scpMode == SCPMode.SCP_03_2D
+                    || scpMode == SCPMode.SCP_03_25) {
                 byte[] dataToEnc = new byte[installForInstallComm.length - 8]; // data to encrypt without 8 bytes of CMAC
                 System.arraycopy(installForInstallComm, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
@@ -2687,7 +2688,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
         this.compudeAndVerifyRMac(resp.getBytes());
 
-        if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scp == SCPMode.SCP_03_65)) {
+        if ((this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (this.scpMode == SCPMode.SCP_03_65)) {
             this.decryptCardResponseData(resp.getBytes());
         }
 
@@ -2736,7 +2737,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         resetParams();
         if (true) {
             this.sequenceCounter = new byte[2];
-            this.scp = desiredScp;
+            this.scpMode = desiredScp;
             getData();
             calculateDerivationData();
             if (keyId == (byte) 0) {
@@ -2754,7 +2755,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             SCGPKey kMac = null;
             SCGPKey kKek = null;
 
-            if (scp == SCPMode.SCP_02_15) {
+            if (scpMode == SCPMode.SCP_02_15) {
                 logger.debug("je suis la");
                 kEnc = (SCGPKey) key;
                 kMac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
@@ -2768,7 +2769,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     throw new CardException("Selected KEK Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
                 }
 
-            } else if (scp == SCPMode.SCP_02_0A) {
+            } else if (scpMode == SCPMode.SCP_02_0A) {
 
                 kEnc = (SCGPKey) key;
                 kMac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (keyId));
@@ -2783,7 +2784,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 }
 
             }
-            logger.debug("scp " + this.scp);
+            logger.debug("scpMode " + this.scpMode);
             this.generateSessionKeys(kEnc, kMac, kKek);
             initIcvToMacOverAid(aid);
 
@@ -2922,9 +2923,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * @response Response Message receved by the off card entity
      */
     protected void compudeAndVerifyRMac(byte[] response) throws CardException {
-        if (this.scp == SCPMode.SCP_03_65
-                || this.scp == SCPMode.SCP_03_6D
-                || this.scp == SCPMode.SCP_03_25) {
+        if (this.scpMode == SCPMode.SCP_03_65
+                || this.scpMode == SCPMode.SCP_03_6D
+                || this.scpMode == SCPMode.SCP_03_25) {
             if ((this.getSecMode() == SecLevel.R_MAC) ||
                     (this.getSecMode() == SecLevel.C_MAC_AND_R_MAC) ||
                     (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) ||
@@ -2979,7 +2980,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             if (response.length > 10)// the response contain data
             {
                 byte[] res = null;
-                if (scp == SCPMode.SCP_03_65) {
+                if (scpMode == SCPMode.SCP_03_65) {
                     encryptedData = new byte[(response.length - 10)];
                     System.arraycopy(response, 0, encryptedData, 0, response.length - 10);
                     if ((encryptedData.length % 16) != 0) {
@@ -2990,7 +2991,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
                     res = cipher.doFinal(encryptedData);
                 }
-                if (scp == SCPMode.SCP_03_6D) {
+                if (scpMode == SCPMode.SCP_03_6D) {
                     byte[] icvCEnc = new byte[16];
                     String hexaCounter = Integer.toHexString(CENC_Counter);
                     if ((hexaCounter.length() % 2) == 1) {
@@ -3016,7 +3017,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     res = cipher.doFinal(encryptedData);
                     RENC_counter++;
                 }
-                if (scp == SCPMode.SCP_03_05) {// this mode don't support RMAC then the response contain only Crypted data and Statuts words
+                if (scpMode == SCPMode.SCP_03_05) {// this mode don't support RMAC then the response contain only Crypted data and Statuts words
                     encryptedData = new byte[(response.length - 2)];
                     System.arraycopy(response, 0, encryptedData, 0, response.length - 2);
                     if ((encryptedData.length % 16) != 0) {
@@ -3027,7 +3028,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
                     res = cipher.doFinal(encryptedData);
                 }
-                if (scp == SCPMode.SCP_03_0D) {
+                if (scpMode == SCPMode.SCP_03_0D) {
                     byte[] icvCEnc = new byte[16];
                     String hexaCounter = Integer.toHexString(CENC_Counter);
                     if ((hexaCounter.length() % 2) == 1) {

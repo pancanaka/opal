@@ -39,15 +39,19 @@
  */
 package fr.xlim.ssd.opal.library.applet;
 
-import fr.xlim.ssd.opal.library.commands.*;
+import fr.xlim.ssd.opal.library.commands.Commands;
+import fr.xlim.ssd.opal.library.commands.FileControlInformation;
+import fr.xlim.ssd.opal.library.commands.GetStatusFileType;
+import fr.xlim.ssd.opal.library.commands.GetStatusResponseMode;
+import fr.xlim.ssd.opal.library.commands.SecLevel;
+import fr.xlim.ssd.opal.library.commands.SessionState;
 import fr.xlim.ssd.opal.library.config.SCKey;
 import fr.xlim.ssd.opal.library.config.SCPMode;
-
+import java.io.IOException;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
-import java.io.IOException;
 
 
 /**
@@ -75,7 +79,8 @@ public class GPApplet {
      *                          This designed implementation must override the class {@link fr.xlim.ssd.opal.library.commands.Commands}
      * @param cc                the initialized card channel on which data will be sent to the card
      * @param aid               the byte array containing the aid representation of the Applet
-     * @throws ClassNotFoundException         cmdImplementation value is a wrong class name
+     *
+     * @throws ClassNotFoundException cmdImplementation value is a wrong class name
      */
     public GPApplet(Commands implementation, byte[] aid) throws ClassNotFoundException {
         this.aid = aid.clone();
@@ -105,7 +110,7 @@ public class GPApplet {
      * @see fr.xlim.ssd.opal.commands.Commands#getScp()
      */
     public SCPMode getScp() {
-        return this.cmds.getScp();
+        return this.cmds.getScpMode();
     }
 
     /* (non-Javadoc)
