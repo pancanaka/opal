@@ -1,5 +1,6 @@
 # Do not track files under the target repository
-target
+target/
+.idea/
 
 # Do not track IDE-specific files 
 ^.*\.iml$
