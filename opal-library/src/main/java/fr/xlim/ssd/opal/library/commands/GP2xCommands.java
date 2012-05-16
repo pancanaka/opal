@@ -336,7 +336,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         scp = new SCP();
         scp.setScpMode(SCPMode.SCP_UNDEFINED);
         scp.setSecMode(SecLevel.NO_SECURITY_LEVEL);
-        this.initIcv();
+        scp.initIcv();
         this.sessState = SessionState.NO_SESSION;
         this.sessEnc = null;
         this.sessMac = null;
@@ -645,7 +645,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || (scp.getScpMode() == SCPMode.SCP_03_0D)
                 || (scp.getScpMode() == SCPMode.SCP_03_2D)
                 || (scp.getScpMode() == SCPMode.SCP_03_25)) {
-            this.initIcv();
+            scp.initIcv();
             if (key instanceof SCDerivableKey) {
                 SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
                 kEnc = keysFromDerivableKey[0];
@@ -1280,54 +1280,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         return encryptedCmd;
     }
-
-
-    /**
-     * ICV Initialization. All values set to 0
-     */
-    protected void initIcv() {
-        if (scp.getScpMode() == SCPMode.SCP_01_15
-                || scp.getScpMode() == SCPMode.SCP_01_05
-                || scp.getScpMode() == SCPMode.SCP_UNDEFINED
-                || scp.getScpMode() == SCPMode.SCP_02_04
-                || scp.getScpMode() == SCPMode.SCP_02_05
-                || scp.getScpMode() == SCPMode.SCP_02_0A
-                || scp.getScpMode() == SCPMode.SCP_02_0B
-                || scp.getScpMode() == SCPMode.SCP_02_14
-                || scp.getScpMode() == SCPMode.SCP_02_15
-                || scp.getScpMode() == SCPMode.SCP_02_1A
-                || scp.getScpMode() == SCPMode.SCP_02_1B
-                || scp.getScpMode() == SCPMode.SCP_02_45
-                || scp.getScpMode() == SCPMode.SCP_02_54
-                || scp.getScpMode() == SCPMode.SCP_02_55) {
-
-            logger.debug("==> Init ICV begin");
-            scp.setIcv(new byte[8]);
-            for (int i = 0; i < scp.getIcv().length; i++) {
-                scp.getIcv()[i] = (byte) 0x00;
-            }
-            logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
-            logger.debug("==> Init ICV end");
-        }
-        if (scp.getScpMode() == SCPMode.SCP_03_05
-                || scp.getScpMode() == SCPMode.SCP_03_0D
-                || scp.getScpMode() == SCPMode.SCP_03_25
-                || scp.getScpMode() == SCPMode.SCP_03_2D
-                || scp.getScpMode() == SCPMode.SCP_03_65
-                || scp.getScpMode() == SCPMode.SCP_03_6D) {
-
-            logger.debug("==> Init ICV begin");
-            scp.setIcv(new byte[16]);
-            for (int i = 0; i < scp.getIcv().length; i++) {
-                scp.getIcv()[i] = (byte) 0x00;
-            }
-            logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
-            logger.debug("==> Init ICV end");
-
-        }
-
-    }
-
 
     /**
      * Initialization ICV to mac ovec AID of selected application, this function is used in

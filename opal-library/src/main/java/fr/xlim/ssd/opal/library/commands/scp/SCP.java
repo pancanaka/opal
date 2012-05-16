@@ -41,8 +41,14 @@ package fr.xlim.ssd.opal.library.commands.scp;
 
 import fr.xlim.ssd.opal.library.commands.SecLevel;
 import fr.xlim.ssd.opal.library.config.SCPMode;
+import fr.xlim.ssd.opal.library.utilities.Conversion;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class SCP {
+
+    /// Logger used to print messages
+    private static final Logger logger = LoggerFactory.getLogger(SCP.class);
 
     /// Secure Channel Protocol used
     private SCPMode scpMode;
@@ -75,5 +81,50 @@ public class SCP {
 
     public void setIcv(byte[] icv) {
         this.icv = icv;
+    }
+
+    /**
+     * ICV Initialization. All values set to 0
+     */
+    public void initIcv() {
+        if (getScpMode() == SCPMode.SCP_01_15
+                || getScpMode() == SCPMode.SCP_01_05
+                || getScpMode() == SCPMode.SCP_UNDEFINED
+                || getScpMode() == SCPMode.SCP_02_04
+                || getScpMode() == SCPMode.SCP_02_05
+                || getScpMode() == SCPMode.SCP_02_0A
+                || getScpMode() == SCPMode.SCP_02_0B
+                || getScpMode() == SCPMode.SCP_02_14
+                || getScpMode() == SCPMode.SCP_02_15
+                || getScpMode() == SCPMode.SCP_02_1A
+                || getScpMode() == SCPMode.SCP_02_1B
+                || getScpMode() == SCPMode.SCP_02_45
+                || getScpMode() == SCPMode.SCP_02_54
+                || getScpMode() == SCPMode.SCP_02_55) {
+
+            logger.debug("==> Init ICV begin");
+            setIcv(new byte[8]);
+            for (int i = 0; i < getIcv().length; i++) {
+                getIcv()[i] = (byte) 0x00;
+            }
+            logger.debug("* New ICV is " + Conversion.arrayToHex(getIcv()));
+            logger.debug("==> Init ICV end");
+        }
+        if (getScpMode() == SCPMode.SCP_03_05
+                || getScpMode() == SCPMode.SCP_03_0D
+                || getScpMode() == SCPMode.SCP_03_25
+                || getScpMode() == SCPMode.SCP_03_2D
+                || getScpMode() == SCPMode.SCP_03_65
+                || getScpMode() == SCPMode.SCP_03_6D) {
+
+            logger.debug("==> Init ICV begin");
+            setIcv(new byte[16]);
+            for (int i = 0; i < getIcv().length; i++) {
+                getIcv()[i] = (byte) 0x00;
+            }
+            logger.debug("* New ICV is " + Conversion.arrayToHex(getIcv()));
+            logger.debug("==> Init ICV end");
+
+        }
     }
 }
