@@ -50,6 +50,8 @@ public class SCP {
     /// Secure Level used to communicate
     private SecLevel secMode;
 
+    /// Initialized Cypher Vector used to initialized encryption steps
+    protected byte[] icv;
 
     public SCPMode getScpMode() {
         return scpMode;
@@ -65,5 +67,13 @@ public class SCP {
 
     public void setSecMode(SecLevel secMode) {
         this.secMode = secMode;
+    }
+
+    public byte[] getIcv() {
+        return icv;
+    }
+
+    public void setIcv(byte[] icv) {
+        this.icv = icv;
     }
 }

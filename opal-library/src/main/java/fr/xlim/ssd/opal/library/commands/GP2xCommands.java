@@ -154,9 +154,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /// Host challenge result
     protected byte[] hostCrypto;
 
-    /// Initialized Cypher Vector used to initialized encryption steps
-    protected byte[] icv;
-
     /// Sequence counter used in SCP 02. Its value is the number of previous validate authentication
     protected byte[] sequenceCounter;
 
@@ -901,7 +898,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
 
         byte[] res = new byte[8];
-        IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
+        IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
         try {
             logger.debug("SCP: " + scp.getScpMode());
             if ((scp.getScpMode() == SCPMode.SCP_UNDEFINED)    // TODO: Undefined SCPMode Here ?
@@ -920,16 +917,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 switch (scp.getScpMode()) {
                     case SCP_01_05:
-                        this.icv = res; // update ICV with new C-MAC
+                        scp.setIcv(res); // update ICV with new C-MAC
                         break;
                     case SCP_01_15: // update ICV with new ENCRYPTED C-MAC
                         Cipher myCipher2 = Cipher.getInstance("DESede/ECB/NoPadding");
                         myCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"));
-                        this.icv = myCipher2.doFinal(res);
+                        scp.setIcv(myCipher2.doFinal(res));
                         break;
                 }
 
-                logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
+                logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
 
             } else if (scp.getScpMode() == SCPMode.SCP_02_15
                     || scp.getScpMode() == SCPMode.SCP_02_04
@@ -947,7 +944,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 // Calculate the first n - 1 block.
                 int noOfBlocks = dataWithPadding.length / 8;
-                byte ivForNextBlock[] = this.icv;
+                byte ivForNextBlock[] = scp.getIcv();
                 int startIndex = 0;
                 for (int i = 0; i < (noOfBlocks - 1); i++) {
                     singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
@@ -973,18 +970,18 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 if (scp.getScpMode() == SCPMode.SCP_02_04
                         || scp.getScpMode() == SCPMode.SCP_02_05
                         || scp.getScpMode() == SCPMode.SCP_02_45) {
-                    this.icv = res; // update ICV with new C-MAC //no ICV encryption
+                    scp.setIcv(res); // update ICV with new C-MAC //no ICV encryption
                 } else if (scp.getScpMode() == SCPMode.SCP_02_15
                         || scp.getScpMode() == SCPMode.SCP_02_14
                         || scp.getScpMode() == SCPMode.SCP_02_55) {
                     // update ICV with new ENCRYPTED C-MAC
                     ivSpec = new IvParameterSpec(new byte[8]);
                     singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
-                    this.icv = singleDesCipher.doFinal(res);
+                    scp.setIcv(singleDesCipher.doFinal(res));
                 }
 
                 logger.debug("* Calculated cryptogram is " + Conversion.arrayToHex(res));
-                logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
+                logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
 
             } else if (scp.getScpMode() == SCPMode.SCP_03_65
                     || scp.getScpMode() == SCPMode.SCP_03_6D
@@ -1012,14 +1009,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
                 byte[] dataToCalulateMac = new byte[dataWithPadding.length + 16];
-                System.arraycopy(this.icv, 0, dataToCalulateMac, 0, this.icv.length);
+                System.arraycopy(scp.getIcv(), 0, dataToCalulateMac, 0, scp.getIcv().length);
                 System.arraycopy(dataWithPadding, 0, dataToCalulateMac, 16, dataWithPadding.length);
 
                 logger.debug("data used to génerate mac : " + Conversion.arrayToHex(dataToCalulateMac));
 
                 ivSpec = new IvParameterSpec(iv_zero_scp03);
                 logger.debug("* SCP 03 Protocol (" + scp.getScpMode() + ") used");
-                logger.debug("* IV is " + Conversion.arrayToHex(this.icv));
+                logger.debug("* IV is " + Conversion.arrayToHex(scp.getIcv()));
 
                 SecretKeySpec skeySpec = new SecretKeySpec(this.sessMac, "AES");
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
@@ -1032,8 +1029,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(encrypted, encrypted.length - 8, eightRightMostBit, 0, 8);
 
                 //update ICV : 8 most significant bytes + 8 lest significant bytes
-                System.arraycopy(res, 0, this.icv, 0, 8);
-                System.arraycopy(eightRightMostBit, 0, this.icv, 8, 8);
+                System.arraycopy(res, 0, scp.getIcv(), 0, 8);
+                System.arraycopy(eightRightMostBit, 0, scp.getIcv(), 8, 8);
 
 
             }
@@ -1305,11 +1302,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || scp.getScpMode() == SCPMode.SCP_02_55) {
 
             logger.debug("==> Init ICV begin");
-            this.icv = new byte[8];
-            for (int i = 0; i < this.icv.length; i++) {
-                this.icv[i] = (byte) 0x00;
+            scp.setIcv(new byte[8]);
+            for (int i = 0; i < scp.getIcv().length; i++) {
+                scp.getIcv()[i] = (byte) 0x00;
             }
-            logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
+            logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
             logger.debug("==> Init ICV end");
         }
         if (scp.getScpMode() == SCPMode.SCP_03_05
@@ -1320,11 +1317,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 || scp.getScpMode() == SCPMode.SCP_03_6D) {
 
             logger.debug("==> Init ICV begin");
-            this.icv = new byte[16];
-            for (int i = 0; i < this.icv.length; i++) {
-                this.icv[i] = (byte) 0x00;
+            scp.setIcv(new byte[16]);
+            for (int i = 0; i < scp.getIcv().length; i++) {
+                scp.getIcv()[i] = (byte) 0x00;
             }
-            logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
+            logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
             logger.debug("==> Init ICV end");
 
         }
@@ -1371,7 +1368,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             // Calculate the first n - 1 block.
             int noOfBlocks = dataWithPadding.length / 8;
-            byte ivForNextBlock[] = this.icv;
+            byte ivForNextBlock[] = scp.getIcv();
             int startIndex = 0;
             for (int i = 0; i < (noOfBlocks - 1); i++) {
                 singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
@@ -1425,7 +1422,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         try {
 
             myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-            IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
+            IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
 
             logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
 
@@ -1530,7 +1527,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(icvNextBloc, 0, this.cardCrypto, 0, 8);
                 logger.debug("Calculated Card Cryptogram = " + Conversion.arrayToHex(this.cardCrypto));
 
-                ivSpec = new IvParameterSpec(this.icv);
+                ivSpec = new IvParameterSpec(scp.getIcv());
 
                 /* Calculing Card Cryptogram */
                 derivationData[11] = SCP03_DERIVATION4HostCryptogram;
@@ -1647,7 +1644,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.sessKek = new byte[24];
 
                 myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-                IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
+                IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
 
                 logger.debug("*** Initialize IV : " + Conversion.arrayToHex(this.sessEnc));
 
@@ -1700,8 +1697,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.sessMac = new byte[16];
                 this.sessRMac = new byte[16];
 
-                IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
-                logger.debug("*** Initialize IV : " + Conversion.arrayToHex(this.icv));
+                IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
+                logger.debug("*** Initialize IV : " + Conversion.arrayToHex(scp.getIcv()));
 
 
                 SecretKeySpec skeySpec = new SecretKeySpec(staticKenc.getValue(), "AES");
@@ -1730,7 +1727,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(icvNextBloc, 0, this.sessEnc, 0, icvNextBloc.length);
                 logger.debug("sessEnc = " + Conversion.arrayToHex(this.sessEnc));
 
-                ivSpec = new IvParameterSpec(this.icv);
+                ivSpec = new IvParameterSpec(scp.getIcv());
 
 
                 // Calculing C_Mac Session Keys
@@ -1755,7 +1752,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(icvNextBloc, 0, this.sessMac, 0, icvNextBloc.length);
                 logger.debug("sessMac = " + Conversion.arrayToHex(this.sessMac));
 
-                ivSpec = new IvParameterSpec(this.icv);
+                ivSpec = new IvParameterSpec(scp.getIcv());
 
                 // Calculing R_Mac Session Keys
                 this.derivationData[11] = SCP03_DERIVATION4RMAC;
@@ -1914,7 +1911,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             // Calculate the first n - 1 block.
             int noOfBlocks = dataWithPadding.length / 8;
-            byte ivForNextBlock[] = this.icv;
+            byte ivForNextBlock[] = scp.getIcv();
             int startIndex = 0;
             for (int i = 0; i < (noOfBlocks - 1); i++) {
                 singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
@@ -2934,21 +2931,21 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 if (response.length > 10)// the response contain data
                 {
                     data = new byte[16 + (response.length - 10) + 2];
-                    System.arraycopy(this.icv, 0, data, 0, this.icv.length);
+                    System.arraycopy(scp.getIcv(), 0, data, 0, scp.getIcv().length);
                     System.arraycopy(response, 0, data, 16, response.length - 10);
                     System.arraycopy(response, response.length - 2, data, 16 + response.length - 10, 2);
 
                 } else    //the response does not contain data
                 {
                     data = new byte[18];
-                    System.arraycopy(this.icv, 0, data, 0, this.icv.length);
+                    System.arraycopy(scp.getIcv(), 0, data, 0, scp.getIcv().length);
                     System.arraycopy(response, response.length - 2, data, 16, 2);
                 }
 
                 logger.debug("* data used to  calculate RMac: " + Conversion.arrayToHex(data));
 
                 byte[] copyOfIcv = new byte[16];
-                System.arraycopy(this.icv, 0, copyOfIcv, 0, this.icv.length);
+                System.arraycopy(scp.getIcv(), 0, copyOfIcv, 0, scp.getIcv().length);
 
 
                 byte[] Rmac = this.generateMac(data);
@@ -2959,7 +2956,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Receved RMac is : " + Conversion.arrayToHex(recevedRmac));
 
-                System.arraycopy(copyOfIcv, 0, this.icv, 0, copyOfIcv.length);
+                System.arraycopy(copyOfIcv, 0, scp.getIcv(), 0, copyOfIcv.length);
 
                 boolean eq = Arrays.equals(Rmac, recevedRmac);
                 if (!eq) {

@@ -629,7 +629,7 @@ public class GP2xCommandsTest {
         commands.getScp().setScpMode(SCPMode.SCP_01_05);
         commands.initIcv();
         assertArrayEquals(expected, commands.generateMac(data));
-        assertArrayEquals(expected, commands.icv);
+        assertArrayEquals(expected, commands.getScp().getIcv());
     }
 
     @Test
@@ -653,7 +653,7 @@ public class GP2xCommandsTest {
         byte[] expectedIcv = new byte[]{
                 (byte) 0xFB, 0x26, 0x75, 0x1D, 0x56, (byte) 0xB2, (byte) 0xF9, 0x5D
         };
-        assertArrayEquals(expectedIcv, commands.icv);
+        assertArrayEquals(expectedIcv, commands.getScp().getIcv());
 
         expected = new byte[]{
                 (byte) 0x9A, 0x39, 0x36, 0x18, (byte) 0x87, (byte) 0x81, 0x6C, (byte) 0xF1
@@ -663,7 +663,7 @@ public class GP2xCommandsTest {
         expectedIcv = new byte[]{
                 (byte) 0xB1, 0x03, (byte) 0xAD, 0x40, 0x4C, (byte) 0xF9, (byte) 0x9C, 0x0F
         };
-        assertArrayEquals(expectedIcv, commands.icv);
+        assertArrayEquals(expectedIcv, commands.getScp().getIcv());
     }
 
     @Test
