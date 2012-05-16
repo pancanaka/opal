@@ -409,11 +409,24 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     + resp.getData().length + ")");
         }
 
-        byte[] cardCryptoResp = new byte[8];
-        byte[] keyDivData = new byte[10];
+        detectAndInitSCP(keyId, desiredScp, resp);
+
+        this.sessState = SessionState.SESSION_INIT;
+
+        logger.debug("Session State is now " + SessionState.SESSION_INIT);
+
+        logger.debug("=> Initialize Update end");
+
+        return resp;
+    }
+
+    private void detectAndInitSCP(byte keyId, SCPMode desiredScp, ResponseAPDU resp) throws CardException {
 
         byte keyVersNumRec = resp.getData()[10];
         byte scpRec = resp.getData()[11];
+
+        byte[] cardCryptoResp = new byte[8];
+        byte[] keyDivData = new byte[10];
 
         if (scpRec == SCP01) {
             if (desiredScp == SCPMode.SCP_UNDEFINED) {
@@ -686,14 +699,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             this.resetParams();
             throw new CardException("Error verifying Card Cryptogram");
         }
-
-        this.sessState = SessionState.SESSION_INIT;
-
-        logger.debug("Session State is now " + SessionState.SESSION_INIT);
-
-        logger.debug("=> Initialize Update end");
-
-        return resp;
     }
 
     /* (non-Javadoc)
