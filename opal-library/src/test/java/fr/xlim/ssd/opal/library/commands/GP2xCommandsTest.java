@@ -263,13 +263,13 @@ public class GP2xCommandsTest {
     public void testCalculateCryptograms() {
         GP2xCommands commands = new GP2xCommands();
 
-        commands.hostChallenge = new byte[]{
+        commands.getScp().setHostChallenge(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        });
 
-        commands.cardChallenge = new byte[]{
+        commands.getScp().setCardChallenge(new byte[]{
                 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18
-        };
+        });
 
         commands.getScp().setSessEnc(new byte[]{
                 0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07,
@@ -289,8 +289,8 @@ public class GP2xCommandsTest {
                 (byte) 0xE3, (byte) 0x95
         };
 
-        assertArrayEquals(expectedHostCrypto, commands.hostCrypto);
-        assertArrayEquals(expectedCardCrypto, commands.cardCrypto);
+        assertArrayEquals(expectedHostCrypto, commands.getScp().getHostCrypto());
+        assertArrayEquals(expectedCardCrypto, commands.getScp().getCardCrypto());
     }
 
     @Test
@@ -321,9 +321,9 @@ public class GP2xCommandsTest {
 
         SCGPKey kek = new SCGPKey((byte) -1, (byte) -1, KeyType.DES_ECB, kekData);
 
-        commands.derivationData = new byte[]{
+        commands.getScp().setDerivationData(new byte[]{
                 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
-                0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,};
+                0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,});
 
         commands.generateSessionKeys(enc, mac, kek);
 
@@ -357,22 +357,22 @@ public class GP2xCommandsTest {
     public void testCalculateDerivationData() {
         GP2xCommands commands = new GP2xCommands();
 
-        commands.hostChallenge = new byte[]{
+        commands.getScp().setHostChallenge(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        });
 
-        commands.cardChallenge = new byte[]{
+        commands.getScp().setCardChallenge(new byte[]{
                 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17, 0x18
-        };
+        });
 
-        commands.calculateDerivationData();
+        commands.getScp().calculateDerivationData();
 
         byte[] expected = new byte[]{
                 0x15, 0x16, 0x17, 0x18, 0x01, 0x02, 0x03, 0x04,
                 0x11, 0x12, 0x13, 0x14, 0x05, 0x06, 0x07, 0x08
         };
 
-        assertArrayEquals(expected, commands.derivationData);
+        assertArrayEquals(expected, commands.getScp().getDerivationData());
     }
 
     @Test
@@ -537,9 +537,9 @@ public class GP2xCommandsTest {
     @Test
     public void testExternalAuthenticate() throws CardException {
         GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/019-GP2xCommands-external-authenticate-good.txt");
-        commands.hostCrypto = new byte[]{
+        commands.getScp().setHostCrypto(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        });
         commands.sessState = SessionState.SESSION_INIT;
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -555,9 +555,9 @@ public class GP2xCommandsTest {
     @Test
     public void testExternalAuthenticateFailedWhenSWNot9000() throws CardException {
         GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/020-GP2xCommands-external-authenticate-failed.txt");
-        commands.hostCrypto = new byte[]{
+        commands.getScp().setHostCrypto(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
-        };
+        });
         commands.sessState = SessionState.SESSION_INIT;
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,

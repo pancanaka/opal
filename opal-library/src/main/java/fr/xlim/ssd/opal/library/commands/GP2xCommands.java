@@ -127,24 +127,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /// State of smart card session (NO_SESSION, SESSION_INIT or SESSION_AUTH)
     protected SessionState sessState;
 
-    /// Host challenge used to authenticate host in smartcard
-    protected byte[] hostChallenge;
-
-    /// Card challenge used to authenticate smartcard in host
-    protected byte[] cardChallenge;
-
-    /// Card response challenge
-    protected byte[] cardCrypto;
-
-    /// Derivation data used to calculate session keys
-    protected byte[] derivationData;
-
-    /// Host challenge result
-    protected byte[] hostCrypto;
-
-    /// Sequence counter used in SCP 02. Its value is the number of previous validate authentication
-    protected byte[] sequenceCounter;
-
     protected byte[] aid;
 
     private static byte[] iv_zero = {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
@@ -296,7 +278,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     @Override
     public ResponseAPDU select(byte[] aid, SCPMode desiredScp) throws CardException {
 
-        this.sequenceCounter = new byte[2];
+        scp.setSequenceCounter(new byte[2]);
 
         // TODO: if true ? maybe check desired SCP ?
         if (true) {
@@ -306,7 +288,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             // get the value of Secure Channel Sequence Counter,Calculate derivation data
             getData();
-            calculateDerivationData();
+            scp.calculateDerivationData();
             return resp;
         } else {
             this.resetParams();
@@ -330,11 +312,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         scp.setSessMac(null);
         scp.setSessRMac(null);
         scp.setSessKek(null);
-        this.derivationData = null;
-        this.hostCrypto = null;
-        this.cardCrypto = null;
-        this.cardChallenge = null;
-        this.hostChallenge = null;
+        scp.setDerivationData(null);
+        scp.setHostCrypto(null);
+        scp.setCardCrypto(null);
+        scp.setCardChallenge(null);
+        scp.setHostChallenge(null);
 
     }
 
@@ -347,16 +329,16 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("=> Initialize Update");
         scp.setScpMode(desiredScp);
         this.resetParams();
-        this.hostChallenge = RandomGenerator.generateRandom(8);
+        scp.setHostChallenge(RandomGenerator.generateRandom(8));
 
         byte[] initUpdCmd = new byte[13];
         initUpdCmd[ISO7816.OFFSET_CLA.getValue()] = (byte) 0x80;
         initUpdCmd[ISO7816.OFFSET_INS.getValue()] = (byte) 0x50;
         initUpdCmd[ISO7816.OFFSET_P1.getValue()] = keySetVersion;
         initUpdCmd[ISO7816.OFFSET_P2.getValue()] = keyId;
-        initUpdCmd[ISO7816.OFFSET_LC.getValue()] = (byte) this.hostChallenge.length;
+        initUpdCmd[ISO7816.OFFSET_LC.getValue()] = (byte) scp.getHostChallenge().length;
 
-        System.arraycopy(this.hostChallenge, 0, initUpdCmd, 5, this.hostChallenge.length);
+        System.arraycopy(scp.getHostChallenge(), 0, initUpdCmd, 5, scp.getHostChallenge().length);
 
         CommandAPDU cmdInitUpd = new CommandAPDU(initUpdCmd);
 
@@ -415,7 +397,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             logger.debug("SCPMode is " + scp.getScpMode());
 
-            this.cardChallenge = new byte[8];
+            scp.setCardChallenge(new byte[8]);
 
             /*
              * INITIALIZE UPDATE response in SCP 01 mode
@@ -425,12 +407,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
              */
 
             System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
-            System.arraycopy(resp.getData(), 12, this.cardChallenge, 0, 8);
+            System.arraycopy(resp.getData(), 12, scp.getCardChallenge(), 0, 8);
             System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
 
             logger.debug("* Key Diversification Data is " + Conversion.arrayToHex(keyDivData));
-            logger.debug("* Host Challenge is " + Conversion.arrayToHex(this.hostChallenge));
-            logger.debug("* Card Challenge is " + Conversion.arrayToHex(this.cardChallenge));
+            logger.debug("* Host Challenge is " + Conversion.arrayToHex(scp.getHostChallenge()));
+            logger.debug("* Card Challenge is " + Conversion.arrayToHex(scp.getCardChallenge()));
             logger.debug("* Card Crypto Resp is " + Conversion.arrayToHex(cardCryptoResp));
 
         } else if (scpRec == SCP02) {
@@ -457,8 +439,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             logger.debug("SCPMode is " + scp.getScpMode());
 
-            this.cardChallenge = new byte[6];
-            this.sequenceCounter = new byte[2];
+            scp.setCardChallenge(new byte[6]);
+            scp.setSequenceCounter(new byte[2]);
 
             /*
              * INITIALIZE UPDATE response in SCP 02 mode
@@ -473,14 +455,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
              */
 
             System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
-            System.arraycopy(resp.getData(), 12, this.sequenceCounter, 0, 2);
-            System.arraycopy(resp.getData(), 14, this.cardChallenge, 0, 6);
+            System.arraycopy(resp.getData(), 12, scp.getSequenceCounter(), 0, 2);
+            System.arraycopy(resp.getData(), 14, scp.getCardChallenge(), 0, 6);
             System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
 
             logger.debug("* Key Diversification Data is " + Conversion.arrayToHex(keyDivData));
-            logger.debug("* Sequence Counter is " + Conversion.arrayToHex(this.sequenceCounter));
-            logger.debug("* Host Challenge is " + Conversion.arrayToHex(this.hostChallenge));
-            logger.debug("* Card Challenge is " + Conversion.arrayToHex(this.cardChallenge));
+            logger.debug("* Sequence Counter is " + Conversion.arrayToHex(scp.getSequenceCounter()));
+            logger.debug("* Host Challenge is " + Conversion.arrayToHex(scp.getHostChallenge()));
+            logger.debug("* Card Challenge is " + Conversion.arrayToHex(scp.getCardChallenge()));
             logger.debug("* Card Crypto Resp is " + Conversion.arrayToHex(cardCryptoResp));
 
 
@@ -507,8 +489,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
 
 
-            this.sequenceCounter = new byte[3];
-            this.cardChallenge = new byte[8];
+            scp.setSequenceCounter(new byte[3]);
+            scp.setCardChallenge(new byte[8]);
             /*
              * INITIALIZE UPDATE response in SCP 03 mode
              *
@@ -525,17 +507,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
             System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
-            System.arraycopy(resp.getData(), 13, this.cardChallenge, 0, 8);
+            System.arraycopy(resp.getData(), 13, scp.getCardChallenge(), 0, 8);
             System.arraycopy(resp.getData(), 21, cardCryptoResp, 0, 8);
 
             if (resp.getData().length == 32) {
-                System.arraycopy(resp.getData(), 29, this.sequenceCounter, 0, 3);
-                logger.debug("* Sequence Counter is " + Conversion.arrayToHex(this.sequenceCounter));
+                System.arraycopy(resp.getData(), 29, scp.getSequenceCounter(), 0, 3);
+                logger.debug("* Sequence Counter is " + Conversion.arrayToHex(scp.getSequenceCounter()));
             }
 
             logger.debug("* Key Diversification Data is " + Conversion.arrayToHex(keyDivData));
-            logger.debug("* Host Challenge is " + Conversion.arrayToHex(this.hostChallenge));
-            logger.debug("* Card Challenge is " + Conversion.arrayToHex(this.cardChallenge));
+            logger.debug("* Host Challenge is " + Conversion.arrayToHex(scp.getHostChallenge()));
+            logger.debug("* Card Challenge is " + Conversion.arrayToHex(scp.getCardChallenge()));
             logger.debug("* Card Crypto Resp is " + Conversion.arrayToHex(cardCryptoResp));
 
         } else {
@@ -654,7 +636,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
         }
 
-        this.calculateDerivationData();
+        scp.calculateDerivationData();
         this.generateSessionKeys(kEnc, kMac, kKek);
         this.calculateCryptograms();
 
@@ -662,14 +644,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (scp.getScpMode() == SCPMode.SCP_02_45 || scp.getScpMode() == SCPMode.SCP_02_55) {
             byte[] computedCardChallenge = new byte[6];
             computedCardChallenge = this.pseudoRandomGenerationCardChallenge(this.aid);
-            if (!Arrays.equals(this.cardChallenge, computedCardChallenge)) {
-                logger.debug("Card challege is " + Conversion.arrayToHex(cardChallenge) + "   " + cardChallenge.length);
+            if (!Arrays.equals(scp.getCardChallenge(), computedCardChallenge)) {
+                logger.debug("Card challege is " + Conversion.arrayToHex(scp.getCardChallenge()) + "   " + scp.getCardChallenge().length);
                 throw new CardException("Error verifying Card Challenge");
             }
         }
 
 
-        if (!Arrays.equals(cardCryptoResp, this.cardCrypto)) {
+        if (!Arrays.equals(cardCryptoResp, scp.getCardCrypto())) {
             this.resetParams();
             throw new CardException("Error verifying Card Cryptogram");
         }
@@ -704,8 +686,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         extAuthCmd[ISO7816.OFFSET_P2.getValue()] = (byte) 0x00;
         extAuthCmd[ISO7816.OFFSET_LC.getValue()] = (byte) 0x10;
 
-        System.arraycopy(this.hostCrypto, 0, extAuthCmd, 5, this.hostCrypto.length);
-        byte[] data = new byte[5 + this.hostCrypto.length];
+        System.arraycopy(scp.getHostCrypto(), 0, extAuthCmd, 5, scp.getHostCrypto().length);
+        byte[] data = new byte[5 + scp.getHostCrypto().length];
         System.arraycopy(extAuthCmd, 0, data, 0, data.length);
 
         logger.debug("* Data uses to calculate mac value is" + Conversion.arrayToHex(data));
@@ -1373,27 +1355,27 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* SCP 01 protocol used");
 
                 /* Calculing Cryptogram */
-                System.arraycopy(this.hostChallenge, 0, data, 0, 8);
-                System.arraycopy(this.cardChallenge, 0, data, 8, 8);
+                System.arraycopy(scp.getHostChallenge(), 0, data, 0, 8);
+                System.arraycopy(scp.getCardChallenge(), 0, data, 8, 8);
                 System.arraycopy(GP2xCommands.PADDING, 0, data, 16, 8);
 
                 logger.debug("* Data to encrypt: " + Conversion.arrayToHex(data));
 
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] cardcryptogram = myCipher.doFinal(data);
-                this.cardCrypto = new byte[8];
-                System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
+                scp.setCardCrypto(new byte[8]);
+                System.arraycopy(cardcryptogram, 16, scp.getCardCrypto(), 0, 8);
 
-                logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(this.cardCrypto));
+                logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(scp.getCardCrypto()));
 
-                System.arraycopy(this.cardChallenge, 0, data, 0, 8);
-                System.arraycopy(this.hostChallenge, 0, data, 8, 8);
+                System.arraycopy(scp.getCardChallenge(), 0, data, 0, 8);
+                System.arraycopy(scp.getHostChallenge(), 0, data, 8, 8);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] hostcryptogram = myCipher.doFinal(data);
-                this.hostCrypto = new byte[8];
-                System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
+                scp.setHostCrypto(new byte[8]);
+                System.arraycopy(hostcryptogram, 16, scp.getHostCrypto(), 0, 8);
 
-                logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(this.hostCrypto));
+                logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(scp.getHostCrypto()));
 
             } else if (scp.getScpMode() == SCPMode.SCP_02_15
                     || scp.getScpMode() == SCPMode.SCP_02_04
@@ -1405,31 +1387,31 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* SCP 02 protocol used");
 
                 /* Calculing Card Cryptogram */
-                System.arraycopy(this.hostChallenge, 0, data, 0, 8);
-                System.arraycopy(this.sequenceCounter, 0, data, 8, 2);
-                System.arraycopy(this.cardChallenge, 0, data, 10, 6);
+                System.arraycopy(scp.getHostChallenge(), 0, data, 0, 8);
+                System.arraycopy(scp.getSequenceCounter(), 0, data, 8, 2);
+                System.arraycopy(scp.getCardChallenge(), 0, data, 10, 6);
                 System.arraycopy(GP2xCommands.PADDING, 0, data, 16, GP2xCommands.PADDING.length);
 
                 logger.debug("* Data to encrypt: " + Conversion.arrayToHex(data));
 
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] cardcryptogram = myCipher.doFinal(data);
-                this.cardCrypto = new byte[8];
-                System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
+                scp.setCardCrypto(new byte[8]);
+                System.arraycopy(cardcryptogram, 16, scp.getCardCrypto(), 0, 8);
 
-                logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(this.cardCrypto));
+                logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(scp.getCardCrypto()));
 
                 /* Calculing Host Cryptogram */
-                System.arraycopy(this.sequenceCounter, 0, data, 0, 2);
-                System.arraycopy(this.cardChallenge, 0, data, 2, 6);
-                System.arraycopy(this.hostChallenge, 0, data, 8, 8);
+                System.arraycopy(scp.getSequenceCounter(), 0, data, 0, 2);
+                System.arraycopy(scp.getCardChallenge(), 0, data, 2, 6);
+                System.arraycopy(scp.getHostChallenge(), 0, data, 8, 8);
                 System.arraycopy(GP2xCommands.PADDING, 0, data, 16, GP2xCommands.PADDING.length);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] hostcryptogram = myCipher.doFinal(data);
-                this.hostCrypto = new byte[8];
-                System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
+                scp.setHostCrypto(new byte[8]);
+                System.arraycopy(hostcryptogram, 16, scp.getHostCrypto(), 0, 8);
 
-                logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(this.hostCrypto));
+                logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(scp.getHostCrypto()));
 
             } else if (scp.getScpMode() == SCPMode.SCP_03_65
                     || scp.getScpMode() == SCPMode.SCP_03_6D
@@ -1441,59 +1423,59 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* SCP 03 protocol used");
 
                 /* Calculing Card Cryptogram */
-                derivationData[11] = SCP03_DERIVATION4CardCryptogram;
-                derivationData[13] = (byte) 0x00;
-                derivationData[14] = (byte) 0x40;
-                derivationData[15] = (byte) 0x01;
+                scp.getDerivationData()[11] = SCP03_DERIVATION4CardCryptogram;
+                scp.getDerivationData()[13] = (byte) 0x00;
+                scp.getDerivationData()[14] = (byte) 0x40;
+                scp.getDerivationData()[15] = (byte) 0x01;
 
-                logger.debug("* derivation data : " + Conversion.arrayToHex(derivationData));
+                logger.debug("* derivation data : " + Conversion.arrayToHex(scp.getDerivationData()));
 
 
                 SecretKeySpec skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
 
                 byte icvNextBloc[] = new byte[16];
-                int noOfBlocks = derivationData.length / 16;
+                int noOfBlocks = scp.getDerivationData().length / 16;
 
                 int startIndex = 0;
                 for (int i = 0; i < (noOfBlocks); i++) {
                     cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(this.derivationData);
+                    byte[] encrypted = cipher.doFinal(scp.getDerivationData());
                     System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
                     startIndex += 16;
                     ivSpec = new IvParameterSpec(icvNextBloc);
                 }
-                this.cardCrypto = new byte[8];
-                System.arraycopy(icvNextBloc, 0, this.cardCrypto, 0, 8);
-                logger.debug("Calculated Card Cryptogram = " + Conversion.arrayToHex(this.cardCrypto));
+                scp.setCardCrypto(new byte[8]);
+                System.arraycopy(icvNextBloc, 0, scp.getCardCrypto(), 0, 8);
+                logger.debug("Calculated Card Cryptogram = " + Conversion.arrayToHex(scp.getCardCrypto()));
 
                 ivSpec = new IvParameterSpec(scp.getIcv());
 
                 /* Calculing Card Cryptogram */
-                derivationData[11] = SCP03_DERIVATION4HostCryptogram;
-                derivationData[13] = (byte) 0x00;
-                derivationData[14] = (byte) 0x40;
-                derivationData[15] = (byte) 0x01;
+                scp.getDerivationData()[11] = SCP03_DERIVATION4HostCryptogram;
+                scp.getDerivationData()[13] = (byte) 0x00;
+                scp.getDerivationData()[14] = (byte) 0x40;
+                scp.getDerivationData()[15] = (byte) 0x01;
 
-                logger.debug("* derivation data : " + Conversion.arrayToHex(derivationData));
+                logger.debug("* derivation data : " + Conversion.arrayToHex(scp.getDerivationData()));
 
 
                 skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
                 cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
-                noOfBlocks = derivationData.length / 16;
+                noOfBlocks = scp.getDerivationData().length / 16;
 
                 startIndex = 0;
                 for (int i = 0; i < (noOfBlocks); i++) {
                     cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(this.derivationData, startIndex, 16);
+                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
                     System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
                     startIndex += 16;
                     ivSpec = new IvParameterSpec(icvNextBloc);
                 }
-                this.hostCrypto = new byte[8];
-                System.arraycopy(icvNextBloc, 0, this.hostCrypto, 0, 8);
-                logger.debug("Calculated Host Cryptogram = " + Conversion.arrayToHex(this.hostCrypto));
+                scp.setHostCrypto(new byte[8]);
+                System.arraycopy(icvNextBloc, 0, scp.getHostCrypto(), 0, 8);
+                logger.debug("Calculated Host Cryptogram = " + Conversion.arrayToHex(scp.getHostCrypto()));
 
 
             }
@@ -1549,7 +1531,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 /* Calculating session encryption key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"));
-                session = myCipher.doFinal(this.derivationData);
+                session = myCipher.doFinal(scp.getDerivationData());
                 System.arraycopy(session, 0, scp.getSessEnc(), 0, 16);
                 System.arraycopy(session, 0, scp.getSessEnc(), 16, 8);
 
@@ -1557,7 +1539,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 /* Calculating session mac key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"));
-                session = myCipher.doFinal(this.derivationData);
+                session = myCipher.doFinal(scp.getDerivationData());
                 System.arraycopy(session, 0, scp.getSessMac(), 0, 16);
                 System.arraycopy(session, 0, scp.getSessMac(), 16, 8);
 
@@ -1565,7 +1547,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 /* Calculating session data encryption key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"));
-                session = myCipher.doFinal(this.derivationData);
+                session = myCipher.doFinal(scp.getDerivationData());
                 System.arraycopy(session, 0, scp.getSessKek(), 0, 16);
                 System.arraycopy(session, 0, scp.getSessKek(), 16, 8);
 
@@ -1589,36 +1571,36 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("*** Initialize IV : " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 // Calculing Encryption Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4ENCKEY, 0, this.derivationData, 0, 2);
+                System.arraycopy(GP2xCommands.SCP02_DERIVATION4ENCKEY, 0, scp.getDerivationData(), 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(this.derivationData);
+                session = myCipher.doFinal(scp.getDerivationData());
                 System.arraycopy(session, 0, scp.getSessEnc(), 0, 16);
                 System.arraycopy(session, 0, scp.getSessEnc(), 16, 8);
 
                 logger.debug("* sessEnc = " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 // Calculing C_Mac Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4CMAC, 0, this.derivationData, 0, 2);
+                System.arraycopy(GP2xCommands.SCP02_DERIVATION4CMAC, 0, scp.getDerivationData(), 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(this.derivationData);
+                session = myCipher.doFinal(scp.getDerivationData());
                 System.arraycopy(session, 0, scp.getSessMac(), 0, 16);
                 System.arraycopy(session, 0, scp.getSessMac(), 16, 8);
 
                 logger.debug("* sessMac = " + Conversion.arrayToHex(scp.getSessMac()));
 
                 // Calculing R_Mac Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4RMAC, 0, this.derivationData, 0, 2);
+                System.arraycopy(GP2xCommands.SCP02_DERIVATION4RMAC, 0, scp.getDerivationData(), 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(this.derivationData);
+                session = myCipher.doFinal(scp.getDerivationData());
                 System.arraycopy(session, 0, scp.getSessRMac(), 0, 16);
                 System.arraycopy(session, 0, scp.getSessRMac(), 16, 8);
 
                 logger.debug("* sessRMac = " + Conversion.arrayToHex(scp.getSessRMac()));
 
                 // Calculing Data Encryption Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4DATAENC, 0, this.derivationData, 0, 2);
+                System.arraycopy(GP2xCommands.SCP02_DERIVATION4DATAENC, 0, scp.getDerivationData(), 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(this.derivationData);
+                session = myCipher.doFinal(scp.getDerivationData());
                 System.arraycopy(session, 0, scp.getSessKek(), 0, 16);
                 System.arraycopy(session, 0, scp.getSessKek(), 16, 8);
 
@@ -1631,7 +1613,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     || (scp.getScpMode() == SCPMode.SCP_03_2D)
                     || (scp.getScpMode() == SCPMode.SCP_03_25)) {
 
-                logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
+                logger.debug("derivation data : " + Conversion.arrayToHex(scp.getDerivationData()));
 
                 scp.setSessEnc(new byte[16]);
                 scp.setSessMac(new byte[16]);
@@ -1646,18 +1628,18 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("key : " + Conversion.arrayToHex(skeySpec.getEncoded()));
 
                 // Calculing Encryption Session Keys
-                this.derivationData[11] = SCP03_DERIVATION4DATAENC;
-                this.derivationData[13] = (byte) 0x00;
-                this.derivationData[14] = (byte) 0xC0;
-                this.derivationData[15] = (byte) 0x02;
+                scp.getDerivationData()[11] = SCP03_DERIVATION4DATAENC;
+                scp.getDerivationData()[13] = (byte) 0x00;
+                scp.getDerivationData()[14] = (byte) 0xC0;
+                scp.getDerivationData()[15] = (byte) 0x02;
 
                 byte icvNextBloc[] = new byte[16];
-                int noOfBlocks = derivationData.length / 16;
+                int noOfBlocks = scp.getDerivationData().length / 16;
 
                 int startIndex = 0;
                 for (int i = 0; i < (noOfBlocks); i++) {
                     cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(this.derivationData, startIndex, 16);
+                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
                     System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
                     startIndex += 16;
 //                    logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
@@ -1671,18 +1653,18 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
                 // Calculing C_Mac Session Keys
-                this.derivationData[11] = SCP03_DERIVATION4CMAC;
-                this.derivationData[13] = (byte) 0x00;
-                this.derivationData[14] = (byte) 0xC0;
-                this.derivationData[15] = (byte) 0x02;
+                scp.getDerivationData()[11] = SCP03_DERIVATION4CMAC;
+                scp.getDerivationData()[13] = (byte) 0x00;
+                scp.getDerivationData()[14] = (byte) 0xC0;
+                scp.getDerivationData()[15] = (byte) 0x02;
 
 
-                noOfBlocks = derivationData.length / 16;
+                noOfBlocks = scp.getDerivationData().length / 16;
 
                 startIndex = 0;
                 for (int i = 0; i < (noOfBlocks); i++) {
                     cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(this.derivationData, startIndex, 16);
+                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
                     System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
                     startIndex += 16;
 //                    logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
@@ -1695,17 +1677,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 ivSpec = new IvParameterSpec(scp.getIcv());
 
                 // Calculing R_Mac Session Keys
-                this.derivationData[11] = SCP03_DERIVATION4RMAC;
-                this.derivationData[13] = (byte) 0x00;
-                this.derivationData[14] = (byte) 0xC0;
-                this.derivationData[15] = (byte) 0x02;
+                scp.getDerivationData()[11] = SCP03_DERIVATION4RMAC;
+                scp.getDerivationData()[13] = (byte) 0x00;
+                scp.getDerivationData()[14] = (byte) 0xC0;
+                scp.getDerivationData()[15] = (byte) 0x02;
 
-                noOfBlocks = derivationData.length / 16;
+                noOfBlocks = scp.getDerivationData().length / 16;
 
                 startIndex = 0;
                 for (int i = 0; i < (noOfBlocks); i++) {
                     cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(this.derivationData, startIndex, 16);
+                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
                     System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
                     startIndex += 16;
 //                    logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
@@ -1734,77 +1716,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         logger.debug("==> Generate Session Keys Data End");
-    }
-
-    /**
-     * Calculate Derivation data. This step depending to the @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} card response.
-     */
-    protected void calculateDerivationData() {
-
-        logger.debug("==> Calculate Derivation Data");
-
-        if ((scp.getScpMode() == SCPMode.SCP_UNDEFINED)
-                || (scp.getScpMode() == SCPMode.SCP_01_05)
-                || (scp.getScpMode() == SCPMode.SCP_01_15)) { // SCP 01_*
-
-            this.derivationData = new byte[16];
-
-            System.arraycopy(this.hostChallenge, 0, this.derivationData, 4, 4);
-            System.arraycopy(this.hostChallenge, 4, this.derivationData, 12, 4);
-            System.arraycopy(this.cardChallenge, 0, this.derivationData, 8, 4);
-            System.arraycopy(this.cardChallenge, 4, this.derivationData, 0, 4);
-
-        } else if (scp.getScpMode() == SCPMode.SCP_02_15
-                || scp.getScpMode() == SCPMode.SCP_02_04
-                || scp.getScpMode() == SCPMode.SCP_02_05
-                || scp.getScpMode() == SCPMode.SCP_02_14
-                || scp.getScpMode() == SCPMode.SCP_02_0A
-                || scp.getScpMode() == SCPMode.SCP_02_45
-                || scp.getScpMode() == SCPMode.SCP_02_55) { // SCP 02_*
-
-            this.derivationData = new byte[16];
-            System.arraycopy(this.sequenceCounter, 0, this.derivationData, 2, 2);
-
-        } else if ((scp.getScpMode() == SCPMode.SCP_03_65)
-                || (scp.getScpMode() == SCPMode.SCP_03_6D)
-                || (scp.getScpMode() == SCPMode.SCP_03_05)
-                || (scp.getScpMode() == SCPMode.SCP_03_0D)
-                || (scp.getScpMode() == SCPMode.SCP_03_2D)
-                || (scp.getScpMode() == SCPMode.SCP_03_25)) {
-
-
-            /*
-             * Derivation data in SCP 03 mode
-             *
-             * -0-----------------------10--11---12--13--14--15-
-             * | label (11 byte of 00)    | dc | 00 |  L   | i  |
-             * -------------------------------------------------
-             *
-             * --16------------23-24-------------31-
-             *  | Host Challenge | Card Challenge |
-             * -------------------------------------
-             *
-             * Definition of the derivation constant (dc):
-             * - 00 : derivation data to calculate card cryptogram
-             * - 01 : derivation data to calculate host cryptogram
-             * - 04 : derivation of S-ENC
-             * - 06 : derivation of S-MAC
-             * - 07 : derivation of S-RMAC
-             */
-
-
-            this.derivationData = new byte[32];
-            byte[] label = {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
-            System.arraycopy(label, 0, derivationData, 0, label.length);
-            System.arraycopy(this.hostChallenge, 0, derivationData, 16, this.hostChallenge.length);
-            System.arraycopy(this.cardChallenge, 0, derivationData, 24, this.hostChallenge.length);
-        }
-
-        logger.debug("* Derivation Data is " + Conversion.arrayToHex(this.derivationData));
-
-        logger.debug("==> Calculate Derivation Data End");
-
     }
 
     // SECURITY DOMAIN
@@ -2659,8 +2570,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             this.resetParams();
             throw new CardException("Invalid response SW after Get Data command (" + Integer.toHexString(resp.getSW()) + ")");
         }
-        System.arraycopy(resp.getBytes(), 0, this.sequenceCounter, 0, 2);
-        logger.debug("Sequence counter : " + Conversion.arrayToHex(this.sequenceCounter));
+        System.arraycopy(resp.getBytes(), 0, scp.getSequenceCounter(), 0, 2);
+        logger.debug("Sequence counter : " + Conversion.arrayToHex(scp.getSequenceCounter()));
         return resp;
     }
 
@@ -2672,10 +2583,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         //if (desiredScp == SCPMode.SCP_02_0A || desiredScp == SCPMode.SCP_02_0B){
         resetParams();
         if (true) {
-            this.sequenceCounter = new byte[2];
+            scp.setSequenceCounter(new byte[2]);
             scp.setScpMode(desiredScp);
             getData();
-            calculateDerivationData();
+            scp.calculateDerivationData();
             if (keyId == (byte) 0) {
                 keyId = (byte) 1;
                 logger.info("key id switchs from 0 to 1");

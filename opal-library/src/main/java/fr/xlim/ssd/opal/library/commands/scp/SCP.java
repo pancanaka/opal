@@ -71,6 +71,24 @@ public class SCP {
     /// Data Encryption session key
     protected byte[] sessKek;
 
+    /// Host challenge used to authenticate host in smartcard
+    protected byte[] hostChallenge;
+
+    /// Card challenge used to authenticate smartcard in host
+    protected byte[] cardChallenge;
+
+    /// Card response challenge
+    protected byte[] cardCrypto;
+
+    /// Derivation data used to calculate session keys
+    protected byte[] derivationData;
+
+    /// Host challenge result
+    protected byte[] hostCrypto;
+
+    /// Sequence counter used in SCP 02. Its value is the number of previous validate authentication
+    protected byte[] sequenceCounter;
+
     public SCPMode getScpMode() {
         return scpMode;
     }
@@ -170,5 +188,124 @@ public class SCP {
 
     public void setSessKek(byte[] sessKek) {
         this.sessKek = sessKek;
+    }
+
+    public byte[] getHostChallenge() {
+        return hostChallenge;
+    }
+
+    public void setHostChallenge(byte[] hostChallenge) {
+        this.hostChallenge = hostChallenge;
+    }
+
+    public byte[] getCardChallenge() {
+        return cardChallenge;
+    }
+
+    public void setCardChallenge(byte[] cardChallenge) {
+        this.cardChallenge = cardChallenge;
+    }
+
+    public byte[] getCardCrypto() {
+        return cardCrypto;
+    }
+
+    public void setCardCrypto(byte[] cardCrypto) {
+        this.cardCrypto = cardCrypto;
+    }
+
+    public byte[] getDerivationData() {
+        return derivationData;
+    }
+
+    public void setDerivationData(byte[] derivationData) {
+        this.derivationData = derivationData;
+    }
+
+    public byte[] getHostCrypto() {
+        return hostCrypto;
+    }
+
+    public void setHostCrypto(byte[] hostCrypto) {
+        this.hostCrypto = hostCrypto;
+    }
+
+    public byte[] getSequenceCounter() {
+        return sequenceCounter;
+    }
+
+    public void setSequenceCounter(byte[] sequenceCounter) {
+        this.sequenceCounter = sequenceCounter;
+    }
+
+    /**
+     * Calculate Derivation data. This step depending to the @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} card response.
+     */
+    public void calculateDerivationData() {
+
+        logger.debug("==> Calculate Derivation Data");
+
+        if ((getScpMode() == SCPMode.SCP_UNDEFINED)
+                || (getScpMode() == SCPMode.SCP_01_05)
+                || (getScpMode() == SCPMode.SCP_01_15)) { // SCP 01_*
+
+            setDerivationData(new byte[16]);
+
+            System.arraycopy(getHostChallenge(), 0, getDerivationData(), 4, 4);
+            System.arraycopy(getHostChallenge(), 4, getDerivationData(), 12, 4);
+            System.arraycopy(getCardChallenge(), 0, getDerivationData(), 8, 4);
+            System.arraycopy(getCardChallenge(), 4, getDerivationData(), 0, 4);
+
+        } else if (getScpMode() == SCPMode.SCP_02_15
+                || getScpMode() == SCPMode.SCP_02_04
+                || getScpMode() == SCPMode.SCP_02_05
+                || getScpMode() == SCPMode.SCP_02_14
+                || getScpMode() == SCPMode.SCP_02_0A
+                || getScpMode() == SCPMode.SCP_02_45
+                || getScpMode() == SCPMode.SCP_02_55) { // SCP 02_*
+
+            setDerivationData(new byte[16]);
+            System.arraycopy(getSequenceCounter(), 0, getDerivationData(), 2, 2);
+
+        } else if ((getScpMode() == SCPMode.SCP_03_65)
+                || (getScpMode() == SCPMode.SCP_03_6D)
+                || (getScpMode() == SCPMode.SCP_03_05)
+                || (getScpMode() == SCPMode.SCP_03_0D)
+                || (getScpMode() == SCPMode.SCP_03_2D)
+                || (getScpMode() == SCPMode.SCP_03_25)) {
+
+
+            /*
+             * Derivation data in SCP 03 mode
+             *
+             * -0-----------------------10--11---12--13--14--15-
+             * | label (11 byte of 00)    | dc | 00 |  L   | i  |
+             * -------------------------------------------------
+             *
+             * --16------------23-24-------------31-
+             *  | Host Challenge | Card Challenge |
+             * -------------------------------------
+             *
+             * Definition of the derivation constant (dc):
+             * - 00 : derivation data to calculate card cryptogram
+             * - 01 : derivation data to calculate host cryptogram
+             * - 04 : derivation of S-ENC
+             * - 06 : derivation of S-MAC
+             * - 07 : derivation of S-RMAC
+             */
+
+
+            setDerivationData(new byte[32]);
+            byte[] label = {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
+                    (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00};
+            System.arraycopy(label, 0, getDerivationData(), 0, label.length);
+            System.arraycopy(getHostChallenge(), 0, getDerivationData(), 16, getHostChallenge().length);
+            System.arraycopy(getCardChallenge(), 0, getDerivationData(), 24, getHostChallenge().length);
+        }
+
+        logger.debug("* Derivation Data is " + Conversion.arrayToHex(getDerivationData()));
+
+        logger.debug("==> Calculate Derivation Data End");
+
     }
 }
