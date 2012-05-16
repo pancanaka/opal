@@ -127,18 +127,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /// State of smart card session (NO_SESSION, SESSION_INIT or SESSION_AUTH)
     protected SessionState sessState;
 
-    /// Encryption session key
-    protected byte[] sessEnc;
-
-    /// C-MAC session key
-    protected byte[] sessMac;
-
-    /// R-MAC session key
-    protected byte[] sessRMac;
-
-    /// Data Encryption session key
-    protected byte[] sessKek;
-
     /// Host challenge used to authenticate host in smartcard
     protected byte[] hostChallenge;
 
@@ -338,10 +326,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         scp.setSecMode(SecLevel.NO_SECURITY_LEVEL);
         scp.initIcv();
         this.sessState = SessionState.NO_SESSION;
-        this.sessEnc = null;
-        this.sessMac = null;
-        this.sessRMac = null;
-        this.sessKek = null;
+        scp.setSessEnc(null);
+        scp.setSessMac(null);
+        scp.setSessRMac(null);
+        scp.setSessKek(null);
         this.derivationData = null;
         this.hostCrypto = null;
         this.cardCrypto = null;
@@ -909,7 +897,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
 
                 Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessMac(), "DESede"), ivSpec);
                 byte[] cryptogram = myCipher.doFinal(dataWithPadding);
                 System.arraycopy(cryptogram, cryptogram.length - 8, res, 0, 8);
 
@@ -921,7 +909,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                         break;
                     case SCP_01_15: // update ICV with new ENCRYPTED C-MAC
                         Cipher myCipher2 = Cipher.getInstance("DESede/ECB/NoPadding");
-                        myCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessMac, "DESede"));
+                        myCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessMac(), "DESede"));
                         scp.setIcv(myCipher2.doFinal(res));
                         break;
                 }
@@ -938,7 +926,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* SCP 02 Protocol (" + scp.getScpMode() + ") used");
                 logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
 
-                SecretKeySpec desSingleKey = new SecretKeySpec(this.sessMac, 0, 8, "DES");
+                SecretKeySpec desSingleKey = new SecretKeySpec(scp.getSessMac(), 0, 8, "DES");
                 Cipher singleDesCipher;
                 singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
 
@@ -955,7 +943,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 }
 
 
-                SecretKeySpec desKey = new SecretKeySpec(this.sessMac, "DESede");
+                SecretKeySpec desKey = new SecretKeySpec(scp.getSessMac(), "DESede");
                 Cipher myCipher;
 
                 myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
@@ -1018,7 +1006,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* SCP 03 Protocol (" + scp.getScpMode() + ") used");
                 logger.debug("* IV is " + Conversion.arrayToHex(scp.getIcv()));
 
-                SecretKeySpec skeySpec = new SecretKeySpec(this.sessMac, "AES");
+                SecretKeySpec skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
                 cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
                 byte[] encrypted = cipher.doFinal(dataToCalulateMac);
@@ -1095,11 +1083,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* SCP 01 Protocol used");
                 logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
-                logger.debug("* sessEnc key is " + Conversion.arrayToHex(this.sessEnc));
+                logger.debug("* sessEnc key is " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
 
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] res = myCipher.doFinal(datas);
                 encryptedCmd = new byte[5 + res.length + 8];
                 System.arraycopy(command, 0, encryptedCmd, 0, 5);
@@ -1150,10 +1138,10 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* SCP 02 Protocol used");
                 logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
-                logger.debug("* sessEnc key is " + Conversion.arrayToHex(this.sessEnc));
+                logger.debug("* sessEnc key is " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] res = myCipher.doFinal(datas);
                 encryptedCmd = new byte[5 + res.length + 8];
                 System.arraycopy(command, 0, encryptedCmd, 0, 5);
@@ -1193,7 +1181,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
+                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
                 byte[] res = cipher.doFinal(datas);
                 encryptedCmd = new byte[5 + res.length];
                 System.arraycopy(command, 0, encryptedCmd, 0, 5);
@@ -1225,7 +1213,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
+                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
                 icvCEnc = cipher.doFinal(icvCEnc);
                 logger.debug("* icv counter = " + Conversion.arrayToHex(icvCEnc));
                 int dataLength = command.length - 5; // command without (CLA, INS, P1, P2) AND C-MAC
@@ -1251,7 +1239,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 ivSpec = new IvParameterSpec(icvCEnc);
                 cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
+                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
                 byte[] res = cipher.doFinal(datas);
                 encryptedCmd = new byte[5 + res.length];
                 System.arraycopy(command, 0, encryptedCmd, 0, 5);
@@ -1314,7 +1302,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         try {
 
-            SecretKeySpec desSingleKey = new SecretKeySpec(this.sessMac, 0, 8, "DES");
+            SecretKeySpec desSingleKey = new SecretKeySpec(scp.getSessMac(), 0, 8, "DES");
             Cipher singleDesCipher;
             singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
 
@@ -1331,7 +1319,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
 
 
-            SecretKeySpec desKey = new SecretKeySpec(this.sessMac, "DESede");
+            SecretKeySpec desKey = new SecretKeySpec(scp.getSessMac(), "DESede");
             Cipher myCipher;
 
             myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
@@ -1391,7 +1379,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Data to encrypt: " + Conversion.arrayToHex(data));
 
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] cardcryptogram = myCipher.doFinal(data);
                 this.cardCrypto = new byte[8];
                 System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
@@ -1400,7 +1388,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 System.arraycopy(this.cardChallenge, 0, data, 0, 8);
                 System.arraycopy(this.hostChallenge, 0, data, 8, 8);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] hostcryptogram = myCipher.doFinal(data);
                 this.hostCrypto = new byte[8];
                 System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
@@ -1424,7 +1412,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("* Data to encrypt: " + Conversion.arrayToHex(data));
 
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] cardcryptogram = myCipher.doFinal(data);
                 this.cardCrypto = new byte[8];
                 System.arraycopy(cardcryptogram, 16, this.cardCrypto, 0, 8);
@@ -1436,7 +1424,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(this.cardChallenge, 0, data, 2, 6);
                 System.arraycopy(this.hostChallenge, 0, data, 8, 8);
                 System.arraycopy(GP2xCommands.PADDING, 0, data, 16, GP2xCommands.PADDING.length);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(this.sessEnc, "DESede"), ivSpec);
+                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
                 byte[] hostcryptogram = myCipher.doFinal(data);
                 this.hostCrypto = new byte[8];
                 System.arraycopy(hostcryptogram, 16, this.hostCrypto, 0, 8);
@@ -1461,7 +1449,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* derivation data : " + Conversion.arrayToHex(derivationData));
 
 
-                SecretKeySpec skeySpec = new SecretKeySpec(this.sessMac, "AES");
+                SecretKeySpec skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
                 Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
 
                 byte icvNextBloc[] = new byte[16];
@@ -1490,7 +1478,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 logger.debug("* derivation data : " + Conversion.arrayToHex(derivationData));
 
 
-                skeySpec = new SecretKeySpec(this.sessMac, "AES");
+                skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
                 cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
 
                 noOfBlocks = derivationData.length / 16;
@@ -1553,35 +1541,35 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     || (scp.getScpMode() == SCPMode.SCP_01_05)
                     || (scp.getScpMode() == SCPMode.SCP_01_15)) {  // TODO: SCPMode.SCP_UNDEFINED Here ?
 
-                this.sessEnc = new byte[24];
-                this.sessMac = new byte[24];
-                this.sessKek = new byte[24];
+                scp.setSessEnc(new byte[24]);
+                scp.setSessMac(new byte[24]);
+                scp.setSessKek(new byte[24]);
 
                 myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
 
                 /* Calculating session encryption key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
-                System.arraycopy(session, 0, this.sessEnc, 0, 16);
-                System.arraycopy(session, 0, this.sessEnc, 16, 8);
+                System.arraycopy(session, 0, scp.getSessEnc(), 0, 16);
+                System.arraycopy(session, 0, scp.getSessEnc(), 16, 8);
 
-                logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));
+                logger.debug("* sessEnc = " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 /* Calculating session mac key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
-                System.arraycopy(session, 0, this.sessMac, 0, 16);
-                System.arraycopy(session, 0, this.sessMac, 16, 8);
+                System.arraycopy(session, 0, scp.getSessMac(), 0, 16);
+                System.arraycopy(session, 0, scp.getSessMac(), 16, 8);
 
-                logger.debug("* sessMac = " + Conversion.arrayToHex(this.sessMac));
+                logger.debug("* sessMac = " + Conversion.arrayToHex(scp.getSessMac()));
 
                 /* Calculating session data encryption key */
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"));
                 session = myCipher.doFinal(this.derivationData);
-                System.arraycopy(session, 0, this.sessKek, 0, 16);
-                System.arraycopy(session, 0, this.sessKek, 16, 8);
+                System.arraycopy(session, 0, scp.getSessKek(), 0, 16);
+                System.arraycopy(session, 0, scp.getSessKek(), 16, 8);
 
-                logger.debug("* sessKek = " + Conversion.arrayToHex(this.sessKek));
+                logger.debug("* sessKek = " + Conversion.arrayToHex(scp.getSessKek()));
 
             } else if (scp.getScpMode() == SCPMode.SCP_02_15
                     || scp.getScpMode() == SCPMode.SCP_02_04
@@ -1590,51 +1578,51 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     || scp.getScpMode() == SCPMode.SCP_02_45
                     || scp.getScpMode() == SCPMode.SCP_02_55) {
 
-                this.sessEnc = new byte[24];
-                this.sessMac = new byte[24];
-                this.sessRMac = new byte[24];
-                this.sessKek = new byte[24];
+                scp.setSessEnc(new byte[24]);
+                scp.setSessMac(new byte[24]);
+                scp.setSessRMac(new byte[24]);
+                scp.setSessKek(new byte[24]);
 
                 myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
                 IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
 
-                logger.debug("*** Initialize IV : " + Conversion.arrayToHex(this.sessEnc));
+                logger.debug("*** Initialize IV : " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 // Calculing Encryption Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4ENCKEY, 0, this.derivationData, 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
-                System.arraycopy(session, 0, this.sessEnc, 0, 16);
-                System.arraycopy(session, 0, this.sessEnc, 16, 8);
+                System.arraycopy(session, 0, scp.getSessEnc(), 0, 16);
+                System.arraycopy(session, 0, scp.getSessEnc(), 16, 8);
 
-                logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));
+                logger.debug("* sessEnc = " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 // Calculing C_Mac Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4CMAC, 0, this.derivationData, 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
-                System.arraycopy(session, 0, this.sessMac, 0, 16);
-                System.arraycopy(session, 0, this.sessMac, 16, 8);
+                System.arraycopy(session, 0, scp.getSessMac(), 0, 16);
+                System.arraycopy(session, 0, scp.getSessMac(), 16, 8);
 
-                logger.debug("* sessMac = " + Conversion.arrayToHex(this.sessMac));
+                logger.debug("* sessMac = " + Conversion.arrayToHex(scp.getSessMac()));
 
                 // Calculing R_Mac Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4RMAC, 0, this.derivationData, 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
-                System.arraycopy(session, 0, this.sessRMac, 0, 16);
-                System.arraycopy(session, 0, this.sessRMac, 16, 8);
+                System.arraycopy(session, 0, scp.getSessRMac(), 0, 16);
+                System.arraycopy(session, 0, scp.getSessRMac(), 16, 8);
 
-                logger.debug("* sessRMac = " + Conversion.arrayToHex(this.sessRMac));
+                logger.debug("* sessRMac = " + Conversion.arrayToHex(scp.getSessRMac()));
 
                 // Calculing Data Encryption Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4DATAENC, 0, this.derivationData, 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"), ivSpec);
                 session = myCipher.doFinal(this.derivationData);
-                System.arraycopy(session, 0, this.sessKek, 0, 16);
-                System.arraycopy(session, 0, this.sessKek, 16, 8);
+                System.arraycopy(session, 0, scp.getSessKek(), 0, 16);
+                System.arraycopy(session, 0, scp.getSessKek(), 16, 8);
 
-                logger.debug("* sessKek = " + Conversion.arrayToHex(this.sessRMac));
+                logger.debug("* sessKek = " + Conversion.arrayToHex(scp.getSessRMac()));
 
             } else if ((scp.getScpMode() == SCPMode.SCP_03_65)
                     || (scp.getScpMode() == SCPMode.SCP_03_6D)
@@ -1645,9 +1633,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
                 logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
 
-                this.sessEnc = new byte[16];
-                this.sessMac = new byte[16];
-                this.sessRMac = new byte[16];
+                scp.setSessEnc(new byte[16]);
+                scp.setSessMac(new byte[16]);
+                scp.setSessRMac(new byte[16]);
 
                 IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
                 logger.debug("*** Initialize IV : " + Conversion.arrayToHex(scp.getIcv()));
@@ -1676,8 +1664,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 //                    logger.debug("Icv for block = " + Conversion.arrayToHex(icvNextBloc));
                     ivSpec = new IvParameterSpec(icvNextBloc);
                 }
-                System.arraycopy(icvNextBloc, 0, this.sessEnc, 0, icvNextBloc.length);
-                logger.debug("sessEnc = " + Conversion.arrayToHex(this.sessEnc));
+                System.arraycopy(icvNextBloc, 0, scp.getSessEnc(), 0, icvNextBloc.length);
+                logger.debug("sessEnc = " + Conversion.arrayToHex(scp.getSessEnc()));
 
                 ivSpec = new IvParameterSpec(scp.getIcv());
 
@@ -1701,8 +1689,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 //                    logger.debug("Icv for block = " + Conversion.arrayToHex(icvNextBloc));
                     ivSpec = new IvParameterSpec(icvNextBloc);
                 }
-                System.arraycopy(icvNextBloc, 0, this.sessMac, 0, icvNextBloc.length);
-                logger.debug("sessMac = " + Conversion.arrayToHex(this.sessMac));
+                System.arraycopy(icvNextBloc, 0, scp.getSessMac(), 0, icvNextBloc.length);
+                logger.debug("sessMac = " + Conversion.arrayToHex(scp.getSessMac()));
 
                 ivSpec = new IvParameterSpec(scp.getIcv());
 
@@ -1724,8 +1712,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 //                    logger.debug("Icv for block = " + Conversion.arrayToHex(icvNextBloc));
                     ivSpec = new IvParameterSpec(icvNextBloc);
                 }
-                System.arraycopy(icvNextBloc, 0, this.sessRMac, 0, icvNextBloc.length);
-                logger.debug("sessRMac = " + Conversion.arrayToHex(this.sessRMac));
+                System.arraycopy(icvNextBloc, 0, scp.getSessRMac(), 0, icvNextBloc.length);
+                logger.debug("sessRMac = " + Conversion.arrayToHex(scp.getSessRMac()));
 
 
             }
@@ -1857,7 +1845,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
         try {
 
-            SecretKeySpec desSingleKey = new SecretKeySpec(this.sessMac, 0, 8, "DES");
+            SecretKeySpec desSingleKey = new SecretKeySpec(scp.getSessMac(), 0, 8, "DES");
             Cipher singleDesCipher;
             singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
 
@@ -1874,7 +1862,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
 
 
-            SecretKeySpec desKey = new SecretKeySpec(this.sessMac, "DESede");
+            SecretKeySpec desKey = new SecretKeySpec(scp.getSessMac(), "DESede");
             Cipher myCipher;
 
             myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
@@ -2936,7 +2924,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     }
                     IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
                     Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
+                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
                     res = cipher.doFinal(encryptedData);
                 }
                 if (scp.getScpMode() == SCPMode.SCP_03_6D) {
@@ -2961,7 +2949,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     }
                     IvParameterSpec ivSpec = new IvParameterSpec(icvCEnc);
                     Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
+                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
                     res = cipher.doFinal(encryptedData);
                     RENC_counter++;
                 }
@@ -2973,7 +2961,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     }
                     IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
                     Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
+                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
                     res = cipher.doFinal(encryptedData);
                 }
                 if (scp.getScpMode() == SCPMode.SCP_03_0D) {
@@ -2998,7 +2986,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     }
                     IvParameterSpec ivSpec = new IvParameterSpec(icvCEnc);
                     Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(this.sessEnc, "AES"), ivSpec);
+                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
                     res = cipher.doFinal(encryptedData);
                     RENC_counter++;
                 }

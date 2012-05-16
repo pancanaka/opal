@@ -62,26 +62,26 @@ public class GemXpresso211Commands extends GP2xCommands {
      * Special step after Generate Session Keys.
      */
     private void extraStep() {
-        for (int i = 0; i < this.sessEnc.length; i++) {
-            if (this.sessEnc[i] % 2 == (byte) 0x00) {
-                this.sessEnc[i] = (byte) 0xCA;
+        for (int i = 0; i < getScp().getSessEnc().length; i++) {
+            if (getScp().getSessEnc()[i] % 2 == (byte) 0x00) {
+                getScp().getSessEnc()[i] = (byte) 0xCA;
             } else {
-                this.sessEnc[i] = (byte) 0x2D;
+                getScp().getSessEnc()[i] = (byte) 0x2D;
             }
         }
-        for (int i = 0; i < this.sessMac.length; i++) {
-            if (this.sessMac[i] % 2 == (byte) 0x00) {
-                this.sessMac[i] = (byte) 0xCA;
+        for (int i = 0; i < getScp().getSessMac().length; i++) {
+            if (getScp().getSessMac()[i] % 2 == (byte) 0x00) {
+                getScp().getSessMac()[i] = (byte) 0xCA;
             } else {
-                this.sessMac[i] = (byte) 0x2D;
+                getScp().getSessMac()[i] = (byte) 0x2D;
             }
         }
 
-        for (int i = 0; i < this.sessKek.length; i++) {
-            if (this.sessKek[i] % 2 == (byte) 0x00) {
-                this.sessKek[i] = (byte) 0xCA;
+        for (int i = 0; i < getScp().getSessKek().length; i++) {
+            if (getScp().getSessKek()[i] % 2 == (byte) 0x00) {
+                getScp().getSessKek()[i] = (byte) 0xCA;
             } else {
-                this.sessKek[i] = (byte) 0x2D;
+                getScp().getSessKek()[i] = (byte) 0x2D;
             }
         }
     }

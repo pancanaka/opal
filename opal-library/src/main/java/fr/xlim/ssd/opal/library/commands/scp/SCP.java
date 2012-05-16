@@ -59,6 +59,18 @@ public class SCP {
     /// Initialized Cypher Vector used to initialized encryption steps
     protected byte[] icv;
 
+    /// Encryption session key
+    protected byte[] sessEnc;
+
+    /// C-MAC session key
+    protected byte[] sessMac;
+
+    /// R-MAC session key
+    protected byte[] sessRMac;
+
+    /// Data Encryption session key
+    protected byte[] sessKek;
+
     public SCPMode getScpMode() {
         return scpMode;
     }
@@ -126,5 +138,37 @@ public class SCP {
             logger.debug("==> Init ICV end");
 
         }
+    }
+
+    public byte[] getSessEnc() {
+        return sessEnc;
+    }
+
+    public void setSessEnc(byte[] sessEnc) {
+        this.sessEnc = sessEnc;
+    }
+
+    public byte[] getSessMac() {
+        return sessMac;
+    }
+
+    public void setSessMac(byte[] sessMac) {
+        this.sessMac = sessMac;
+    }
+
+    public byte[] getSessRMac() {
+        return sessRMac;
+    }
+
+    public void setSessRMac(byte[] sessRMac) {
+        this.sessRMac = sessRMac;
+    }
+
+    public byte[] getSessKek() {
+        return sessKek;
+    }
+
+    public void setSessKek(byte[] sessKek) {
+        this.sessKek = sessKek;
     }
 }

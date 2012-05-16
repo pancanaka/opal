@@ -99,8 +99,8 @@ public class GemXpresso211CommandsTest {
                 0x2D, (byte) 0xCA, 0x2D, 0x2D, (byte) 0xCA, (byte) 0xCA, (byte) 0xCA
         };
 
-        assertArrayEquals(expectedSessEnc, commands.sessEnc);
-        assertArrayEquals(expectedSessMac, commands.sessMac);
-        assertArrayEquals(expectedSessKek, commands.sessKek);
+        assertArrayEquals(expectedSessEnc, commands.getScp().getSessEnc());
+        assertArrayEquals(expectedSessMac, commands.getScp().getSessMac());
+        assertArrayEquals(expectedSessKek, commands.getScp().getSessKek());
     }
 }
