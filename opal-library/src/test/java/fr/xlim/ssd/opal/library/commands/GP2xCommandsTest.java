@@ -278,7 +278,7 @@ public class GP2xCommandsTest {
         });
         commands.getScp().setScpMode(SCPMode.SCP_01_15);
         commands.getScp().initIcv();
-        commands.calculateCryptograms();
+        commands.getScp().calculateCryptograms();
 
         byte[] expectedHostCrypto = new byte[]{
                 0x3B, 0x20, 0x73, 0x5B, 0x46, 0x3A, (byte) 0xFC, (byte) 0xAF
@@ -325,7 +325,7 @@ public class GP2xCommandsTest {
                 0x10, 0x11, 0x12, 0x13, 0x14, 0x15, 0x16, 0x17,
                 0x08, 0x09, 0x0A, 0x0B, 0x0C, 0x0D, 0x0E, 0x0F,});
 
-        commands.generateSessionKeys(enc, mac, kek);
+        commands.getScp().generateSessionKeys(enc, mac, kek);
 
         byte[] expectedSessEnc = {
                 0x65, (byte) 0xAB, (byte) 0xD6, (byte) 0xAE, 0x1A, (byte) 0xD5,
@@ -589,7 +589,7 @@ public class GP2xCommandsTest {
         };
         commands.getScp().setScpMode(SCPMode.SCP_01_15);
         commands.getScp().initIcv();
-        assertArrayEquals(expected, commands.generateMac(data));
+        assertArrayEquals(expected, commands.getScp().generateMac(data));
     }
 
     @Test
@@ -608,7 +608,7 @@ public class GP2xCommandsTest {
         };
         commands.getScp().setScpMode(SCPMode.SCP_01_05);
         commands.getScp().initIcv();
-        assertArrayEquals(expected, commands.generateMac(data));
+        assertArrayEquals(expected, commands.getScp().generateMac(data));
     }
 
     @Test
@@ -628,7 +628,7 @@ public class GP2xCommandsTest {
         };
         commands.getScp().setScpMode(SCPMode.SCP_01_05);
         commands.getScp().initIcv();
-        assertArrayEquals(expected, commands.generateMac(data));
+        assertArrayEquals(expected, commands.getScp().generateMac(data));
         assertArrayEquals(expected, commands.getScp().getIcv());
     }
 
@@ -648,7 +648,7 @@ public class GP2xCommandsTest {
         byte[] expected = new byte[]{
                 0x2F, (byte) 0xCD, 0x78, 0x2C, 0x1C, (byte) 0xE5, (byte) 0xDE, 0x14
         };
-        assertArrayEquals(expected, commands.generateMac(data));
+        assertArrayEquals(expected, commands.getScp().generateMac(data));
 
         byte[] expectedIcv = new byte[]{
                 (byte) 0xFB, 0x26, 0x75, 0x1D, 0x56, (byte) 0xB2, (byte) 0xF9, 0x5D
@@ -658,7 +658,7 @@ public class GP2xCommandsTest {
         expected = new byte[]{
                 (byte) 0x9A, 0x39, 0x36, 0x18, (byte) 0x87, (byte) 0x81, 0x6C, (byte) 0xF1
         };
-        assertArrayEquals(expected, commands.generateMac(data));
+        assertArrayEquals(expected, commands.getScp().generateMac(data));
 
         expectedIcv = new byte[]{
                 (byte) 0xB1, 0x03, (byte) 0xAD, 0x40, 0x4C, (byte) 0xF9, (byte) 0x9C, 0x0F

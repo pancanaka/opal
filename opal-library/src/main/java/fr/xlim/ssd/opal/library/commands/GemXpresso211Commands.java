@@ -39,7 +39,7 @@
  */
 package fr.xlim.ssd.opal.library.commands;
 
-import fr.xlim.ssd.opal.library.config.SCGPKey;
+import fr.xlim.ssd.opal.library.commands.scp.GemXpresso211SCP;
 
 /**
  * Specific implementation of @link{fr.xlim.ssd.opal.library.commands.GP2xCommands} to GemXpresso 211 authentication
@@ -48,41 +48,7 @@ import fr.xlim.ssd.opal.library.config.SCGPKey;
  */
 public class GemXpresso211Commands extends GP2xCommands {
 
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.commands.GP2xCommands#generateSessionKeys(fr.xlim.ssd.opal.SCGPKey, fr.xlim.ssd.opal.SCGPKey, fr.xlim.ssd.opal.SCGPKey)
-     */
-    @Override
-    protected void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac,
-                                       SCGPKey staticKkek) {
-        super.generateSessionKeys(staticKenc, staticKmac, staticKkek);
-        this.extraStep();
-    }
-
-    /**
-     * Special step after Generate Session Keys.
-     */
-    private void extraStep() {
-        for (int i = 0; i < getScp().getSessEnc().length; i++) {
-            if (getScp().getSessEnc()[i] % 2 == (byte) 0x00) {
-                getScp().getSessEnc()[i] = (byte) 0xCA;
-            } else {
-                getScp().getSessEnc()[i] = (byte) 0x2D;
-            }
-        }
-        for (int i = 0; i < getScp().getSessMac().length; i++) {
-            if (getScp().getSessMac()[i] % 2 == (byte) 0x00) {
-                getScp().getSessMac()[i] = (byte) 0xCA;
-            } else {
-                getScp().getSessMac()[i] = (byte) 0x2D;
-            }
-        }
-
-        for (int i = 0; i < getScp().getSessKek().length; i++) {
-            if (getScp().getSessKek()[i] % 2 == (byte) 0x00) {
-                getScp().getSessKek()[i] = (byte) 0xCA;
-            } else {
-                getScp().getSessKek()[i] = (byte) 0x2D;
-            }
-        }
+    public GemXpresso211Commands() {
+        super(new GemXpresso211SCP());
     }
 }

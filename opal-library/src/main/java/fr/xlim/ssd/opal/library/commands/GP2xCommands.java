@@ -48,20 +48,9 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-import java.security.NoSuchProviderException;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.logging.Level;
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import javax.smartcardio.ResponseAPDU;
@@ -79,12 +68,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /// Logger used to print messages
     private static final Logger logger = LoggerFactory.getLogger(GP2xCommands.class);
 
-    /// Default PADDING to encrypt data for SCP 02 and SCP 01
-    protected static final byte[] PADDING = Conversion.hexToArray("80 00 00 00 00 00 00 00");
-
-    /// Default PADDING to encrypt data for SCP 03
-    protected static final byte[] SCP03_PADDING = Conversion.hexToArray("80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-
     // SCP 01 constant used in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} Response command
     protected static final byte SCP01 = (byte) 0x01;
 
@@ -94,33 +77,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     // SCP 03 constant used in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} Response command
     protected static final byte SCP03 = (byte) 0x03;
 
-    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the C-Mac session key
-    protected static final byte[] SCP02_DERIVATION4CMAC = {(byte) 0x01, (byte) 0x01};
-
-    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the R-Mac session key
-    protected static final byte[] SCP02_DERIVATION4RMAC = {(byte) 0x01, (byte) 0x02};
-
-    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the encryption session key
-    protected static final byte[] SCP02_DERIVATION4ENCKEY = {(byte) 0x01, (byte) 0x82};
-
-    // SCP 02 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the data encryption session key
-    protected static final byte[] SCP02_DERIVATION4DATAENC = {(byte) 0x01, (byte) 0x81};
-
-    // SCP 03 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the C-Mac session key
-    protected static final byte SCP03_DERIVATION4CMAC = (byte) 0x06;
-
-    // SCP 03 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the encryption session key
-    protected static final byte SCP03_DERIVATION4DATAENC = (byte) 0x04;
-
-    // SCP 03 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.generateSessionKeys}, the R-Mac session key
-    protected static final byte SCP03_DERIVATION4RMAC = (byte) 0x07;
-
-    // SCP 03 constant used to obtain the card cryptogram
-    protected static final byte SCP03_DERIVATION4CardCryptogram = (byte) 0x00;
-
-    // SCP 03 constant used to obtain the host cryptogram
-    protected static final byte SCP03_DERIVATION4HostCryptogram = (byte) 0x01;
-
     /// Static Keys
     protected List<SCKey> keys = new LinkedList<SCKey>();
 
@@ -129,31 +85,17 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     protected byte[] aid;
 
-    private static byte[] iv_zero = {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-            (byte) 0x00};
-
-    private static byte[] iv_zero_scp03 = {(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-            (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
-            (byte) 0x00};
-
-    // used to calculate Encrypted counter ICV for C-ENC
-    protected int CENC_Counter = 01;
-
-    // used to calculate Encrypted counter ICV for R-ENC
-    protected int RENC_counter = 01;
-
-    //Counter ICV padding for R-ENC computing
-    protected static final byte[] SCP03_R_ENC_COUNTER_ICV_PADDING = Conversion.hexToArray("80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-
-    //Counter ICV padding for R-ENC computing
-    protected static final byte[] SCP03_C_ENC_COUNTER_ICV_PADDING = Conversion.hexToArray("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-
     private SCP scp;
 
     /**
      * Default constructor
      */
     public GP2xCommands() {
+        this(new SCP());
+    }
+
+    protected GP2xCommands(SCP scp) {
+        this.scp = scp;
         resetParams();
     }
 
@@ -303,7 +245,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public void resetParams() {
-        scp = new SCP();
+        //scp = new SCP();
         scp.setScpMode(SCPMode.SCP_UNDEFINED);
         scp.setSecMode(SecLevel.NO_SECURITY_LEVEL);
         scp.initIcv();
@@ -637,13 +579,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         scp.calculateDerivationData();
-        this.generateSessionKeys(kEnc, kMac, kKek);
-        this.calculateCryptograms();
+        scp.generateSessionKeys(kEnc, kMac, kKek);
+        scp.calculateCryptograms();
 
 
         if (scp.getScpMode() == SCPMode.SCP_02_45 || scp.getScpMode() == SCPMode.SCP_02_55) {
             byte[] computedCardChallenge = new byte[6];
-            computedCardChallenge = this.pseudoRandomGenerationCardChallenge(this.aid);
+            computedCardChallenge = scp.pseudoRandomGenerationCardChallenge(this.aid);
             if (!Arrays.equals(scp.getCardChallenge(), computedCardChallenge)) {
                 logger.debug("Card challege is " + Conversion.arrayToHex(scp.getCardChallenge()) + "   " + scp.getCardChallenge().length);
                 throw new CardException("Error verifying Card Challenge");
@@ -692,7 +634,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("* Data uses to calculate mac value is" + Conversion.arrayToHex(data));
 
-        byte[] mac = this.generateMac(data);
+        byte[] mac = scp.generateMac(data);
 
         logger.debug("* mac value obtains" + Conversion.arrayToHex(mac));
 
@@ -711,8 +653,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.sessState = SessionState.SESSION_AUTH;
 
         //Protocol SCP03 - intitialisation of counters for computing of counter ICV for C/R-Enc.
-        CENC_Counter = 1;
-        RENC_counter = 1;
+        scp.setCENC_Counter(1);
+        scp.setRENC_counter(1);
 
         logger.debug("=> External Authenticate end");
 
@@ -780,7 +722,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             logger.debug("* Data used to generate Mac value is " + Conversion.arrayToHex(dataCmac));
 
             System.arraycopy(getStatusCmd, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, getStatusCmd, dataCmac.length, cmac.length); // put C-MAC into getStatusCmd
 
             logger.debug("* Get Status command with CMac is " + Conversion.arrayToHex(getStatusCmd));
@@ -789,7 +731,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         byte[] uncipheredgetStatusCmd = getStatusCmd.clone();
 
         if (scp.getSecMode() == SecLevel.C_ENC_AND_MAC) {
-            getStatusCmd = this.encryptCommand(getStatusCmd);
+            getStatusCmd = scp.encryptCommand(getStatusCmd);
             logger.debug("* Encrypt get Status command is " + Conversion.arrayToHex(getStatusCmd));
         }
 
@@ -807,12 +749,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             if (scp.getSecMode() != SecLevel.NO_SECURITY_LEVEL) {
                 byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
                 System.arraycopy(uncipheredgetStatusCmd, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-                byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+                byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
                 System.arraycopy(cmac, 0, uncipheredgetStatusCmd, dataCmac.length, cmac.length); // put C-MAC into getStatusCmd
             }
             getStatusCmd = uncipheredgetStatusCmd;
             if (scp.getSecMode() == SecLevel.C_ENC_AND_MAC) {
-                getStatusCmd = this.encryptCommand(uncipheredgetStatusCmd);
+                getStatusCmd = scp.encryptCommand(uncipheredgetStatusCmd);
             }
             cmdGetstatus = new CommandAPDU(getStatusCmd);
             resp = this.getCardChannel().transmit(cmdGetstatus);
@@ -834,979 +776,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("=> Get Status end");
 
         return responsesList.toArray(r);
-    }
-
-    /**
-     * Generate mac value according input data in a specific SCP version
-     *
-     * @param data data used to generate Mac value
-     *
-     * @return Mac value calculated
-     */
-    protected byte[] generateMac(byte[] data) {
-
-        logger.debug("==> Generate Mac");
-
-        byte[] dataWithPadding = null;
-
-        logger.debug("generateMac with data: " + Conversion.arrayToHex(data));
-
-        if (data.length % 8 != 0) { // We need a PADDING
-
-            logger.debug("- Data needs PADDING!");
-
-            int nbBytes = 8 - (data.length % 8);
-            dataWithPadding = new byte[data.length + nbBytes];
-            System.arraycopy(data, 0, dataWithPadding, 0, data.length);
-            System.arraycopy(GP2xCommands.PADDING, 0, dataWithPadding, data.length, nbBytes);
-        } else {
-            dataWithPadding = new byte[data.length + 8];
-            System.arraycopy(data, 0, dataWithPadding, 0, data.length);
-            System.arraycopy(GP2xCommands.PADDING, 0, dataWithPadding, data.length, GP2xCommands.PADDING.length);
-        }
-
-        logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
-
-        byte[] res = new byte[8];
-        IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
-        try {
-            logger.debug("SCP: " + scp.getScpMode());
-            if ((scp.getScpMode() == SCPMode.SCP_UNDEFINED)    // TODO: Undefined SCPMode Here ?
-                    || (scp.getScpMode() == SCPMode.SCP_01_05)
-                    || (scp.getScpMode() == SCPMode.SCP_01_15)) {
-
-                logger.debug("* SCP 01 Protocol (" + scp.getScpMode() + ") used");
-                logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
-
-                Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessMac(), "DESede"), ivSpec);
-                byte[] cryptogram = myCipher.doFinal(dataWithPadding);
-                System.arraycopy(cryptogram, cryptogram.length - 8, res, 0, 8);
-
-                logger.debug("* Calculated cryptogram is " + Conversion.arrayToHex(res));
-
-                switch (scp.getScpMode()) {
-                    case SCP_01_05:
-                        scp.setIcv(res); // update ICV with new C-MAC
-                        break;
-                    case SCP_01_15: // update ICV with new ENCRYPTED C-MAC
-                        Cipher myCipher2 = Cipher.getInstance("DESede/ECB/NoPadding");
-                        myCipher2.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessMac(), "DESede"));
-                        scp.setIcv(myCipher2.doFinal(res));
-                        break;
-                }
-
-                logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
-
-            } else if (scp.getScpMode() == SCPMode.SCP_02_15
-                    || scp.getScpMode() == SCPMode.SCP_02_04
-                    || scp.getScpMode() == SCPMode.SCP_02_05
-                    || scp.getScpMode() == SCPMode.SCP_02_14
-                    || scp.getScpMode() == SCPMode.SCP_02_45
-                    || scp.getScpMode() == SCPMode.SCP_02_55) {
-
-                logger.debug("* SCP 02 Protocol (" + scp.getScpMode() + ") used");
-                logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
-
-                SecretKeySpec desSingleKey = new SecretKeySpec(scp.getSessMac(), 0, 8, "DES");
-                Cipher singleDesCipher;
-                singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
-
-                // Calculate the first n - 1 block.
-                int noOfBlocks = dataWithPadding.length / 8;
-                byte ivForNextBlock[] = scp.getIcv();
-                int startIndex = 0;
-                for (int i = 0; i < (noOfBlocks - 1); i++) {
-                    singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
-                    ivForNextBlock = singleDesCipher.doFinal(dataWithPadding, startIndex, 8);
-                    startIndex += 8;
-                    ivSpec = new IvParameterSpec(ivForNextBlock);
-                    logger.debug("* Calculated cryptogram is for Bolck " + i + " " + Conversion.arrayToHex(ivForNextBlock));
-                }
-
-
-                SecretKeySpec desKey = new SecretKeySpec(scp.getSessMac(), "DESede");
-                Cipher myCipher;
-
-                myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
-                int offset = dataWithPadding.length - 8;
-
-                // Generate C-MAC. Use 8-LSB
-                // For the last block, you can use TripleDES EDE with ECB mode, now I select the CBC and
-                // use the last block of the previous encryption result as ICV.
-                //ivSpec = new IvParameterSpec(ivForLastBlock);
-                myCipher.init(Cipher.ENCRYPT_MODE, desKey, ivSpec);
-                res = myCipher.doFinal(dataWithPadding, offset, 8);
-                if (scp.getScpMode() == SCPMode.SCP_02_04
-                        || scp.getScpMode() == SCPMode.SCP_02_05
-                        || scp.getScpMode() == SCPMode.SCP_02_45) {
-                    scp.setIcv(res); // update ICV with new C-MAC //no ICV encryption
-                } else if (scp.getScpMode() == SCPMode.SCP_02_15
-                        || scp.getScpMode() == SCPMode.SCP_02_14
-                        || scp.getScpMode() == SCPMode.SCP_02_55) {
-                    // update ICV with new ENCRYPTED C-MAC
-                    ivSpec = new IvParameterSpec(new byte[8]);
-                    singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
-                    scp.setIcv(singleDesCipher.doFinal(res));
-                }
-
-                logger.debug("* Calculated cryptogram is " + Conversion.arrayToHex(res));
-                logger.debug("* New ICV is " + Conversion.arrayToHex(scp.getIcv()));
-
-            } else if (scp.getScpMode() == SCPMode.SCP_03_65
-                    || scp.getScpMode() == SCPMode.SCP_03_6D
-                    || scp.getScpMode() == SCPMode.SCP_03_05
-                    || scp.getScpMode() == SCPMode.SCP_03_0D
-                    || scp.getScpMode() == SCPMode.SCP_03_2D
-                    || scp.getScpMode() == SCPMode.SCP_03_25) {
-
-
-                if (data.length % 16 != 0) { // We need a PADDING
-
-                    logger.debug("- Data needs PADDING!");
-
-                    int nbBytes = 16 - (data.length % 16);
-                    dataWithPadding = new byte[data.length + nbBytes];
-                    System.arraycopy(data, 0, dataWithPadding, 0, data.length);
-                    System.arraycopy(GP2xCommands.SCP03_PADDING, 0, dataWithPadding, data.length, nbBytes);
-                } else {
-                    dataWithPadding = new byte[data.length + 16];
-                    System.arraycopy(data, 0, dataWithPadding, 0, data.length);
-                    System.arraycopy(GP2xCommands.SCP03_PADDING, 0, dataWithPadding, data.length, GP2xCommands.SCP03_PADDING.length);
-                }
-
-                logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
-
-
-                byte[] dataToCalulateMac = new byte[dataWithPadding.length + 16];
-                System.arraycopy(scp.getIcv(), 0, dataToCalulateMac, 0, scp.getIcv().length);
-                System.arraycopy(dataWithPadding, 0, dataToCalulateMac, 16, dataWithPadding.length);
-
-                logger.debug("data used to génerate mac : " + Conversion.arrayToHex(dataToCalulateMac));
-
-                ivSpec = new IvParameterSpec(iv_zero_scp03);
-                logger.debug("* SCP 03 Protocol (" + scp.getScpMode() + ") used");
-                logger.debug("* IV is " + Conversion.arrayToHex(scp.getIcv()));
-
-                SecretKeySpec skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
-                Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                byte[] encrypted = cipher.doFinal(dataToCalulateMac);
-
-                logger.debug("encrypted command : " + Conversion.arrayToHex(encrypted));
-                byte[] eightRightMostBit = new byte[8];
-                System.arraycopy(encrypted, 0, res, 0, 8);
-                System.arraycopy(encrypted, encrypted.length - 8, eightRightMostBit, 0, 8);
-
-                //update ICV : 8 most significant bytes + 8 lest significant bytes
-                System.arraycopy(res, 0, scp.getIcv(), 0, 8);
-                System.arraycopy(eightRightMostBit, 0, scp.getIcv(), 8, 8);
-
-
-            }
-        } catch (NoSuchProviderException ex) {
-            java.util.logging.Logger.getLogger(GP2xCommands.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem", e);
-        } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad PADDING problem", e);
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
-        }
-
-        logger.debug("==> Generate Mac End");
-
-        return res.clone();
-    }
-
-    /**
-     * Encrypt APDU command in a specific SCP version.
-     * <p/>
-     * Only SCP 01 protocol is yet implemented
-     *
-     * @param command command to encrypt
-     *
-     * @return encrypted command
-     */
-    protected byte[] encryptCommand(byte[] command) {
-
-        logger.debug("==> Encrypt Command Begin");
-        logger.debug("* Command to encrypt is " + Conversion.arrayToHex(command));
-
-        byte[] datas = null;
-        byte[] encryptedCmd = null;
-
-
-        try {
-            if (scp.getScpMode() == SCPMode.SCP_01_05 || scp.getScpMode() == SCPMode.SCP_01_15) {
-
-                int dataLength = command.length - 4 - 8; // command without (CLA, INS, P1, P2) AND C-MAC
-                if (dataLength % 8 == 0) { // don't need a PADDING
-                    datas = new byte[dataLength];
-                    System.arraycopy(command, 4, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    datas[0] = (byte) (datas.length - 1); // update the "pseudo" LC with the length of the original clear text
-                } else { // need a PADDING
-                    int nbBytes = 8 - (dataLength % 8); // bytes needed for the PADDING
-                    logger.debug("- We need a PADDING (" + nbBytes + " bytes) ");
-                    datas = new byte[dataLength + nbBytes];
-                    System.arraycopy(command, 4, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    datas[0] = (byte) (datas.length - 1 - nbBytes); // update the "pseudo" LC with the length of the original clear text
-                    System.arraycopy(GP2xCommands.PADDING, 0, datas, dataLength, nbBytes); // add necessary PADDING
-
-                    logger.debug("- New data to encrypt is " + Conversion.arrayToHex(datas));
-                }
-                IvParameterSpec ivSpec = new IvParameterSpec(Conversion.hexToArray("00 00 00 00 00 00 00 00"));
-
-                logger.debug("* SCP 01 Protocol used");
-                logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
-                logger.debug("* sessEnc key is " + Conversion.arrayToHex(scp.getSessEnc()));
-
-                Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
-                byte[] res = myCipher.doFinal(datas);
-                encryptedCmd = new byte[5 + res.length + 8];
-                System.arraycopy(command, 0, encryptedCmd, 0, 5);
-                System.arraycopy(res, 0, encryptedCmd, 5, res.length);
-                System.arraycopy(command, command.length - 8, encryptedCmd, res.length + 5, 8);
-                encryptedCmd[4] = (byte) (encryptedCmd.length - 5);
-
-                logger.debug("* Encrypted data is " + Conversion.arrayToHex(encryptedCmd));
-            }
-
-            if (scp.getScpMode() == SCPMode.SCP_02_04
-                    || scp.getScpMode() == SCPMode.SCP_02_05
-                    || scp.getScpMode() == SCPMode.SCP_02_0A
-                    || scp.getScpMode() == SCPMode.SCP_02_0B
-                    || scp.getScpMode() == SCPMode.SCP_02_14
-                    || scp.getScpMode() == SCPMode.SCP_02_15
-                    || scp.getScpMode() == SCPMode.SCP_02_1A
-                    || scp.getScpMode() == SCPMode.SCP_02_1B
-                    || scp.getScpMode() == SCPMode.SCP_02_45
-                    || scp.getScpMode() == SCPMode.SCP_02_54
-                    || scp.getScpMode() == SCPMode.SCP_02_55) {
-
-                int dataLength = command.length - 5 - 8; // command without (CLA, INS, P1, P2) AND C-MAC
-
-                if (dataLength % 8 == 0) { // don't need a PADDING
-                    datas = new byte[dataLength + 8];
-                    System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    System.arraycopy(GP2xCommands.PADDING, 0, datas, dataLength, 8);
-                    command[4] = (byte) (dataLength + 8);
-
-
-                } else { // need a PADDING
-                    int nbBytes = 8 - (dataLength % 8); // bytes needed for the PADDING
-                    logger.debug("- We need a PADDING (" + nbBytes + " bytes) ");
-                    datas = new byte[dataLength + nbBytes];
-                    System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    System.arraycopy(GP2xCommands.PADDING, 0, datas, dataLength, nbBytes); // add necessary PADDING
-
-
-                }
-
-
-                logger.debug("- New data to encrypt is " + Conversion.arrayToHex(datas));
-                logger.debug("* DATAFIELD from command is " + Conversion.arrayToHex(datas));
-
-
-                IvParameterSpec ivSpec = new IvParameterSpec(iv_zero);
-
-                logger.debug("* SCP 02 Protocol used");
-                logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
-                logger.debug("* sessEnc key is " + Conversion.arrayToHex(scp.getSessEnc()));
-
-                Cipher myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
-                byte[] res = myCipher.doFinal(datas);
-                encryptedCmd = new byte[5 + res.length + 8];
-                System.arraycopy(command, 0, encryptedCmd, 0, 5);
-                System.arraycopy(res, 0, encryptedCmd, 5, res.length);
-                System.arraycopy(command, command.length - 8, encryptedCmd, res.length + 5, 8);
-                encryptedCmd[4] = (byte) (datas.length + 8);
-
-
-                logger.debug("* Encrypted data is " + Conversion.arrayToHex(encryptedCmd));
-            }
-
-
-            if (scp.getScpMode() == SCPMode.SCP_03_65
-                    || scp.getScpMode() == SCPMode.SCP_03_05
-                    || scp.getScpMode() == SCPMode.SCP_03_25) {
-
-                int dataLength = command.length - 5; // command without (CLA, INS, P1, P2) AND C-MAC
-
-                if (dataLength % 16 == 0) { // don't need a PADDING
-                    datas = new byte[dataLength + 16];
-                    System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    System.arraycopy(GP2xCommands.SCP03_PADDING, 0, datas, dataLength, 16);
-                    command[4] = (byte) (dataLength + 8);
-
-
-                } else { // need a PADDING
-                    int nbBytes = 16 - (dataLength % 16); // bytes needed for the PADDING
-                    logger.debug("- We need a PADDING (" + nbBytes + " bytes) ");
-                    datas = new byte[dataLength + nbBytes];
-                    System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    System.arraycopy(GP2xCommands.SCP03_PADDING, 0, datas, dataLength, nbBytes); // add necessary PADDING
-
-                }
-                logger.debug("- New data to encrypt is " + Conversion.arrayToHex(datas));
-                logger.debug("* DATAFIELD from command is " + Conversion.arrayToHex(datas));
-
-
-                IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
-                Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
-                byte[] res = cipher.doFinal(datas);
-                encryptedCmd = new byte[5 + res.length];
-                System.arraycopy(command, 0, encryptedCmd, 0, 5);
-                System.arraycopy(res, 0, encryptedCmd, 5, res.length);
-                encryptedCmd[4] = (byte) (datas.length + 8);
-
-
-                logger.debug("* Encrypted data is " + Conversion.arrayToHex(encryptedCmd));
-
-
-            }
-            if (scp.getScpMode() == SCPMode.SCP_03_6D
-                    || scp.getScpMode() == SCPMode.SCP_03_0D
-                    || scp.getScpMode() == SCPMode.SCP_03_2D) {
-                // compute the counter icv
-                byte[] icvCEnc = new byte[16];
-                String hexaCounter = Integer.toHexString(CENC_Counter);
-                if ((hexaCounter.length() % 2) == 1) {
-                    hexaCounter = "0" + hexaCounter;
-                }
-                logger.debug("* icv counter = " + Conversion.arrayToHex(Conversion.hexToArray(hexaCounter)));
-                hexaCounter = Conversion.arrayToHex(Conversion.hexToArray(hexaCounter));
-
-                byte[] byteCounter = Conversion.hexToArray(hexaCounter);
-
-                System.arraycopy(SCP03_C_ENC_COUNTER_ICV_PADDING, 0, icvCEnc, 0, 16 - byteCounter.length);
-                System.arraycopy(byteCounter, 0, icvCEnc, 16 - byteCounter.length, byteCounter.length);
-                logger.debug("* data used to calculate icv = " + Conversion.arrayToHex(icvCEnc));
-
-                IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
-                Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
-                icvCEnc = cipher.doFinal(icvCEnc);
-                logger.debug("* icv counter = " + Conversion.arrayToHex(icvCEnc));
-                int dataLength = command.length - 5; // command without (CLA, INS, P1, P2) AND C-MAC
-
-                if (dataLength % 16 == 0) { // don't need a PADDING
-                    datas = new byte[dataLength + 16];
-                    System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    System.arraycopy(GP2xCommands.SCP03_PADDING, 0, datas, dataLength, 16);
-                    command[4] = (byte) (dataLength + 8);
-
-
-                } else { // need a PADDING
-                    int nbBytes = 16 - (dataLength % 16); // bytes needed for the PADDING
-                    logger.debug("- We need a PADDING (" + nbBytes + " bytes) ");
-                    datas = new byte[dataLength + nbBytes];
-                    System.arraycopy(command, 5, datas, 0, dataLength); // copies LC + DATAFIELD from command
-                    System.arraycopy(GP2xCommands.SCP03_PADDING, 0, datas, dataLength, nbBytes); // add necessary PADDING
-
-                }
-                logger.debug("- New data to encrypt is " + Conversion.arrayToHex(datas));
-                logger.debug("* DATAFIELD from command is " + Conversion.arrayToHex(datas));
-
-
-                ivSpec = new IvParameterSpec(icvCEnc);
-                cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                cipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
-                byte[] res = cipher.doFinal(datas);
-                encryptedCmd = new byte[5 + res.length];
-                System.arraycopy(command, 0, encryptedCmd, 0, 5);
-                System.arraycopy(res, 0, encryptedCmd, 5, res.length);
-                encryptedCmd[4] = (byte) (datas.length + 8);
-
-                logger.debug("* Encrypted data " + Conversion.arrayToHex(res));
-
-            }
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem", e);
-        } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad PADDING problem", e);
-        } catch (Exception e) {
-            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
-        }
-
-        logger.debug("==> Encrypt Command End");
-
-        return encryptedCmd;
-    }
-
-    /**
-     * Initialization ICV to mac ovec AID of selected application, this function is used in
-     * SCP 02_1A and SCP 02_0A and SCP 02_1B which use the implicit initiation mode
-     */
-    protected void initIcvToMacOverAid(byte[] aid) {
-
-        logger.info("==> init ICV to mac over AID");
-        logger.info("* SCP 02 Protocol (" + scp.getScpMode() + ") used");
-        logger.info("* IV is " + Conversion.arrayToHex(iv_zero));
-
-        IvParameterSpec ivSpec = new IvParameterSpec(iv_zero);
-        byte[] dataWithPadding;
-
-        byte[] res;
-
-        if (aid.length % 8 != 0) { // We need a PADDING
-
-            logger.debug("- Data needs PADDING!");
-
-            int nbBytes = 8 - (aid.length % 8);
-            dataWithPadding = new byte[aid.length + nbBytes];
-            System.arraycopy(aid, 0, dataWithPadding, 0, aid.length);
-            System.arraycopy(GP2xCommands.PADDING, 0, dataWithPadding, aid.length, nbBytes);
-        } else {
-            dataWithPadding = new byte[aid.length + 8];
-            System.arraycopy(aid, 0, dataWithPadding, 0, aid.length);
-            System.arraycopy(GP2xCommands.PADDING, 0, dataWithPadding, aid.length, GP2xCommands.PADDING.length);
-        }
-
-        logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
-
-        try {
-
-            SecretKeySpec desSingleKey = new SecretKeySpec(scp.getSessMac(), 0, 8, "DES");
-            Cipher singleDesCipher;
-            singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
-
-            // Calculate the first n - 1 block.
-            int noOfBlocks = dataWithPadding.length / 8;
-            byte ivForNextBlock[] = scp.getIcv();
-            int startIndex = 0;
-            for (int i = 0; i < (noOfBlocks - 1); i++) {
-                singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
-                ivForNextBlock = singleDesCipher.doFinal(dataWithPadding, startIndex, 8);
-                startIndex += 8;
-                ivSpec = new IvParameterSpec(ivForNextBlock);
-                logger.debug("* Calculated cryptogram is for Bolck " + i + " " + Conversion.arrayToHex(ivForNextBlock));
-            }
-
-
-            SecretKeySpec desKey = new SecretKeySpec(scp.getSessMac(), "DESede");
-            Cipher myCipher;
-
-            myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
-            int offset = dataWithPadding.length - 8;
-
-            // Generate C-MAC. Use 8-LSB
-            // For the last block, you can use TripleDES EDE with ECB mode, now I select the CBC and
-            // use the last block of the previous encryption result as ICV.
-            //ivSpec = new IvParameterSpec(ivForLastBlock);
-            myCipher.init(Cipher.ENCRYPT_MODE, desKey, ivSpec);
-            res = myCipher.doFinal(dataWithPadding, offset, 8);
-            logger.info("New ICV is " + Conversion.arrayToHex(res));
-        } catch (NoSuchProviderException ex) {
-            java.util.logging.Logger.getLogger(GP2xCommands.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem", e);
-        } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad PADDING problem", e);
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
-        }
-    }
-
-
-    /**
-     * Calculate Cryptogramms in SCP01 et SCP02 protocol
-     */
-    protected void calculateCryptograms() {
-
-        logger.debug("==> Calculate Cryptograms");
-
-        byte[] data = new byte[24];
-        Cipher myCipher;
-        try {
-
-            myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-            IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
-
-            logger.debug("* IV is " + Conversion.arrayToHex(ivSpec.getIV()));
-
-            if ((scp.getScpMode() == SCPMode.SCP_UNDEFINED)
-                    || (scp.getScpMode() == SCPMode.SCP_01_05)
-                    || (scp.getScpMode() == SCPMode.SCP_01_15)) {
-
-                logger.debug("* SCP 01 protocol used");
-
-                /* Calculing Cryptogram */
-                System.arraycopy(scp.getHostChallenge(), 0, data, 0, 8);
-                System.arraycopy(scp.getCardChallenge(), 0, data, 8, 8);
-                System.arraycopy(GP2xCommands.PADDING, 0, data, 16, 8);
-
-                logger.debug("* Data to encrypt: " + Conversion.arrayToHex(data));
-
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
-                byte[] cardcryptogram = myCipher.doFinal(data);
-                scp.setCardCrypto(new byte[8]);
-                System.arraycopy(cardcryptogram, 16, scp.getCardCrypto(), 0, 8);
-
-                logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(scp.getCardCrypto()));
-
-                System.arraycopy(scp.getCardChallenge(), 0, data, 0, 8);
-                System.arraycopy(scp.getHostChallenge(), 0, data, 8, 8);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
-                byte[] hostcryptogram = myCipher.doFinal(data);
-                scp.setHostCrypto(new byte[8]);
-                System.arraycopy(hostcryptogram, 16, scp.getHostCrypto(), 0, 8);
-
-                logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(scp.getHostCrypto()));
-
-            } else if (scp.getScpMode() == SCPMode.SCP_02_15
-                    || scp.getScpMode() == SCPMode.SCP_02_04
-                    || scp.getScpMode() == SCPMode.SCP_02_05
-                    || scp.getScpMode() == SCPMode.SCP_02_14
-                    || scp.getScpMode() == SCPMode.SCP_02_45
-                    || scp.getScpMode() == SCPMode.SCP_02_55) {
-
-                logger.debug("* SCP 02 protocol used");
-
-                /* Calculing Card Cryptogram */
-                System.arraycopy(scp.getHostChallenge(), 0, data, 0, 8);
-                System.arraycopy(scp.getSequenceCounter(), 0, data, 8, 2);
-                System.arraycopy(scp.getCardChallenge(), 0, data, 10, 6);
-                System.arraycopy(GP2xCommands.PADDING, 0, data, 16, GP2xCommands.PADDING.length);
-
-                logger.debug("* Data to encrypt: " + Conversion.arrayToHex(data));
-
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
-                byte[] cardcryptogram = myCipher.doFinal(data);
-                scp.setCardCrypto(new byte[8]);
-                System.arraycopy(cardcryptogram, 16, scp.getCardCrypto(), 0, 8);
-
-                logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(scp.getCardCrypto()));
-
-                /* Calculing Host Cryptogram */
-                System.arraycopy(scp.getSequenceCounter(), 0, data, 0, 2);
-                System.arraycopy(scp.getCardChallenge(), 0, data, 2, 6);
-                System.arraycopy(scp.getHostChallenge(), 0, data, 8, 8);
-                System.arraycopy(GP2xCommands.PADDING, 0, data, 16, GP2xCommands.PADDING.length);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "DESede"), ivSpec);
-                byte[] hostcryptogram = myCipher.doFinal(data);
-                scp.setHostCrypto(new byte[8]);
-                System.arraycopy(hostcryptogram, 16, scp.getHostCrypto(), 0, 8);
-
-                logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(scp.getHostCrypto()));
-
-            } else if (scp.getScpMode() == SCPMode.SCP_03_65
-                    || scp.getScpMode() == SCPMode.SCP_03_6D
-                    || scp.getScpMode() == SCPMode.SCP_03_05
-                    || scp.getScpMode() == SCPMode.SCP_03_0D
-                    || scp.getScpMode() == SCPMode.SCP_03_2D
-                    || scp.getScpMode() == SCPMode.SCP_03_25) {
-
-                logger.debug("* SCP 03 protocol used");
-
-                /* Calculing Card Cryptogram */
-                scp.getDerivationData()[11] = SCP03_DERIVATION4CardCryptogram;
-                scp.getDerivationData()[13] = (byte) 0x00;
-                scp.getDerivationData()[14] = (byte) 0x40;
-                scp.getDerivationData()[15] = (byte) 0x01;
-
-                logger.debug("* derivation data : " + Conversion.arrayToHex(scp.getDerivationData()));
-
-
-                SecretKeySpec skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
-                Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-
-                byte icvNextBloc[] = new byte[16];
-                int noOfBlocks = scp.getDerivationData().length / 16;
-
-                int startIndex = 0;
-                for (int i = 0; i < (noOfBlocks); i++) {
-                    cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(scp.getDerivationData());
-                    System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
-                    startIndex += 16;
-                    ivSpec = new IvParameterSpec(icvNextBloc);
-                }
-                scp.setCardCrypto(new byte[8]);
-                System.arraycopy(icvNextBloc, 0, scp.getCardCrypto(), 0, 8);
-                logger.debug("Calculated Card Cryptogram = " + Conversion.arrayToHex(scp.getCardCrypto()));
-
-                ivSpec = new IvParameterSpec(scp.getIcv());
-
-                /* Calculing Card Cryptogram */
-                scp.getDerivationData()[11] = SCP03_DERIVATION4HostCryptogram;
-                scp.getDerivationData()[13] = (byte) 0x00;
-                scp.getDerivationData()[14] = (byte) 0x40;
-                scp.getDerivationData()[15] = (byte) 0x01;
-
-                logger.debug("* derivation data : " + Conversion.arrayToHex(scp.getDerivationData()));
-
-
-                skeySpec = new SecretKeySpec(scp.getSessMac(), "AES");
-                cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
-
-                noOfBlocks = scp.getDerivationData().length / 16;
-
-                startIndex = 0;
-                for (int i = 0; i < (noOfBlocks); i++) {
-                    cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
-                    System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
-                    startIndex += 16;
-                    ivSpec = new IvParameterSpec(icvNextBloc);
-                }
-                scp.setHostCrypto(new byte[8]);
-                System.arraycopy(icvNextBloc, 0, scp.getHostCrypto(), 0, 8);
-                logger.debug("Calculated Host Cryptogram = " + Conversion.arrayToHex(scp.getHostCrypto()));
-
-
-            }
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem", e);
-        } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad PADDING problem", e);
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
-        }
-
-        logger.debug("==> Calculate Cryptograms End");
-    }
-
-    /**
-     * Generate session keys depending with SCP protocol used
-     *
-     * @param staticKenc Static Encrypt key
-     * @param staticKmac Static Mac key
-     * @param staticKkek Static data encryption key
-     */
-    protected void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek) {
-
-        logger.debug("==> Generate Session Keys");
-
-        try {
-
-            byte[] session;
-
-            Cipher myCipher = null;
-
-            logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getValue()));
-            logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getValue()));
-            logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getValue()));
-            logger.debug("* SCP_Mode is " + scp.getScpMode());
-
-            if ((scp.getScpMode() == SCPMode.SCP_UNDEFINED)
-                    || (scp.getScpMode() == SCPMode.SCP_01_05)
-                    || (scp.getScpMode() == SCPMode.SCP_01_15)) {  // TODO: SCPMode.SCP_UNDEFINED Here ?
-
-                scp.setSessEnc(new byte[24]);
-                scp.setSessMac(new byte[24]);
-                scp.setSessKek(new byte[24]);
-
-                myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
-
-                /* Calculating session encryption key */
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"));
-                session = myCipher.doFinal(scp.getDerivationData());
-                System.arraycopy(session, 0, scp.getSessEnc(), 0, 16);
-                System.arraycopy(session, 0, scp.getSessEnc(), 16, 8);
-
-                logger.debug("* sessEnc = " + Conversion.arrayToHex(scp.getSessEnc()));
-
-                /* Calculating session mac key */
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"));
-                session = myCipher.doFinal(scp.getDerivationData());
-                System.arraycopy(session, 0, scp.getSessMac(), 0, 16);
-                System.arraycopy(session, 0, scp.getSessMac(), 16, 8);
-
-                logger.debug("* sessMac = " + Conversion.arrayToHex(scp.getSessMac()));
-
-                /* Calculating session data encryption key */
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"));
-                session = myCipher.doFinal(scp.getDerivationData());
-                System.arraycopy(session, 0, scp.getSessKek(), 0, 16);
-                System.arraycopy(session, 0, scp.getSessKek(), 16, 8);
-
-                logger.debug("* sessKek = " + Conversion.arrayToHex(scp.getSessKek()));
-
-            } else if (scp.getScpMode() == SCPMode.SCP_02_15
-                    || scp.getScpMode() == SCPMode.SCP_02_04
-                    || scp.getScpMode() == SCPMode.SCP_02_05
-                    || scp.getScpMode() == SCPMode.SCP_02_14
-                    || scp.getScpMode() == SCPMode.SCP_02_45
-                    || scp.getScpMode() == SCPMode.SCP_02_55) {
-
-                scp.setSessEnc(new byte[24]);
-                scp.setSessMac(new byte[24]);
-                scp.setSessRMac(new byte[24]);
-                scp.setSessKek(new byte[24]);
-
-                myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
-                IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
-
-                logger.debug("*** Initialize IV : " + Conversion.arrayToHex(scp.getSessEnc()));
-
-                // Calculing Encryption Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4ENCKEY, 0, scp.getDerivationData(), 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(scp.getDerivationData());
-                System.arraycopy(session, 0, scp.getSessEnc(), 0, 16);
-                System.arraycopy(session, 0, scp.getSessEnc(), 16, 8);
-
-                logger.debug("* sessEnc = " + Conversion.arrayToHex(scp.getSessEnc()));
-
-                // Calculing C_Mac Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4CMAC, 0, scp.getDerivationData(), 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(scp.getDerivationData());
-                System.arraycopy(session, 0, scp.getSessMac(), 0, 16);
-                System.arraycopy(session, 0, scp.getSessMac(), 16, 8);
-
-                logger.debug("* sessMac = " + Conversion.arrayToHex(scp.getSessMac()));
-
-                // Calculing R_Mac Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4RMAC, 0, scp.getDerivationData(), 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(scp.getDerivationData());
-                System.arraycopy(session, 0, scp.getSessRMac(), 0, 16);
-                System.arraycopy(session, 0, scp.getSessRMac(), 16, 8);
-
-                logger.debug("* sessRMac = " + Conversion.arrayToHex(scp.getSessRMac()));
-
-                // Calculing Data Encryption Session Keys
-                System.arraycopy(GP2xCommands.SCP02_DERIVATION4DATAENC, 0, scp.getDerivationData(), 0, 2);
-                myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"), ivSpec);
-                session = myCipher.doFinal(scp.getDerivationData());
-                System.arraycopy(session, 0, scp.getSessKek(), 0, 16);
-                System.arraycopy(session, 0, scp.getSessKek(), 16, 8);
-
-                logger.debug("* sessKek = " + Conversion.arrayToHex(scp.getSessRMac()));
-
-            } else if ((scp.getScpMode() == SCPMode.SCP_03_65)
-                    || (scp.getScpMode() == SCPMode.SCP_03_6D)
-                    || (scp.getScpMode() == SCPMode.SCP_03_05)
-                    || (scp.getScpMode() == SCPMode.SCP_03_0D)
-                    || (scp.getScpMode() == SCPMode.SCP_03_2D)
-                    || (scp.getScpMode() == SCPMode.SCP_03_25)) {
-
-                logger.debug("derivation data : " + Conversion.arrayToHex(scp.getDerivationData()));
-
-                scp.setSessEnc(new byte[16]);
-                scp.setSessMac(new byte[16]);
-                scp.setSessRMac(new byte[16]);
-
-                IvParameterSpec ivSpec = new IvParameterSpec(scp.getIcv());
-                logger.debug("*** Initialize IV : " + Conversion.arrayToHex(scp.getIcv()));
-
-
-                SecretKeySpec skeySpec = new SecretKeySpec(staticKenc.getValue(), "AES");
-                Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                logger.debug("key : " + Conversion.arrayToHex(skeySpec.getEncoded()));
-
-                // Calculing Encryption Session Keys
-                scp.getDerivationData()[11] = SCP03_DERIVATION4DATAENC;
-                scp.getDerivationData()[13] = (byte) 0x00;
-                scp.getDerivationData()[14] = (byte) 0xC0;
-                scp.getDerivationData()[15] = (byte) 0x02;
-
-                byte icvNextBloc[] = new byte[16];
-                int noOfBlocks = scp.getDerivationData().length / 16;
-
-                int startIndex = 0;
-                for (int i = 0; i < (noOfBlocks); i++) {
-                    cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
-                    System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
-                    startIndex += 16;
-//                    logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
-//                    logger.debug("Icv for block = " + Conversion.arrayToHex(icvNextBloc));
-                    ivSpec = new IvParameterSpec(icvNextBloc);
-                }
-                System.arraycopy(icvNextBloc, 0, scp.getSessEnc(), 0, icvNextBloc.length);
-                logger.debug("sessEnc = " + Conversion.arrayToHex(scp.getSessEnc()));
-
-                ivSpec = new IvParameterSpec(scp.getIcv());
-
-
-                // Calculing C_Mac Session Keys
-                scp.getDerivationData()[11] = SCP03_DERIVATION4CMAC;
-                scp.getDerivationData()[13] = (byte) 0x00;
-                scp.getDerivationData()[14] = (byte) 0xC0;
-                scp.getDerivationData()[15] = (byte) 0x02;
-
-
-                noOfBlocks = scp.getDerivationData().length / 16;
-
-                startIndex = 0;
-                for (int i = 0; i < (noOfBlocks); i++) {
-                    cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
-                    System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
-                    startIndex += 16;
-//                    logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
-//                    logger.debug("Icv for block = " + Conversion.arrayToHex(icvNextBloc));
-                    ivSpec = new IvParameterSpec(icvNextBloc);
-                }
-                System.arraycopy(icvNextBloc, 0, scp.getSessMac(), 0, icvNextBloc.length);
-                logger.debug("sessMac = " + Conversion.arrayToHex(scp.getSessMac()));
-
-                ivSpec = new IvParameterSpec(scp.getIcv());
-
-                // Calculing R_Mac Session Keys
-                scp.getDerivationData()[11] = SCP03_DERIVATION4RMAC;
-                scp.getDerivationData()[13] = (byte) 0x00;
-                scp.getDerivationData()[14] = (byte) 0xC0;
-                scp.getDerivationData()[15] = (byte) 0x02;
-
-                noOfBlocks = scp.getDerivationData().length / 16;
-
-                startIndex = 0;
-                for (int i = 0; i < (noOfBlocks); i++) {
-                    cipher.init(Cipher.ENCRYPT_MODE, skeySpec, ivSpec);
-                    byte[] encrypted = cipher.doFinal(scp.getDerivationData(), startIndex, 16);
-                    System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
-                    startIndex += 16;
-//                    logger.debug("derivation data : " + Conversion.arrayToHex(derivationData));
-//                    logger.debug("Icv for block = " + Conversion.arrayToHex(icvNextBloc));
-                    ivSpec = new IvParameterSpec(icvNextBloc);
-                }
-                System.arraycopy(icvNextBloc, 0, scp.getSessRMac(), 0, icvNextBloc.length);
-                logger.debug("sessRMac = " + Conversion.arrayToHex(scp.getSessRMac()));
-
-
-            }
-
-
-        } catch (InvalidAlgorithmParameterException ex) {
-            java.util.logging.Logger.getLogger(GP2xCommands.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem", e);
-        } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad PADDING problem", e);
-        }
-
-        logger.debug("==> Generate Session Keys Data End");
-    }
-
-    // SECURITY DOMAIN
-
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.library.Commands#deleteOnCardKey(byte[], boolean)
-     */
-
-    /**
-     * Generate the pseudo Random Card Challenge to compare with the Challenge
-     * of the card obtained with initializeUpdate Command
-     *
-     * @param aid AID of the current selected application
-     */
-    protected byte[] pseudoRandomGenerationCardChallenge(byte[] aid) {
-
-        logger.info("==> pseudo Random Generation CardChallenge");
-        logger.info("* SCP 02 Protocol (" + scp.getScpMode() + ") used");
-        logger.info("* IV is " + Conversion.arrayToHex(iv_zero));
-
-        byte[] computedCardChallenge = null;
-        IvParameterSpec ivSpec = new IvParameterSpec(iv_zero);
-        byte[] dataWithPadding;
-        byte[] res;
-        if (aid.length % 8 != 0) { // We need a PADDING
-
-            logger.debug("- Data needs PADDING!");
-
-            int nbBytes = 8 - (aid.length % 8);
-            dataWithPadding = new byte[aid.length + nbBytes];
-            System.arraycopy(aid, 0, dataWithPadding, 0, aid.length);
-            System.arraycopy(GP2xCommands.PADDING, 0, dataWithPadding, aid.length, nbBytes);
-        } else {
-            dataWithPadding = new byte[aid.length + 8];
-            System.arraycopy(aid, 0, dataWithPadding, 0, aid.length);
-            System.arraycopy(GP2xCommands.PADDING, 0, dataWithPadding, aid.length, GP2xCommands.PADDING.length);
-        }
-        logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
-        try {
-
-            SecretKeySpec desSingleKey = new SecretKeySpec(scp.getSessMac(), 0, 8, "DES");
-            Cipher singleDesCipher;
-            singleDesCipher = Cipher.getInstance("DES/CBC/NoPadding", "SunJCE");
-
-            // Calculate the first n - 1 block.
-            int noOfBlocks = dataWithPadding.length / 8;
-            byte ivForNextBlock[] = scp.getIcv();
-            int startIndex = 0;
-            for (int i = 0; i < (noOfBlocks - 1); i++) {
-                singleDesCipher.init(Cipher.ENCRYPT_MODE, desSingleKey, ivSpec);
-                ivForNextBlock = singleDesCipher.doFinal(dataWithPadding, startIndex, 8);
-                startIndex += 8;
-                ivSpec = new IvParameterSpec(ivForNextBlock);
-                logger.debug("* Calculated cryptogram is for Bolck " + i + " " + Conversion.arrayToHex(ivForNextBlock));
-            }
-
-
-            SecretKeySpec desKey = new SecretKeySpec(scp.getSessMac(), "DESede");
-            Cipher myCipher;
-
-            myCipher = Cipher.getInstance("DESede/CBC/NoPadding", "SunJCE");
-            int offset = dataWithPadding.length - 8;
-
-            // Generate C-MAC. Use 8-LSB
-            // For the last block, you can use TripleDES EDE with ECB mode, now I select the CBC and
-            // use the last block of the previous encryption result as ICV.
-            //ivSpec = new IvParameterSpec(ivForLastBlock);
-            myCipher.init(Cipher.ENCRYPT_MODE, desKey, ivSpec);
-            res = myCipher.doFinal(dataWithPadding, offset, 8);
-
-            // the CardChallenge is the six MSB of the result(MAC Over AID)
-            computedCardChallenge = new byte[6];
-            System.arraycopy(res, 0, computedCardChallenge, 0, 6);
-            logger.info("pseudo Random Generation CardChallenge computed is " + Conversion.arrayToHex(computedCardChallenge));
-
-        } catch (NoSuchProviderException ex) {
-            java.util.logging.Logger.getLogger(GP2xCommands.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem", e);
-        } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad PADDING problem", e);
-        } catch (InvalidAlgorithmParameterException e) {
-            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
-        }
-        return computedCardChallenge;
     }
 
     @Override
@@ -1849,7 +818,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (this.getSecMode() == SecLevel.C_MAC) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
             System.arraycopy(deleteComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, deleteComm, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
             logger.debug("* delete Command which CMac is " + Conversion.arrayToHex(deleteComm));
@@ -1864,11 +833,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 && (scp.getScpMode() != SCPMode.SCP_03_25)) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
             System.arraycopy(deleteComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, deleteComm, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
             logger.debug("* delete Command which CMac is " + Conversion.arrayToHex(deleteComm));
-            deleteComm = this.encryptCommand(deleteComm);
+            deleteComm = scp.encryptCommand(deleteComm);
             logger.debug("* Encrypted delete Command is " + Conversion.arrayToHex(deleteComm));
         }
 
@@ -1882,9 +851,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 byte[] dataToEnc = new byte[headerSize + dataSize - 8]; // data to encrypt without 8 bytes of CMAC
                 System.arraycopy(deleteComm, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
-                byte[] encDeleteComm = this.encryptCommand(dataToEnc);
+                byte[] encDeleteComm = scp.encryptCommand(dataToEnc);
                 logger.debug("* Encrypted Delete Command is " + Conversion.arrayToHex(encDeleteComm));
-                byte[] cmac = this.generateMac(encDeleteComm); // generate C-MAC
+                byte[] cmac = scp.generateMac(encDeleteComm); // generate C-MAC
                 logger.debug("* CMac " + Conversion.arrayToHex(cmac));
                 deleteComm = new byte[encDeleteComm.length + 8];
                 System.arraycopy(encDeleteComm, 0, deleteComm, 0, encDeleteComm.length);
@@ -1907,14 +876,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.compudeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (scp.getScpMode() == SCPMode.SCP_03_65)) {
-            this.decryptCardResponseData(resp.getBytes());
+            scp.decryptCardResponseData(resp.getBytes());
         }
 
         // increment the value of counter icv for CENC
         if (this.getSecMode() == SecLevel.C_ENC_AND_MAC
                 || this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC
                 || this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-            CENC_Counter++;
+            scp.setCENC_Counter(scp.getCENC_Counter() + 1);
         }
 
 
@@ -1962,14 +931,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (this.getSecMode() != SecLevel.NO_SECURITY_LEVEL) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
             System.arraycopy(deleteComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, deleteComm, dataCmac.length, cmac.length); // put C-MAC into deleteComm
 
             logger.debug("* Delete Command whith CMAC is " + Conversion.arrayToHex(deleteComm));
         }
 
         if (this.getSecMode() == SecLevel.C_ENC_AND_MAC) {
-            deleteComm = this.encryptCommand(deleteComm);
+            deleteComm = scp.encryptCommand(deleteComm);
 
             logger.debug("* Encrypted Delete Command is " + Conversion.arrayToHex(deleteComm));
         }
@@ -2079,7 +1048,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (this.getSecMode() == SecLevel.C_MAC) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
             System.arraycopy(installForLoadComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, installForLoadComm, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
             logger.debug("* Install For Load Command whith CMAC is " + Conversion.arrayToHex(installForLoadComm));
@@ -2094,11 +1063,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 && (scp.getScpMode() != SCPMode.SCP_03_25)) {
             byte[] dataCmac = new byte[headerSize + dataSize - 8]; // data used to generate C-MAC
             System.arraycopy(installForLoadComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, installForLoadComm, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
             logger.debug("* Install For Load Command whith CMAC is " + Conversion.arrayToHex(installForLoadComm));
-            installForLoadComm = this.encryptCommand(installForLoadComm);
+            installForLoadComm = scp.encryptCommand(installForLoadComm);
             logger.debug("* Encrypted Install For Load Command is " + Conversion.arrayToHex(installForLoadComm));
         }
 
@@ -2112,9 +1081,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 byte[] dataToEnc = new byte[headerSize + dataSize - 8]; // data to encrypt without 8 bytes of CMAC
                 System.arraycopy(installForLoadComm, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
-                byte[] encInstallForLoadComm = this.encryptCommand(dataToEnc);
+                byte[] encInstallForLoadComm = scp.encryptCommand(dataToEnc);
                 logger.debug("* Encrypted Install For Load Command is " + Conversion.arrayToHex(encInstallForLoadComm));
-                byte[] cmac = this.generateMac(encInstallForLoadComm); // generate C-MAC
+                byte[] cmac = scp.generateMac(encInstallForLoadComm); // generate C-MAC
                 logger.debug("* CMac " + Conversion.arrayToHex(cmac));
                 installForLoadComm = new byte[encInstallForLoadComm.length + 8];
                 System.arraycopy(encInstallForLoadComm, 0, installForLoadComm, 0, encInstallForLoadComm.length);
@@ -2138,7 +1107,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.compudeAndVerifyRMac(resp.getBytes());
 
         if (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-            byte[] plainCommand = this.decryptCardResponseData(resp.getBytes());
+            byte[] plainCommand = scp.decryptCardResponseData(resp.getBytes());
             if (plainCommand != null) {
                 logger.debug("plain text response is " + Conversion.arrayToHex(plainCommand));
             }
@@ -2149,7 +1118,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (this.getSecMode() == SecLevel.C_ENC_AND_MAC
                 || this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC
                 || this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-            CENC_Counter++;
+            scp.setCENC_Counter(scp.getCENC_Counter() + 1);
         }
 
         logger.debug("=> Install For Load Command End");
@@ -2281,7 +1250,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             if (this.getSecMode() == SecLevel.C_MAC) {
                 byte[] dataCmac = new byte[cmd.length - 8]; // data used to generate C-MAC
                 System.arraycopy(cmd, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-                byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+                byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
                 System.arraycopy(cmac, 0, cmd, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
                 logger.debug("* Load Command whith CMAC is " + Conversion.arrayToHex(cmd));
@@ -2296,11 +1265,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     && (scp.getScpMode() != SCPMode.SCP_03_25)) {
                 byte[] dataCmac = new byte[cmd.length - 8]; // data used to generate C-MAC
                 System.arraycopy(cmd, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-                byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+                byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
                 System.arraycopy(cmac, 0, cmd, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
                 logger.debug("* Load Command whith CMAC is " + Conversion.arrayToHex(cmd));
-                cmd = this.encryptCommand(cmd);
+                cmd = scp.encryptCommand(cmd);
                 logger.debug("* Encrypted Load Command is " + Conversion.arrayToHex(cmd));
             }
 
@@ -2314,9 +1283,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     byte[] dataToEnc = new byte[cmd.length - 8]; // data to encrypt without 8 bytes of CMAC
                     System.arraycopy(cmd, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
-                    byte[] encInstallForLoadComm = this.encryptCommand(dataToEnc);
+                    byte[] encInstallForLoadComm = scp.encryptCommand(dataToEnc);
                     logger.debug("* Encrypted Load Command is " + Conversion.arrayToHex(encInstallForLoadComm));
-                    byte[] cmac = this.generateMac(encInstallForLoadComm); // generate C-MAC
+                    byte[] cmac = scp.generateMac(encInstallForLoadComm); // generate C-MAC
                     logger.debug("* CMac " + Conversion.arrayToHex(cmac));
                     cmd = new byte[encInstallForLoadComm.length + 8];
                     System.arraycopy(encInstallForLoadComm, 0, cmd, 0, encInstallForLoadComm.length);
@@ -2339,12 +1308,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
             this.compudeAndVerifyRMac(resp.getBytes());
             if ((this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (scp.getScpMode() == SCPMode.SCP_03_65)) {
-                this.decryptCardResponseData(resp.getBytes());
+                scp.decryptCardResponseData(resp.getBytes());
             }
             if (this.getSecMode() == SecLevel.C_ENC_AND_MAC
                     || this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC
                     || this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-                CENC_Counter++;
+                scp.setCENC_Counter(scp.getCENC_Counter() + 1);
             }
 
         }
@@ -2482,7 +1451,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (this.getSecMode() == SecLevel.C_MAC) {
             byte[] dataCmac = new byte[installForInstallComm.length - 8]; // data used to generate C-MAC
             System.arraycopy(installForInstallComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, installForInstallComm, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
             logger.debug("* Install For Install Command whith mac is " + Conversion.arrayToHex(installForInstallComm));
@@ -2497,11 +1466,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 && (scp.getScpMode() != SCPMode.SCP_03_25)) {
             byte[] dataCmac = new byte[installForInstallComm.length - 8]; // data used to generate C-MAC
             System.arraycopy(installForInstallComm, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, installForInstallComm, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
 
             logger.debug("* Install For Install Command whith mac is " + Conversion.arrayToHex(installForInstallComm));
-            installForInstallComm = this.encryptCommand(installForInstallComm);
+            installForInstallComm = scp.encryptCommand(installForInstallComm);
             logger.debug("* Encrypted Install For Install Command is " + Conversion.arrayToHex(installForInstallComm));
         }
 
@@ -2515,8 +1484,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 byte[] dataToEnc = new byte[installForInstallComm.length - 8]; // data to encrypt without 8 bytes of CMAC
                 System.arraycopy(installForInstallComm, 0, dataToEnc, 0, dataToEnc.length); // data used to generate C-MAC
 
-                byte[] encInstallForLoadComm = this.encryptCommand(dataToEnc);
-                byte[] cmac = this.generateMac(encInstallForLoadComm); // generate C-MAC
+                byte[] encInstallForLoadComm = scp.encryptCommand(dataToEnc);
+                byte[] cmac = scp.generateMac(encInstallForLoadComm); // generate C-MAC
                 installForInstallComm = new byte[encInstallForLoadComm.length + 8];
                 System.arraycopy(encInstallForLoadComm, 0, installForInstallComm, 0, encInstallForLoadComm.length);
                 System.arraycopy(cmac, 0, installForInstallComm, encInstallForLoadComm.length, cmac.length);
@@ -2536,14 +1505,14 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         this.compudeAndVerifyRMac(resp.getBytes());
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (scp.getScpMode() == SCPMode.SCP_03_65)) {
-            this.decryptCardResponseData(resp.getBytes());
+            scp.decryptCardResponseData(resp.getBytes());
         }
 
         // increment the value of counter icv for CENC
         if (this.getSecMode() == SecLevel.C_ENC_AND_MAC
                 || this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC
                 || this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-            CENC_Counter++;
+            scp.setCENC_Counter(scp.getCENC_Counter() + 1);
         }
 
         logger.debug("=> Install For Install And Make Selectable End");
@@ -2632,11 +1601,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
             }
             logger.debug("scpMode " + scp.getScpMode());
-            this.generateSessionKeys(kEnc, kMac, kKek);
-            initIcvToMacOverAid(aid);
-
-
-            //initIcvToMacOverAid(aid);
+            scp.generateSessionKeys(kEnc, kMac, kKek);
+            scp.initIcvToMacOverAid(aid);
         } else {
             this.resetParams();
             throw new CardException("this SELECT Command is used for card which implement SCPMode (SCP 02_0A or SCP_02_0B) ");
@@ -2684,7 +1650,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (scp.getSecMode() != SecLevel.NO_SECURITY_LEVEL) {
             byte[] dataCmac = new byte[cmd.length - 8]; // data used to generate C-MAC
             System.arraycopy(cmd, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, cmd, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
             logger.debug("* Begin R-Mac Command whith CMAC is " + Conversion.arrayToHex(cmd));
         }
@@ -2742,7 +1708,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (scp.getSecMode() != SecLevel.NO_SECURITY_LEVEL) {
             byte[] dataCmac = new byte[cmd.length - 8]; // data used to generate C-MAC
             System.arraycopy(cmd, 0, dataCmac, 0, dataCmac.length); // data used to generate C-MAC
-            byte[] cmac = this.generateMac(dataCmac); // generate C-MAC
+            byte[] cmac = scp.generateMac(dataCmac); // generate C-MAC
             System.arraycopy(cmac, 0, cmd, dataCmac.length, cmac.length); // put C-MAC into installForLoadComm
             logger.debug("* Begin R-Mac Command whith CMAC is " + Conversion.arrayToHex(cmd));
         }
@@ -2799,7 +1765,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(scp.getIcv(), 0, copyOfIcv, 0, scp.getIcv().length);
 
 
-                byte[] Rmac = this.generateMac(data);
+                byte[] Rmac = scp.generateMac(data);
 
                 logger.debug("* Computed RMac is : " + Conversion.arrayToHex(Rmac));
 
@@ -2816,108 +1782,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
             }
-        }
-    }
-
-
-    protected byte[] decryptCardResponseData(byte[] response) throws CardException {
-
-        try {
-            byte[] encryptedData;
-            if (response.length > 10)// the response contain data
-            {
-                byte[] res = null;
-                if (scp.getScpMode() == SCPMode.SCP_03_65) {
-                    encryptedData = new byte[(response.length - 10)];
-                    System.arraycopy(response, 0, encryptedData, 0, response.length - 10);
-                    if ((encryptedData.length % 16) != 0) {
-                        throw new CardException("The length of received encrypted data is invalid");
-                    }
-                    IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
-                    Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
-                    res = cipher.doFinal(encryptedData);
-                }
-                if (scp.getScpMode() == SCPMode.SCP_03_6D) {
-                    byte[] icvCEnc = new byte[16];
-                    String hexaCounter = Integer.toHexString(CENC_Counter);
-                    if ((hexaCounter.length() % 2) == 1) {
-                        hexaCounter = "0" + hexaCounter;
-                    }
-                    logger.debug("* icv counter = " + Conversion.arrayToHex(Conversion.hexToArray(hexaCounter)));
-                    hexaCounter = Conversion.arrayToHex(Conversion.hexToArray(hexaCounter));
-
-                    byte[] byteCounter = Conversion.hexToArray(hexaCounter);
-
-                    System.arraycopy(SCP03_C_ENC_COUNTER_ICV_PADDING, 0, icvCEnc, 0, 16 - byteCounter.length);
-                    System.arraycopy(byteCounter, 0, icvCEnc, 16 - byteCounter.length, byteCounter.length);
-                    logger.debug("* data used to calculate icv = " + Conversion.arrayToHex(icvCEnc));
-
-                    encryptedData = new byte[(response.length - 10)];
-                    System.arraycopy(response, 0, encryptedData, 0, response.length - 10);
-                    if ((encryptedData.length % 16) != 0) {
-                        throw new CardException("The length of received encrypted data is invalid");
-                    }
-                    IvParameterSpec ivSpec = new IvParameterSpec(icvCEnc);
-                    Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
-                    res = cipher.doFinal(encryptedData);
-                    RENC_counter++;
-                }
-                if (scp.getScpMode() == SCPMode.SCP_03_05) {// this mode don't support RMAC then the response contain only Crypted data and Statuts words
-                    encryptedData = new byte[(response.length - 2)];
-                    System.arraycopy(response, 0, encryptedData, 0, response.length - 2);
-                    if ((encryptedData.length % 16) != 0) {
-                        throw new CardException("The length of received encrypted data is invalid");
-                    }
-                    IvParameterSpec ivSpec = new IvParameterSpec(iv_zero_scp03);
-                    Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
-                    res = cipher.doFinal(encryptedData);
-                }
-                if (scp.getScpMode() == SCPMode.SCP_03_0D) {
-                    byte[] icvCEnc = new byte[16];
-                    String hexaCounter = Integer.toHexString(CENC_Counter);
-                    if ((hexaCounter.length() % 2) == 1) {
-                        hexaCounter = "0" + hexaCounter;
-                    }
-                    logger.debug("* icv counter = " + Conversion.arrayToHex(Conversion.hexToArray(hexaCounter)));
-                    hexaCounter = Conversion.arrayToHex(Conversion.hexToArray(hexaCounter));
-
-                    byte[] byteCounter = Conversion.hexToArray(hexaCounter);
-
-                    System.arraycopy(SCP03_C_ENC_COUNTER_ICV_PADDING, 0, icvCEnc, 0, 16 - byteCounter.length);
-                    System.arraycopy(byteCounter, 0, icvCEnc, 16 - byteCounter.length, byteCounter.length);
-                    logger.debug("* data used to calculate icv = " + Conversion.arrayToHex(icvCEnc));
-
-                    encryptedData = new byte[(response.length - 2)];
-                    System.arraycopy(response, 0, encryptedData, 0, response.length - 2);
-                    if ((encryptedData.length % 16) != 0) {
-                        throw new CardException("The length of received encrypted data is invalid");
-                    }
-                    IvParameterSpec ivSpec = new IvParameterSpec(icvCEnc);
-                    Cipher cipher = Cipher.getInstance("AES/CBC/NoPadding");
-                    cipher.init(Cipher.DECRYPT_MODE, new SecretKeySpec(scp.getSessEnc(), "AES"), ivSpec);
-                    res = cipher.doFinal(encryptedData);
-                    RENC_counter++;
-                }
-
-
-                return res;
-            } else if (response.length == 10)   //the response does not contain data
-            {
-                return null;
-            } else {
-                throw new CardException("The length of received encrypted data is invalid");
-            }
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (Exception e) {
-            throw new UnsupportedOperationException("Invalid Algorithm parameter", e);
         }
     }
 
