@@ -49,7 +49,6 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import javax.smartcardio.CardException;
@@ -589,7 +588,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new CardException("Error in DELETE OBJECT : " + Integer.toHexString(resp.getSW()));
         }
 
-        this.compudeAndVerifyRMac(resp.getBytes());
+        try {
+            scp.compudeAndVerifyRMac(resp.getBytes());
+        } catch (SCPException ex) {
+            throw new CardException("SCP error", ex);
+        }
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (scp.getScpMode() == SCPMode.SCP_03_65)) {
             scp.decryptCardResponseData(resp.getBytes());
@@ -820,7 +823,11 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new CardException("Error in INSTALL FOR LOAD : " + Integer.toHexString(resp.getSW()));
         }
 
-        this.compudeAndVerifyRMac(resp.getBytes());
+        try {
+            scp.compudeAndVerifyRMac(resp.getBytes());
+        } catch (SCPException ex) {
+            throw new CardException("SCP error", ex);
+        }
 
         if (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
             byte[] plainCommand = scp.decryptCardResponseData(resp.getBytes());
@@ -1022,7 +1029,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
                 throw new CardException("Error in LOAD : " + Integer.toHexString(resp.getSW()));
             }
-            this.compudeAndVerifyRMac(resp.getBytes());
+            try {
+                scp.compudeAndVerifyRMac(resp.getBytes());
+            } catch (SCPException ex) {
+                throw new CardException("SCP error", ex);
+            }
+
             if ((this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (scp.getScpMode() == SCPMode.SCP_03_65)) {
                 scp.decryptCardResponseData(resp.getBytes());
             }
@@ -1218,7 +1230,13 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (resp.getSW() != ISO7816.SW_NO_ERROR.getValue()) {
             throw new CardException("Error in INSTALL FOR INSTALL AND MAKE SELECTABLE : " + Integer.toHexString(resp.getSW()));
         }
-        this.compudeAndVerifyRMac(resp.getBytes());
+
+        try {
+            scp.compudeAndVerifyRMac(resp.getBytes());
+        } catch (SCPException ex) {
+            throw new CardException("SCP error", ex);
+        }
+
 
         if ((this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) && (scp.getScpMode() == SCPMode.SCP_03_65)) {
             scp.decryptCardResponseData(resp.getBytes());
@@ -1443,62 +1461,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
 
         return resp;
-    }
-
-
-    /**
-     * Compute and verify the Rmac recieved.
-     *
-     * @response Response Message receved by the off card entity
-     */
-    protected void compudeAndVerifyRMac(byte[] response) throws CardException {
-        if (scp.getScpMode() == SCPMode.SCP_03_65
-                || scp.getScpMode() == SCPMode.SCP_03_6D
-                || scp.getScpMode() == SCPMode.SCP_03_25) {
-            if ((this.getSecMode() == SecLevel.R_MAC) ||
-                    (this.getSecMode() == SecLevel.C_MAC_AND_R_MAC) ||
-                    (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) ||
-                    (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)) {
-                byte[] recevedRmac = new byte[8];
-                byte[] data;
-                if (response.length > 10)// the response contain data
-                {
-                    data = new byte[16 + (response.length - 10) + 2];
-                    System.arraycopy(scp.getIcv(), 0, data, 0, scp.getIcv().length);
-                    System.arraycopy(response, 0, data, 16, response.length - 10);
-                    System.arraycopy(response, response.length - 2, data, 16 + response.length - 10, 2);
-
-                } else    //the response does not contain data
-                {
-                    data = new byte[18];
-                    System.arraycopy(scp.getIcv(), 0, data, 0, scp.getIcv().length);
-                    System.arraycopy(response, response.length - 2, data, 16, 2);
-                }
-
-                logger.debug("* data used to  calculate RMac: " + Conversion.arrayToHex(data));
-
-                byte[] copyOfIcv = new byte[16];
-                System.arraycopy(scp.getIcv(), 0, copyOfIcv, 0, scp.getIcv().length);
-
-
-                byte[] Rmac = scp.generateMac(data);
-
-                logger.debug("* Computed RMac is : " + Conversion.arrayToHex(Rmac));
-
-                System.arraycopy(response, response.length - 10, recevedRmac, 0, recevedRmac.length);
-
-                logger.debug("* Receved RMac is : " + Conversion.arrayToHex(recevedRmac));
-
-                System.arraycopy(copyOfIcv, 0, scp.getIcv(), 0, copyOfIcv.length);
-
-                boolean eq = Arrays.equals(Rmac, recevedRmac);
-                if (!eq) {
-                    throw new CardException("Response APDU error - RMAC Not verification error: ");
-                }
-
-
-            }
-        }
     }
 
     @Override

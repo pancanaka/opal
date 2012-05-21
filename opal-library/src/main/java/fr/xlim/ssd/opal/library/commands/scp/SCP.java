@@ -81,6 +81,8 @@ public interface SCP {
 
     void detectAndInitSCP(byte keyId, SCPMode desiredScp, ResponseAPDU resp, GP2xCommands commands) throws SCPException;
 
+    public void compudeAndVerifyRMac(byte[] response) throws SCPException;
+
     void setRENC_counter(int RENC_counter);
 
     int getCENC_Counter();

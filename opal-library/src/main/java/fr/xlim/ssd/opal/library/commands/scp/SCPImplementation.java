@@ -1769,6 +1769,61 @@ public class SCPImplementation implements SCP {
         }
     }
 
+    /**
+     * Compute and verify the Rmac recieved.
+     *
+     * @response Response Message receved by the off card entity
+     */
+    public void compudeAndVerifyRMac(byte[] response) throws SCPException {
+        if (getScpMode() == SCPMode.SCP_03_65
+                || getScpMode() == SCPMode.SCP_03_6D
+                || getScpMode() == SCPMode.SCP_03_25) {
+            if ((this.getSecMode() == SecLevel.R_MAC) ||
+                    (this.getSecMode() == SecLevel.C_MAC_AND_R_MAC) ||
+                    (this.getSecMode() == SecLevel.C_ENC_AND_C_MAC_AND_R_MAC) ||
+                    (this.getSecMode() == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC)) {
+                byte[] recevedRmac = new byte[8];
+                byte[] data;
+                if (response.length > 10)// the response contain data
+                {
+                    data = new byte[16 + (response.length - 10) + 2];
+                    System.arraycopy(getIcv(), 0, data, 0, getIcv().length);
+                    System.arraycopy(response, 0, data, 16, response.length - 10);
+                    System.arraycopy(response, response.length - 2, data, 16 + response.length - 10, 2);
+
+                } else    //the response does not contain data
+                {
+                    data = new byte[18];
+                    System.arraycopy(getIcv(), 0, data, 0, getIcv().length);
+                    System.arraycopy(response, response.length - 2, data, 16, 2);
+                }
+
+                logger.debug("* data used to  calculate RMac: " + Conversion.arrayToHex(data));
+
+                byte[] copyOfIcv = new byte[16];
+                System.arraycopy(getIcv(), 0, copyOfIcv, 0, getIcv().length);
+
+
+                byte[] Rmac = generateMac(data);
+
+                logger.debug("* Computed RMac is : " + Conversion.arrayToHex(Rmac));
+
+                System.arraycopy(response, response.length - 10, recevedRmac, 0, recevedRmac.length);
+
+                logger.debug("* Receved RMac is : " + Conversion.arrayToHex(recevedRmac));
+
+                System.arraycopy(copyOfIcv, 0, getIcv(), 0, copyOfIcv.length);
+
+                boolean eq = Arrays.equals(Rmac, recevedRmac);
+                if (!eq) {
+                    throw new SCPException("Response APDU error - RMAC Not verification error: ");
+                }
+
+
+            }
+        }
+    }
+
     @Override
     public void setRENC_counter(int RENC_counter) {
         this.RENC_counter = RENC_counter;
