@@ -54,7 +54,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URL;
+import java.net.URISyntaxException;
 import java.util.LinkedList;
 import java.util.List;
 import javax.smartcardio.CardChannel;
@@ -131,6 +131,20 @@ public class GP2xCommandsTest {
         commands.setCardChannel(cardChannel);
         return commands;
     }
+
+    private static final File getProjectRoot() {
+        try {
+            File actual = new File(ClassLoader.getSystemResource(".").toURI());
+            File moduleDir = new File(actual.getAbsolutePath() + "/../..");
+            return new File(moduleDir.getAbsolutePath() + File.separator + "..");
+        } catch (URISyntaxException e) {
+            throw new IllegalStateException("cannot parse URI", e);
+        }
+    }
+
+    private final static File helloWorldCapFile =
+            new File(getProjectRoot().getAbsolutePath() +
+                    "/data-for-tests/cap-files/HelloWorld.cap");
 
     @Test
     public void testSetOffCardKey() {
@@ -1053,12 +1067,10 @@ public class GP2xCommandsTest {
     @Test
     public void testLoad() throws CardException, FileNotFoundException, IOException {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/040-GP2xCommands-load-good.txt");
-        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
-        File file = new File(url.getFile());
         byte maxDataLength = (byte) 0xFF;
 
-        byte[] buffer = new byte[(int) file.length()];
-        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[(int) helloWorldCapFile.length()];
+        FileInputStream fis = new FileInputStream(helloWorldCapFile);
         fis.read(buffer);
         commands.load(buffer, maxDataLength);
     }
@@ -1066,8 +1078,6 @@ public class GP2xCommandsTest {
     @Test
     public void testLoadWithCMac() throws CardException, FileNotFoundException, IOException {
         GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/041-GP2xCommands-load-good.txt");
-        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
-        File file = new File(url.getFile());
         commands.getScp().setSecMode(SecLevel.C_MAC);
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -1077,8 +1087,8 @@ public class GP2xCommandsTest {
 
         commands.getScp().setScpMode(SCPMode.SCP_UNDEFINED);
         commands.getScp().initIcv();
-        byte[] buffer = new byte[(int) file.length()];
-        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[(int) helloWorldCapFile.length()];
+        FileInputStream fis = new FileInputStream(helloWorldCapFile);
         fis.read(buffer);
         commands.load(buffer);
     }
@@ -1086,8 +1096,6 @@ public class GP2xCommandsTest {
     @Test
     public void testLoadWithCEncAndMac() throws CardException, FileNotFoundException, IOException {
         GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/042-GP2xCommands-load-good.txt");
-        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
-        File file = new File(url.getFile());
         commands.getScp().setSecMode(SecLevel.C_ENC_AND_MAC);
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -1102,8 +1110,8 @@ public class GP2xCommandsTest {
 
         commands.getScp().setScpMode(SCPMode.SCP_02_15);
         commands.getScp().initIcv();
-        byte[] buffer = new byte[(int) file.length()];
-        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[(int) helloWorldCapFile.length()];
+        FileInputStream fis = new FileInputStream(helloWorldCapFile);
         fis.read(buffer);
         commands.load(buffer);
     }
@@ -1111,12 +1119,10 @@ public class GP2xCommandsTest {
     @Test
     public void testLoadFailWhenSWNot9000() throws CardException, FileNotFoundException, IOException {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/047-GP2xCommands-load-failed.txt");
-        URL url = GP2xCommandsTest.class.getResource("/HelloWorld.cap");
-        File file = new File(url.getFile());
         byte maxDataLength = (byte) 0xFF;
 
-        byte[] buffer = new byte[(int) file.length()];
-        FileInputStream fis = new FileInputStream(file);
+        byte[] buffer = new byte[(int) helloWorldCapFile.length()];
+        FileInputStream fis = new FileInputStream(helloWorldCapFile);
         fis.read(buffer);
 
         expectedException.expect(CardException.class);
