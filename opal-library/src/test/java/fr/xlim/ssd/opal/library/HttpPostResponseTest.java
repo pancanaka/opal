@@ -44,20 +44,22 @@
 package fr.xlim.ssd.opal.library;
 
 
-import fr.xlim.ssd.opal.library.commands.GP2xCommands;
+import fr.xlim.ssd.opal.library.commands.GP2xCommandsTest;
 import fr.xlim.ssd.opal.library.commands.ramoverhttp.HttpPostResponse;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
 import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.*;
+
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 /**
- *
  * @author Bkakria Anis
  */
 public class HttpPostResponseTest {
@@ -69,18 +71,14 @@ public class HttpPostResponseTest {
     HttpPostResponse httpPostResponseChunked;
 
     @Before
-    public void createInstance() throws IOException
-    {
-        String filename= "/fr/xlim/ssd/opal/library/test/053-HttpPostResponse-Encoding-Length.txt";
-        InputStream input = GP2xCommands.class.getResourceAsStream(filename);
-        Reader reader = new InputStreamReader(input);
-        if (reader == null) {
-            throw new IllegalArgumentException("reader must be not null");
-        }
+    public void createInstance() throws IOException {
+        File file = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                "/data-for-tests/dummy-traces/053-HttpPostResponse-Encoding-Length.txt");
+        Reader reader = new FileReader(file);
+        assertNotNull(reader);
 
         BufferedReader br = new BufferedReader(reader);
         String buffer = br.readLine();
-
 
         postResponseLenthEncoding = null;
 
@@ -94,12 +92,10 @@ public class HttpPostResponseTest {
         }
         httpPostResponse = new HttpPostResponse(postResponseLenthEncoding);
 
-        filename= "/fr/xlim/ssd/opal/library/test/054-HttpPostResponse-Encoding-Chunked.txt";
-        input = GP2xCommands.class.getResourceAsStream(filename);
-        reader = new InputStreamReader(input);
-        if (reader == null) {
-            throw new IllegalArgumentException("reader must be not null");
-        }
+        file = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                "/data-for-tests/dummy-traces/054-HttpPostResponse-Encoding-Chunked.txt");
+        reader = new FileReader(file);
+        assertNotNull(reader);
 
         br = new BufferedReader(reader);
         buffer = br.readLine();
@@ -120,44 +116,37 @@ public class HttpPostResponseTest {
     }
 
     @Test
-    public void getHeaderContentTest()
-    {
-        assertEquals(httpPostResponse.getHeaderContent(),"HTTP/1.1 200 OK \r\nX-Admin-Protocol: globalplatform-remote-admin/1.0 \r\nX-Admin-Next-URI: URI01 \r\nContent-Type: application/vnd.globalplatform.card-content-mgt;version=1.0 \r\nX-Admin-Targeted-Application: A000000003000000 \r\nContent-Length: 13\r\n\r\n");
+    public void getHeaderContentTest() {
+        assertEquals(httpPostResponse.getHeaderContent(), "HTTP/1.1 200 OK \r\nX-Admin-Protocol: globalplatform-remote-admin/1.0 \r\nX-Admin-Next-URI: URI01 \r\nContent-Type: application/vnd.globalplatform.card-content-mgt;version=1.0 \r\nX-Admin-Targeted-Application: A000000003000000 \r\nContent-Length: 13\r\n\r\n");
     }
 
     @Test
-    public void getAdminTargetApplicationTest()
-    {
-        assertEquals(httpPostResponse.getAdminTargetApplication(),"A000000003000000 ");
+    public void getAdminTargetApplicationTest() {
+        assertEquals(httpPostResponse.getAdminTargetApplication(), "A000000003000000 ");
     }
 
     @Test
-    public void getCommandAPDUTest()
-    {
-        assertArrayEquals(httpPostResponse.getCommandAPDU(),Conversion.hexToArray("00 A4 04 00 08 A0 00 00 00 03 00 00 00"));
+    public void getCommandAPDUTest() {
+        assertArrayEquals(httpPostResponse.getCommandAPDU(), Conversion.hexToArray("00 A4 04 00 08 A0 00 00 00 03 00 00 00"));
     }
 
     @Test
-    public void getNextURITest()
-    {
-        assertEquals(httpPostResponse.getNextURI(),"URI01 ");
+    public void getNextURITest() {
+        assertEquals(httpPostResponse.getNextURI(), "URI01 ");
     }
 
     @Test
-    public void getEncodingMethodLengthTest()
-    {
-        assertEquals(httpPostResponse.getEncodingMethod(httpPostResponse.getHeaderContent()),"length");
+    public void getEncodingMethodLengthTest() {
+        assertEquals(httpPostResponse.getEncodingMethod(httpPostResponse.getHeaderContent()), "length");
     }
 
     @Test
-    public void getEncodingMethodChunkedTest()
-    {
-        assertEquals(httpPostResponseChunked.getEncodingMethod(httpPostResponseChunked.getHeaderContent()),"chunked ");
+    public void getEncodingMethodChunkedTest() {
+        assertEquals(httpPostResponseChunked.getEncodingMethod(httpPostResponseChunked.getHeaderContent()), "chunked ");
     }
 
     @Test
-    public void getDataLengthTest()
-    {
+    public void getDataLengthTest() {
         assertEquals(httpPostResponse.getDataLength(httpPostResponse.getHeaderContent()), 13);
     }
 }

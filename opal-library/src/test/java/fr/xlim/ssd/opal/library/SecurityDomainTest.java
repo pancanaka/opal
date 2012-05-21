@@ -42,24 +42,30 @@ package fr.xlim.ssd.opal.library;
 import fr.xlim.ssd.opal.library.applet.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.CardChannelMock;
 import fr.xlim.ssd.opal.library.commands.FileControlInformation;
+import fr.xlim.ssd.opal.library.commands.GP2xCommandsTest;
 import fr.xlim.ssd.opal.library.config.CardConfig;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardException;
 import org.junit.Assert;
 import org.junit.Test;
 
-import javax.smartcardio.CardChannel;
-import javax.smartcardio.CardException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
+import static org.junit.Assert.assertNotNull;
 
 public class SecurityDomainTest {
 
     private SecurityDomain createCommands(String filename, CardConfig cardConfig) throws ClassNotFoundException, IOException, CardException {
         CardChannel cardChannel = null;
         SecurityDomain commands = null;
-        InputStream input = SecurityDomain.class.getResourceAsStream(filename);
-        Reader reader = new InputStreamReader(input);
+
+        File file = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                "/data-for-tests/dummy-traces/" + filename);
+        Reader reader = new FileReader(file);
+        assertNotNull(reader);
+
         cardChannel = new CardChannelMock(reader);
         cardConfig.getImplementation().setCardChannel(cardChannel);
         Assert.assertNotNull(cardConfig.getImplementation());
@@ -181,7 +187,7 @@ public class SecurityDomainTest {
 
         CardConfig cardConfig = null;
         cardConfig = new CardConfigFactory().getCardConfigByName("JCOP21");
-        SecurityDomain commands = createCommands("/fr/xlim/ssd/opal/library/test/052-SecurityDomain-select-good.txt", cardConfig);
+        SecurityDomain commands = createCommands("052-SecurityDomain-select-good.txt", cardConfig);
 
         Assert.assertNotNull(commands.getCc());
         commands.select();

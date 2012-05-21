@@ -43,6 +43,7 @@ import fr.xlim.ssd.opal.library.CardConfigFactory;
 import fr.xlim.ssd.opal.library.commands.CardChannelMock;
 import fr.xlim.ssd.opal.library.commands.Commands;
 import fr.xlim.ssd.opal.library.commands.GP2xCommands;
+import fr.xlim.ssd.opal.library.commands.GP2xCommandsTest;
 import fr.xlim.ssd.opal.library.commands.GemXpresso211Commands;
 import fr.xlim.ssd.opal.library.commands.SecLevel;
 import fr.xlim.ssd.opal.library.config.CardConfig;
@@ -51,17 +52,18 @@ import fr.xlim.ssd.opal.library.utilities.Conversion;
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
-import java.net.URL;
 import javax.smartcardio.CardChannel;
 import javax.smartcardio.CardException;
 import javax.smartcardio.CommandAPDU;
 import org.junit.Before;
 import org.junit.Test;
+
+import static org.junit.Assert.assertNotNull;
 
 public class MainHelloWorldTest {
 
@@ -76,6 +78,9 @@ public class MainHelloWorldTest {
     }
 
     private final static File localXml = new File(getProjectRoot().getAbsolutePath() + "/data-for-tests/card-config-xml/test-config.xml");
+
+    private final static File file = new File(getProjectRoot().getAbsolutePath() + "/data-for-tests/cap-files/HelloWorld-2_1_2.cap");
+
 
     private final static byte[] HELLO_WORLD = { // "HELLO"
             (byte) 'H', (byte) 'E', (byte) 'L', (byte) 'L', (byte) 'O'
@@ -100,8 +105,12 @@ public class MainHelloWorldTest {
 
     private GP2xCommands createCommands(String filename) throws IOException, CardException {
         GP2xCommands commands = new GP2xCommands();
-        InputStream input = GP2xCommands.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename);
-        Reader reader = new InputStreamReader(input);
+
+        File file = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                "/data-for-tests/hello-world-traces/" + filename);
+        Reader reader = new FileReader(file);
+        assertNotNull(reader);
+
         CardChannel cardChannel = new CardChannelMock(reader);
         commands.setCardChannel(cardChannel);
         return commands;
@@ -109,8 +118,12 @@ public class MainHelloWorldTest {
 
     private GP2xCommands createCommandsgemalto211(String filename) throws IOException, CardException {
         GP2xCommands commands = new GemXpresso211Commands();
-        InputStream input = GP2xCommands.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename);
-        Reader reader = new InputStreamReader(input);
+
+        File file = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                "/data-for-tests/hello-world-traces/" + filename);
+        Reader reader = new FileReader(file);
+        assertNotNull(reader);
+
         CardChannel cardChannel = new CardChannelMock(reader);
         commands.setCardChannel(cardChannel);
         return commands;
@@ -136,9 +149,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -201,9 +211,6 @@ public class MainHelloWorldTest {
 
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -254,9 +261,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -309,9 +313,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -362,9 +363,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -417,9 +415,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -470,9 +465,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -525,9 +517,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -578,9 +567,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -633,9 +619,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -686,9 +669,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -741,9 +721,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -794,9 +771,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -849,9 +823,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -902,9 +873,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -957,9 +925,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1010,9 +975,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1065,9 +1027,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet -- test
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1119,9 +1078,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1172,9 +1128,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1233,9 +1186,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1287,9 +1237,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1343,9 +1290,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1397,9 +1341,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1450,9 +1391,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1506,9 +1444,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1561,9 +1496,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1615,9 +1547,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1672,9 +1601,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1728,9 +1654,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1781,9 +1704,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1836,9 +1756,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -1893,9 +1810,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -1947,9 +1861,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2004,9 +1915,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2060,9 +1968,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2114,9 +2019,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2170,9 +2072,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2229,9 +2128,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2285,9 +2181,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2343,9 +2236,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2398,9 +2288,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2456,9 +2343,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2512,9 +2396,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2571,9 +2452,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2627,9 +2505,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2685,9 +2560,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2746,9 +2618,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2802,9 +2671,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2857,9 +2723,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -2916,9 +2779,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -2971,9 +2831,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3028,9 +2885,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3083,9 +2937,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3141,9 +2992,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3197,9 +3045,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3255,9 +3100,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3311,9 +3153,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3370,9 +3209,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3427,9 +3263,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3483,9 +3316,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3542,9 +3372,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3599,9 +3426,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3654,9 +3478,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3712,9 +3533,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3769,9 +3587,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3824,9 +3639,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -3882,9 +3694,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3939,9 +3748,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -3994,9 +3800,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -4052,9 +3855,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -4108,9 +3908,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -4167,9 +3964,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.NO_SECURITY_LEVEL);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -4222,9 +4016,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);
@@ -4281,9 +4072,6 @@ public class MainHelloWorldTest {
         commands.externalAuthenticate(SecLevel.C_ENC_AND_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
 
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
-
         // Installing Applet
         InputStream is = new FileInputStream(file);
         byte[] convertedBuffer = CapConverter.convert(is);
@@ -4337,9 +4125,6 @@ public class MainHelloWorldTest {
         commands.initializeUpdate(cardConfig.getDefaultInitUpdateP1(), cardConfig.getDefaultInitUpdateP2(), cardConfig.getScpMode());
         commands.externalAuthenticate(SecLevel.C_ENC_AND_C_MAC_AND_R_MAC);
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null);
-
-        URL url = MainHelloWorldTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
 
         // Installing Applet
         InputStream is = new FileInputStream(file);

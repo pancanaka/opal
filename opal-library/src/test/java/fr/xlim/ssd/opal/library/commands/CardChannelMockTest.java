@@ -39,19 +39,20 @@
  */
 package fr.xlim.ssd.opal.library.commands;
 
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
-
-import javax.smartcardio.CardChannel;
-import javax.smartcardio.CardException;
-import javax.smartcardio.CommandAPDU;
-import javax.smartcardio.ResponseAPDU;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -59,9 +60,14 @@ public class CardChannelMockTest {
 
     private CardChannel cardChannel;
 
+    private final static File dummyTraceFile =
+            new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                    "/data-for-tests/dummy-traces/001-cardChannelMock-dummy.txt");
+
+
     @Before
     public void createCardChannelMock() throws IOException, CardException {
-        InputStream input = CardChannelMockTest.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/001-cardChannelMock-dummy.txt");
+        InputStream input = new FileInputStream(dummyTraceFile);
         Reader reader = new InputStreamReader(input);
         cardChannel = new CardChannelMock(reader);
     }
@@ -93,9 +99,13 @@ public class CardChannelMockTest {
         cardChannel.transmit(new CommandAPDU(bb));
     }
 
+    private final static File dummyTraceFailedFile =
+            new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                    "/data-for-tests/dummy-traces/002-cardChannelMock-failed.txt");
+
     @Test
     public void testConstructorFailedIfNoAssociatedResponse() throws CardException, IOException {
-        InputStream input = CardChannelMockTest.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/002-cardChannelMock-failed.txt");
+        InputStream input = new FileInputStream(dummyTraceFailedFile);
         Reader reader = new InputStreamReader(input);
 
         expectedException.expect(CardException.class);

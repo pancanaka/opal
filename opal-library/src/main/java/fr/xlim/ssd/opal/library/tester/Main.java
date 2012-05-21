@@ -40,22 +40,28 @@
 package fr.xlim.ssd.opal.library.tester;
 
 import fr.xlim.ssd.opal.library.CardConfigFactory;
+import fr.xlim.ssd.opal.library.applet.SecurityDomain;
 import fr.xlim.ssd.opal.library.commands.SecLevel;
 import fr.xlim.ssd.opal.library.commands.ramoverhttp.RAMOverHTTP;
-import fr.xlim.ssd.opal.library.applet.SecurityDomain;
 import fr.xlim.ssd.opal.library.config.CardConfig;
 import fr.xlim.ssd.opal.library.utilities.CapConverter;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
-import org.metastatic.jessie.provider.CipherSuite;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import javax.smartcardio.*;
-import javax.smartcardio.CardTerminals.State;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.logging.Level;
+import javax.smartcardio.ATR;
+import javax.smartcardio.Card;
+import javax.smartcardio.CardChannel;
+import javax.smartcardio.CardException;
+import javax.smartcardio.CardTerminal;
+import javax.smartcardio.CardTerminals.State;
+import javax.smartcardio.CommandAPDU;
+import javax.smartcardio.ResponseAPDU;
+import javax.smartcardio.TerminalFactory;
+import org.metastatic.jessie.provider.CipherSuite;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * A program to test compatibility SCPO1 and SCP02 between OPAL and a card. It works as follow:
@@ -173,8 +179,8 @@ public class Main {
         ATR atr = card.getATR();
         logger.info("Card ATR:  " + Conversion.arrayToHex(atr.getBytes()));
 
-            CardConfigFactory ccFactory = new CardConfigFactory();
-            return ccFactory.getCardConfigByATR(atr.getBytes());
+        CardConfigFactory ccFactory = new CardConfigFactory();
+        return ccFactory.getCardConfigByATR(atr.getBytes());
     }
 
     public static void RAMOverHTTP() throws ClassNotFoundException, IOException, CardException {
@@ -240,7 +246,6 @@ public class Main {
         logger.info("Installing Applet");
         logger.info("* Install For Load");
         securityDomain.installForLoad(PACKAGE_ID, null, null);
-        //File file = new File("cap/HelloWorld-2_1_2.cap");
 
         InputStream is = ClassLoader.getSystemClassLoader().getClass().getResourceAsStream("/cap/HelloWorld-2_1_2.cap");
         byte[] convertedBuffer = CapConverter.convert(is);

@@ -39,13 +39,12 @@
  */
 package fr.xlim.ssd.opal.library.utilities;
 
-import org.junit.Test;
-
+import fr.xlim.ssd.opal.library.commands.GP2xCommandsTest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.URL;
+import org.junit.Test;
 
 import static org.junit.Assert.assertArrayEquals;
 
@@ -94,8 +93,8 @@ public class CapConverterTest {
 
     @Test
     public void testConvert() throws FileNotFoundException {
-        URL url = CapConverterTest.class.getResource("/cap/HelloWorld-2_1_2.cap");
-        File file = new File(url.getFile());
+        File file = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                "/data-for-tests/cap-files/HelloWorld-2_1_2.cap");
         InputStream is = new FileInputStream(file);
         byte[] result = CapConverter.convert(is);
         assertArrayEquals(expected, result);

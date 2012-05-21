@@ -1,15 +1,17 @@
 package fr.xlim.ssd.opal.library.tester
 
+import fr.xlim.ssd.opal.library.CardConfigFactory
 import fr.xlim.ssd.opal.library.commands.CardChannelMock
 import fr.xlim.ssd.opal.library.commands.GP2xCommands
+import fr.xlim.ssd.opal.library.commands.GP2xCommandsTest
 import fr.xlim.ssd.opal.library.commands.SecLevel
 import fr.xlim.ssd.opal.library.config.CardConfig
 import fr.xlim.ssd.opal.library.utilities.CapConverter
 import fr.xlim.ssd.opal.library.utilities.Conversion
 import fr.xlim.ssd.opal.library.utilities.RandomGenerator
+
 import javax.smartcardio.CardChannel
 import javax.smartcardio.CommandAPDU
-import fr.xlim.ssd.opal.library.CardConfigFactory
 
 class MainTest extends spock.lang.Specification {
 
@@ -26,8 +28,11 @@ class MainTest extends spock.lang.Specification {
                   byte[] secondRandomSequence) {
 
         RandomGenerator.setRandomSequence(null)
-        InputStream input = MainTest.class.getResourceAsStream("/fr/xlim/ssd/opal/library/test/cards" + filename)
-        Reader reader = new InputStreamReader(input)
+
+        File capFile = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() +
+                "/data-for-tests/hello-world-traces/" + filename);
+
+        Reader reader = new FileReader(capFile)
         CardChannel cardChannel = new CardChannelMock(reader)
         GP2xCommands commands = new GP2xCommands()
         commands.setCardChannel(cardChannel)
@@ -41,8 +46,7 @@ class MainTest extends spock.lang.Specification {
         commands.externalAuthenticate(secLevel)
         commands.installForLoad(PACKAGE_ID, cardConfig.getIsd(), null)
 
-        URL url = MainTest.class.getResource("/cap/HelloWorld-2_1_2.cap")
-        File file = new File(url.getFile())
+        File file = new File(GP2xCommandsTest.getProjectRoot().getAbsolutePath() + "/data-for-tests/cap-files/HelloWorld-2_1_2.cap");
 
         // Installing Applet
         InputStream is = new FileInputStream(file)

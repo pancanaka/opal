@@ -140,7 +140,7 @@ public class GP2xCommandsTest {
         return commands;
     }
 
-    private static final File getProjectRoot() {
+    public static final File getProjectRoot() {
         try {
             File actual = new File(ClassLoader.getSystemResource(".").toURI());
             File moduleDir = new File(actual.getAbsolutePath() + "/../..");
