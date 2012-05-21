@@ -39,6 +39,7 @@
  */
 package fr.xlim.ssd.opal.library.commands;
 
+import fr.xlim.ssd.opal.library.commands.scp.SCPException;
 import fr.xlim.ssd.opal.library.config.KeyType;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.config.SCGemVisa;
@@ -69,6 +70,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 public class GP2xCommandsTest {
 
@@ -229,14 +231,36 @@ public class GP2xCommandsTest {
         commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_01_05);
     }
 
+    private abstract class CheckSCPException {
+
+        CheckSCPException(Commands commands, String message) {
+            boolean found = false;
+            try {
+                callback(commands);
+            } catch (CardException ex) {
+                found = true;
+                Throwable cause = ex.getCause();
+                assertNotNull(cause);
+                assertTrue(cause instanceof SCPException);
+                assertEquals(cause.getMessage(), message);
+            }
+            assertTrue(found);
+        }
+
+        abstract public void callback(Commands commands) throws CardException;
+    }
+
     @Test
     public void testInitializeUpdateFailWhenSCPNotImplemented() throws CardException {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/014-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("SCP version not available (-103)");
-        commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_10);
+        new CheckSCPException(commands, "SCP version not available (-103)") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 0x1, (byte) 0x2, SCPMode.SCP_10);
+            }
+        };
     }
 
     @Test
@@ -244,9 +268,12 @@ public class GP2xCommandsTest {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/015-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Desired SCP does not match with card SCP value (1)");
-        commands.initializeUpdate((byte) 0x1, (byte) 0x64, SCPMode.SCP_10);
+        new CheckSCPException(commands, "Desired SCP does not match with card SCP value (1)") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 0x1, (byte) 0x64, SCPMode.SCP_10);
+            }
+        };
     }
 
     @Test
@@ -254,9 +281,12 @@ public class GP2xCommandsTest {
         Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/015-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 1, keyId: 100)");
-        commands.initializeUpdate((byte) 0x1, (byte) 0x64, SCPMode.SCP_01_05);
+        new CheckSCPException(commands, "Selected key not found in local repository (keySetVersion: 1, keyId: 100)") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 0x1, (byte) 0x64, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test
@@ -407,9 +437,13 @@ public class GP2xCommandsTest {
         commands.setOffCardKey(keys.get(0));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Selected MAC Key not found in Local Repository : keySetVersion : 13, keyId : 2");
-        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+        new CheckSCPException(commands,
+                "Selected MAC Key not found in Local Repository : keySetVersion : 13, keyId : 2") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test
@@ -418,9 +452,13 @@ public class GP2xCommandsTest {
         commands.setOffCardKey(keys.get(1));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 13, keyId: 1)");
-        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+        new CheckSCPException(commands,
+                "Selected key not found in local repository (keySetVersion: 13, keyId: 1)") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test
@@ -429,9 +467,13 @@ public class GP2xCommandsTest {
         commands.setOffCardKey(keys.get(2));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 13, keyId: 1)");
-        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+        new CheckSCPException(commands,
+                "Selected key not found in local repository (keySetVersion: 13, keyId: 1)") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test
@@ -441,9 +483,13 @@ public class GP2xCommandsTest {
         commands.setOffCardKey(keys.get(1));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Selected KEK Key not found in Local Repository : keySetVersion : 13, keyId : 3");
-        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+        new CheckSCPException(commands,
+                "Selected KEK Key not found in Local Repository : keySetVersion : 13, keyId : 3") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test
@@ -453,9 +499,13 @@ public class GP2xCommandsTest {
         commands.setOffCardKey(keys.get(2));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Selected MAC Key not found in Local Repository : keySetVersion : 13, keyId : 2");
-        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+        new CheckSCPException(commands,
+                "Selected MAC Key not found in Local Repository : keySetVersion : 13, keyId : 2") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test
@@ -465,9 +515,13 @@ public class GP2xCommandsTest {
         commands.setOffCardKey(keys.get(2));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Selected key not found in local repository (keySetVersion: 13, keyId: 1)");
-        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+        new CheckSCPException(commands,
+                "Selected key not found in local repository (keySetVersion: 13, keyId: 1)") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test
@@ -484,9 +538,12 @@ public class GP2xCommandsTest {
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
-        expectedException.expect(CardException.class);
-        expectedException.expectMessage("Error verifying Card Cryptogram");
-        commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+        new CheckSCPException(commands, "Error verifying Card Cryptogram") {
+            @Override
+            public void callback(Commands commands) throws CardException {
+                commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
+            }
+        };
     }
 
     @Test

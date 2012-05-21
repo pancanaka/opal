@@ -40,7 +40,8 @@
 package fr.xlim.ssd.opal.library.commands;
 
 import fr.xlim.ssd.opal.library.commands.scp.SCP;
-import fr.xlim.ssd.opal.library.config.SCDerivableKey;
+import fr.xlim.ssd.opal.library.commands.scp.SCPException;
+import fr.xlim.ssd.opal.library.commands.scp.SCPImplementation;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.config.SCKey;
 import fr.xlim.ssd.opal.library.config.SCPMode;
@@ -68,15 +69,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     /// Logger used to print messages
     private static final Logger logger = LoggerFactory.getLogger(GP2xCommands.class);
 
-    // SCP 01 constant used in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} Response command
-    protected static final byte SCP01 = (byte) 0x01;
-
-    // SCP 02 constant used in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} Response command
-    protected static final byte SCP02 = (byte) 0x02;
-
-    // SCP 03 constant used in @see{fr.xlim.ssd.opal.library.commands.GP2xCommands.initializeUpdate} Response command
-    protected static final byte SCP03 = (byte) 0x03;
-
     /// Static Keys
     protected List<SCKey> keys = new LinkedList<SCKey>();
 
@@ -91,7 +83,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      * Default constructor
      */
     public GP2xCommands() {
-        this(new SCP());
+        this(new SCPImplementation());
     }
 
     protected GP2xCommands(SCP scp) {
@@ -307,7 +299,12 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                     + resp.getData().length + ")");
         }
 
-        detectAndInitSCP(keyId, desiredScp, resp);
+        try {
+            scp.detectAndInitSCP(keyId, desiredScp, resp, this);
+        } catch (SCPException ex) {
+            resetParams();
+            throw new CardException("scp error", ex);
+        }
 
         this.sessState = SessionState.SESSION_INIT;
 
@@ -316,287 +313,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("=> Initialize Update end");
 
         return resp;
-    }
-
-    private void detectAndInitSCP(byte keyId, SCPMode desiredScp, ResponseAPDU resp) throws CardException {
-
-        byte keyVersNumRec = resp.getData()[10];
-        byte scpRec = resp.getData()[11];
-
-        byte[] cardCryptoResp = new byte[8];
-        byte[] keyDivData = new byte[10];
-
-        if (scpRec == SCP01) {
-            if (desiredScp == SCPMode.SCP_UNDEFINED) {
-                scp.setScpMode(SCPMode.SCP_01_05);
-                logger.trace("Change " + SCPMode.SCP_UNDEFINED + " to " + SCPMode.SCP_01_05);
-            } else if (desiredScp == SCPMode.SCP_01_05 || desiredScp == SCPMode.SCP_01_15) {
-                scp.setScpMode(desiredScp);
-            } else {
-                this.resetParams();
-                throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
-            }
-
-            logger.debug("SCPMode is " + scp.getScpMode());
-
-            scp.setCardChallenge(new byte[8]);
-
-            /*
-             * INITIALIZE UPDATE response in SCP 01 mode
-             * -0-----------------------09-10------11-12------------19-20-------------27-
-             * | Key Diversification Data | Key Info | Card Challenge | Card Cryptogram |
-             * --------------------------------------------------------------------------
-             */
-
-            System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
-            System.arraycopy(resp.getData(), 12, scp.getCardChallenge(), 0, 8);
-            System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
-
-            logger.debug("* Key Diversification Data is " + Conversion.arrayToHex(keyDivData));
-            logger.debug("* Host Challenge is " + Conversion.arrayToHex(scp.getHostChallenge()));
-            logger.debug("* Card Challenge is " + Conversion.arrayToHex(scp.getCardChallenge()));
-            logger.debug("* Card Crypto Resp is " + Conversion.arrayToHex(cardCryptoResp));
-
-        } else if (scpRec == SCP02) {
-
-            if (desiredScp == SCPMode.SCP_UNDEFINED) {
-                scp.setScpMode(SCPMode.SCP_02_15);
-                logger.trace("Change " + SCPMode.SCP_UNDEFINED + " to " + SCPMode.SCP_02_15);
-            } else if (desiredScp == SCPMode.SCP_02_15) {
-                scp.setScpMode(desiredScp);
-            } else if (desiredScp == SCPMode.SCP_02_14) {
-                scp.setScpMode(desiredScp);
-            } else if (desiredScp == SCPMode.SCP_02_04) {
-                scp.setScpMode(desiredScp);
-            } else if (desiredScp == SCPMode.SCP_02_05) {
-                scp.setScpMode(desiredScp);
-            } else if (desiredScp == SCPMode.SCP_02_45) {
-                scp.setScpMode(desiredScp);
-            } else if (desiredScp == SCPMode.SCP_02_55) {
-                scp.setScpMode(desiredScp);
-            } else {
-                this.resetParams();
-                throw new CardException("Desired SCP does not match with card SCP value (" + scpRec + ")");
-            }
-
-            logger.debug("SCPMode is " + scp.getScpMode());
-
-            scp.setCardChallenge(new byte[6]);
-            scp.setSequenceCounter(new byte[2]);
-
-            /*
-             * INITIALIZE UPDATE response in SCP 02 mode
-             *
-             * -0-----------------------09-10------11-12------------- 13-
-             * | Key Diversification Data | Key Info | Sequence Counter |
-             * ----------------------------------------------------------
-             *
-             * --14------------19-20-------------27-
-             *  | Card Challenge | Card Cryptogram |
-             * -------------------------------------
-             */
-
-            System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
-            System.arraycopy(resp.getData(), 12, scp.getSequenceCounter(), 0, 2);
-            System.arraycopy(resp.getData(), 14, scp.getCardChallenge(), 0, 6);
-            System.arraycopy(resp.getData(), 20, cardCryptoResp, 0, 8);
-
-            logger.debug("* Key Diversification Data is " + Conversion.arrayToHex(keyDivData));
-            logger.debug("* Sequence Counter is " + Conversion.arrayToHex(scp.getSequenceCounter()));
-            logger.debug("* Host Challenge is " + Conversion.arrayToHex(scp.getHostChallenge()));
-            logger.debug("* Card Challenge is " + Conversion.arrayToHex(scp.getCardChallenge()));
-            logger.debug("* Card Crypto Resp is " + Conversion.arrayToHex(cardCryptoResp));
-
-
-        } else if (scpRec == SCP03) {
-
-
-            if (desiredScp == SCPMode.SCP_03_65) {
-                scp.setScpMode(desiredScp);
-            }
-            if (desiredScp == SCPMode.SCP_03_6D) {
-                scp.setScpMode(desiredScp);
-            }
-            if (desiredScp == SCPMode.SCP_03_05) {
-                scp.setScpMode(desiredScp);
-            }
-            if (desiredScp == SCPMode.SCP_03_0D) {
-                scp.setScpMode(desiredScp);
-            }
-            if (desiredScp == SCPMode.SCP_03_2D) {
-                scp.setScpMode(desiredScp);
-            }
-            if (desiredScp == SCPMode.SCP_03_25) {
-                scp.setScpMode(desiredScp);
-            }
-
-
-            scp.setSequenceCounter(new byte[3]);
-            scp.setCardChallenge(new byte[8]);
-            /*
-             * INITIALIZE UPDATE response in SCP 03 mode
-             *
-             * -0-----------------------09-10------12-13-------------20--
-             * | Key Diversification Data | Key Info | Card Challenge   |
-             * ----------------------------------------------------------
-             *
-             * --21------------28-29-------------31-
-             *  |Card Cryptogram | Sequence Counter|
-             * -------------------------------------
-             * Sequence Counter is only present when SCP03 is configured for
-             * pseudo-random challenge generation.
-             */
-
-
-            System.arraycopy(resp.getData(), 0, keyDivData, 0, 10);
-            System.arraycopy(resp.getData(), 13, scp.getCardChallenge(), 0, 8);
-            System.arraycopy(resp.getData(), 21, cardCryptoResp, 0, 8);
-
-            if (resp.getData().length == 32) {
-                System.arraycopy(resp.getData(), 29, scp.getSequenceCounter(), 0, 3);
-                logger.debug("* Sequence Counter is " + Conversion.arrayToHex(scp.getSequenceCounter()));
-            }
-
-            logger.debug("* Key Diversification Data is " + Conversion.arrayToHex(keyDivData));
-            logger.debug("* Host Challenge is " + Conversion.arrayToHex(scp.getHostChallenge()));
-            logger.debug("* Card Challenge is " + Conversion.arrayToHex(scp.getCardChallenge()));
-            logger.debug("* Card Crypto Resp is " + Conversion.arrayToHex(cardCryptoResp));
-
-        } else {
-            this.resetParams();
-            throw new CardException("SCP version not available (" + scpRec + ")");
-        }
-
-        if (keyId == (byte) 0) {
-            keyId = (byte) 1;
-            logger.trace("key id switchs from 0 to 1");
-        }
-
-        SCKey key = this.getKey(keyVersNumRec, keyId);
-        if (key == null) {
-            this.resetParams();
-            throw new CardException("Selected key not found in local repository (keySetVersion: "
-                    + (keyVersNumRec & 0xff) + ", keyId: " + keyId + ")");
-        }
-
-        SCGPKey kEnc = null;
-        SCGPKey kMac = null;
-        SCGPKey kKek = null;
-
-
-        if (scp.getScpMode() == SCPMode.SCP_01_15 || scp.getScpMode() == SCPMode.SCP_01_05) {
-            if (key instanceof SCDerivableKey) {
-                SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
-                kEnc = keysFromDerivableKey[0];
-                kMac = keysFromDerivableKey[1];
-                kKek = keysFromDerivableKey[2];
-            } else {
-                kEnc = (SCGPKey) key;
-                kMac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
-                if (kMac == null) {
-                    this.resetParams();
-                    throw new CardException("Selected MAC Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-                kKek = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
-                if (kKek == null) {
-                    this.resetParams();
-                    throw new CardException("Selected KEK Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-            }
-        }
-
-
-        if (scp.getScpMode() == SCPMode.SCP_02_15
-                || scp.getScpMode() == SCPMode.SCP_02_45
-                || scp.getScpMode() == SCPMode.SCP_02_05
-                || scp.getScpMode() == SCPMode.SCP_02_55) {
-            if (key instanceof SCDerivableKey) {
-                SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
-                kEnc = keysFromDerivableKey[0];
-                kMac = keysFromDerivableKey[1];
-                kKek = keysFromDerivableKey[2];
-            } else {
-                kEnc = (SCGPKey) key;
-                kMac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
-                if (kMac == null) {
-                    this.resetParams();
-                    throw new CardException("Selected MAC Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-                kKek = (SCGPKey) this.getKey(keyVersNumRec, (byte) (++keyId));
-                if (kKek == null) {
-                    this.resetParams();
-                    throw new CardException("Selected KEK Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-            }
-
-        } else if (scp.getScpMode() == SCPMode.SCP_02_04
-                || scp.getScpMode() == SCPMode.SCP_02_14) {
-            if (key instanceof SCDerivableKey) {
-                SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
-                kEnc = keysFromDerivableKey[0];
-                kMac = keysFromDerivableKey[0];
-                kKek = keysFromDerivableKey[0];
-            } else {
-                kEnc = (SCGPKey) key;
-                kMac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (keyId));
-                if (kMac == null) {
-                    this.resetParams();
-                    throw new CardException("Selected MAC Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-                kKek = (SCGPKey) this.getKey(keyVersNumRec, (byte) (keyId));
-                if (kKek == null) {
-                    this.resetParams();
-                    throw new CardException("Selected KEK Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-            }
-        }
-
-        if ((scp.getScpMode() == SCPMode.SCP_03_65)
-                || (scp.getScpMode() == SCPMode.SCP_03_6D)
-                || (scp.getScpMode() == SCPMode.SCP_03_05)
-                || (scp.getScpMode() == SCPMode.SCP_03_0D)
-                || (scp.getScpMode() == SCPMode.SCP_03_2D)
-                || (scp.getScpMode() == SCPMode.SCP_03_25)) {
-            scp.initIcv();
-            if (key instanceof SCDerivableKey) {
-                SCGPKey[] keysFromDerivableKey = ((SCDerivableKey) key).deriveKey(keyDivData);
-                kEnc = keysFromDerivableKey[0];
-                kMac = keysFromDerivableKey[0];
-                kKek = keysFromDerivableKey[0];
-            } else {
-                kEnc = (SCGPKey) key;
-                kMac = (SCGPKey) this.getKey(keyVersNumRec, (byte) (keyId));
-                if (kMac == null) {
-                    this.resetParams();
-                    throw new CardException("Selected MAC Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-                kKek = (SCGPKey) this.getKey(keyVersNumRec, (byte) (keyId));
-                if (kKek == null) {
-                    this.resetParams();
-                    throw new CardException("Selected KEK Key not found in Local Repository : keySetVersion : " + (keyVersNumRec & 0xff) + ", keyId : " + (keyId));
-                }
-            }
-        }
-
-        scp.calculateDerivationData();
-        scp.generateSessionKeys(kEnc, kMac, kKek);
-        scp.calculateCryptograms();
-
-
-        if (scp.getScpMode() == SCPMode.SCP_02_45 || scp.getScpMode() == SCPMode.SCP_02_55) {
-            byte[] computedCardChallenge = new byte[6];
-            computedCardChallenge = scp.pseudoRandomGenerationCardChallenge(this.aid);
-            if (!Arrays.equals(scp.getCardChallenge(), computedCardChallenge)) {
-                logger.debug("Card challege is " + Conversion.arrayToHex(scp.getCardChallenge()) + "   " + scp.getCardChallenge().length);
-                throw new CardException("Error verifying Card Challenge");
-            }
-        }
-
-
-        if (!Arrays.equals(cardCryptoResp, scp.getCardCrypto())) {
-            this.resetParams();
-            throw new CardException("Error verifying Card Cryptogram");
-        }
     }
 
     /* (non-Javadoc)
@@ -1795,5 +1511,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     public SCP getScp() {
         return scp;
+    }
+
+    public byte[] getAid() {
+        return aid;
     }
 }

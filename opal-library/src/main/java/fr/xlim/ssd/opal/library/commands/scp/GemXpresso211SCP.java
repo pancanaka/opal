@@ -2,7 +2,7 @@ package fr.xlim.ssd.opal.library.commands.scp;
 
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 
-public class GemXpresso211SCP extends SCP {
+public class GemXpresso211SCP extends SCPImplementation {
 
     @Override
     public void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac,
