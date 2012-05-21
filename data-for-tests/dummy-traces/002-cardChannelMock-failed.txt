@@ -1,0 +1,3 @@
+# dummy file to test CardChannelMock constructor with a file
+# has only one command, CardException must be thrown
+12 34 56 78

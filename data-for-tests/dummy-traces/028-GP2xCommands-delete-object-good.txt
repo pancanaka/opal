@@ -1,0 +1,5 @@
+# test EXTERNAL AUTHENTICATE operation
+# security level is NO_SECURITY
+#
+84 E4 00 80 11 4F 07 A0 00 00 00 18 43 4D 4E 95 F3 42 45 CF 6E 43
+90 00

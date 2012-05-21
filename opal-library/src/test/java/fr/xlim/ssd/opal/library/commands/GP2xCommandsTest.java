@@ -50,9 +50,8 @@ import fr.xlim.ssd.opal.library.utilities.RandomGenerator;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
@@ -118,8 +117,17 @@ public class GP2xCommandsTest {
 
     private GP2xCommands createCommands(String filename) {
         GP2xCommands commands = new GP2xCommands();
-        InputStream input = GP2xCommands.class.getResourceAsStream(filename);
-        Reader reader = new InputStreamReader(input);
+
+        File traceFile = new File(getProjectRoot() + "/data-for-tests/" + filename);
+
+        Reader reader = null;
+
+        try {
+            reader = new FileReader(traceFile);
+        } catch (FileNotFoundException ex) {
+            throw new IllegalStateException("cannot found trace file");
+        }
+
         CardChannel cardChannel = null;
         try {
             cardChannel = new CardChannelMock(reader);
@@ -149,7 +157,7 @@ public class GP2xCommandsTest {
     @Test
     public void testSetOffCardKey() {
 
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/001-cardChannelMock-dummy.txt");
+        Commands commands = createCommands("dummy-traces/001-cardChannelMock-dummy.txt");
 
         commands.setOffCardKey(keys.get(0));
         assertEquals(commands.getKeys().length, 1);
@@ -178,7 +186,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testSetOffCardKeys() {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/001-cardChannelMock-dummy.txt");
+        Commands commands = createCommands("dummy-traces/001-cardChannelMock-dummy.txt");
 
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         assertEquals(commands.getKeys().length, 3);
@@ -189,7 +197,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOffCardKey() {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/001-cardChannelMock-dummy.txt");
+        Commands commands = createCommands("dummy-traces/001-cardChannelMock-dummy.txt");
 
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         SCKey key = commands.deleteOffCardKey((byte) 13, (byte) 1);
@@ -209,7 +217,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testSelect() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/010-GP2xCommands-select-good.txt");
+        Commands commands = createCommands("dummy-traces/010-GP2xCommands-select-good.txt");
         byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
         commands.select(aid);
         commands.getCardChannel().close();
@@ -217,7 +225,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testSelectFailedWhenResponseSWNot9000() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/011-GP2xCommands-select-failed.txt");
+        Commands commands = createCommands("dummy-traces/011-GP2xCommands-select-failed.txt");
         byte[] aid = {0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34, 0x34};
 
         expectedException.expect(CardException.class);
@@ -227,7 +235,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailWhenFirstResponseNot9000() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/012-GP2xCommands-initialize-update-failed.txt");
+        Commands commands = createCommands("dummy-traces/012-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
         expectedException.expect(CardException.class);
@@ -237,7 +245,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailWhenFirstResponseHasIllegalSize() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/013-GP2xCommands-initialize-update-failed.txt");
+        Commands commands = createCommands("dummy-traces/013-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
         expectedException.expect(CardException.class);
@@ -266,7 +274,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailWhenSCPNotImplemented() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/014-GP2xCommands-initialize-update-failed.txt");
+        Commands commands = createCommands("dummy-traces/014-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
         new CheckSCPException(commands, "SCP version not available (-103)") {
@@ -279,7 +287,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailWhenDesiredSCPNotInResponse() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/015-GP2xCommands-initialize-update-failed.txt");
+        Commands commands = createCommands("dummy-traces/015-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
         new CheckSCPException(commands, "Desired SCP does not match with card SCP value (1)") {
@@ -292,7 +300,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailWhenKeyNotFoundInLocalRepository() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/015-GP2xCommands-initialize-update-failed.txt");
+        Commands commands = createCommands("dummy-traces/015-GP2xCommands-initialize-update-failed.txt");
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
         new CheckSCPException(commands, "Selected key not found in local repository (keySetVersion: 1, keyId: 100)") {
@@ -421,7 +429,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateWhenGemVisaKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/016-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/016-GP2xCommands-initialize-update-good.txt");
         byte[] data = new byte[]{
                 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53, 0x53, 0x4F, 0x53, 0x41, 0x4D,
                 0x50, 0x4C, 0x45, 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53
@@ -434,7 +442,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateWhenGemVisa2Key() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/017-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/017-GP2xCommands-initialize-update-good.txt");
         byte[] data = new byte[]{
                 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53, 0x53, 0x4F, 0x53, 0x41, 0x4D,
                 0x50, 0x4C, 0x45, 0x47, 0x45, 0x4D, 0x58, 0x50, 0x52, 0x45, 0x53
@@ -447,7 +455,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailedWhenOnlyEncSCGPKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/018-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/018-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKey(keys.get(0));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
@@ -462,7 +470,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailedWhenOnlyMacSCGPKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/018-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/018-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKey(keys.get(1));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
@@ -477,7 +485,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailedWhenOnlyKekSCGPKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/018-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/018-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKey(keys.get(2));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
@@ -492,7 +500,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailedWhenOnlyEncAndMacSCGPKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/018-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/018-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKey(keys.get(0));
         commands.setOffCardKey(keys.get(1));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
@@ -508,7 +516,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailedWhenOnlyEncAndKekSCGPKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/018-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/018-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKey(keys.get(0));
         commands.setOffCardKey(keys.get(2));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
@@ -524,7 +532,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailedWhenOnlyMacAndKekSCGPKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/018-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/018-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKey(keys.get(1));
         commands.setOffCardKey(keys.get(2));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
@@ -540,7 +548,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateWhenThreeSCGPKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/018-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/018-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
         commands.initializeUpdate((byte) 13, (byte) 1, SCPMode.SCP_01_05);
@@ -548,7 +556,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateFailedWhenCardCryptogramError() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/049-GP2xCommands-initialize-update-failed.txt");
+        Commands commands = createCommands("dummy-traces/049-GP2xCommands-initialize-update-failed.txt");
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
 
@@ -562,7 +570,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateWhenKeyIdIs0AndScpUndefined() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/048-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/048-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
         commands.initializeUpdate((byte) 13, (byte) 0, SCPMode.SCP_UNDEFINED);
@@ -571,7 +579,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInitializeUpdateWhenKeyIdIs0AndScp0115() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/048-GP2xCommands-initialize-update-good.txt");
+        Commands commands = createCommands("dummy-traces/048-GP2xCommands-initialize-update-good.txt");
         commands.setOffCardKeys(keys.toArray(new SCKey[0]));
         RandomGenerator.setRandomSequence(new byte[]{0x01, 0x23, 0x45, 0x67, 0x01, 0x23, 0x45, 0x67});
         commands.initializeUpdate((byte) 13, (byte) 0, SCPMode.SCP_01_15);
@@ -607,7 +615,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testExternalAuthenticate() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/019-GP2xCommands-external-authenticate-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/019-GP2xCommands-external-authenticate-good.txt");
         commands.getScp().setHostCrypto(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
         });
@@ -625,7 +633,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testExternalAuthenticateFailedWhenSWNot9000() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/020-GP2xCommands-external-authenticate-failed.txt");
+        GP2xCommands commands = createCommands("dummy-traces/020-GP2xCommands-external-authenticate-failed.txt");
         commands.getScp().setHostCrypto(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
         });
@@ -739,13 +747,13 @@ public class GP2xCommandsTest {
 
     @Test
     public void testGetStatusSimple() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/021-GP2xCommands-get-status-good.txt");
+        Commands commands = createCommands("dummy-traces/021-GP2xCommands-get-status-good.txt");
         commands.getStatus(GetStatusFileType.ISD, GetStatusResponseMode.OLD_TYPE, null);
     }
 
     @Test
     public void testGetStatusExtended() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/022-GP2xCommands-get-status-good.txt");
+        Commands commands = createCommands("dummy-traces/022-GP2xCommands-get-status-good.txt");
         commands.getStatus(GetStatusFileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE, null);
     }
 
@@ -763,7 +771,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testGetStatusWithCMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/023-GP2xCommands-get-status-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/023-GP2xCommands-get-status-good.txt");
         commands.getScp().initIcv();
         commands.getScp().setSecMode(SecLevel.C_MAC);
         commands.getScp().setSessMac(new byte[]{
@@ -777,7 +785,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testGetStatusWithCEncAndMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/024-GP2xCommands-get-status-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/024-GP2xCommands-get-status-good.txt");
         commands.getScp().setSecMode(SecLevel.C_ENC_AND_MAC);
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -796,7 +804,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testGetStatusFailedWhenSWNot9000() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/025-GP2xCommands-get-status-failed.txt");
+        Commands commands = createCommands("dummy-traces/025-GP2xCommands-get-status-failed.txt");
 
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in Get Status : 1000");
@@ -805,14 +813,14 @@ public class GP2xCommandsTest {
 
     @Test
     public void testGetStatusWhenSearchQualifierNotNull() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/026-GP2xCommands-get-status-good.txt");
+        Commands commands = createCommands("dummy-traces/026-GP2xCommands-get-status-good.txt");
         commands.getStatus(GetStatusFileType.LOAD_FILES, GetStatusResponseMode.NEW_TYPE,
                 new byte[]{0x01, 0x02, 0x03});
     }
 
     @Test
     public void testDeleteOnCardObj() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/027-GP2xCommands-delete-object-good.txt");
+        Commands commands = createCommands("dummy-traces/027-GP2xCommands-delete-object-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -821,7 +829,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardObjWithCMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/028-GP2xCommands-delete-object-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/028-GP2xCommands-delete-object-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -838,7 +846,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardObjWithCEncAndMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/029-GP2xCommands-delete-object-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/029-GP2xCommands-delete-object-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -866,7 +874,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardObjWithoutCascade() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/030-GP2xCommands-delete-object-good.txt");
+        Commands commands = createCommands("dummy-traces/030-GP2xCommands-delete-object-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -875,7 +883,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardObjFailedWhenSWNot9000() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/031-GP2xCommands-delete-object-failed.txt");
+        Commands commands = createCommands("dummy-traces/031-GP2xCommands-delete-object-failed.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -886,7 +894,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardKey() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/032-GP2xCommands-delete-key-good.txt");
+        Commands commands = createCommands("dummy-traces/032-GP2xCommands-delete-key-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -895,7 +903,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardKeyWithCMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/033-GP2xCommands-delete-key-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/033-GP2xCommands-delete-key-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -912,7 +920,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardKeyWithCEncAndMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/034-GP2xCommands-delete-key-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/034-GP2xCommands-delete-key-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -934,7 +942,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testDeleteOnCardKeyFailedWhenSWNot9000() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/035-GP2xCommands-delete-key-failed.txt");
+        Commands commands = createCommands("dummy-traces/035-GP2xCommands-delete-key-failed.txt");
 
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in DELETE KEY : 1000");
@@ -943,7 +951,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForLoad() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/036-GP2xCommands-install-for-load-good.txt");
+        Commands commands = createCommands("dummy-traces/036-GP2xCommands-install-for-load-good.txt");
         byte[] packageAid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -955,7 +963,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForLoadWithParamInferior128() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/050-GP2xCommands-install-for-load-good.txt");
+        Commands commands = createCommands("dummy-traces/050-GP2xCommands-install-for-load-good.txt");
         byte[] packageAid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -969,7 +977,7 @@ public class GP2xCommandsTest {
     @Ignore
     @Test
     public void testInstallForLoadWithParamSuperior128() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/051-GP2xCommands-install-for-load-good.txt");
+        Commands commands = createCommands("dummy-traces/051-GP2xCommands-install-for-load-good.txt");
         byte[] packageAid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -1000,7 +1008,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForLoadWithCMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/037-GP2xCommands-install-for-load-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/037-GP2xCommands-install-for-load-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -1023,7 +1031,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForLoadWithCEncAndMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/038-GP2xCommands-install-for-load-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/038-GP2xCommands-install-for-load-good.txt");
         byte[] aid = new byte[]{
                 (byte) 0xA0, 0x00, 0x00, 0x00, 0x18, 0x43, 0x4D
         };
@@ -1051,7 +1059,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForLoadFailedWhenSWNot9000() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/039-GP2xCommands-install-for-load-failed.txt");
+        Commands commands = createCommands("dummy-traces/039-GP2xCommands-install-for-load-failed.txt");
 
         expectedException.expect(CardException.class);
         expectedException.expectMessage("Error in INSTALL FOR LOAD : 1000");
@@ -1066,7 +1074,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testLoad() throws CardException, FileNotFoundException, IOException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/040-GP2xCommands-load-good.txt");
+        Commands commands = createCommands("dummy-traces/040-GP2xCommands-load-good.txt");
         byte maxDataLength = (byte) 0xFF;
 
         byte[] buffer = new byte[(int) helloWorldCapFile.length()];
@@ -1077,7 +1085,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testLoadWithCMac() throws CardException, FileNotFoundException, IOException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/041-GP2xCommands-load-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/041-GP2xCommands-load-good.txt");
         commands.getScp().setSecMode(SecLevel.C_MAC);
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -1095,7 +1103,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testLoadWithCEncAndMac() throws CardException, FileNotFoundException, IOException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/042-GP2xCommands-load-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/042-GP2xCommands-load-good.txt");
         commands.getScp().setSecMode(SecLevel.C_ENC_AND_MAC);
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -1118,7 +1126,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testLoadFailWhenSWNot9000() throws CardException, FileNotFoundException, IOException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/047-GP2xCommands-load-failed.txt");
+        Commands commands = createCommands("dummy-traces/047-GP2xCommands-load-failed.txt");
         byte maxDataLength = (byte) 0xFF;
 
         byte[] buffer = new byte[(int) helloWorldCapFile.length()];
@@ -1132,7 +1140,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForInstallAndMakeSelectable() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/043-GP2xCommands-install-for-install-good.txt");
+        Commands commands = createCommands("dummy-traces/043-GP2xCommands-install-for-install-good.txt");
         byte[] loadFileAid = new byte[]{
                 (byte) 0xAA, 0x0A, 0x0A, 0x0A, 0x1A, 0x4A, 0x4A
         };
@@ -1150,7 +1158,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForInstallAndMakeSelectableWithCMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/044-GP2xCommands-install-for-install-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/044-GP2xCommands-install-for-install-good.txt");
         commands.getScp().setSecMode(SecLevel.C_MAC);
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -1176,7 +1184,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForInstallAndMakeSelectableWithCEncAndMac() throws CardException {
-        GP2xCommands commands = createCommands("/fr/xlim/ssd/opal/library/test/045-GP2xCommands-install-for-install-good.txt");
+        GP2xCommands commands = createCommands("dummy-traces/045-GP2xCommands-install-for-install-good.txt");
         commands.getScp().setSecMode(SecLevel.C_ENC_AND_MAC);
         commands.getScp().setSessMac(new byte[]{
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08,
@@ -1207,7 +1215,7 @@ public class GP2xCommandsTest {
 
     @Test
     public void testInstallForInstallAndMakeSelectableFailWhenSWNot9000() throws CardException {
-        Commands commands = createCommands("/fr/xlim/ssd/opal/library/test/046-GP2xCommands-install-for-install-failed.txt");
+        Commands commands = createCommands("dummy-traces/046-GP2xCommands-install-for-install-failed.txt");
         byte[] loadFileAid = new byte[]{
                 (byte) 0xAA, 0x0A, 0x0A, 0x0A, 0x1A, 0x4A, 0x4A
         };
