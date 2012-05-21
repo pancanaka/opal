@@ -194,7 +194,6 @@ public class SCPImplementation implements SCP {
         return icv;
     }
 
-    @Override
     public void setIcv(byte[] icv) {
         this.icv = icv;
     }
@@ -1410,18 +1409,14 @@ public class SCPImplementation implements SCP {
 
     // SECURITY DOMAIN
 
-    /* (non-Javadoc)
-     * @see fr.xlim.ssd.opal.library.Commands#deleteOnCardKey(byte[], boolean)
-     */
-
     /**
      * Generate the pseudo Random Card Challenge to compare with the Challenge
      * of the card obtained with initializeUpdate Command
      *
      * @param aid AID of the current selected application
      */
-    @Override
-    public byte[] pseudoRandomGenerationCardChallenge(byte[] aid) {
+
+    private byte[] pseudoRandomGenerationCardChallenge(byte[] aid) {
 
         logger.info("==> pseudo Random Generation CardChallenge");
         logger.info("* SCP 02 Protocol (" + getScpMode() + ") used");

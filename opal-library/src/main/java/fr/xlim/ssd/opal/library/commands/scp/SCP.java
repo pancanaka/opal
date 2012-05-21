@@ -19,8 +19,6 @@ public interface SCP {
 
     byte[] getIcv();
 
-    void setIcv(byte[] icv);
-
     void initIcv();
 
     byte[] getSessEnc();
@@ -76,8 +74,6 @@ public interface SCP {
     void calculateCryptograms();
 
     void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek);
-
-    byte[] pseudoRandomGenerationCardChallenge(byte[] aid);
 
     void detectAndInitSCP(byte keyId, SCPMode desiredScp, ResponseAPDU resp, GP2xCommands commands) throws SCPException;
 
