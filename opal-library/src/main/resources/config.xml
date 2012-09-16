@@ -136,6 +136,7 @@
         <description>Jcop 21</description>
         <atrs>
             <atr>3B FA 13 00 00 81 31 FE 45 4A 43 4F 50 32 31 56 32 33 31 91</atr>
+            <atr>3B FD 13 00 00 81 31 FE 45 54 3D 31 4A 32 31 33 36 4B 56 32 33 31 DC</atr>
         </atrs>
         <isd>A0 00 00 00 03 00 00 00</isd>
         <scp>02_15</scp>
@@ -161,6 +162,39 @@
             </key>
         </keys>
     </card>
+
+    <card>
+        <name>J2A080</name>
+        <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+        <description>JCOP21 J2A080</description>
+        <atrs>
+            <atr>3B F6 18 00 FF 81 31 FE 45 4A 32 41 30 38 30 1B</atr>
+        </atrs>
+        <isd>A0 00 00 00 03 00 00 00</isd>
+        <scp>02_15</scp>
+        <tp>T=1</tp>
+        <keys>
+            <key>
+                <type>DES_ECB</type>
+                <version>1</version>
+                <id>1</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>1</version>
+                <id>2</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+            <key>
+                <type>DES_ECB</type>
+                <version>1</version>
+                <id>3</id>
+                <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+            </key>
+        </keys>
+    </card>
+
 
     <card>
         <name>JCOP20</name>
