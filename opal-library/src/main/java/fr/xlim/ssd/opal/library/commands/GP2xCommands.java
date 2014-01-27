@@ -39,6 +39,7 @@
  */
 package fr.xlim.ssd.opal.library.commands;
 
+import fr.xlim.ssd.opal.library.config.KeyType;
 import fr.xlim.ssd.opal.library.config.SCDerivableKey;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.config.SCKey;
@@ -1663,12 +1664,52 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 this.sessMac = new byte[24];
                 this.sessRMac = new byte[24];
                 this.sessKek = new byte[24];
+                
+                
+                if(staticKenc.getValue().length == 16)
+                {
+                    byte[] temp = (byte[]) staticKenc.getValue().clone();
+                    byte[] newStaticKenc = new byte[24];
+                    System.arraycopy(temp, 0, newStaticKenc, 0, temp.length);
+                    System.arraycopy(temp, 0, newStaticKenc, 16, 8);  
+                    staticKenc = new SCGPKey(   (staticKenc.getVersion()),
+                                                staticKenc.getId(),
+                                                KeyType.DES_CBC,
+                                                newStaticKenc);
+                    
+                } 
+                
+                if(staticKmac.getValue().length == 16)
+                {
+                    byte[] temp = (byte[]) staticKmac.getValue().clone();
+                    byte[] newStaticKmac = new byte[24];
+                    System.arraycopy(temp, 0, newStaticKmac, 0, temp.length);
+                    System.arraycopy(temp, 0, newStaticKmac, 16, 8);  
+                    staticKmac = new SCGPKey(   (staticKmac.getVersion()),
+                                                staticKmac.getId(),
+                                                KeyType.DES_CBC,
+                                                newStaticKmac);
+                    
+                } 
+                
+                if(staticKkek.getValue().length == 16)
+                {
+                    byte[] temp = (byte[]) staticKkek.getValue().clone();
+                    byte[] newStaticKkek = new byte[24];
+                    System.arraycopy(temp, 0, newStaticKkek, 0, temp.length);
+                    System.arraycopy(temp, 0, newStaticKkek, 16, 8);  
+                    staticKkek = new SCGPKey(   (staticKkek.getVersion()),
+                                                staticKkek.getId(),
+                                                KeyType.DES_CBC,
+                                                newStaticKkek);
+                    
+                } 
 
                 myCipher = Cipher.getInstance("DESede/CBC/NoPadding");
                 IvParameterSpec ivSpec = new IvParameterSpec(this.icv);
 
                 logger.debug("*** Initialize IV : " + Conversion.arrayToHex(this.sessEnc));
-
+ 
                 // Calculing Encryption Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4ENCKEY, 0, this.derivationData, 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"), ivSpec);
@@ -1676,8 +1717,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 System.arraycopy(session, 0, this.sessEnc, 0, 16);
                 System.arraycopy(session, 0, this.sessEnc, 16, 8);
 
-                logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));
-
+                logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));  
+                
                 // Calculing C_Mac Session Keys
                 System.arraycopy(GP2xCommands.SCP02_DERIVATION4CMAC, 0, this.derivationData, 0, 2);
                 myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"), ivSpec);
