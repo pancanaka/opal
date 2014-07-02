@@ -47,59 +47,60 @@ package fr.xlim.ssd.opal.library.config;
  * @author Eric Linke
  * @author Julien Iguchi-Cartigny
  * @author Guillaume Bouffard
+ * @author Jean Dubreuil
  */
 
 public enum SCPMode {
 
     /// used when SCP used by the card is not know (before exchanges with the card)
-    SCP_UNDEFINED,
+    SCP_UNDEFINED(0, 0),
 
     /// Initiation mode explicit, C-MAC on modified APDU, ICV set to zero, no ICV encryption, 3 Secure Channel Keys
-    SCP_01_05,
+    SCP_01_05(1, 0x05),
 
     /// Initiation mode explicit, C-MAC on modified APDU, ICV set to zero, ICV encryption, 3 Secure Channel Keys
-    SCP_01_15,
+    SCP_01_15(1, 0x15),
 
     /*
      * Explicit mode, C_MAC on modified APDU, ICV set to zero, no ICV encryption, 1 Secure Channel base key
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_04,
+    SCP_02_04(2, 0x04),
 
     /*
      * Explicit mode, C_MAC on modified APDU, ICV set to zero, no ICV encryption, 3 Secure Channel keys
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_05,
+    SCP_02_05(2, 0x05),
 
     /*
      * Implicit mode, C_MAC on unmodified APDU, ICV set to MAC over AID, no ICV encryption, 1 Secure Channel base key
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_0A,
+    SCP_02_0A(2, 0x0A),
 
     /*
      * Implicit mode, C_MAC on unmodified APDU, ICV set to MAC over AID, no ICV encryption, 3 Secure Channel keys
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_0B,
+    SCP_02_0B(2, 0x0B),
 
     /*
      * Explicit mode, C_MAC on modified APDU, ICV set to zero, ICV encryption for C_MAC, 1 Secure Channel base key
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_14,
+    SCP_02_14(2, 0x14),
 
     /*
      * Explicit mode, C_MAC on modified APDU, ICV set to zero, ICV encryption for C_MAC, 3 Secure Channel keys
      *)
      */
-    SCP_02_15,
+    SCP_02_15(2, 0x15),
 
     /*
      * Implicit mode, C_MAC on unmodified APDU, ICV set to MAC over AID, ICV encryption for C_MAC session, 1 Secure
@@ -107,7 +108,7 @@ public enum SCPMode {
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_1A,
+    SCP_02_1A(2, 0x1A),
 
     /*
      * Implicit mode, C_MAC on unmodified APDU, ICV set to MAC over AID, ICV encryption for C_MAC session, 3 Secure
@@ -115,7 +116,7 @@ public enum SCPMode {
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_1B,
+    SCP_02_1B(2, 0x1B),
 
     /*
      * Initiation mode explicit, C-MAC on modified APDU, ICV set to zero, ICV encryption for C-MAC session, 3 Secure
@@ -123,7 +124,7 @@ public enum SCPMode {
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_55,
+    SCP_02_55(2, 0x55),
 
     /*
      * Initiation mode explicit, C-MAC on modified APDU, ICV set to zero, no ICV encryption, 3 Secure
@@ -131,7 +132,7 @@ public enum SCPMode {
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_45,
+    SCP_02_45(2, 0x45),
 
 
     /*
@@ -140,44 +141,66 @@ public enum SCPMode {
      *
      * TODO: implemented, Not tested
      */
-    SCP_02_54,
+    SCP_02_54(2, 0x54),
 
     /// TODO: Not implemented
-    SCP_10,
+    SCP_10(10, 0),
 
     /*
      *
      * TODO: implemented, Not tested
      */
-    SCP_03_65,
+    SCP_03_65(3, 0x65),
 
     /*
     *
     * TODO: implemented, Not tested
     */
-    SCP_03_6D,
+    SCP_03_6D(3, 0x6D),
 
     /*
     *
     * TODO: implemented, Not tested
     */
-    SCP_03_05,
+    SCP_03_05(3, 0x05),
 
     /*
     *
     * TODO: implemented, Not tested
     */
-    SCP_03_0D,
+    SCP_03_0D(3, 0x0D),
 
     /*
     *
     * TODO: implemented, Not tested
     */
-    SCP_03_2D,
+    SCP_03_2D(3, 0x2D),
 
     /*
     *
     * TODO: implemented, Not tested
     */
-    SCP_03_25;
+    SCP_03_25(3, 0x25);
+    
+    // Enumerate value
+    private final int value;
+    
+    /**
+     * Link a value to an enumerate value.
+     *
+     * @param scp protocol number (1, 2, 3, 10).
+     * @param iParam the i parameter indicating operations supported.
+     */
+    private SCPMode(int scp, int iParam) {
+        this.value = (((scp & 0xFF) << 8) | (iParam & 0xFF));
+    }
+    
+    /**
+     * Get enumerate value.
+     *
+     * @return enumerate value.
+     */
+    public int getValue() {
+        return this.value;
+    }
 }
