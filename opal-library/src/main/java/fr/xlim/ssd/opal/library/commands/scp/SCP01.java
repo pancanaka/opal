@@ -142,15 +142,16 @@ public class SCP01 extends AbstractSCP {
     @Override
     public byte[] generateCMac(byte[] command) {
         logger.debug("==> Generate Mac");
-        command[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
-        command[ISO7816.OFFSET_LC.getValue()] += 8;
-        byte[] dataWithPadding = addPadding(command);
+        byte[] cmd = command.clone();
+        cmd[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
+        cmd[ISO7816.OFFSET_LC.getValue()] += 8;
+        byte[] dataWithPadding = addPadding(cmd);
         byte[] encrypt = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessCMac, icv, dataWithPadding, 0, dataWithPadding.length);
-        byte[] newCommand = new byte[command.length + 8];
+        byte[] newCommand = new byte[cmd.length + 8];
         byte[] cMac = new byte[8];
         System.arraycopy(encrypt, encrypt.length - 8, cMac, 0, cMac.length);
-        System.arraycopy(command, 0, newCommand, 0, command.length);
-        System.arraycopy(cMac, 0, newCommand, command.length, cMac.length);
+        System.arraycopy(cmd, 0, newCommand, 0, cmd.length);
+        System.arraycopy(cMac, 0, newCommand, cmd.length, cMac.length);
         
         if ((scpMode.getIParameter() & ICV_ENCRYPTION_FOR_CMAC_SESSION) != 0)
             icv = doFinal(Cipher.ENCRYPT_MODE, "DESede/ECB/NoPadding", sessCMac, null, cMac, 0, cMac.length);

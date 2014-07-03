@@ -165,11 +165,12 @@ public class SCP02 extends AbstractSCP {
     @Override
     public byte[] generateCMac(byte[] command) {
         logger.debug("==> Generate Mac");
+        byte[] cmd = command.clone();
         if ((scpMode.getIParameter() & CMAC_ON_UNMODIFIED_APDU) == 0) {
-            command[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
-            command[ISO7816.OFFSET_LC.getValue()] += 8;
+            cmd[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
+            cmd[ISO7816.OFFSET_LC.getValue()] += 8;
         }
-        byte[] dataWithPadding = addPadding(command);
+        byte[] dataWithPadding = addPadding(cmd);
         SecretKeySpec desSingleKey = new SecretKeySpec(sessCMac.getEncoded(), 0, 8, "DES");
         int noOfBlocks = dataWithPadding.length / 8;
         byte ivForNextBlock[] = icv;
@@ -180,12 +181,12 @@ public class SCP02 extends AbstractSCP {
             logger.debug("* Calculated cryptogram is for Bolck " + i + " " + Conversion.arrayToHex(ivForNextBlock));
         }
         byte[] cMac = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessCMac, ivForNextBlock, dataWithPadding, startIndex, 8);
-        byte[] newCommand = new byte[command.length + 8];
-        System.arraycopy(command, 0, newCommand, 0, command.length);
-        System.arraycopy(cMac, 0, newCommand, command.length, cMac.length);
+        byte[] newCommand = new byte[cmd.length + 8];
+        System.arraycopy(cmd, 0, newCommand, 0, cmd.length);
+        System.arraycopy(cMac, 0, newCommand, cmd.length, cMac.length);
         if ((scpMode.getIParameter() & CMAC_ON_UNMODIFIED_APDU) != 0) {
-            command[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
-            command[ISO7816.OFFSET_LC.getValue()] += 8;
+            cmd[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
+            cmd[ISO7816.OFFSET_LC.getValue()] += 8;
         }
         
         if ((scpMode.getIParameter() & ICV_ENCRYPTION_FOR_CMAC_SESSION) != 0)
