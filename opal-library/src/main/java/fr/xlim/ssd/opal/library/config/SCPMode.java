@@ -203,4 +203,10 @@ public enum SCPMode {
     public int getValue() {
         return this.value;
     }
+    public int getProtocolNumber() {
+        return (value >> 8) & 0xFF;
+    }
+    public int getIParameter() {
+        return value & 0xFF;
+    }
 }

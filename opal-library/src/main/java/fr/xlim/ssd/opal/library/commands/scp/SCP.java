@@ -39,14 +39,39 @@
  */
 package fr.xlim.ssd.opal.library.commands.scp;
 
+import fr.xlim.ssd.opal.library.commands.SecLevel;
+import fr.xlim.ssd.opal.library.commands.SessionState;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCPMode;
+import java.security.Key;
+import javax.smartcardio.CardException;
 
 /**
  * Secure Channel Protocol interface
  *
  * @author Guillaume Bouffard
+ * @author Jean Dubreuil
  */
 public interface SCP {
+    public void setSessKey(String keyName, byte[] key);
+    public byte[] getSessKey(String keyName);
+    public void setSecLevel(SecLevel secMode);
+    public SecLevel getSecLevel();
+    public void setSessionState(SessionState sessState);
+    public SessionState getSessState();
+    public SCPMode getSCPMode();
+    
+    public byte[] getCardChallenge();
+    public byte[] getHostChallenge();
+    
+    
+    public void initICV();
+    
+    public void setCardChallenge(byte[] cardChallenge);
+    public void setHostChallenge(byte[] hostChallenge);
+    
+    public byte[] getCardCryptogram();
+    public byte[] getHostCryptogram();
 
     /**
      * Generate session keys depending with SCP protocol used
@@ -56,15 +81,14 @@ public interface SCP {
      * @param staticKkek Static data encryption key
      */
     public void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek);
-
+    public Key newKey(byte[] keyBytes);
     /**
-     * Generate mac value according input data
-     *
-     * @param data data used to generate Mac value
-     * @return Mac value calculated
+     * Special step after Generate Session Keys.
      */
-    public byte[] generateMac(byte[] data);
+    public void extraStep();
 
+    public byte[] encapsulateCommand(byte[] command);
+    public byte[] desencapsulateResponse(byte[] response) throws CardException;
     /**
      * Encrypt APDU command
      *
@@ -80,21 +104,22 @@ public interface SCP {
      * @return plain response
      */
     public byte[] decryptCardResponseData(byte[] response);
+    /**
+     * Generate mac value according input data
+     *
+     * @param command data used to generate Mac value
+     * @return Mac value calculated
+     */
+    public byte[] generateCMac(byte[] command);
+    
+    public boolean checkRMac(byte[] response);
 
+    public byte[] addPadding(byte[] data);
+    
     /**
      * Calculate Derivation data.
      *
-     * @param hostChallenge host challenge used to generate derivation data
-     * @param cardChallenge card challenge used to generate derivation data
+     * @return the Derivation data.
      */
-    public void calculateDerivationData(byte[] hostChallenge, byte[] cardChallenge);
-
-    /**
-     * Calculate Cryptogramm
-     *
-     * @param challenge challenge to calculate
-     */
-    public void calculateCryptogram(byte[] challenge);
-
-
+    public byte[] calculateDerivationData();
 }
