@@ -40,34 +40,25 @@
 
 package fr.xlim.ssd.opal.library.commands.scp;
 
-import fr.xlim.ssd.opal.library.commands.GP2xCommands;
 import fr.xlim.ssd.opal.library.commands.SecLevel;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
 import fr.xlim.ssd.opal.library.config.SCPMode;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
 import java.security.Key;
-import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
-import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.ShortBufferException;
-import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.smartcardio.CardException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Secure Channel Protocol 01 implementation
+ * Secure Channel Protocol 03 implementation.
  *
  * @author Jean Dubreuil
  */
 public class SCP03 extends AbstractSCP {
-    /// Logger used to print messages
+    // Logger used to print messages
     private static final Logger logger = LoggerFactory.getLogger(SCP03.class);
 
     // SCP 03 constant used to obtain, in @see{fr.xlim.ssd.opal.library.commands.scp.SCP03.generateSessionKeys}, the C-Mac session key
@@ -95,7 +86,7 @@ public class SCP03 extends AbstractSCP {
         logger.debug("==> Init ICV end");
     }
     @Override
-    public byte[] getCardCryptogram() {
+    public byte[] calculateCardCryptogram() {
         byte[] crypto = new byte[8];
         byte[] derivationData = calculateDerivationData();
         logger.debug("ICV : " + Conversion.arrayToHex(icv));
@@ -109,7 +100,7 @@ public class SCP03 extends AbstractSCP {
         return crypto;
     }
     @Override
-    public byte[] getHostCryptogram() {
+    public byte[] calculateHostCryptogram() {
         byte[] crypto = new byte[8];
         byte[] derivationData = calculateDerivationData();
         logger.debug("ICV : " + Conversion.arrayToHex(icv));

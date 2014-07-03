@@ -545,7 +545,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
         }
 
-        byte[] tmp = secureProtocol.getCardCryptogram();
+        byte[] tmp = secureProtocol.calculateCardCryptogram();
         if (!Arrays.equals(cardCryptoResp, tmp)) {
             this.resetParams();
             throw new CardException("Error verifying Card Cryptogram : " + Conversion.arrayToHex(cardCryptoResp) + " -- " + Conversion.arrayToHex(tmp));
@@ -586,7 +586,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         extAuthCmd[ISO7816.OFFSET_P1.getValue()] = secureProtocol.getSecLevel().getVal();
         extAuthCmd[ISO7816.OFFSET_P2.getValue()] = (byte) 0x00;
         extAuthCmd[ISO7816.OFFSET_LC.getValue()] = (byte) 0x8;
-        System.arraycopy(secureProtocol.getHostCryptogram(), 0, extAuthCmd, 5, 8);
+        System.arraycopy(secureProtocol.calculateHostCryptogram(), 0, extAuthCmd, 5, 8);
         
         logger.debug("* Data uses to calculate mac value is" + Conversion.arrayToHex(extAuthCmd));
 

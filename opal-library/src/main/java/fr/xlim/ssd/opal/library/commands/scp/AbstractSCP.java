@@ -100,6 +100,8 @@ public abstract class AbstractSCP implements SCP {
         secLevel = SecLevel.NO_SECURITY_LEVEL;
         sessState = SessionState.NO_SESSION;
     }
+    
+    //========================= Getters and Setters ==========================\\
     @Override
     public void setSessKey(String keyName, byte[] key) {
         if (keyName.equals("sessEnc"))
@@ -144,22 +146,45 @@ public abstract class AbstractSCP implements SCP {
         return scpMode;
     }
     @Override
+    public void setCardChallenge(byte[] cardChallenge) {
+        this.cardChallenge = cardChallenge;
+    }
+    @Override
     public byte[] getCardChallenge() {
         return cardChallenge;
+    }
+    @Override
+    public void setHostChallenge(byte[] hostChallenge) {
+        this.hostChallenge = hostChallenge;
     }
     @Override
     public byte[] getHostChallenge() {
         return hostChallenge;
     }
+    
+    //================================ Crypto ================================\\
     @Override
-    public void initICV() {
+    public void initICV() {//Default implementation for SCP01 and SCP02
         logger.debug("==> Init ICV begin");
         icv = new byte[8];
         logger.debug("* New ICV is " + Conversion.arrayToHex(icv));
         logger.debug("==> Init ICV end");
     }
     @Override
-    public byte[] getCardCryptogram() {
+    public byte[] addPadding(byte[] data) {//Default implementation for SCP01 and SCP02
+        byte[] dataWithPadding = new byte[data.length + (8 - (data.length % 8))];
+        
+        System.arraycopy(data, 0, dataWithPadding, 0, data.length);
+        dataWithPadding[data.length] = (byte) 0x80;
+        //The remaining bytes are already set to 0 with the new byte[] call
+        
+        logger.debug("Data before PADDING: " + Conversion.arrayToHex(data));
+        logger.debug("Data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
+        
+        return dataWithPadding;
+    }
+    @Override
+    public byte[] calculateCardCryptogram() {//Default implementation for SCP01 and SCP02
         byte[] crypto = new byte[8];
         byte[] derivationData = new byte[16];
         logger.debug("ICV : " + Conversion.arrayToHex(icv));
@@ -172,7 +197,7 @@ public abstract class AbstractSCP implements SCP {
         return crypto;
     }
     @Override
-    public byte[] getHostCryptogram() {
+    public byte[] calculateHostCryptogram() {//Default implementation for SCP01 and SCP02
         byte[] crypto = new byte[8];
         byte[] derivationData = new byte[16];
         logger.debug("ICV : " + Conversion.arrayToHex(icv));
@@ -185,19 +210,11 @@ public abstract class AbstractSCP implements SCP {
         return crypto;
     }
     @Override
-    public void setCardChallenge(byte[] cardChallenge) {
-        this.cardChallenge = cardChallenge;
-    }
-    @Override
-    public void setHostChallenge(byte[] hostChallenge) {
-        this.hostChallenge = hostChallenge;
-    }
-    @Override
-    public Key newKey(byte[] keyBytes) {
+    public Key newKey(byte[] keyBytes) {//Default implementation for SCP01 and SCP02
         return new SecretKeySpec(get3DESKey(keyBytes), "DESede");
     }
     @Override
-    public void extraStep() {
+    public final void extraStep() {//Final implementation for SCP01, SCP02 and SCP03
         logger.debug("Extra step begin");
         sessEnc = extraStep(sessEnc);
         sessCMac = extraStep(sessCMac);
@@ -207,21 +224,7 @@ public abstract class AbstractSCP implements SCP {
         logger.debug("* sessDek = " + Conversion.arrayToHex(sessDek.getEncoded()));
         logger.debug("Extra step end");
     }
-    @Override
-    public byte[] addPadding(byte[] data) {
-        byte[] dataWithPadding = new byte[data.length + (8 - (data.length % 8))];
-        
-        System.arraycopy(data, 0, dataWithPadding, 0, data.length);
-        dataWithPadding[data.length] = (byte) 0x80;
-        //The remaining bytes are already set to 0 with the new byte[] call
-        
-        logger.debug("Data before PADDING: " + Conversion.arrayToHex(data));
-        logger.debug("Data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
-        
-        return dataWithPadding;
-    }
-    
-    protected byte[] get3DESKey(byte[] key) {
+    protected final byte[] get3DESKey(byte[] key) {//Method used by SCP01 and SCP02
         if (key.length == 24)
             return key;
         if (key.length == 16) {
@@ -232,7 +235,7 @@ public abstract class AbstractSCP implements SCP {
         }
         throw new IllegalArgumentException("Invalid key length.");
     }
-    protected final byte[] doFinal(int opmode, String transformation, Key key, byte[] icv, byte[] data, int startOffset, int length) {
+    protected final byte[] doFinal(int opmode, String transformation, Key key, byte[] icv, byte[] data, int startOffset, int length) {//Final implementation for SCP01, SCP02 and SCP03
         try {
             Cipher cipher = Cipher.getInstance(transformation);
             if (icv != null)
@@ -254,7 +257,7 @@ public abstract class AbstractSCP implements SCP {
             throw new UnsupportedOperationException("Bad PADDING problem", e);
         }
     }
-    private Key extraStep(Key k) {
+    private Key extraStep(Key k) {//Extra step for GemXpresso211
         byte[] keyBytes = k.getEncoded();
         
         for (int i = 0; i < keyBytes.length; i++) {

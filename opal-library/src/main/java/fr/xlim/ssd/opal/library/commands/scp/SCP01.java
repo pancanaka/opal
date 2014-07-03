@@ -51,13 +51,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Secure Channel Protocol 01 implementation
+ * Secure Channel Protocol 01 implementation.
  *
  * @author Guillaume Bouffard
  * @author Jean Dubreuil
  */
 public class SCP01 extends AbstractSCP {
-
     // Logger used to print messages
     private static final Logger logger = LoggerFactory.getLogger(SCP01.class);
 
@@ -66,8 +65,6 @@ public class SCP01 extends AbstractSCP {
         if (scpMode.getProtocolNumber() != 1)
             throw new IllegalArgumentException("Incorrect SCPMode. Protocol number value:" + scpMode.getProtocolNumber() + " instead of 1.");
     }
-    
-    
     
     @Override
     public void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek) {

@@ -277,8 +277,8 @@ public class GP2xCommandsTest {
                 (byte) 0xE3, (byte) 0x95
         };
 
-        assertArrayEquals(expectedHostCrypto, commands.secureProtocol.getHostCryptogram());
-        assertArrayEquals(expectedCardCrypto, commands.secureProtocol.getCardCryptogram());
+        assertArrayEquals(expectedHostCrypto, commands.secureProtocol.calculateHostCryptogram());
+        assertArrayEquals(expectedCardCrypto, commands.secureProtocol.calculateCardCryptogram());
     }
 
     @Test
