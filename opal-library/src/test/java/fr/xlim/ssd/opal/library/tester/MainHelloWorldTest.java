@@ -3061,7 +3061,7 @@ public class MainHelloWorldTest {
         commands.getCardChannel().close();
     }
 
-    /*@Test
+    @Test
     public void testTestCardScp03_NoSecurityLevel() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03-NO_SECURITY_LEVEL.txt");
         CardConfigFactory cardConfigFactory = new CardConfigFactory();
@@ -4393,5 +4393,5 @@ public class MainHelloWorldTest {
 
         commands.getCardChannel().close();
 
-    }*/
+    }
 }

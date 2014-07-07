@@ -39,7 +39,6 @@
  */
 package fr.xlim.ssd.opal.library.commands.scp;
 
-import fr.xlim.ssd.opal.library.commands.ISO7816;
 import fr.xlim.ssd.opal.library.commands.SecLevel;
 import fr.xlim.ssd.opal.library.commands.SessionState;
 import fr.xlim.ssd.opal.library.config.SCPMode;

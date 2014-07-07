@@ -1198,7 +1198,15 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         logger.debug("* Install For Install Command is " + Conversion.arrayToHex(installForInstallComm));
 
-        if (secureProtocol != null)
+        
+        if (secureProtocol != null && secureProtocol instanceof SCP03 && (secureProtocol.getSecLevel().getVal() & SecLevel.R_MAC.getVal()) != 0) {//Remove!!
+            installForInstallComm[0] |= 4;
+            installForInstallComm[4] += 8;
+            byte[] tmp = new byte[installForInstallComm.length + 8];
+            System.arraycopy(installForInstallComm, 0, tmp, 0, installForInstallComm.length);
+            installForInstallComm = tmp;
+        }
+        else if (secureProtocol != null && (secureProtocol.getSecLevel().getVal() & SecLevel.R_MAC.getVal()) == 0)
             installForInstallComm = secureProtocol.encapsulateCommand(installForInstallComm);
 
         CommandAPDU cmdInstallForInstall = new CommandAPDU(installForInstallComm);
