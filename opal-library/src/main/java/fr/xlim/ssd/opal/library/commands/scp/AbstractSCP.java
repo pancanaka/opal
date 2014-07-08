@@ -83,9 +83,9 @@ public abstract class AbstractSCP implements SCP {
     protected Key sessRMac;
     //Data Encryption session key
     protected Key sessDek;
-    /// Host challenge used to authenticate host in smartcard
+    // Host challenge used to authenticate host in smartcard
     protected byte[] hostChallenge;
-    /// Card challenge used to authenticate smartcard in host
+    // Card challenge used to authenticate smartcard in host
     protected byte[] cardChallenge;
     // Secure Channel Protocol used
     protected SCPMode scpMode;
@@ -177,8 +177,8 @@ public abstract class AbstractSCP implements SCP {
         dataWithPadding[data.length] = (byte) 0x80;
         //The remaining bytes are already set to 0 with the new byte[] call
         
-        logger.debug("Data before PADDING: " + Conversion.arrayToHex(data));
-        logger.debug("Data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
+        logger.debug("* Data before PADDING: " + Conversion.arrayToHex(data));
+        logger.debug("* Data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
         
         return dataWithPadding;
     }
@@ -186,26 +186,34 @@ public abstract class AbstractSCP implements SCP {
     public byte[] calculateCardCryptogram() {//Default implementation for SCP01 and SCP02
         byte[] crypto = new byte[8];
         byte[] derivationData = new byte[16];
-        logger.debug("ICV : " + Conversion.arrayToHex(icv));
+        logger.debug("==> Calculate Card Cryptogram");
+        logger.debug("* ICV: " + Conversion.arrayToHex(icv));
+        
         System.arraycopy(hostChallenge, 0, derivationData, 0, 8);
         System.arraycopy(cardChallenge, 0, derivationData, 8, 8);
         derivationData = addPadding(derivationData);
         derivationData = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessEnc, icv, derivationData, 0, derivationData.length);
         System.arraycopy(derivationData, 16, crypto, 0, 8);
-        logger.debug("Calculated Card Crypto: " + Conversion.arrayToHex(crypto));
+        
+        logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(crypto));
+        logger.debug("==> Calculate Card Cryptogram End");
         return crypto;
     }
     @Override
     public byte[] calculateHostCryptogram() {//Default implementation for SCP01 and SCP02
         byte[] crypto = new byte[8];
         byte[] derivationData = new byte[16];
-        logger.debug("ICV : " + Conversion.arrayToHex(icv));
+        logger.debug("==> Calculate Host Cryptogram");
+        logger.debug("* ICV: " + Conversion.arrayToHex(icv));
+        
         System.arraycopy(cardChallenge, 0, derivationData, 0, 8);
         System.arraycopy(hostChallenge, 0, derivationData, 8, 8);
         derivationData = addPadding(derivationData);
         derivationData = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessEnc, icv, derivationData, 0, derivationData.length);
         System.arraycopy(derivationData, 16, crypto, 0, 8);
-        logger.debug("Calculated Host Crypto: " + Conversion.arrayToHex(crypto));
+        
+        logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(crypto));
+        logger.debug("==> Calculate Host Cryptogram End");
         return crypto;
     }
     @Override
@@ -214,14 +222,16 @@ public abstract class AbstractSCP implements SCP {
     }
     @Override
     public final void extraStep() {//Final implementation for SCP01, SCP02 and SCP03
-        logger.debug("Extra step begin");
+        logger.debug("==> Extra step begin");
+        
         sessEnc = extraStep(sessEnc);
         sessCMac = extraStep(sessCMac);
         sessDek = extraStep(sessDek);
+        
         logger.debug("* sessEnc = " + Conversion.arrayToHex(sessEnc.getEncoded()));
         logger.debug("* sessCMac = " + Conversion.arrayToHex(sessCMac.getEncoded()));
         logger.debug("* sessDek = " + Conversion.arrayToHex(sessDek.getEncoded()));
-        logger.debug("Extra step end");
+        logger.debug("==> Extra step end");
     }
     protected final byte[] get3DESKey(byte[] key) {//Method used by SCP01 and SCP02
         if (key.length == 24)

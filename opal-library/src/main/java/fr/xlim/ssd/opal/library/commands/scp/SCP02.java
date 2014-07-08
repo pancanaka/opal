@@ -63,18 +63,18 @@ public class SCP02 extends AbstractSCP {
     private static final Logger logger = LoggerFactory.getLogger(SCP02.class);
     
     // SCP 02 constant used to obtain, the C-Mac session key
-    protected static final byte[] SCP02_DERIVATION4CMAC = {(byte) 0x01, (byte) 0x01};
+    private static final byte[] DERIVATION4CMAC = {(byte) 0x01, (byte) 0x01};
     // SCP 02 constant used to obtain, the R-Mac session key
-    protected static final byte[] SCP02_DERIVATION4RMAC = {(byte) 0x01, (byte) 0x02};
+    private static final byte[] DERIVATION4RMAC = {(byte) 0x01, (byte) 0x02};
     // SCP 02 constant used to obtain, the encryption session key
-    protected static final byte[] SCP02_DERIVATION4ENCKEY = {(byte) 0x01, (byte) 0x82};
+    private static final byte[] DERIVATION4ENCKEY = {(byte) 0x01, (byte) 0x82};
     // SCP 02 constant used to obtain, the data encryption session key
-    protected static final byte[] SCP02_DERIVATION4DATAENC = {(byte) 0x01, (byte) 0x81};
+    private static final byte[] DERIVATION4DATAENC = {(byte) 0x01, (byte) 0x81};
     
     public SCP02(SCPMode scpMode) {
         super(scpMode);
         if (scpMode.getProtocolNumber() != 2)
-            throw new IllegalArgumentException("Incorrect SCPMode. Protocol number value:" + scpMode.getProtocolNumber() + " instead of 2.");
+            throw new IllegalArgumentException("Incorrect SCPMode. Protocol number value: " + scpMode.getProtocolNumber() + " instead of 2.");
     }
 
     @Override
@@ -87,31 +87,32 @@ public class SCP02 extends AbstractSCP {
         logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getValue()));
         logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getValue()));
         logger.debug("* SCP_Mode is SCP02");
-        logger.debug("*** Initialize IV : " + Conversion.arrayToHex(icv));
+        logger.debug("* ICV: " + Conversion.arrayToHex(icv));
 
         // Calculing Encryption Session Keys
-        System.arraycopy(SCP02_DERIVATION4ENCKEY, 0, derivationData, 0, 2);
+        System.arraycopy(DERIVATION4ENCKEY, 0, derivationData, 0, 2);
         session = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", new SecretKeySpec(staticKenc.getValue(), "DESede"), icv, derivationData, 0, derivationData.length);
         sessEnc = newKey(session);
         logger.debug("* sessEnc = " + Conversion.arrayToHex(sessEnc.getEncoded()));  
 
         // Calculing C_Mac Session Keys
-        System.arraycopy(SCP02_DERIVATION4CMAC, 0, derivationData, 0, 2);
+        System.arraycopy(DERIVATION4CMAC, 0, derivationData, 0, 2);
         session = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", new SecretKeySpec(staticKmac.getValue(), "DESede"), icv, derivationData, 0, derivationData.length);
         sessCMac = newKey(session);
         logger.debug("* sessMac = " + Conversion.arrayToHex(sessCMac.getEncoded()));
 
         // Calculing R_Mac Session Keys
-        System.arraycopy(SCP02_DERIVATION4RMAC, 0, derivationData, 0, 2);
+        System.arraycopy(DERIVATION4RMAC, 0, derivationData, 0, 2);
         session = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", new SecretKeySpec(staticKmac.getValue(), "DESede"), icv, derivationData, 0, derivationData.length);
         sessRMac = newKey(session);
         logger.debug("* sessRMac = " + Conversion.arrayToHex(sessRMac.getEncoded()));
 
         // Calculing Data Encryption Session Keys
-        System.arraycopy(SCP02_DERIVATION4DATAENC, 0, derivationData, 0, 2);
+        System.arraycopy(DERIVATION4DATAENC, 0, derivationData, 0, 2);
         session = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", new SecretKeySpec(staticKkek.getValue(), "DESede"), icv, derivationData, 0, derivationData.length);
         sessDek = newKey(session);
         logger.debug("* sessDek = " + Conversion.arrayToHex(sessDek.getEncoded()));
+        logger.debug("==> Generate Session Keys End");
     }
     @Override
     public byte[] encapsulateCommand(byte[] command) {
@@ -134,20 +135,23 @@ public class SCP02 extends AbstractSCP {
         byte[] data;
         byte[] encryptedCmd;
         
-        logger.debug("==> Encrypt Command Begin");
-        logger.debug("* Command to encrypt is " + Conversion.arrayToHex(command));
-        logger.debug("* IV is " + Conversion.arrayToHex(new byte[8]));
+        logger.debug("==> Encrypt Command");
+        logger.debug("* Command to encrypt: " + Conversion.arrayToHex(command));
+        logger.debug("* ICV: " + Conversion.arrayToHex(new byte[8]));
         
         data = new byte[dataLength];
         System.arraycopy(command, 5, data, 0, dataLength);
         data = addPadding(data);
         data = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessEnc, new byte[8], data, 0, data.length);//ICV is 0
+        
         encryptedCmd = new byte[5 + data.length + 8];
         System.arraycopy(command, 0, encryptedCmd, 0, 5);
         System.arraycopy(data, 0, encryptedCmd, 5, data.length);
         System.arraycopy(command, command.length - 8, encryptedCmd, data.length + 5, 8);
-        encryptedCmd[4] = (byte) (encryptedCmd.length - 5);
-        logger.debug("* Encrypted data is " + Conversion.arrayToHex(encryptedCmd));
+        encryptedCmd[4] = (byte) (encryptedCmd.length - 5);//Update length
+        
+        logger.debug("* Encrypted data: " + Conversion.arrayToHex(encryptedCmd));
+        logger.debug("==> Encrypt Command End");
         return encryptedCmd;
     }
     @Override
@@ -156,12 +160,13 @@ public class SCP02 extends AbstractSCP {
     }
     @Override
     public byte[] generateCMac(byte[] command) {
-        logger.debug("==> Generate Mac");
+        logger.debug("==> Generate C-Mac");
         byte[] cmd = command.clone();
         if ((scpMode.getIParameter() & CMAC_ON_UNMODIFIED_APDU) == 0) {
             cmd[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
             cmd[ISO7816.OFFSET_LC.getValue()] += 8;
         }
+        
         byte[] dataWithPadding = addPadding(cmd);
         SecretKeySpec desSingleKey = new SecretKeySpec(sessCMac.getEncoded(), 0, 8, "DES");
         int noOfBlocks = dataWithPadding.length / 8;
@@ -172,6 +177,7 @@ public class SCP02 extends AbstractSCP {
             startIndex += 8;
             logger.debug("* Calculated cryptogram is for Bolck " + i + " " + Conversion.arrayToHex(ivForNextBlock));
         }
+        
         byte[] cMac = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessCMac, ivForNextBlock, dataWithPadding, startIndex, 8);
         byte[] newCommand = new byte[cmd.length + 8];
         System.arraycopy(cmd, 0, newCommand, 0, cmd.length);
@@ -186,8 +192,9 @@ public class SCP02 extends AbstractSCP {
         else
             icv = cMac;
         
-        logger.debug("* New ICV is " + Conversion.arrayToHex(icv));
-        logger.debug("* New Command is " + Conversion.arrayToHex(newCommand));
+        logger.debug("* New ICV: " + Conversion.arrayToHex(icv));
+        logger.debug("* New Command: " + Conversion.arrayToHex(newCommand));
+        logger.debug("==> Generate C-Mac End");
         return newCommand;
     }
     @Override
@@ -202,6 +209,7 @@ public class SCP02 extends AbstractSCP {
         return derivationData;
     }
     
+    //Methods from previous GP2xCommands implementation
     public void initIcvToMacOverAid(byte[] aid) {
         initICV();
         logger.info("==> init ICV to mac over AID");
@@ -209,11 +217,9 @@ public class SCP02 extends AbstractSCP {
         logger.info("* IV is " + Conversion.arrayToHex(icv));
 
         byte[] dataWithPadding = addPadding(aid);
-
         byte[] res;
         logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
 
-        
         // Calculate the first n - 1 block.
         int noOfBlocks = dataWithPadding.length / 8;
         byte ivForNextBlock[] = icv;
@@ -233,11 +239,9 @@ public class SCP02 extends AbstractSCP {
         logger.info("* IV is " + Conversion.arrayToHex(icv));
 
         byte[] dataWithPadding = addPadding(aid);
-
         byte[] res;
         logger.debug("* data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
 
-        
         // Calculate the first n - 1 block.
         int noOfBlocks = dataWithPadding.length / 8;
         byte ivForNextBlock[] = icv;

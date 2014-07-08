@@ -74,12 +74,14 @@ public class SCP03 extends AbstractSCP {
     private static final byte SCP03_DERIVATION4HostCryptogram = (byte) 0x01;
     
     private int encCounter;
+    private byte[] macChainingValue;
     
     public SCP03(SCPMode scpMode) {
         super(scpMode);
         if (scpMode.getProtocolNumber() != 3)
             throw new IllegalArgumentException("Incorrect SCPMode. Protocol number value:" + scpMode.getProtocolNumber() + " instead of 3.");
         encCounter = 1;
+        macChainingValue = new byte[16];
     }
     
     @Override
@@ -91,72 +93,66 @@ public class SCP03 extends AbstractSCP {
     }
     @Override
     public byte[] calculateCardCryptogram() {
+        logger.debug("==> Calculate Card Cryptogram");
+        logger.debug("* ICV: " + Conversion.arrayToHex(icv));
+        
         byte[] crypto = new byte[8];
         byte[] derivationData = calculateDerivationData();
-        logger.debug("ICV : " + Conversion.arrayToHex(icv));
         derivationData[11] = SCP03_DERIVATION4CardCryptogram;
         derivationData[14] = (byte) 0x40;//Card Crypto -> L is 0x40
         derivationData[15] = (byte) 0x01;//Because L = 0x40
-        logger.debug("Derivation Data: " + Conversion.arrayToHex(derivationData));
-        derivationData = generateCryptogram2(sessCMac, derivationData);
+        logger.debug("* Derivation Data: " + Conversion.arrayToHex(derivationData));
+        
+        derivationData = generateCryptogram(sessCMac, derivationData);
         System.arraycopy(derivationData, 0, crypto, 0, 8);
-        logger.debug("Calculated Card Crypto: " + Conversion.arrayToHex(crypto));
+        
+        logger.debug("* Calculated Card Crypto: " + Conversion.arrayToHex(crypto));
+        logger.debug("==> Calculate Card Cryptogram End");
         return crypto;
-    }
-    private byte[] generateCryptogram2(Key key, byte[] derivationData) {
-        byte[] icvNextBloc = icv.clone();
-        int noOfBlocks = derivationData.length / 16;
-        int startIndex = 0;
-        for (int i = 0; i < (noOfBlocks); i++) {
-            byte[] encrypted = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", key, icvNextBloc, derivationData, 0, derivationData.length);
-            System.arraycopy(encrypted, 0, icvNextBloc, 0, 16);
-            startIndex += 16;
-        }
-        logger.debug("Generated cryptogram: " + Conversion.arrayToHex(icvNextBloc));
-        return icvNextBloc;
     }
     @Override
     public byte[] calculateHostCryptogram() {
+        logger.debug("==> Calculate Host Cryptogram");
+        logger.debug("* ICV: " + Conversion.arrayToHex(icv));
+        
         byte[] crypto = new byte[8];
         byte[] derivationData = calculateDerivationData();
-        logger.debug("ICV : " + Conversion.arrayToHex(icv));
         derivationData[11] = SCP03_DERIVATION4HostCryptogram;
         derivationData[14] = (byte) 0x40;//Host Crypto -> L is 0x40
         derivationData[15] = (byte) 0x01;//Because L = 0x40
-        logger.debug("Derivation Data: " + Conversion.arrayToHex(derivationData));
+        logger.debug("* Derivation Data: " + Conversion.arrayToHex(derivationData));
+        
         derivationData = generateCryptogram(sessCMac, derivationData);
         System.arraycopy(derivationData, 0, crypto, 0, 8);
-        logger.debug("Calculated Host Crypto: " + Conversion.arrayToHex(crypto));
+        
+        logger.debug("* Calculated Host Crypto: " + Conversion.arrayToHex(crypto));
+        logger.debug("==> Calculate Host Cryptogram End");
         return crypto;
     }
     @Override
     public void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek) {
         byte[] derivationData = calculateDerivationData();
-        logger.debug("ICV : " + Conversion.arrayToHex(icv));
+        logger.debug("==> Generate Session Keys");
+        logger.debug("* ICV: " + Conversion.arrayToHex(icv));
         
         SecretKeySpec skeySpec = new SecretKeySpec(staticKenc.getValue(), "AES");
-        logger.debug("key : " + Conversion.arrayToHex(skeySpec.getEncoded()));
+        logger.debug("* Key: " + Conversion.arrayToHex(skeySpec.getEncoded()));
         
         derivationData[14] = (byte) 0x80;//AES-128 -> L is 0x80
         derivationData[15] = (byte) 0x01;//Because L = 0x80
         
-        derivationData[14] = (byte) 0xC0;//AES-128 -> L is 0x80
-        derivationData[15] = (byte) 0x02;//Because L = 0x80
-        
         derivationData[11] = SCP03_DERIVATION4DATAENC;
         sessEnc = new SecretKeySpec(generateCryptogram(skeySpec, derivationData), "AES");
-        logger.debug("Derivation Data: " + Conversion.arrayToHex(derivationData));
-        logger.debug("sessEnc = " + Conversion.arrayToHex(sessEnc.getEncoded()));
+        logger.debug("* sessEnc = " + Conversion.arrayToHex(sessEnc.getEncoded()));
         
         derivationData[11] = SCP03_DERIVATION4CMAC;
         sessCMac = new SecretKeySpec(generateCryptogram(skeySpec, derivationData), "AES");
-        logger.debug("Derivation Data: " + Conversion.arrayToHex(derivationData));
-        logger.debug("sessMac = " + Conversion.arrayToHex(sessCMac.getEncoded()));
+        logger.debug("* sessMac = " + Conversion.arrayToHex(sessCMac.getEncoded()));
         
         derivationData[11] = SCP03_DERIVATION4RMAC;
         sessRMac = new SecretKeySpec(generateCryptogram(skeySpec, derivationData), "AES");
-        logger.debug("Derivation Data: " + Conversion.arrayToHex(derivationData));
-        logger.debug("sessRMac = " + Conversion.arrayToHex(sessRMac.getEncoded()));
+        logger.debug("* sessRMac = " + Conversion.arrayToHex(sessRMac.getEncoded()));
+        logger.debug("==> Generate Session Keys End");
     }
     @Override
     public Key newKey(byte[] keyBytes) {
@@ -167,20 +163,15 @@ public class SCP03 extends AbstractSCP {
         if ((secLevel.getVal() & SecLevel.C_ENC_AND_MAC.getVal()) == SecLevel.C_ENC_AND_MAC.getVal()) {
             command = encryptCommand(command);
         }
-        if ((secLevel.getVal() & SecLevel.C_MAC.getVal()) != 0) {
+        if ((secLevel.getVal() & SecLevel.C_MAC.getVal()) == SecLevel.C_MAC.getVal()) {
             command = generateCMac(command);
         }
         return command;
     }
     @Override
     public byte[] desencapsulateResponse(byte[] response) throws CardException {
-        if ((secLevel.getVal() & SecLevel.R_MAC.getVal()) != 0) {
-            if (!checkRMac(response)) {
-                throw new CardException("Invalid R-Mac.");
-            }
-            byte[] tmp = new byte[response.length - 8];
-            System.arraycopy(response, 0, tmp, 0, response.length - 10);
-            System.arraycopy(response, response.length - 2, tmp, tmp.length - 2, 2);
+        if ((secLevel.getVal() & SecLevel.R_MAC.getVal()) == SecLevel.R_MAC.getVal() && !checkRMac(response)) {
+            throw new CardException("Invalid R-Mac.");
         }
         if (secLevel == SecLevel.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
             response = decryptCardResponseData(response);
@@ -189,85 +180,107 @@ public class SCP03 extends AbstractSCP {
     }
     @Override
     public byte[] encryptCommand(byte[] command) {
-        logger.debug("Command to encrypt: " + Conversion.arrayToHex(command));
+        logger.debug("==> Encrypt Command");
+        logger.debug("* Command to encrypt: " + Conversion.arrayToHex(command));
         byte[] data = new byte[command.length - 5];
-        System.arraycopy(command, 5, data, 0, data.length);//TODO remove lc
-        //data[0] += 16;
+        System.arraycopy(command, 5, data, 0, data.length);
         data = addPadding(data);
+        
         byte[] icvEnc = new byte[16];
-        if ((scpMode.getIParameter() & 0x8 ) == 0x8) {
-            String hexaCounter = Integer.toHexString(encCounter);
-            if ((hexaCounter.length() % 2) == 1) {
-                hexaCounter = "0" + hexaCounter;
-            }
-            logger.debug("Counter: " + hexaCounter);
-            hexaCounter = Conversion.arrayToHex(Conversion.hexToArray(hexaCounter));
-            byte[] byteCounter = Conversion.hexToArray(hexaCounter);
-            System.arraycopy(byteCounter, 0, icvEnc, 16 - byteCounter.length, byteCounter.length);
-            
-            icvEnc = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessEnc, new byte[16], icvEnc, 0, icvEnc.length);
+        for (int i = 0; i < 4; i++) {
+            icvEnc[15 - i] = (byte) ((encCounter >> (i * 8)) & 0xFF);
         }
-        logger.debug("ICV: " + Conversion.arrayToHex(icvEnc));
+        encCounter++;
+        icvEnc = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessEnc, new byte[16], icvEnc, 0, icvEnc.length);
+        logger.debug("* ICV: " + Conversion.arrayToHex(icvEnc));
+        
         data = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessEnc, icvEnc, data, 0, data.length);
         
         byte[] encrypted = new byte[5 + data.length];
         System.arraycopy(command, 0, encrypted, 0, 5);
         System.arraycopy(data, 0, encrypted, 5, data.length);
-        encrypted[4] = (byte) (data.length);//+8
+        encrypted[4] = (byte) (data.length);
         
-        encCounter++;
-        
-        logger.debug("Encrypted command: " + Conversion.arrayToHex(encrypted));
+        logger.debug("* Encrypted command: " + Conversion.arrayToHex(encrypted));
+        logger.debug("==> Encrypt Command End");
         return encrypted;
     }
     @Override
     public byte[] decryptCardResponseData(byte[] response) {
         logger.debug("Response to decrypt: " + Conversion.arrayToHex(response));
-        //TODO
-        logger.debug("Decrypted response: " + Conversion.arrayToHex(response));
-        return response;
+        byte[] icvEnc = new byte[16];
+        icvEnc[0] = (byte) 0x80;
+        encCounter--;
+        for (int i = 0; i < 4; i++) {
+            icvEnc[15 - i] = (byte) ((encCounter >> (i * 8)) & 0xFF);
+        }
+        encCounter++;
+        icvEnc = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessEnc, new byte[16], icvEnc, 0, icvEnc.length);
+        logger.debug("* ICV: " + Conversion.arrayToHex(icvEnc));
+        
+        int dataLength;
+        byte[] data = doFinal(Cipher.DECRYPT_MODE, "AES/CBC/NoPadding", sessEnc, icvEnc, response, 0, response.length - 10);
+        logger.debug("* Plain data: " + Conversion.arrayToHex(data));
+        for (dataLength = data.length - 1; dataLength >= 0 && data[dataLength] != (byte) 0x80; dataLength--);
+        byte[] newResponse = new byte[dataLength + 2];
+        System.arraycopy(data, 0, newResponse, 0, dataLength);
+        System.arraycopy(response, response.length - 2, newResponse, dataLength, 2);
+        
+        logger.debug("Decrypted response: " + Conversion.arrayToHex(newResponse));
+        return newResponse;
     }
     @Override
     public byte[] generateCMac(byte[] command) {
-        byte[] data = new byte[16 + command.length];
-        System.arraycopy(icv, 0, data, 0, 16);
-        System.arraycopy(command, 0, data, 16, command.length);
-        data[16 + ISO7816.OFFSET_LC.getValue()] += 8;
-        data[16 + ISO7816.OFFSET_CLA.getValue()] |= 0x4;
-        data = addPadding(data);
-        logger.debug("ICV : " + Conversion.arrayToHex(icv));
-        data = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessCMac, new byte[16], data, 0, data.length);//TODO icv
-        logger.debug("Encrypted data : " + Conversion.arrayToHex(data));
+        logger.debug("==> Generate C-Mac");
+        logger.debug("* No ICV");
+        logger.debug("* Mac Chaining Value : " + Conversion.arrayToHex(macChainingValue));
         
-        //Update icv
-        System.arraycopy(data, 0, icv, 0, 8);
-        System.arraycopy(data, data.length - 8, icv, 8, 8);
+        byte[] data = new byte[macChainingValue.length + command.length];
+        System.arraycopy(macChainingValue, 0, data, 0, macChainingValue.length);
+        System.arraycopy(command, 0, data, macChainingValue.length, command.length);
+        data[macChainingValue.length + ISO7816.OFFSET_CLA.getValue()] |= 0x4;//CLA modification
+        data[macChainingValue.length + ISO7816.OFFSET_LC.getValue()] += 8;//Lc + 8
+        data = addPadding(data);
+        
+        data = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessCMac, new byte[16], data, 0, data.length);
+        logger.debug("* Encrypted data : " + Conversion.arrayToHex(data));
+        
+        //Update Mac Chaining Value
+        System.arraycopy(data, 0, macChainingValue, 0, 8);
+        System.arraycopy(data, data.length - 8, macChainingValue, 8, 8);
+        logger.debug("* New Mac Chaining Value : " + Conversion.arrayToHex(macChainingValue));
         
         byte[] cmdMac = new byte[command.length + 8];
         System.arraycopy(command, 0, cmdMac, 0, command.length);
         System.arraycopy(data, 0, cmdMac, command.length, 8);
-        cmdMac[ISO7816.OFFSET_LC.getValue()] += 8;
-        cmdMac[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
-        logger.debug("Command with C-Mac: " + Conversion.arrayToHex(cmdMac));
+        cmdMac[ISO7816.OFFSET_CLA.getValue()] |= 0x4;//CLA modification
+        cmdMac[ISO7816.OFFSET_LC.getValue()] += 8;//Lc + 8
+        logger.debug("* Command with C-Mac: " + Conversion.arrayToHex(cmdMac));
+        logger.debug("==> Generate C-Mac End");
         return cmdMac;
     }
     @Override
     public boolean checkRMac(byte[] response) {
-        byte[] data = new byte[16 + response.length - 8];
-        System.arraycopy(icv, 0, data, 0, 16);
-        System.arraycopy(response, 0, data, 16, response.length - 10);
-        System.arraycopy(response, response.length - 2, data, data.length - 2, 2);
+        logger.debug("==> Check R-Mac");
+        logger.debug("* No ICV");
+        logger.debug("* Mac Chaining Value : " + Conversion.arrayToHex(macChainingValue));
+        
+        byte[] data = new byte[macChainingValue.length + response.length - 8];//R-Mac value is left
+        System.arraycopy(macChainingValue, 0, data, 0, macChainingValue.length);
+        System.arraycopy(response, 0, data, macChainingValue.length, response.length - 10);//data response
+        System.arraycopy(response, response.length - 2, data, data.length - 2, 2);//status word
         data = addPadding(data);
         
-        data = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessCMac, new byte[16], data, 0, data.length);//icv
-        System.out.println("Encrypted data : " + Conversion.arrayToHex(data));
+        data = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", sessRMac, new byte[16], data, 0, data.length);
+        logger.debug("* Encrypted data : " + Conversion.arrayToHex(data));
         
         byte[] calculatedRMac = new byte[8];
         byte[] respRMac = new byte[8];
         System.arraycopy(data, 0, calculatedRMac, 0, 8);
         System.arraycopy(response, response.length - 10, respRMac, 0, 8);
-        logger.debug("R-Mac: " + Conversion.arrayToHex(respRMac));
-        logger.debug("Calculated R-Mac: " + Conversion.arrayToHex(calculatedRMac));
+        logger.debug("* R-Mac: " + Conversion.arrayToHex(respRMac));
+        logger.debug("* Calculated R-Mac: " + Conversion.arrayToHex(calculatedRMac));
+        logger.debug("==> Check R-Mac End");
         return Arrays.equals(calculatedRMac, respRMac);
     }
     @Override
@@ -278,8 +291,8 @@ public class SCP03 extends AbstractSCP {
         dataWithPadding[data.length] = (byte) 0x80;
         //The remaining bytes are already set to 0 with the new byte[] call
         
-        logger.debug("Data before PADDING: " + Conversion.arrayToHex(data));
-        logger.debug("Data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
+        logger.debug("* Data before PADDING: " + Conversion.arrayToHex(data));
+        logger.debug("* Data with PADDING: " + Conversion.arrayToHex(dataWithPadding));
         
         return dataWithPadding;
     }
@@ -305,7 +318,7 @@ public class SCP03 extends AbstractSCP {
        System.arraycopy(hostChallenge, 0, derivationData, 16, hostChallenge.length);
        System.arraycopy(cardChallenge, 0, derivationData, 24, hostChallenge.length);
        
-       logger.debug("Derivation Data: " + Conversion.arrayToHex(derivationData));
+       logger.debug("* Derivation Data: " + Conversion.arrayToHex(derivationData));
        
        return derivationData;
     }
@@ -324,7 +337,7 @@ public class SCP03 extends AbstractSCP {
             icvNextBloc = doFinal(Cipher.ENCRYPT_MODE, "AES/CBC/NoPadding", key, icvNextBloc, derivationData, startIndex, 16);
             startIndex += 16;
         }
-        logger.debug("Generated cryptogram: " + Conversion.arrayToHex(icvNextBloc));
+        logger.debug("* Generated cryptogram: " + Conversion.arrayToHex(icvNextBloc));
         return icvNextBloc;
     }
 }

@@ -85,21 +85,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     protected List<SCKey> keys = new LinkedList<SCKey>();
 
     protected byte[] aid;
-    
     protected SCP secureProtocol;
-
-    // used to calculate Encrypted counter ICV for C-ENC
-    protected int CENC_Counter = 01;
-
-    // used to calculate Encrypted counter ICV for R-ENC
-    protected int RENC_counter = 01;
-
-    //Counter ICV padding for R-ENC computing
-    protected static final byte[] SCP03_R_ENC_COUNTER_ICV_PADDING = Conversion.hexToArray("80 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-
-    //Counter ICV padding for R-ENC computing
-    protected static final byte[] SCP03_C_ENC_COUNTER_ICV_PADDING = Conversion.hexToArray("00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00");
-
     protected byte[] sequenceCounter;
     /**
      * Default constructor
@@ -231,7 +217,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             throw new CardException("Invalid response SW after SELECT command (" + Integer.toHexString(resp.getSW()) + ")");
         }
         return resp;
-
     }
 
 
@@ -280,7 +265,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public ResponseAPDU initializeUpdate(byte keySetVersion, byte keyId, SCPMode desiredScp) throws CardException {
-
         logger.debug("=> Initialize Update");
         this.resetParams();
         byte[] hostChallenge = RandomGenerator.generateRandom(8);
@@ -322,10 +306,8 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         byte[] cardChallenge = new byte[8];
         byte[] cardCryptoResp = new byte[8];
         byte[] keyDivData = new byte[10];
-
         byte keyVersNumRec = resp.getData()[10];
         byte scpRec = resp.getData()[11];
-        
         
         switch(scpRec) {
             case SCP01:
@@ -383,7 +365,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
                 break;
             case SCP03:
                 if (desiredScp == SCPMode.SCP_UNDEFINED) {
-                    secureProtocol = new SCP03(SCPMode.SCP_03_05);
+                    secureProtocol = new SCP03(SCPMode.SCP_03_00);
                 }
                 else if (desiredScp.getProtocolNumber() == SCP03) {
                     secureProtocol = new SCP03(desiredScp);
@@ -536,7 +518,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         secureProtocol.initICV();
         generateSessionKeys(kEnc, kMac, kKek);
 
-
         if (secureProtocol.getSCPMode() == SCPMode.SCP_02_45 || secureProtocol.getSCPMode() == SCPMode.SCP_02_55) {
             byte[] computedCardChallenge = ((SCP02) secureProtocol).pseudoRandomGenerationCardChallenge(this.aid);
             if (!Arrays.equals(cardChallenge, computedCardChallenge)) {
@@ -564,7 +545,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
      */
     @Override
     public ResponseAPDU externalAuthenticate(SecLevel secLevel) throws CardException {
-
         logger.debug("=> External Authenticate begin");
 
         if (secLevel == null) {
@@ -577,7 +557,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
 
         secureProtocol.setSecLevel(secLevel);
-
         logger.debug("* Sec Mode is" + secureProtocol.getSecLevel());
 
         byte[] extAuthCmd = new byte[5 + 8];
@@ -605,10 +584,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
         secureProtocol.setSessionState(SessionState.SESSION_AUTH);
 
-        //Protocol SCP03 - intitialisation of counters for computing of counter ICV for C/R-Enc.
-        CENC_Counter = 1;
-        RENC_counter = 1;
-
         logger.debug("=> External Authenticate end");
 
         return resp;
@@ -623,9 +598,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     @Override
     public ResponseAPDU[] getStatus(GetStatusFileType fileType, GetStatusResponseMode responseMode, byte[] searchQualifier) throws CardException {
-
         logger.debug("=> Get Status begin");
-
         logger.debug("+ file type is " + fileType);
         logger.debug("+ response mode is " + responseMode);
         logger.debug("+ Search Qualifier is " + (searchQualifier != null ? Conversion.arrayToHex(searchQualifier) : "null"));
@@ -754,15 +727,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
         if (secureProtocol != null)
             logger.debug("plain text response is " + Conversion.arrayToHex(secureProtocol.desencapsulateResponse(resp.getBytes())));
-
-        // increment the value of counter icv for CENC
-        /*if (this.getSecMode() == secMode.C_ENC_AND_MAC
-                || this.getSecMode() == secMode.C_ENC_AND_C_MAC_AND_R_MAC
-                || this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-            CENC_Counter++;
-        }*/
-
-
+        
         logger.debug("=> Delete On Card Object End");
 
         return resp;
@@ -774,9 +739,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     @Override
     public ResponseAPDU deleteOnCardKey(byte keySetVersion, byte keyId) throws CardException {
-
         logger.debug("=> Delete On Card Key begin");
-
         logger.debug("+ Key Set Version to delete is " + Integer.toHexString((int) (keySetVersion) & 0xFF));
         logger.debug("+ Key Id to delete is " + Integer.toHexString((int) (keyId) & 0xFF));
         logger.debug("+ SecLevel is " + getSecMode());
@@ -823,9 +786,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     @Override
     public ResponseAPDU installForLoad(byte[] packageAid, byte[] securityDomainAid, byte[] params) throws CardException {
-
         logger.debug("=> Install for load begin");
-
         logger.debug("+ " + (packageAid != null ? "Package AID to install is " + Conversion.arrayToHex(packageAid) : "There is not Package AID"));
         logger.debug("+ " + (securityDomainAid != null ? "Security Domain AID is " + Conversion.arrayToHex(securityDomainAid) : "There is not Security Domain AID"));
         logger.debug("+ " + (params != null ? "Parameters is " + Conversion.arrayToHex(params) : "There is not parameter"));
@@ -916,13 +877,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         if (secureProtocol != null)
             logger.debug("plain text response is " + Conversion.arrayToHex(secureProtocol.desencapsulateResponse(resp.getBytes())));
 
-        // increment the value of counter icv for CENC
-        /*if (this.getSecMode() == secMode.C_ENC_AND_MAC
-                || this.getSecMode() == secMode.C_ENC_AND_C_MAC_AND_R_MAC
-                || this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-            CENC_Counter++;
-        }*/
-
         logger.debug("=> Install For Load Command End");
 
         return resp;
@@ -944,9 +898,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
 
     @Override
     public ResponseAPDU[] load(byte[] capFile, byte maxDataLength) throws CardException {
-
         logger.debug("=> Load Command Begin");
-
         logger.debug("+ Cap File size to load is " + capFile.length);
         logger.debug("+ Max Data Length is " + (short) (maxDataLength & 0xFF)
                 + "(0x" + Integer.toHexString((int) (maxDataLength & 0xFF)) + ")");
@@ -1063,17 +1015,9 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             }
             if (secureProtocol != null)
                 logger.debug("plain text response is " + Conversion.arrayToHex(secureProtocol.desencapsulateResponse(resp.getBytes())));
-            /*if (this.getSecMode() == secMode.C_ENC_AND_MAC
-                    || this.getSecMode() == secMode.C_ENC_AND_C_MAC_AND_R_MAC
-                    || this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-                CENC_Counter++;
-            }*/
 
         }
         ResponseAPDU[] r = new ResponseAPDU[responses.size()];
-
-        // increment the value of counter icv for CENC
-
 
         logger.debug("=> Load Command End");
 
@@ -1088,9 +1032,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     public ResponseAPDU installForInstallAndMakeSelectable(byte[] loadFileAID,
                                                            byte[] moduleAID, byte[] applicationAID, byte[] privileges, byte[] parameters)
             throws CardException {
-
         logger.debug("=> Install For Install And Make Selectable Begin");
-
         logger.debug("+ " + (loadFileAID != null ? "Load File AID is " + Conversion.arrayToHex(loadFileAID) : "There is not Load File AID"));
         logger.debug("+ " + (moduleAID != null ? "Module AID is " + Conversion.arrayToHex(moduleAID) : "There is not Module AID"));
         logger.debug("+ " + (applicationAID != null ? "Application AID is " + Conversion.arrayToHex(applicationAID) : "There is not Application AID"));
@@ -1199,14 +1141,7 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         logger.debug("* Install For Install Command is " + Conversion.arrayToHex(installForInstallComm));
 
         
-        if (secureProtocol != null && secureProtocol instanceof SCP03 && (secureProtocol.getSecLevel().getVal() & SecLevel.R_MAC.getVal()) != 0) {//Remove!!
-            installForInstallComm[0] |= 4;
-            installForInstallComm[4] += 8;
-            byte[] tmp = new byte[installForInstallComm.length + 8];
-            System.arraycopy(installForInstallComm, 0, tmp, 0, installForInstallComm.length);
-            installForInstallComm = tmp;
-        }
-        else if (secureProtocol != null && (secureProtocol.getSecLevel().getVal() & SecLevel.R_MAC.getVal()) == 0)
+        if (secureProtocol != null)
             installForInstallComm = secureProtocol.encapsulateCommand(installForInstallComm);
 
         CommandAPDU cmdInstallForInstall = new CommandAPDU(installForInstallComm);
@@ -1220,13 +1155,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
         }
         if (secureProtocol != null)
             logger.debug("plain text response is " + Conversion.arrayToHex(secureProtocol.desencapsulateResponse(resp.getBytes())));
-
-        // increment the value of counter icv for CENC
-        /*if (this.getSecMode() == secMode.C_ENC_AND_MAC
-                || this.getSecMode() == secMode.C_ENC_AND_C_MAC_AND_R_MAC
-                || this.getSecMode() == secMode.C_ENC_AND_R_ENC_AND_C_MAC_AND_R_MAC) {
-            CENC_Counter++;
-        }*/
 
         logger.debug("=> Install For Install And Make Selectable End");
 
@@ -1262,7 +1190,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
     public void InitParamForImplicitInitiationMode(byte[] aid, SCPMode desiredScp, byte keyId) throws CardException {
         byte keyVersNumRec = (byte) 0xFF;
         resetParams();
-        //this.scp = desiredScp;
         getData();
         secureProtocol = new SCP02(desiredScp);
         if (keyId == (byte) 0) {
@@ -1397,8 +1324,6 @@ public class GP2xCommands extends AbstractCommands implements Commands {
             this.resetParams();
             throw new CardException("Error in External Authenticate : " + Integer.toHexString(resp.getSW()));
         }
-
-
         return resp;
     }
 

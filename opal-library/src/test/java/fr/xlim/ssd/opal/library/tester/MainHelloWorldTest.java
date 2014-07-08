@@ -3061,13 +3061,13 @@ public class MainHelloWorldTest {
         commands.getCardChannel().close();
     }
 
-    @Test
+    /*@Test
     public void testTestCardScp03_NoSecurityLevel() throws  CardException, IOException {
-        Commands commands = createCommands("/HelloWorld-Test03-NO_SECURITY_LEVEL.txt");
+        Commands commands = createCommands("/HelloWorld-Test03_60-NO_SECURITY_LEVEL.txt");
         CardConfigFactory cardConfigFactory = new CardConfigFactory();
         File localXml = new File(MainHelloWorldTest.class.getResource("/test-config.xml").getFile());
         cardConfigFactory.registerLocalCardConfigsFromXML(localXml);
-        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_65");
+        CardConfig cardConfig = cardConfigFactory.getCardConfigByName("CardTest03_60");
         commands.setOffCardKeys(cardConfig.getSCKeys());
         commands.select(cardConfig.getIsd());
 
@@ -3119,7 +3119,7 @@ public class MainHelloWorldTest {
     }
 
 
-    @Test
+    /*@Test
     public void testTestCardScp03_MAC() throws  CardException, IOException {
         Commands commands = createCommands("/HelloWorld-Test03-MAC.txt");
         CardConfigFactory cardConfigFactory = new CardConfigFactory();
@@ -4393,5 +4393,5 @@ public class MainHelloWorldTest {
 
         commands.getCardChannel().close();
 
-    }
+    }*/
 }

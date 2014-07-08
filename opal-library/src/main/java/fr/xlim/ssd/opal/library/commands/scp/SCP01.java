@@ -63,7 +63,7 @@ public class SCP01 extends AbstractSCP {
     public SCP01(SCPMode scpMode) {
         super(scpMode);
         if (scpMode.getProtocolNumber() != 1)
-            throw new IllegalArgumentException("Incorrect SCPMode. Protocol number value:" + scpMode.getProtocolNumber() + " instead of 1.");
+            throw new IllegalArgumentException("Incorrect SCPMode. Protocol number value: " + scpMode.getProtocolNumber() + " instead of 1.");
     }
     
     @Override
@@ -92,7 +92,7 @@ public class SCP01 extends AbstractSCP {
         sessDek = newKey(session);
         logger.debug("* sessDek = " + Conversion.arrayToHex(sessDek.getEncoded()));
         
-        logger.debug("==> Generate Session Keys Data End");
+        logger.debug("==> Generate Session Keys End");
     }
     @Override
     public byte[] encapsulateCommand(byte[] command) {
@@ -114,9 +114,9 @@ public class SCP01 extends AbstractSCP {
         byte[] data;
         byte[] encryptedCmd;
         
-        logger.debug("==> Encrypt Command Begin");
-        logger.debug("* Command to encrypt is " + Conversion.arrayToHex(command));
-        logger.debug("* IV is " + Conversion.arrayToHex(new byte[8]));
+        logger.debug("==> Encrypt Command");
+        logger.debug("* Command to encrypt: " + Conversion.arrayToHex(command));
+        logger.debug("* ICV: " + Conversion.arrayToHex(new byte[8]));
         
         data = new byte[dataLength];
         System.arraycopy(command, 4, data, 0, dataLength);
@@ -124,12 +124,15 @@ public class SCP01 extends AbstractSCP {
         if (data.length % 8 != 0)//If multiple of 8, no further padding is required
             data = addPadding(data);
         data = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessEnc, new byte[8], data, 0, data.length);//ICV is 0
+        
         encryptedCmd = new byte[5 + data.length + 8];
         System.arraycopy(command, 0, encryptedCmd, 0, 5);
         System.arraycopy(data, 0, encryptedCmd, 5, data.length);
         System.arraycopy(command, command.length - 8, encryptedCmd, data.length + 5, 8);
-        encryptedCmd[4] = (byte) (encryptedCmd.length - 5);
-        logger.debug("* Encrypted data is " + Conversion.arrayToHex(encryptedCmd));
+        encryptedCmd[4] = (byte) (encryptedCmd.length - 5);//Update length
+        
+        logger.debug("* Encrypted command:" + Conversion.arrayToHex(encryptedCmd));
+        logger.debug("==> Encrypt Command End");
         return encryptedCmd;
     }
     @Override
@@ -138,10 +141,12 @@ public class SCP01 extends AbstractSCP {
     }
     @Override
     public byte[] generateCMac(byte[] command) {
-        logger.debug("==> Generate Mac");
+        logger.debug("==> Generate C-Mac");
+        
         byte[] cmd = command.clone();
         cmd[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
         cmd[ISO7816.OFFSET_LC.getValue()] += 8;
+        
         byte[] dataWithPadding = addPadding(cmd);
         byte[] encrypt = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessCMac, icv, dataWithPadding, 0, dataWithPadding.length);
         byte[] newCommand = new byte[cmd.length + 8];
@@ -154,8 +159,10 @@ public class SCP01 extends AbstractSCP {
             icv = doFinal(Cipher.ENCRYPT_MODE, "DESede/ECB/NoPadding", sessCMac, null, cMac, 0, cMac.length);
         else
             icv = cMac;
-        logger.debug("* New ICV is " + Conversion.arrayToHex(icv));
-        logger.debug("* New Command is " + Conversion.arrayToHex(newCommand));
+        
+        logger.debug("* New ICV: " + Conversion.arrayToHex(icv));
+        logger.debug("* New Command: " + Conversion.arrayToHex(newCommand));
+        logger.debug("==> Generate C-Mac End");
         return newCommand;
     }
     @Override
@@ -179,7 +186,7 @@ public class SCP01 extends AbstractSCP {
         System.arraycopy(cardChallenge, 0, derivationData, 8, 4);
         System.arraycopy(cardChallenge, 4, derivationData, 0, 4);
 
-        logger.debug("* Derivation Data is " + Conversion.arrayToHex(derivationData));
+        logger.debug("* Derivation Data: " + Conversion.arrayToHex(derivationData));
         logger.debug("==> Calculate Derivation Data End");
         return derivationData;
     }

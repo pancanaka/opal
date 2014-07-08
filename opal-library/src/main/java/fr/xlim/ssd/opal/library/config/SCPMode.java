@@ -147,40 +147,21 @@ public enum SCPMode {
     SCP_10(10, 0),
 
     /*
-     *
+    * Random card challenge, no R-MAC support and no R-ENCRYPTION support
+    * TODO: implemented, Not tested
+    */
+    SCP_03_00(3, 0x00),
+
+    /*
+    * Random card challenge, R-MAC support and no R-ENCRYPTION support
+    * TODO: implemented, Not tested
+    */
+    SCP_03_20(3, 0x20),
+    /*
+     * Random card challenge, R-MAC support and R-ENCRYPTION support
      * TODO: implemented, Not tested
      */
-    SCP_03_65(3, 0x65),
-
-    /*
-    *
-    * TODO: implemented, Not tested
-    */
-    SCP_03_6D(3, 0x6D),
-
-    /*
-    *
-    * TODO: implemented, Not tested
-    */
-    SCP_03_05(3, 0x05),
-
-    /*
-    *
-    * TODO: implemented, Not tested
-    */
-    SCP_03_0D(3, 0x0D),
-
-    /*
-    *
-    * TODO: implemented, Not tested
-    */
-    SCP_03_2D(3, 0x2D),
-
-    /*
-    *
-    * TODO: implemented, Not tested
-    */
-    SCP_03_25(3, 0x25);
+    SCP_03_60(3, 0x60);
     
     // Enumerate value
     private final int value;

@@ -23,11 +23,11 @@
 # Response APDU (1): 00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9B 5C 03 BA A1 9D A6 49 B0 5F 65 6E D1 03 32 90 00 
 # INIT UPDATE command (-> 80 50 00 00 08 87 B4 F1 07 62 54 3F C0 ) (<- 00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9B 5C 03 BA A1 9D A6 49 B0 5F 65 6E D1 03 32 90 00 )
 80 50 00 00 08 87 B4 F1 07 62 54 3F C0
-00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9B 5C 03 BA A1 9D A6 49 B0 5F 65 6E D1 03 32 90 00
+00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9B 5C 03 BA A1 9D A6 3C 2F B4 8E 84 47 EC 42 90 00
 # * Key Diversification Data is 00 00 81 58 06 54 71 91 38 23 
 # * Host Challenge is 87 B4 F1 07 62 54 3F C0 
 # * Card Challenge is 00 9B 5C 03 BA A1 9D A6 
-# * Card Crypto Resp is 49 B0 5F 65 6E D1 03 32 
+# * Card Crypto Resp is 3C 2F B4 8E 84 47 EC 42 
 # ==> Init ICV begin
 # * New ICV is 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
 # ==> Init ICV end
@@ -50,7 +50,7 @@
 # * IV is 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
 # * SCP 03 protocol used
 # * derivation data : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 01 87 B4 F1 07 62 54 3F C0 00 9B 5C 03 BA A1 9D A6 
-# Calculated Card Cryptogram = 49 B0 5F 65 6E D1 03 32 
+# Calculated Card Cryptogram = 3C 2F B4 8E 84 47 EC 42 
 # * derivation data : 00 00 00 00 00 00 00 00 00 00 00 01 00 00 40 01 87 B4 F1 07 62 54 3F C0 00 9B 5C 03 BA A1 9D A6 
 # Calculated Host Cryptogram = 6D BE E6 D2 0F B4 89 84 
 # ==> Calculate Cryptograms End
@@ -361,11 +361,11 @@
 # Response APDU (34): 00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9C F6 5B 8D 45 91 33 FA EC 8A 46 8D DB FA D3 90 00 
 # INIT UPDATE command (-> 80 50 00 00 08 53 EE 47 03 D3 94 20 00 ) (<- 00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9C F6 5B 8D 45 91 33 FA EC 8A 46 8D DB FA D3 90 00 )
 80 50 00 00 08 53 EE 47 03 D3 94 20 00
-00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9C F6 5B 8D 45 91 33 FA EC 8A 46 8D DB FA D3 90 00
+00 00 81 58 06 54 71 91 38 23 FF 03 00 00 9C F6 5B 8D 45 91 33 8E 58 B9 93 C9 87 FE 32 90 00
 # * Key Diversification Data is 00 00 81 58 06 54 71 91 38 23 
 # * Host Challenge is 53 EE 47 03 D3 94 20 00 
 # * Card Challenge is 00 9C F6 5B 8D 45 91 33 
-# * Card Crypto Resp is FA EC 8A 46 8D DB FA D3 
+# * Card Crypto Resp is 8E 58 B9 93 C9 87 FE 32 
 # ==> Init ICV begin
 # * New ICV is 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
 # ==> Init ICV end
@@ -388,7 +388,7 @@
 # * IV is 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 
 # * SCP 03 protocol used
 # * derivation data : 00 00 00 00 00 00 00 00 00 00 00 00 00 00 40 01 53 EE 47 03 D3 94 20 00 00 9C F6 5B 8D 45 91 33 
-# Calculated Card Cryptogram = FA EC 8A 46 8D DB FA D3 
+# Calculated Card Cryptogram = 8E 58 B9 93 C9 87 FE 32 
 # * derivation data : 00 00 00 00 00 00 00 00 00 00 00 01 00 00 40 01 53 EE 47 03 D3 94 20 00 00 9C F6 5B 8D 45 91 33 
 # Calculated Host Cryptogram = 4C 7E AA 9B D8 98 09 B3 
 # ==> Calculate Cryptograms End
