@@ -167,19 +167,19 @@
         <keys>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>1</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>2</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>3</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
@@ -198,19 +198,19 @@
         <keys>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>1</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>2</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>3</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
@@ -229,19 +229,19 @@
         <keys>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>1</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>2</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
             <key>
                 <type>AES_CBC</type>
-                <version>255</version>
+                <version>1</version>
                 <id>3</id>
                 <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F</value>
             </key>
