@@ -826,4 +826,35 @@
         </keys>
     </card>
 
+    <card>
+      <name>SHC1302A</name>
+      <implementation>fr.xlim.ssd.opal.library.commands.GP2xCommands</implementation>
+      <description>HuaHong</description>
+      <atrs>
+        <atr>3B 6D 00 00 00 85 13 02 30 00 85 32 16 17 51 FD AA</atr>
+      </atrs>
+      <isd>A0 00 00 00 03 00 00 00</isd>
+      <scp>02_15</scp>
+      <tp>T=0</tp>
+      <keys>
+        <key>
+          <type>DES_ECB</type>
+          <version>255</version>
+          <id>1</id>
+          <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+        </key>
+        <key>
+          <type>DES_ECB</type>
+          <version>255</version>
+          <id>2</id>
+          <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+        </key>
+        <key>
+          <type>DES_ECB</type>
+          <version>255</version>
+          <id>3</id>
+          <value>40 41 42 43 44 45 46 47 48 49 4A 4B 4C 4D 4E 4F 40 41 42 43 44 45 46 47</value>
+        </key>
+      </keys>
+    </card>
 </opal:cards>
