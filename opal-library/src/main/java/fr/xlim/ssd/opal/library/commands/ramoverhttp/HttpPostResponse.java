@@ -102,7 +102,7 @@ public class HttpPostResponse {
         int indexEndHeader = 0;
         byte[] header = null;
         byte[] seperator = {(byte) 0x0D, (byte) (0x0A), (byte) 0x0D, (byte) (0x0A)};
-        for (int i = 0; i < data.length - 4; i++) {
+        for (int i = 0; i < data.length - 3; i++) {
             byte[] temp = new byte[4];
             System.arraycopy(data, i, temp, 0, 4);
             if (Arrays.equals(temp, seperator)) {
