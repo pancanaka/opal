@@ -39,34 +39,158 @@
  */
 package fr.xlim.ssd.opal.library.commands.scp;
 
+import fr.xlim.ssd.opal.library.commands.SecLevel;
+import fr.xlim.ssd.opal.library.commands.SessionState;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCPMode;
+import java.security.Key;
+import javax.smartcardio.CardException;
 
 /**
  * Secure Channel Protocol interface
  *
  * @author Guillaume Bouffard
+ * @author Jean Dubreuil
  */
 public interface SCP {
-
+    //========================= Getters and Setters ==========================\\
+    
     /**
-     * Generate session keys depending with SCP protocol used
+     * Set a session key. (Usage is recommended for tests execution.)
+     * @see SCP#generateSessionKeys(fr.xlim.ssd.opal.library.config.SCGPKey, fr.xlim.ssd.opal.library.config.SCGPKey, fr.xlim.ssd.opal.library.config.SCGPKey) 
+     * 
+     * @param keyName "sessEnc" for the encryption session key, "sessCMac" for the CMac session key, "sessRMac" for the RMac session key, "sessDek" for the data encryption session key.
+     * @param key the key value.
+     */
+    public void setSessKey(String keyName, byte[] key);
+    /**
+     * Get a session key. (Usage is recommended for tests execution.)
+     * 
+     * @param keyName "sessEnc" for the encryption session key, "sessCMac" for the CMac session key, "sessRMac" for the RMac session key, "sessDek" for the data encryption session key.
+     * @return the key value.
+     */
+    public byte[] getSessKey(String keyName);
+    
+    /**
+     * Set the security mode.
+     * 
+     * @param secMode the new security mode.
+     */
+    public void setSecLevel(SecLevel secMode);
+    /**
+     * Get the current security mode.
+     *
+     * @return The security level.
+     */
+    public SecLevel getSecLevel();
+    
+    /**
+     * Set the session state.
+     * 
+     * @param sessState the new session state.
+     */
+    public void setSessionState(SessionState sessState);
+    /**
+     * Get the current session state.
+     *
+     * @return the session state.
+     */
+    public SessionState getSessState();
+    
+    /**
+     * Get SCP mode used
+     *
+     * @return SCP mode used
+     */
+    public SCPMode getSCPMode();
+    
+    /**
+     * Set the card challenge.
+     * 
+     * @param cardChallenge the card challenge.
+     */
+    public void setCardChallenge(byte[] cardChallenge);
+    /**
+     * Get the card challenge.
+     * 
+     * @return the card challenge.
+     */
+    public byte[] getCardChallenge();
+    
+    /**
+     * Set the host challenge.
+     * 
+     * @param hostChallenge the host challenge.
+     */
+    public void setHostChallenge(byte[] hostChallenge);
+    /**
+     * Get the host challenge.
+     * 
+     * @return the host challenge.
+     */
+    public byte[] getHostChallenge();
+    
+    
+    //================================ Crypto ================================\\
+    /**
+     * Init the ICV.
+     */
+    public void initICV();
+    /**
+     * Add padding as written in the specification.
+     * 
+     * @param data the data used.
+     * @return the data with padding.
+     */
+    public byte[] addPadding(byte[] data);
+    /**
+     * Calculate the card cryptogram.
+     * 
+     * @return the card cryptogram.
+     */
+    public byte[] calculateCardCryptogram();
+    /**
+     * Calculate the host cryptogram.
+     * 
+     * @return the host cryptogram.
+     */
+    public byte[] calculateHostCryptogram();
+    /**
+     * Generate session keys depending on SCP protocol used
      *
      * @param staticKenc Static Encrypt key
      * @param staticKmac Static Mac key
      * @param staticKkek Static data encryption key
      */
     public void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek);
-
     /**
-     * Generate mac value according input data
-     *
-     * @param data data used to generate Mac value
-     * @return Mac value calculated
+     * From an array, create a session key with right parameters depending on the protocol version.
+     * 
+     * @param keyBytes the key value.
+     * @return the key generated.
      */
-    public byte[] generateMac(byte[] data);
-
+    public Key newKey(byte[] keyBytes);
     /**
-     * Encrypt APDU command
+     * Special step after Generate Session Keys.
+     */
+    public void extraStep();
+    /**
+     * From a plain command, add C-Mac and encryption according to the current security level.
+     *
+     * @param command 
+     * @return command calculated
+     */
+    public byte[] encapsulateCommand(byte[] command);
+    /**
+     * From a response APDU, deciper it if the security level is asking it. The R-Mac is also verified.
+     * 
+     * @param response the response to analyse
+     * @return the plain text response
+     * @throws javax.smartcardio.CardException if the R-Mac is wrong.
+     */
+    public byte[] desencapsulateResponse(byte[] response) throws CardException;
+    /**
+     * Encrypt an APDU command.
      *
      * @param command command to encrypt
      * @return encrypted command
@@ -74,27 +198,30 @@ public interface SCP {
     public byte[] encryptCommand(byte[] command);
 
     /**
-     * Decrypt APDU response. This command may be unimplemented
+     * Decrypt an APDU response. This command may return the same input if encryption is not supported.
      *
      * @param response response to decrypt
      * @return plain response
      */
     public byte[] decryptCardResponseData(byte[] response);
-
+    /**
+     * Generate mac value according input command
+     *
+     * @param command command used to generate Mac value
+     * @return Mac value calculated
+     */
+    public byte[] generateCMac(byte[] command);
+    /**
+     * Check the response Mac.
+     * 
+     * @param response the response APDU to analyse.
+     * @return if the R-Mac is correct.
+     */
+    public boolean checkRMac(byte[] response);
     /**
      * Calculate Derivation data.
      *
-     * @param hostChallenge host challenge used to generate derivation data
-     * @param cardChallenge card challenge used to generate derivation data
+     * @return the Derivation data.
      */
-    public void calculateDerivationData(byte[] hostChallenge, byte[] cardChallenge);
-
-    /**
-     * Calculate Cryptogramm
-     *
-     * @param challenge challenge to calculate
-     */
-    public void calculateCryptogram(byte[] challenge);
-
-
+    public byte[] calculateDerivationData();
 }

@@ -39,203 +39,155 @@
  */
 package fr.xlim.ssd.opal.library.commands.scp;
 
+import fr.xlim.ssd.opal.library.commands.ISO7816;
+import fr.xlim.ssd.opal.library.commands.SecLevel;
 import fr.xlim.ssd.opal.library.config.SCGPKey;
+import fr.xlim.ssd.opal.library.config.SCPMode;
 import fr.xlim.ssd.opal.library.utilities.Conversion;
+import javax.crypto.Cipher;
+import javax.crypto.spec.SecretKeySpec;
+import javax.smartcardio.CardException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.spec.SecretKeySpec;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
-
 /**
- * Secure Channel Protocol 01 implementation
+ * Secure Channel Protocol 01 implementation.
  *
  * @author Guillaume Bouffard
+ * @author Jean Dubreuil
  */
-public class SCP01 implements SCP {
-
-    /// Logger used to print messages
+public class SCP01 extends AbstractSCP {
+    // Logger used to print messages
     private static final Logger logger = LoggerFactory.getLogger(SCP01.class);
 
-    /// Default PADDING to encrypt data for SCP 01
-    protected static final byte[] PADDING = Conversion.hexToArray("80 00 00 00 00 00 00 00");
-
-    /// Encryption session key
-    protected byte[] sessEnc;
-
-    /// C-MAC session key
-    protected byte[] sessMac;
-
-    /// Data Encryption session key
-    protected byte[] sessKek;
-
-    /// Derivation data used to calculate session keys
-    protected byte[] derivationData;
-
-    /// Initialized Cypher Vector used to initialized encryption steps
-    protected byte[] icv;
-
-    public SCP01() {
-        this.initIcv();
+    public SCP01(SCPMode scpMode) {
+        super(scpMode);
+        if (scpMode.getProtocolNumber() != 1)
+            throw new IllegalArgumentException("Incorrect SCPMode. Protocol number value: " + scpMode.getProtocolNumber() + " instead of 1.");
     }
-
-    /**
-     * Generate session keys depending with SCP protocol used
-     *
-     * @param staticKenc Static Encrypt key
-     * @param staticKmac Static Mac key
-     * @param staticKkek Static data encryption key
-     */
+    
     @Override
     public void generateSessionKeys(SCGPKey staticKenc, SCGPKey staticKmac, SCGPKey staticKkek) {
+        byte[] session;
+        byte[] derivationData = calculateDerivationData();
+        
         logger.debug("==> Generate Session Keys");
+        logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getValue()));
+        logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getValue()));
+        logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getValue()));
+        logger.debug("* SCP_Mode is SCP01");
+        
+        /* Calculating session encryption key */
+        session = doFinal(Cipher.ENCRYPT_MODE, "DESede/ECB/NoPadding", new SecretKeySpec(staticKenc.getValue(), "DESede"), null, derivationData, 0, derivationData.length);
+        sessEnc = newKey(session);
+        logger.debug("* sessEnc = " + Conversion.arrayToHex(sessEnc.getEncoded()));
 
-        try {
+        /* Calculating session mac key */
+        session = doFinal(Cipher.ENCRYPT_MODE, "DESede/ECB/NoPadding", new SecretKeySpec(staticKmac.getValue(), "DESede"), null, derivationData, 0, derivationData.length);
+        sessCMac = newKey(session);
+        logger.debug("* sessMac = " + Conversion.arrayToHex(sessCMac.getEncoded()));
 
-            byte[] session;
-
-            Cipher myCipher = null;
-
-            logger.debug("* staticKenc: " + Conversion.arrayToHex(staticKenc.getValue()));
-            logger.debug("* staticKmac: " + Conversion.arrayToHex(staticKmac.getValue()));
-            logger.debug("* staticKkek: " + Conversion.arrayToHex(staticKkek.getValue()));
-            logger.debug("* SCP_Mode is SCP01");
-
-            this.sessEnc = new byte[24];
-            this.sessMac = new byte[24];
-            this.sessKek = new byte[24];
-
-            myCipher = Cipher.getInstance("DESede/ECB/NoPadding");
-
-            /* Calculating session encryption key */
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKenc.getValue(), "DESede"));
-            session = myCipher.doFinal(this.derivationData);
-            System.arraycopy(session, 0, this.sessEnc, 0, 16);
-            System.arraycopy(session, 0, this.sessEnc, 16, 8);
-
-            logger.debug("* sessEnc = " + Conversion.arrayToHex(this.sessEnc));
-
-            /* Calculating session mac key */
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKmac.getValue(), "DESede"));
-            session = myCipher.doFinal(this.derivationData);
-            System.arraycopy(session, 0, this.sessMac, 0, 16);
-            System.arraycopy(session, 0, this.sessMac, 16, 8);
-
-            logger.debug("* sessMac = " + Conversion.arrayToHex(this.sessMac));
-
-            /* Calculating session data encryption key */
-            myCipher.init(Cipher.ENCRYPT_MODE, new SecretKeySpec(staticKkek.getValue(), "DESede"));
-            session = myCipher.doFinal(this.derivationData);
-            System.arraycopy(session, 0, this.sessKek, 0, 16);
-            System.arraycopy(session, 0, this.sessKek, 16, 8);
-
-            logger.debug("* sessKek = " + Conversion.arrayToHex(this.sessKek));
-
-
-        } catch (NoSuchAlgorithmException e) {
-            throw new UnsupportedOperationException("Cannot find algorithm", e);
-        } catch (NoSuchPaddingException e) {
-            throw new UnsupportedOperationException("No such PADDING problem", e);
-        } catch (InvalidKeyException e) {
-            throw new UnsupportedOperationException("Key problem", e);
-        } catch (IllegalBlockSizeException e) {
-            throw new UnsupportedOperationException("Block size problem", e);
-        } catch (BadPaddingException e) {
-            throw new UnsupportedOperationException("Bad PADDING problem", e);
-        }
-
-        logger.debug("==> Generate Session Keys Data End");
+        /* Calculating session data encryption key */
+        session = doFinal(Cipher.ENCRYPT_MODE, "DESede/ECB/NoPadding", new SecretKeySpec(staticKkek.getValue(), "DESede"), null, derivationData, 0, derivationData.length);
+        sessDek = newKey(session);
+        logger.debug("* sessDek = " + Conversion.arrayToHex(sessDek.getEncoded()));
+        
+        logger.debug("==> Generate Session Keys End");
     }
-
-    /**
-     * Generate mac value according input data
-     *
-     * @param data data used to generate Mac value
-     * @return Mac value calculated
-     */
     @Override
-    public byte[] generateMac(byte[] data) {
-        return new byte[0];  //To change body of implemented methods use File | Settings | File Templates.
+    public byte[] encapsulateCommand(byte[] command) {
+        if ((secLevel.getVal() & SecLevel.C_MAC.getVal()) != 0) {
+            command = generateCMac(command);
+        }
+        if (secLevel == SecLevel.C_ENC_AND_MAC) {
+            command = encryptCommand(command);
+        }
+        return command;
     }
-
-    /**
-     * Encrypt APDU command
-     *
-     * @param command command to encrypt
-     * @return encrypted command
-     */
+    @Override
+    public byte[] desencapsulateResponse(byte[] response) throws CardException {
+        return response;//SCP01 no encryption, no R-Mac
+    }
     @Override
     public byte[] encryptCommand(byte[] command) {
-        return new byte[0];  //To change body of implemented methods use File | Settings | File Templates.
+        int dataLength = command.length - 4 - 8; // command without (CLA, INS, P1, P2) AND C-MAC
+        byte[] data;
+        byte[] encryptedCmd;
+        
+        logger.debug("==> Encrypt Command");
+        logger.debug("* Command to encrypt: " + Conversion.arrayToHex(command));
+        logger.debug("* ICV: " + Conversion.arrayToHex(new byte[8]));
+        
+        data = new byte[dataLength];
+        System.arraycopy(command, 4, data, 0, dataLength);
+        data[0] = (byte) (data.length - 1);//Update length
+        if (data.length % 8 != 0)//If multiple of 8, no further padding is required
+            data = addPadding(data);
+        data = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessEnc, new byte[8], data, 0, data.length);//ICV is 0
+        
+        encryptedCmd = new byte[5 + data.length + 8];
+        System.arraycopy(command, 0, encryptedCmd, 0, 5);
+        System.arraycopy(data, 0, encryptedCmd, 5, data.length);
+        System.arraycopy(command, command.length - 8, encryptedCmd, data.length + 5, 8);
+        encryptedCmd[4] = (byte) (encryptedCmd.length - 5);//Update length
+        
+        logger.debug("* Encrypted command:" + Conversion.arrayToHex(encryptedCmd));
+        logger.debug("==> Encrypt Command End");
+        return encryptedCmd;
     }
-
-    /**
-     * Decrypt APDU response. This command may be unimplemented
-     *
-     * @param response response to decrypt
-     * @return plain response
-     */
     @Override
     public byte[] decryptCardResponseData(byte[] response) {
-        return response;
+        return response;//SCP01 no response encryption
     }
-
-    /**
-     * Calculate Derivation data.
-     *
-     * @param hostChallenge host challenge used to generate derivation data
-     * @param cardChallenge card challenge used to generate derivation data
-     */
     @Override
-    public void calculateDerivationData(byte[] hostChallenge, byte[] cardChallenge) {
-
+    public byte[] generateCMac(byte[] command) {
+        logger.debug("==> Generate C-Mac");
+        
+        byte[] cmd = command.clone();
+        cmd[ISO7816.OFFSET_CLA.getValue()] |= 0x4;
+        cmd[ISO7816.OFFSET_LC.getValue()] += 8;
+        
+        byte[] dataWithPadding = addPadding(cmd);
+        byte[] encrypt = doFinal(Cipher.ENCRYPT_MODE, "DESede/CBC/NoPadding", sessCMac, icv, dataWithPadding, 0, dataWithPadding.length);
+        byte[] newCommand = new byte[cmd.length + 8];
+        byte[] cMac = new byte[8];
+        System.arraycopy(encrypt, encrypt.length - 8, cMac, 0, cMac.length);
+        System.arraycopy(cmd, 0, newCommand, 0, cmd.length);
+        System.arraycopy(cMac, 0, newCommand, cmd.length, cMac.length);
+        
+        if ((scpMode.getIParameter() & ICV_ENCRYPTION_FOR_CMAC_SESSION) != 0)
+            icv = doFinal(Cipher.ENCRYPT_MODE, "DESede/ECB/NoPadding", sessCMac, null, cMac, 0, cMac.length);
+        else
+            icv = cMac;
+        
+        logger.debug("* New ICV: " + Conversion.arrayToHex(icv));
+        logger.debug("* New Command: " + Conversion.arrayToHex(newCommand));
+        logger.debug("==> Generate C-Mac End");
+        return newCommand;
+    }
+    @Override
+    public boolean checkRMac(byte[] response) {
+        return true;//SCP01 no R-Mac
+    }
+    @Override
+    public byte[] calculateDerivationData() {
+        byte[] derivationData = new byte[16];
         logger.debug("==> Calculate Derivation Data");
-
-        this.derivationData = new byte[16];
-
-
         /*
          * Derivation data in SCP 01 mode
          *
          * -0-------------------3-4------------------7--8----------------11-12-----------------15--
-         * |   Card Challenge    |   Card Challenge   |   Card Challenge   |   Card Challenge    |
+         * |   Card Challenge    |   Host challenge   |   Card Challenge   |   Host challenge    |
          * | (4 byte right half) | (4 byte left half) | (4 byte left half) | (4 byte right half) |
          * ----------------------------------------------------------------------------------------
          */
-        System.arraycopy(hostChallenge, 0, this.derivationData, 4, 4);
-        System.arraycopy(hostChallenge, 4, this.derivationData, 12, 4);
-        System.arraycopy(cardChallenge, 0, this.derivationData, 8, 4);
-        System.arraycopy(cardChallenge, 4, this.derivationData, 0, 4);
+        System.arraycopy(hostChallenge, 0, derivationData, 4, 4);
+        System.arraycopy(hostChallenge, 4, derivationData, 12, 4);
+        System.arraycopy(cardChallenge, 0, derivationData, 8, 4);
+        System.arraycopy(cardChallenge, 4, derivationData, 0, 4);
 
-        logger.debug("* Derivation Data is " + Conversion.arrayToHex(this.derivationData));
+        logger.debug("* Derivation Data: " + Conversion.arrayToHex(derivationData));
         logger.debug("==> Calculate Derivation Data End");
-    }
-
-    /**
-     * Calculate Cryptogramm
-     *
-     * @param challenge challenge to calculate
-     */
-    @Override
-    public void calculateCryptogram(byte[] challenge) {
-        //To change body of implemented methods use File | Settings | File Templates.
-    }
-
-    /**
-     * ICV Initialization. All values set to 0
-     */
-    protected void initIcv() {
-        logger.debug("==> Init ICV begin");
-        this.icv = new byte[8];
-        for (int i = 0; i < this.icv.length; i++) {
-            this.icv[i] = (byte) 0x00;
-        }
-        logger.debug("* New ICV is " + Conversion.arrayToHex(this.icv));
-        logger.debug("==> Init ICV end");
+        return derivationData;
     }
 }
